@@ -13,6 +13,16 @@
 		450955ED2A2F9CBE00BDAC8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 450955EC2A2F9CBE00BDAC8E /* Assets.xcassets */; };
 		450955F02A2F9CBE00BDAC8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 450955EE2A2F9CBE00BDAC8E /* LaunchScreen.storyboard */; };
 		450955F82A2FA04600BDAC8E /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450955F72A2FA04600BDAC8E /* SignUpViewController.swift */; };
+		450955FC2A2FA2EA00BDAC8E /* KakaoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450955FB2A2FA2EA00BDAC8E /* KakaoButton.swift */; };
+		450956042A2FA6C900BDAC8E /* pretendard-semi_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 450955FE2A2FA6C900BDAC8E /* pretendard-semi_bold.otf */; };
+		450956052A2FA6C900BDAC8E /* pretendard-regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 450955FF2A2FA6C900BDAC8E /* pretendard-regular.ttf */; };
+		450956062A2FA6C900BDAC8E /* pretendard-medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 450956002A2FA6C900BDAC8E /* pretendard-medium.otf */; };
+		450956072A2FA6C900BDAC8E /* pretendard-thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 450956012A2FA6C900BDAC8E /* pretendard-thin.ttf */; };
+		450956082A2FA6C900BDAC8E /* pretendard-bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 450956022A2FA6C900BDAC8E /* pretendard-bold.ttf */; };
+		450956092A2FA6C900BDAC8E /* pretendard-light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 450956032A2FA6C900BDAC8E /* pretendard-light.ttf */; };
+		451AC30B2A2FB3E300303E54 /* NaverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451AC30A2A2FB3E300303E54 /* NaverButton.swift */; };
+		451AC30D2A2FB96500303E54 /* GoogleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451AC30C2A2FB96500303E54 /* GoogleButton.swift */; };
+		451AC30F2A2FBA6B00303E54 /* AppleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451AC30E2A2FBA6B00303E54 /* AppleButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +33,16 @@
 		450955EF2A2F9CBE00BDAC8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		450955F12A2F9CBE00BDAC8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		450955F72A2FA04600BDAC8E /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		450955FB2A2FA2EA00BDAC8E /* KakaoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoButton.swift; sourceTree = "<group>"; };
+		450955FE2A2FA6C900BDAC8E /* pretendard-semi_bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pretendard-semi_bold.otf"; sourceTree = "<group>"; };
+		450955FF2A2FA6C900BDAC8E /* pretendard-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pretendard-regular.ttf"; sourceTree = "<group>"; };
+		450956002A2FA6C900BDAC8E /* pretendard-medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pretendard-medium.otf"; sourceTree = "<group>"; };
+		450956012A2FA6C900BDAC8E /* pretendard-thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pretendard-thin.ttf"; sourceTree = "<group>"; };
+		450956022A2FA6C900BDAC8E /* pretendard-bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pretendard-bold.ttf"; sourceTree = "<group>"; };
+		450956032A2FA6C900BDAC8E /* pretendard-light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pretendard-light.ttf"; sourceTree = "<group>"; };
+		451AC30A2A2FB3E300303E54 /* NaverButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaverButton.swift; sourceTree = "<group>"; };
+		451AC30C2A2FB96500303E54 /* GoogleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleButton.swift; sourceTree = "<group>"; };
+		451AC30E2A2FBA6B00303E54 /* AppleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleButton.swift; sourceTree = "<group>"; };
 		4ED6E863B57DA25C5FE14B12 /* Pods-FeelTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.debug.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.debug.xcconfig"; sourceTree = "<group>"; };
 		58102C3C5ED2F798A20B785C /* Pods_FeelTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeelTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63683F033A68EBA863CDAFB3 /* Pods-FeelTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.release.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.release.xcconfig"; sourceTree = "<group>"; };
@@ -52,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				450955E22A2F9CBD00BDAC8E /* FeelTalk */,
+				450955FD2A2FA6C900BDAC8E /* Font */,
 				450955E12A2F9CBD00BDAC8E /* Products */,
 				C42E5F312ADC751658ACEE66 /* Pods */,
 				00DA6234B3D259D005F55ED7 /* Frameworks */,
@@ -71,12 +92,45 @@
 			children = (
 				450955E32A2F9CBD00BDAC8E /* AppDelegate.swift */,
 				450955E52A2F9CBD00BDAC8E /* SceneDelegate.swift */,
+				450955F92A2FA28D00BDAC8E /* Scenes */,
 				450955EC2A2F9CBE00BDAC8E /* Assets.xcassets */,
 				450955EE2A2F9CBE00BDAC8E /* LaunchScreen.storyboard */,
 				450955F12A2F9CBE00BDAC8E /* Info.plist */,
-				450955F72A2FA04600BDAC8E /* SignUpViewController.swift */,
 			);
 			path = FeelTalk;
+			sourceTree = "<group>";
+		};
+		450955F92A2FA28D00BDAC8E /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				450955FA2A2FA2A700BDAC8E /* SignUp */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		450955FA2A2FA2A700BDAC8E /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				450955F72A2FA04600BDAC8E /* SignUpViewController.swift */,
+				451AC30E2A2FBA6B00303E54 /* AppleButton.swift */,
+				451AC30C2A2FB96500303E54 /* GoogleButton.swift */,
+				451AC30A2A2FB3E300303E54 /* NaverButton.swift */,
+				450955FB2A2FA2EA00BDAC8E /* KakaoButton.swift */,
+			);
+			path = SignUp;
+			sourceTree = "<group>";
+		};
+		450955FD2A2FA6C900BDAC8E /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				450955FE2A2FA6C900BDAC8E /* pretendard-semi_bold.otf */,
+				450955FF2A2FA6C900BDAC8E /* pretendard-regular.ttf */,
+				450956002A2FA6C900BDAC8E /* pretendard-medium.otf */,
+				450956012A2FA6C900BDAC8E /* pretendard-thin.ttf */,
+				450956022A2FA6C900BDAC8E /* pretendard-bold.ttf */,
+				450956032A2FA6C900BDAC8E /* pretendard-light.ttf */,
+			);
+			path = Font;
 			sourceTree = "<group>";
 		};
 		C42E5F312ADC751658ACEE66 /* Pods */ = {
@@ -149,6 +203,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				450955F02A2F9CBE00BDAC8E /* LaunchScreen.storyboard in Resources */,
+				450956062A2FA6C900BDAC8E /* pretendard-medium.otf in Resources */,
+				450956042A2FA6C900BDAC8E /* pretendard-semi_bold.otf in Resources */,
+				450956052A2FA6C900BDAC8E /* pretendard-regular.ttf in Resources */,
+				450956082A2FA6C900BDAC8E /* pretendard-bold.ttf in Resources */,
+				450956072A2FA6C900BDAC8E /* pretendard-thin.ttf in Resources */,
+				450956092A2FA6C900BDAC8E /* pretendard-light.ttf in Resources */,
 				450955ED2A2F9CBE00BDAC8E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -205,6 +265,10 @@
 				450955F82A2FA04600BDAC8E /* SignUpViewController.swift in Sources */,
 				450955E42A2F9CBD00BDAC8E /* AppDelegate.swift in Sources */,
 				450955E62A2F9CBD00BDAC8E /* SceneDelegate.swift in Sources */,
+				450955FC2A2FA2EA00BDAC8E /* KakaoButton.swift in Sources */,
+				451AC30D2A2FB96500303E54 /* GoogleButton.swift in Sources */,
+				451AC30B2A2FB3E300303E54 /* NaverButton.swift in Sources */,
+				451AC30F2A2FBA6B00303E54 /* AppleButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
