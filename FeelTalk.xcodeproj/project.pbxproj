@@ -10,21 +10,19 @@
 		2BDBEEB1707AA0E7E54ED0E7 /* Pods_FeelTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58102C3C5ED2F798A20B785C /* Pods_FeelTalk.framework */; };
 		450955E42A2F9CBD00BDAC8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450955E32A2F9CBD00BDAC8E /* AppDelegate.swift */; };
 		450955E62A2F9CBD00BDAC8E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450955E52A2F9CBD00BDAC8E /* SceneDelegate.swift */; };
-		450955E82A2F9CBD00BDAC8E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450955E72A2F9CBD00BDAC8E /* ViewController.swift */; };
-		450955EB2A2F9CBD00BDAC8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 450955E92A2F9CBD00BDAC8E /* Main.storyboard */; };
 		450955ED2A2F9CBE00BDAC8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 450955EC2A2F9CBE00BDAC8E /* Assets.xcassets */; };
 		450955F02A2F9CBE00BDAC8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 450955EE2A2F9CBE00BDAC8E /* LaunchScreen.storyboard */; };
+		450955F82A2FA04600BDAC8E /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450955F72A2FA04600BDAC8E /* SignUpViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		450955E02A2F9CBD00BDAC8E /* FeelTalk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeelTalk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		450955E32A2F9CBD00BDAC8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		450955E52A2F9CBD00BDAC8E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		450955E72A2F9CBD00BDAC8E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		450955EA2A2F9CBD00BDAC8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		450955EC2A2F9CBE00BDAC8E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		450955EF2A2F9CBE00BDAC8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		450955F12A2F9CBE00BDAC8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		450955F72A2FA04600BDAC8E /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		4ED6E863B57DA25C5FE14B12 /* Pods-FeelTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.debug.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.debug.xcconfig"; sourceTree = "<group>"; };
 		58102C3C5ED2F798A20B785C /* Pods_FeelTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeelTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63683F033A68EBA863CDAFB3 /* Pods-FeelTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.release.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.release.xcconfig"; sourceTree = "<group>"; };
@@ -73,11 +71,10 @@
 			children = (
 				450955E32A2F9CBD00BDAC8E /* AppDelegate.swift */,
 				450955E52A2F9CBD00BDAC8E /* SceneDelegate.swift */,
-				450955E72A2F9CBD00BDAC8E /* ViewController.swift */,
-				450955E92A2F9CBD00BDAC8E /* Main.storyboard */,
 				450955EC2A2F9CBE00BDAC8E /* Assets.xcassets */,
 				450955EE2A2F9CBE00BDAC8E /* LaunchScreen.storyboard */,
 				450955F12A2F9CBE00BDAC8E /* Info.plist */,
+				450955F72A2FA04600BDAC8E /* SignUpViewController.swift */,
 			);
 			path = FeelTalk;
 			sourceTree = "<group>";
@@ -88,7 +85,6 @@
 				4ED6E863B57DA25C5FE14B12 /* Pods-FeelTalk.debug.xcconfig */,
 				63683F033A68EBA863CDAFB3 /* Pods-FeelTalk.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -154,7 +150,6 @@
 			files = (
 				450955F02A2F9CBE00BDAC8E /* LaunchScreen.storyboard in Resources */,
 				450955ED2A2F9CBE00BDAC8E /* Assets.xcassets in Resources */,
-				450955EB2A2F9CBD00BDAC8E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +202,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				450955E82A2F9CBD00BDAC8E /* ViewController.swift in Sources */,
+				450955F82A2FA04600BDAC8E /* SignUpViewController.swift in Sources */,
 				450955E42A2F9CBD00BDAC8E /* AppDelegate.swift in Sources */,
 				450955E62A2F9CBD00BDAC8E /* SceneDelegate.swift in Sources */,
 			);
@@ -216,14 +211,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		450955E92A2F9CBD00BDAC8E /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				450955EA2A2F9CBD00BDAC8E /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		450955EE2A2F9CBE00BDAC8E /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -362,7 +349,6 @@
 				INFOPLIST_FILE = FeelTalk/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -391,7 +377,6 @@
 				INFOPLIST_FILE = FeelTalk/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
