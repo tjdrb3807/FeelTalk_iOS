@@ -112,10 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				450955F72A2FA04600BDAC8E /* SignUpViewController.swift */,
-				451AC30E2A2FBA6B00303E54 /* AppleButton.swift */,
-				451AC30C2A2FB96500303E54 /* GoogleButton.swift */,
-				451AC30A2A2FB3E300303E54 /* NaverButton.swift */,
-				450955FB2A2FA2EA00BDAC8E /* KakaoButton.swift */,
+				451AC3102A2FBD9100303E54 /* SubComponents */,
 			);
 			path = SignUp;
 			sourceTree = "<group>";
@@ -131,6 +128,17 @@
 				450956032A2FA6C900BDAC8E /* pretendard-light.ttf */,
 			);
 			path = Font;
+			sourceTree = "<group>";
+		};
+		451AC3102A2FBD9100303E54 /* SubComponents */ = {
+			isa = PBXGroup;
+			children = (
+				451AC30E2A2FBA6B00303E54 /* AppleButton.swift */,
+				451AC30C2A2FB96500303E54 /* GoogleButton.swift */,
+				451AC30A2A2FB3E300303E54 /* NaverButton.swift */,
+				450955FB2A2FA2EA00BDAC8E /* KakaoButton.swift */,
+			);
+			path = SubComponents;
 			sourceTree = "<group>";
 		};
 		C42E5F312ADC751658ACEE66 /* Pods */ = {
