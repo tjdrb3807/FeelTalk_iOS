@@ -70,6 +70,8 @@ final class KakaoButton: UIButton {
             $0.height.equalTo((UIScreen.main.bounds.height / 100) * 1.60)
         }
         
+        buttonTitleLabel.snp.makeConstraints { $0.width.equalTo((UIScreen.main.bounds.width / 100) * 37.33) }
+        
         buttonTitleLabel.snp.makeConstraints { $0.height.equalToSuperview() }
         
         addSubview(mainHorizontalStackView)

@@ -23,6 +23,14 @@
 		451AC30B2A2FB3E300303E54 /* NaverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451AC30A2A2FB3E300303E54 /* NaverButton.swift */; };
 		451AC30D2A2FB96500303E54 /* GoogleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451AC30C2A2FB96500303E54 /* GoogleButton.swift */; };
 		451AC30F2A2FBA6B00303E54 /* AppleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451AC30E2A2FBA6B00303E54 /* AppleButton.swift */; };
+		451AC3152A2FC43E00303E54 /* UserInfoConsentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451AC3142A2FC43E00303E54 /* UserInfoConsentViewController.swift */; };
+		452885902A32028F0077AA13 /* InfoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4528858F2A32028F0077AA13 /* InfoContentView.swift */; };
+		452885922A3211440077AA13 /* SensitiveInfoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452885912A3211440077AA13 /* SensitiveInfoContentView.swift */; };
+		452885942A3211520077AA13 /* PersonalInfoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452885932A3211520077AA13 /* PersonalInfoContentView.swift */; };
+		45AC97B52A32333800A2B63D /* PersonalInfoContentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AC97B42A32333800A2B63D /* PersonalInfoContentRow.swift */; };
+		45AC97B82A3249EC00A2B63D /* UserInfoConsetnViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AC97B72A3249EC00A2B63D /* UserInfoConsetnViewModel.swift */; };
+		45AC97BA2A327D9300A2B63D /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AC97B92A327D9300A2B63D /* ViewModelType.swift */; };
+		45AC97BC2A328C0800A2B63D /* UserNicknameInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AC97BB2A328C0800A2B63D /* UserNicknameInputViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +51,14 @@
 		451AC30A2A2FB3E300303E54 /* NaverButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaverButton.swift; sourceTree = "<group>"; };
 		451AC30C2A2FB96500303E54 /* GoogleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleButton.swift; sourceTree = "<group>"; };
 		451AC30E2A2FBA6B00303E54 /* AppleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleButton.swift; sourceTree = "<group>"; };
+		451AC3142A2FC43E00303E54 /* UserInfoConsentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoConsentViewController.swift; sourceTree = "<group>"; };
+		4528858F2A32028F0077AA13 /* InfoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoContentView.swift; sourceTree = "<group>"; };
+		452885912A3211440077AA13 /* SensitiveInfoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensitiveInfoContentView.swift; sourceTree = "<group>"; };
+		452885932A3211520077AA13 /* PersonalInfoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInfoContentView.swift; sourceTree = "<group>"; };
+		45AC97B42A32333800A2B63D /* PersonalInfoContentRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInfoContentRow.swift; sourceTree = "<group>"; };
+		45AC97B72A3249EC00A2B63D /* UserInfoConsetnViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoConsetnViewModel.swift; sourceTree = "<group>"; };
+		45AC97B92A327D9300A2B63D /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
+		45AC97BB2A328C0800A2B63D /* UserNicknameInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNicknameInputViewController.swift; sourceTree = "<group>"; };
 		4ED6E863B57DA25C5FE14B12 /* Pods-FeelTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.debug.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.debug.xcconfig"; sourceTree = "<group>"; };
 		58102C3C5ED2F798A20B785C /* Pods_FeelTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeelTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63683F033A68EBA863CDAFB3 /* Pods-FeelTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.release.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.release.xcconfig"; sourceTree = "<group>"; };
@@ -92,6 +108,7 @@
 			children = (
 				450955E32A2F9CBD00BDAC8E /* AppDelegate.swift */,
 				450955E52A2F9CBD00BDAC8E /* SceneDelegate.swift */,
+				45AC97B92A327D9300A2B63D /* ViewModelType.swift */,
 				450955F92A2FA28D00BDAC8E /* Scenes */,
 				450955EC2A2F9CBE00BDAC8E /* Assets.xcassets */,
 				450955EE2A2F9CBE00BDAC8E /* LaunchScreen.storyboard */,
@@ -104,6 +121,8 @@
 			isa = PBXGroup;
 			children = (
 				450955FA2A2FA2A700BDAC8E /* SignUp */,
+				452885952A3220850077AA13 /* UserInfoConsent */,
+				45AC97BD2A328C1200A2B63D /* UserNicknameInput */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -135,10 +154,79 @@
 			children = (
 				451AC30E2A2FBA6B00303E54 /* AppleButton.swift */,
 				451AC30C2A2FB96500303E54 /* GoogleButton.swift */,
-				451AC30A2A2FB3E300303E54 /* NaverButton.swift */,
 				450955FB2A2FA2EA00BDAC8E /* KakaoButton.swift */,
+				451AC30A2A2FB3E300303E54 /* NaverButton.swift */,
 			);
 			path = SubComponents;
+			sourceTree = "<group>";
+		};
+		452885952A3220850077AA13 /* UserInfoConsent */ = {
+			isa = PBXGroup;
+			children = (
+				451AC3142A2FC43E00303E54 /* UserInfoConsentViewController.swift */,
+				45AC97B72A3249EC00A2B63D /* UserInfoConsetnViewModel.swift */,
+				452885962A32209D0077AA13 /* SubComponents */,
+			);
+			path = UserInfoConsent;
+			sourceTree = "<group>";
+		};
+		452885962A32209D0077AA13 /* SubComponents */ = {
+			isa = PBXGroup;
+			children = (
+				452885972A3220AF0077AA13 /* InfoContent */,
+			);
+			path = SubComponents;
+			sourceTree = "<group>";
+		};
+		452885972A3220AF0077AA13 /* InfoContent */ = {
+			isa = PBXGroup;
+			children = (
+				4528858F2A32028F0077AA13 /* InfoContentView.swift */,
+				452885982A3220BC0077AA13 /* SubComponents */,
+			);
+			path = InfoContent;
+			sourceTree = "<group>";
+		};
+		452885982A3220BC0077AA13 /* SubComponents */ = {
+			isa = PBXGroup;
+			children = (
+				45AC97B22A3231EC00A2B63D /* SensitiveInfoContent */,
+				45AC97B32A3231FD00A2B63D /* PersonalInfoContent */,
+			);
+			path = SubComponents;
+			sourceTree = "<group>";
+		};
+		45AC97B22A3231EC00A2B63D /* SensitiveInfoContent */ = {
+			isa = PBXGroup;
+			children = (
+				452885912A3211440077AA13 /* SensitiveInfoContentView.swift */,
+			);
+			path = SensitiveInfoContent;
+			sourceTree = "<group>";
+		};
+		45AC97B32A3231FD00A2B63D /* PersonalInfoContent */ = {
+			isa = PBXGroup;
+			children = (
+				452885932A3211520077AA13 /* PersonalInfoContentView.swift */,
+				45AC97B62A32334100A2B63D /* SubComponents */,
+			);
+			path = PersonalInfoContent;
+			sourceTree = "<group>";
+		};
+		45AC97B62A32334100A2B63D /* SubComponents */ = {
+			isa = PBXGroup;
+			children = (
+				45AC97B42A32333800A2B63D /* PersonalInfoContentRow.swift */,
+			);
+			path = SubComponents;
+			sourceTree = "<group>";
+		};
+		45AC97BD2A328C1200A2B63D /* UserNicknameInput */ = {
+			isa = PBXGroup;
+			children = (
+				45AC97BB2A328C0800A2B63D /* UserNicknameInputViewController.swift */,
+			);
+			path = UserNicknameInput;
 			sourceTree = "<group>";
 		};
 		C42E5F312ADC751658ACEE66 /* Pods */ = {
@@ -271,11 +359,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				450955F82A2FA04600BDAC8E /* SignUpViewController.swift in Sources */,
+				452885902A32028F0077AA13 /* InfoContentView.swift in Sources */,
+				45AC97B82A3249EC00A2B63D /* UserInfoConsetnViewModel.swift in Sources */,
+				451AC3152A2FC43E00303E54 /* UserInfoConsentViewController.swift in Sources */,
 				450955E42A2F9CBD00BDAC8E /* AppDelegate.swift in Sources */,
+				452885922A3211440077AA13 /* SensitiveInfoContentView.swift in Sources */,
+				45AC97BA2A327D9300A2B63D /* ViewModelType.swift in Sources */,
 				450955E62A2F9CBD00BDAC8E /* SceneDelegate.swift in Sources */,
+				452885942A3211520077AA13 /* PersonalInfoContentView.swift in Sources */,
 				450955FC2A2FA2EA00BDAC8E /* KakaoButton.swift in Sources */,
+				45AC97BC2A328C0800A2B63D /* UserNicknameInputViewController.swift in Sources */,
 				451AC30D2A2FB96500303E54 /* GoogleButton.swift in Sources */,
 				451AC30B2A2FB3E300303E54 /* NaverButton.swift in Sources */,
+				45AC97B52A32333800A2B63D /* PersonalInfoContentRow.swift in Sources */,
 				451AC30F2A2FBA6B00303E54 /* AppleButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

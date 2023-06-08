@@ -32,6 +32,8 @@ final class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.isHidden = true
+        
         self.bindViewModel()
         self.setConfig()
     }
@@ -69,7 +71,9 @@ final class SignUpViewController: UIViewController {
     private func bindViewModel() {
         kakaoButton.rx.tap
             .bind(onNext: {
-                print("tap KakaoButton")
+                let viewController = UserInfoConsentViewController()
+                self.navigationController?.pushViewController(viewController, animated: true)
+                
             }).disposed(by: disposeBag)
     }
 }

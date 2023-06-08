@@ -16,8 +16,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        let rootViewController = SignUpViewController()
-        window?.rootViewController = rootViewController
+        let rootViewController = UserInfoConsentViewController()
+        let navigationController = UINavigationController(rootViewController: rootViewController)
+        window?.rootViewController = navigationController
         window?.backgroundColor = .white
         window?.makeKeyAndVisible()
     }

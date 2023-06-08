@@ -71,6 +71,8 @@ final class NaverButton: UIButton {
             $0.height.equalTo((UIScreen.main.bounds.height / 100) * 1.60)
         }
         
+        buttonTitleLabel.snp.makeConstraints { $0.width.equalTo((UIScreen.main.bounds.width / 100) * 29.86) }
+        
         buttonTitleLabel.snp.makeConstraints { $0.height.equalToSuperview() }
         
         addSubview(mainHorizontalStackView)
