@@ -34,6 +34,9 @@ PODS:
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
+  - RxKeyboard (2.0.0):
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
   - RxRelay (6.5.0):
     - RxSwift (= 6.5.0)
   - RxSwift (6.5.0)
@@ -47,6 +50,7 @@ DEPENDENCIES:
   - KakaoSDKUser
   - naveridlogin-sdk-ios
   - RxCocoa (= 6.5.0)
+  - RxKeyboard
   - RxSwift (= 6.5.0)
   - SnapKit (~> 5.6.0)
 
@@ -64,6 +68,7 @@ SPEC REPOS:
     - KakaoSDKUser
     - naveridlogin-sdk-ios
     - RxCocoa
+    - RxKeyboard
     - RxRelay
     - RxSwift
     - SnapKit
@@ -81,10 +86,11 @@ SPEC CHECKSUMS:
   KakaoSDKUser: a997ca5c4c18ece2ab30646ff74841bc29d4399d
   naveridlogin-sdk-ios: cdd34e3585a3d5aaf37c1d84c1f41faba4a25d1a
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxKeyboard: 4f5863f43b4ff0cbb2a20b94688d6b80c8a43c14
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
 
-PODFILE CHECKSUM: 8d99abaf33caa9ce370ffc8b2cfd238093b4dc68
+PODFILE CHECKSUM: a201a77dcb9c3ceb92360fb6b5a84c5af01db4f8
 
 COCOAPODS: 1.12.1

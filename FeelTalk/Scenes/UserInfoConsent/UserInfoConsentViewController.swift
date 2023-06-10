@@ -90,9 +90,10 @@ final class UserInfoConsentViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.setConfig()
+        
+        self.setNavigationBarAttribute()
         self.bindViewModel()
+        self.setConfig()
     }
     
     private func bindViewModel() {
@@ -137,10 +138,6 @@ final class UserInfoConsentViewController: UIViewController {
             }).disposed(by: disposeBag)
     }
     
-    private func addPersonalInfoContentView() {
-        infoContentVerticalStackView.addArrangedSubview(personalInfoView)
-    }
-    
     private func setConfig() {
         [titleLabel, subscriptLabel].forEach { labelVerticalStackView.addArrangedSubview($0) }
         
@@ -170,6 +167,15 @@ final class UserInfoConsentViewController: UIViewController {
             $0.leading.trailing.equalToSuperview().inset((UIScreen.main.bounds.width / 100) * 5.33)
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
+    }
+    
+    private func addPersonalInfoContentView() {
+        infoContentVerticalStackView.addArrangedSubview(personalInfoView)
+    }
+    
+    private func setNavigationBarAttribute(){
+        navigationController?.navigationBar.isHidden = false
+        navigationItem.title = "회원가입"
     }
 }
 
