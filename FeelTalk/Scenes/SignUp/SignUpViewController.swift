@@ -69,12 +69,7 @@ final class SignUpViewController: UIViewController {
     }
     
     private func bindViewModel() {
-        kakaoButton.rx.tap
-            .bind(onNext: {
-                let viewController = UserInfoConsentViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
-                
-            }).disposed(by: disposeBag)
+        
     }
 }
 

@@ -10,6 +10,7 @@ import SnapKit
 
 enum SuperViewTypeOfProfileImage {
     case home
+    case question
 }
 
 final class CommonProfileImageView: UIImageView {
@@ -33,7 +34,9 @@ final class CommonProfileImageView: UIImageView {
         
         switch superViewType {
         case .home:
-            layer.cornerRadius = ((UIScreen.main.bounds.width / 100) * 10.66) / 2
+            layer.cornerRadius = ((UIScreen.main.bounds.height / 100) * 4.92) / 2
+        case .question:
+            layer.cornerRadius = ((UIScreen.main.bounds.height / 100) * 3.94) / 2
         }
         
         translatesAutoresizingMaskIntoConstraints = false
