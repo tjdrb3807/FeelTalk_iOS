@@ -10,7 +10,15 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+enum SocialLoginType {
+    case kakao
+    case naver
+    case google
+    case apple
+}
+
 final class SignUpViewController: UIViewController {
+    private let viewModel = SignUpViewModel()
     private let disposeBag = DisposeBag()
     
     private lazy var buttonVerticalStackView: UIStackView = {
@@ -20,6 +28,7 @@ final class SignUpViewController: UIViewController {
         stackView.distribution = .fill
         stackView.spacing = (UIScreen.main.bounds.height / 100) * 1.23
         stackView.backgroundColor = .clear
+        stackView.isUserInteractionEnabled = true
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
         return stackView
@@ -36,6 +45,15 @@ final class SignUpViewController: UIViewController {
         
         self.bindViewModel()
         self.setConfig()
+    }
+    
+    private func bindViewModel() {
+        let input = SignUpViewModel.Input(tapKakaoButton: kakaoButton.rx.tap.map { SocialLoginType.kakao },
+                                          tapNaverButton: naverButton.rx.tap.map { SocialLoginType.naver },
+                                          tapGoogleButton: googleButton.rx.tap.map { SocialLoginType.google },
+                                          tapAppleButton: appleButton.rx.tap.map { SocialLoginType.apple })
+        
+        let output = viewModel.transform(input: input)
     }
     
     private func setConfig() {
@@ -67,10 +85,6 @@ final class SignUpViewController: UIViewController {
             $0.center.equalToSuperview()
         }
     }
-    
-    private func bindViewModel() {
-        
-    }
 }
 
 #if DEBUG
@@ -80,6 +94,7 @@ import SwiftUI
 struct SignUpViewController_Previews: PreviewProvider {
     static var previews: some View {
         SignUpViewController_Presentable()
+            .edgesIgnoringSafeArea(.all)
     }
     
     struct SignUpViewController_Presentable: UIViewControllerRepresentable {
