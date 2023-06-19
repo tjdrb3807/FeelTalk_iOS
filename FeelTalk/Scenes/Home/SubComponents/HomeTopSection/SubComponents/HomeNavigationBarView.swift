@@ -23,7 +23,7 @@ final class HomeNavigationBarView: UIView {
     
     private lazy var logoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo_feeltalk")
+        imageView.image = UIImage(named: "logo_white_feeltalk")
         imageView.backgroundColor = .clear
         imageView.translatesAutoresizingMaskIntoConstraints = false
         

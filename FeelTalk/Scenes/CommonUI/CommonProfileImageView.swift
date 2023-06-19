@@ -6,11 +6,11 @@
 //
 
 import UIKit
-import SnapKit
 
 enum SuperViewTypeOfProfileImage {
     case home
     case question
+    case challenge
 }
 
 final class CommonProfileImageView: UIImageView {
@@ -28,18 +28,20 @@ final class CommonProfileImageView: UIImageView {
     }
     
     private func setAttribute() {
-        backgroundColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1.0)
-        layer.borderColor = UIColor.white.cgColor
+        backgroundColor = UIColor(named: "gray_400")
         layer.borderWidth = 2.0
         
         switch superViewType {
         case .home:
             layer.cornerRadius = ((UIScreen.main.bounds.height / 100) * 4.92) / 2
+            layer.borderColor = UIColor.white.cgColor
         case .question:
             layer.cornerRadius = ((UIScreen.main.bounds.height / 100) * 3.94) / 2
+            layer.borderColor = UIColor.white.cgColor
+        case .challenge:
+            layer.cornerRadius = ((UIScreen.main.bounds.height / 100) * 5.91) / 2
+            layer.borderColor = UIColor(named: "gray_300")?.cgColor
         }
-        
-        translatesAutoresizingMaskIntoConstraints = false
     }
 }
 

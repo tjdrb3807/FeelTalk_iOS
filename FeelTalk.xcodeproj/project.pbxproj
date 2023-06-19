@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2BDBEEB1707AA0E7E54ED0E7 /* Pods_FeelTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58102C3C5ED2F798A20B785C /* Pods_FeelTalk.framework */; };
+		450416E82A3C382600BEED0A /* ChallengeViewTabBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450416E72A3C382600BEED0A /* ChallengeViewTabBarButton.swift */; };
+		450416EA2A3C3BAC00BEED0A /* ChallengeViewTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450416E92A3C3BAC00BEED0A /* ChallengeViewTabBar.swift */; };
+		450416EC2A3C420500BEED0A /* ChallengeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450416EB2A3C420500BEED0A /* ChallengeViewController.swift */; };
 		450955E42A2F9CBD00BDAC8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450955E32A2F9CBD00BDAC8E /* AppDelegate.swift */; };
 		450955E62A2F9CBD00BDAC8E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450955E52A2F9CBD00BDAC8E /* SceneDelegate.swift */; };
 		450955ED2A2F9CBE00BDAC8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 450955EC2A2F9CBE00BDAC8E /* Assets.xcassets */; };
@@ -31,6 +34,8 @@
 		452885902A32028F0077AA13 /* InfoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4528858F2A32028F0077AA13 /* InfoContentView.swift */; };
 		452885922A3211440077AA13 /* SensitiveInfoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452885912A3211440077AA13 /* SensitiveInfoContentView.swift */; };
 		452885942A3211520077AA13 /* PersonalInfoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452885932A3211520077AA13 /* PersonalInfoContentView.swift */; };
+		454BA2E12A3DDF6F0001AF32 /* ChallengeViewProfileImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454BA2E02A3DDF6F0001AF32 /* ChallengeViewProfileImageButton.swift */; };
+		454BA2E32A3DE0F00001AF32 /* ChallengeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454BA2E22A3DE0F00001AF32 /* ChallengeCollectionViewCell.swift */; };
 		454E85EF2A3604870043B745 /* HomeNavigationBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E85EE2A3604870043B745 /* HomeNavigationBarView.swift */; };
 		454E85F62A36091F0043B745 /* HomeCoupleProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E85F52A36091F0043B745 /* HomeCoupleProfileImageView.swift */; };
 		454E85FA2A360A180043B745 /* HomeCoupleInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E85F92A360A180043B745 /* HomeCoupleInfoView.swift */; };
@@ -44,6 +49,8 @@
 		457441D62A369F490060C9B4 /* QuestionViewTopSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457441D52A369F490060C9B4 /* QuestionViewTopSection.swift */; };
 		457441D82A36A0210060C9B4 /* QuestionCoupleInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457441D72A36A0210060C9B4 /* QuestionCoupleInfoView.swift */; };
 		45807D982A32F8B800EBBD25 /* CoupleCodeNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45807D972A32F8B800EBBD25 /* CoupleCodeNoteView.swift */; };
+		458454F22A3B4D82005DF429 /* DoneChallengeCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458454F12A3B4D82005DF429 /* DoneChallengeCollectionViewController.swift */; };
+		458454F42A3B4D99005DF429 /* WantChallengeCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458454F32A3B4D99005DF429 /* WantChallengeCollectionViewController.swift */; };
 		4591AD192A37108E0029D3D8 /* QuestionAnswerSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591AD182A37108E0029D3D8 /* QuestionAnswerSectionView.swift */; };
 		4591AD1B2A371C690029D3D8 /* QuestionViewBottomSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591AD1A2A371C690029D3D8 /* QuestionViewBottomSection.swift */; };
 		4591AD202A3721A00029D3D8 /* QuestionViewBottomSectionTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591AD1F2A3721A00029D3D8 /* QuestionViewBottomSectionTitle.swift */; };
@@ -54,6 +61,8 @@
 		4591AD2E2A3763B10029D3D8 /* QuestionInputViewMyAnswerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591AD2D2A3763B10029D3D8 /* QuestionInputViewMyAnswerSection.swift */; };
 		4591AD302A3763C90029D3D8 /* QuestionInputViewPartnerAnswerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591AD2F2A3763C90029D3D8 /* QuestionInputViewPartnerAnswerSection.swift */; };
 		4591AD322A376E300029D3D8 /* QuestionInputViewAnswerSuccessButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591AD312A376E300029D3D8 /* QuestionInputViewAnswerSuccessButton.swift */; };
+		45A2B3F12A39475400CD3476 /* ChallengeViewNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A2B3F02A39475400CD3476 /* ChallengeViewNavigationBar.swift */; };
+		45A2B3F52A39478800CD3476 /* ChallengeViewCountLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A2B3F42A39478800CD3476 /* ChallengeViewCountLabel.swift */; };
 		45AC8A3D2A34F208001CA953 /* CommonProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AC8A3C2A34F207001CA953 /* CommonProfileImageView.swift */; };
 		45AC8A422A34F5E7001CA953 /* HomeMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AC8A412A34F5E7001CA953 /* HomeMessageView.swift */; };
 		45AC97B52A32333800A2B63D /* PersonalInfoContentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AC97B42A32333800A2B63D /* PersonalInfoContentRow.swift */; };
@@ -66,6 +75,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		450416E72A3C382600BEED0A /* ChallengeViewTabBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeViewTabBarButton.swift; sourceTree = "<group>"; };
+		450416E92A3C3BAC00BEED0A /* ChallengeViewTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeViewTabBar.swift; sourceTree = "<group>"; };
+		450416EB2A3C420500BEED0A /* ChallengeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeViewController.swift; sourceTree = "<group>"; };
 		450955E02A2F9CBD00BDAC8E /* FeelTalk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeelTalk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		450955E32A2F9CBD00BDAC8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		450955E52A2F9CBD00BDAC8E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +103,8 @@
 		4528858F2A32028F0077AA13 /* InfoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoContentView.swift; sourceTree = "<group>"; };
 		452885912A3211440077AA13 /* SensitiveInfoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensitiveInfoContentView.swift; sourceTree = "<group>"; };
 		452885932A3211520077AA13 /* PersonalInfoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInfoContentView.swift; sourceTree = "<group>"; };
+		454BA2E02A3DDF6F0001AF32 /* ChallengeViewProfileImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeViewProfileImageButton.swift; sourceTree = "<group>"; };
+		454BA2E22A3DE0F00001AF32 /* ChallengeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeCollectionViewCell.swift; sourceTree = "<group>"; };
 		454E85EE2A3604870043B745 /* HomeNavigationBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNavigationBarView.swift; sourceTree = "<group>"; };
 		454E85F52A36091F0043B745 /* HomeCoupleProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoupleProfileImageView.swift; sourceTree = "<group>"; };
 		454E85F92A360A180043B745 /* HomeCoupleInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoupleInfoView.swift; sourceTree = "<group>"; };
@@ -104,6 +118,8 @@
 		457441D52A369F490060C9B4 /* QuestionViewTopSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewTopSection.swift; sourceTree = "<group>"; };
 		457441D72A36A0210060C9B4 /* QuestionCoupleInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCoupleInfoView.swift; sourceTree = "<group>"; };
 		45807D972A32F8B800EBBD25 /* CoupleCodeNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleCodeNoteView.swift; sourceTree = "<group>"; };
+		458454F12A3B4D82005DF429 /* DoneChallengeCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoneChallengeCollectionViewController.swift; sourceTree = "<group>"; };
+		458454F32A3B4D99005DF429 /* WantChallengeCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WantChallengeCollectionViewController.swift; sourceTree = "<group>"; };
 		4591AD182A37108E0029D3D8 /* QuestionAnswerSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionAnswerSectionView.swift; sourceTree = "<group>"; };
 		4591AD1A2A371C690029D3D8 /* QuestionViewBottomSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewBottomSection.swift; sourceTree = "<group>"; };
 		4591AD1F2A3721A00029D3D8 /* QuestionViewBottomSectionTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewBottomSectionTitle.swift; sourceTree = "<group>"; };
@@ -114,6 +130,8 @@
 		4591AD2D2A3763B10029D3D8 /* QuestionInputViewMyAnswerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionInputViewMyAnswerSection.swift; sourceTree = "<group>"; };
 		4591AD2F2A3763C90029D3D8 /* QuestionInputViewPartnerAnswerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionInputViewPartnerAnswerSection.swift; sourceTree = "<group>"; };
 		4591AD312A376E300029D3D8 /* QuestionInputViewAnswerSuccessButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionInputViewAnswerSuccessButton.swift; sourceTree = "<group>"; };
+		45A2B3F02A39475400CD3476 /* ChallengeViewNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeViewNavigationBar.swift; sourceTree = "<group>"; };
+		45A2B3F42A39478800CD3476 /* ChallengeViewCountLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeViewCountLabel.swift; sourceTree = "<group>"; };
 		45AC8A3C2A34F207001CA953 /* CommonProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonProfileImageView.swift; sourceTree = "<group>"; };
 		45AC8A412A34F5E7001CA953 /* HomeMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMessageView.swift; sourceTree = "<group>"; };
 		45AC97B42A32333800A2B63D /* PersonalInfoContentRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInfoContentRow.swift; sourceTree = "<group>"; };
@@ -193,7 +211,7 @@
 				45AC8A3E2A34F20D001CA953 /* CommonUI */,
 				457441D12A368CD60060C9B4 /* Question */,
 				4591AD342A37709E0029D3D8 /* QuestionInput */,
-				4591AD332A376FEC0029D3D8 /* SubComponents */,
+				454BA2DB2A3DDB3D0001AF32 /* Challenge */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -266,6 +284,54 @@
 				45AC97B32A3231FD00A2B63D /* PersonalInfoContent */,
 			);
 			path = SubComponents;
+			sourceTree = "<group>";
+		};
+		454BA2DB2A3DDB3D0001AF32 /* Challenge */ = {
+			isa = PBXGroup;
+			children = (
+				450416EB2A3C420500BEED0A /* ChallengeViewController.swift */,
+				454BA2DC2A3DDB4B0001AF32 /* SubComponents */,
+			);
+			path = Challenge;
+			sourceTree = "<group>";
+		};
+		454BA2DC2A3DDB4B0001AF32 /* SubComponents */ = {
+			isa = PBXGroup;
+			children = (
+				454BA2DF2A3DDF540001AF32 /* NavigationBar */,
+				45A2B3F42A39478800CD3476 /* ChallengeViewCountLabel.swift */,
+				454BA2DD2A3DDB5E0001AF32 /* TabBar */,
+			);
+			path = SubComponents;
+			sourceTree = "<group>";
+		};
+		454BA2DD2A3DDB5E0001AF32 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				450416E92A3C3BAC00BEED0A /* ChallengeViewTabBar.swift */,
+				454BA2DE2A3DDB690001AF32 /* SubComponents */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
+		454BA2DE2A3DDB690001AF32 /* SubComponents */ = {
+			isa = PBXGroup;
+			children = (
+				450416E72A3C382600BEED0A /* ChallengeViewTabBarButton.swift */,
+				458454F32A3B4D99005DF429 /* WantChallengeCollectionViewController.swift */,
+				458454F12A3B4D82005DF429 /* DoneChallengeCollectionViewController.swift */,
+				454BA2E22A3DE0F00001AF32 /* ChallengeCollectionViewCell.swift */,
+			);
+			path = SubComponents;
+			sourceTree = "<group>";
+		};
+		454BA2DF2A3DDF540001AF32 /* NavigationBar */ = {
+			isa = PBXGroup;
+			children = (
+				45A2B3F02A39475400CD3476 /* ChallengeViewNavigationBar.swift */,
+				454BA2E02A3DDF6F0001AF32 /* ChallengeViewProfileImageButton.swift */,
+			);
+			path = NavigationBar;
 			sourceTree = "<group>";
 		};
 		454E85F02A3608770043B745 /* SubComponents */ = {
@@ -430,6 +496,7 @@
 			isa = PBXGroup;
 			children = (
 				4591AD272A3750B90029D3D8 /* QuestionInputViewController.swift */,
+				4591AD332A376FEC0029D3D8 /* SubComponents */,
 			);
 			path = QuestionInput;
 			sourceTree = "<group>";
@@ -640,19 +707,24 @@
 			files = (
 				450955F82A2FA04600BDAC8E /* SignUpViewController.swift in Sources */,
 				45AC8A3D2A34F208001CA953 /* CommonProfileImageView.swift in Sources */,
+				450416EA2A3C3BAC00BEED0A /* ChallengeViewTabBar.swift in Sources */,
 				45807D982A32F8B800EBBD25 /* CoupleCodeNoteView.swift in Sources */,
 				45AC8A422A34F5E7001CA953 /* HomeMessageView.swift in Sources */,
 				452885902A32028F0077AA13 /* InfoContentView.swift in Sources */,
 				45AC97B82A3249EC00A2B63D /* UserInfoConsetnViewModel.swift in Sources */,
+				458454F42A3B4D99005DF429 /* WantChallengeCollectionViewController.swift in Sources */,
 				4591AD302A3763C90029D3D8 /* QuestionInputViewPartnerAnswerSection.swift in Sources */,
 				4591AD2E2A3763B10029D3D8 /* QuestionInputViewMyAnswerSection.swift in Sources */,
+				450416E82A3C382600BEED0A /* ChallengeViewTabBarButton.swift in Sources */,
 				457441D32A368D590060C9B4 /* QuestionViewNavigationBar.swift in Sources */,
+				450416EC2A3C420500BEED0A /* ChallengeViewController.swift in Sources */,
 				451AC3152A2FC43E00303E54 /* UserInfoConsentViewController.swift in Sources */,
 				45C1693F2A37AD6A00B5506E /* KakaoRepository.swift in Sources */,
 				454E85F62A36091F0043B745 /* HomeCoupleProfileImageView.swift in Sources */,
 				4591AD1B2A371C690029D3D8 /* QuestionViewBottomSection.swift in Sources */,
 				454E86052A3632ED0043B745 /* HomeCoupleSignalView.swift in Sources */,
 				454E85FA2A360A180043B745 /* HomeCoupleInfoView.swift in Sources */,
+				45A2B3F12A39475400CD3476 /* ChallengeViewNavigationBar.swift in Sources */,
 				457441D82A36A0210060C9B4 /* QuestionCoupleInfoView.swift in Sources */,
 				45B508AD2A34E68B00DBAF92 /* HomeViewController.swift in Sources */,
 				457441D62A369F490060C9B4 /* QuestionViewTopSection.swift in Sources */,
@@ -662,16 +734,20 @@
 				454E86022A3630CE0043B745 /* HomeBottomSectionView.swift in Sources */,
 				457441D02A368CD00060C9B4 /* QuestionViewController.swift in Sources */,
 				4591AD282A3750B90029D3D8 /* QuestionInputViewController.swift in Sources */,
+				45A2B3F52A39478800CD3476 /* ChallengeViewCountLabel.swift in Sources */,
 				45AC97BA2A327D9300A2B63D /* ViewModelType.swift in Sources */,
 				450955E62A2F9CBD00BDAC8E /* SceneDelegate.swift in Sources */,
 				4591AD262A3724AB0029D3D8 /* QuestionListCell.swift in Sources */,
 				4523F3B52A32AEC000B28EDC /* CoupleCodeCreateViewConroller.swift in Sources */,
+				454BA2E32A3DE0F00001AF32 /* ChallengeCollectionViewCell.swift in Sources */,
 				450A851B2A335219008B5DFC /* NoteBackgroundView.swift in Sources */,
 				4523F3B32A32A0D100B28EDC /* UserNicknameInputViewModel.swift in Sources */,
+				458454F22A3B4D82005DF429 /* DoneChallengeCollectionViewController.swift in Sources */,
 				454E85FC2A3615B60043B745 /* HomeQuestionArrivedLabel.swift in Sources */,
 				4591AD232A3724170029D3D8 /* QuestionViewBottomSectionList.swift in Sources */,
 				454E860C2A363E730043B745 /* HomeQuestionAnswerButton.swift in Sources */,
 				4591AD202A3721A00029D3D8 /* QuestionViewBottomSectionTitle.swift in Sources */,
+				454BA2E12A3DDF6F0001AF32 /* ChallengeViewProfileImageButton.swift in Sources */,
 				451231E82A34B07B00EF3528 /* HomeTopSectionView.swift in Sources */,
 				4591AD2C2A3752A00029D3D8 /* QuestionInputViewTitleLabel.swift in Sources */,
 				4591AD192A37108E0029D3D8 /* QuestionAnswerSectionView.swift in Sources */,
