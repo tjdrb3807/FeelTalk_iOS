@@ -50,8 +50,6 @@ final class SignUpViewModel: ViewModelType {
             }
         }).disposed(by: disposeBag)
         
-        
-        
         return Output()
     }
     

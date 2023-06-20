@@ -44,6 +44,7 @@
 		454E86052A3632ED0043B745 /* HomeCoupleSignalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E86042A3632ED0043B745 /* HomeCoupleSignalView.swift */; };
 		454E860A2A36348E0043B745 /* HomeSignalButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E86092A36348E0043B745 /* HomeSignalButton.swift */; };
 		454E860C2A363E730043B745 /* HomeQuestionAnswerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E860B2A363E730043B745 /* HomeQuestionAnswerButton.swift */; };
+		4572A8AC2A41A54D00E69BF5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4572A8AB2A41A54D00E69BF5 /* GoogleService-Info.plist */; };
 		457441D02A368CD00060C9B4 /* QuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457441CF2A368CCF0060C9B4 /* QuestionViewController.swift */; };
 		457441D32A368D590060C9B4 /* QuestionViewNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457441D22A368D590060C9B4 /* QuestionViewNavigationBar.swift */; };
 		457441D62A369F490060C9B4 /* QuestionViewTopSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457441D52A369F490060C9B4 /* QuestionViewTopSection.swift */; };
@@ -113,6 +114,8 @@
 		454E86042A3632ED0043B745 /* HomeCoupleSignalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoupleSignalView.swift; sourceTree = "<group>"; };
 		454E86092A36348E0043B745 /* HomeSignalButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSignalButton.swift; sourceTree = "<group>"; };
 		454E860B2A363E730043B745 /* HomeQuestionAnswerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeQuestionAnswerButton.swift; sourceTree = "<group>"; };
+		4572A8AB2A41A54D00E69BF5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4572A8AD2A41B9DD00E69BF5 /* FeelTalk.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FeelTalk.entitlements; sourceTree = "<group>"; };
 		457441CF2A368CCF0060C9B4 /* QuestionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewController.swift; sourceTree = "<group>"; };
 		457441D22A368D590060C9B4 /* QuestionViewNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewNavigationBar.swift; sourceTree = "<group>"; };
 		457441D52A369F490060C9B4 /* QuestionViewTopSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewTopSection.swift; sourceTree = "<group>"; };
@@ -188,6 +191,7 @@
 		450955E22A2F9CBD00BDAC8E /* FeelTalk */ = {
 			isa = PBXGroup;
 			children = (
+				4572A8AD2A41B9DD00E69BF5 /* FeelTalk.entitlements */,
 				450955E32A2F9CBD00BDAC8E /* AppDelegate.swift */,
 				450955E52A2F9CBD00BDAC8E /* SceneDelegate.swift */,
 				45C169402A37AD7000B5506E /* Data */,
@@ -196,6 +200,7 @@
 				450955EC2A2F9CBE00BDAC8E /* Assets.xcassets */,
 				450955EE2A2F9CBE00BDAC8E /* LaunchScreen.storyboard */,
 				450955F12A2F9CBE00BDAC8E /* Info.plist */,
+				4572A8AB2A41A54D00E69BF5 /* GoogleService-Info.plist */,
 			);
 			path = FeelTalk;
 			sourceTree = "<group>";
@@ -647,6 +652,7 @@
 			files = (
 				450955F02A2F9CBE00BDAC8E /* LaunchScreen.storyboard in Resources */,
 				450956062A2FA6C900BDAC8E /* pretendard-medium.otf in Resources */,
+				4572A8AC2A41A54D00E69BF5 /* GoogleService-Info.plist in Resources */,
 				450956042A2FA6C900BDAC8E /* pretendard-semi_bold.otf in Resources */,
 				450956052A2FA6C900BDAC8E /* pretendard-regular.ttf in Resources */,
 				450956082A2FA6C900BDAC8E /* pretendard-bold.ttf in Resources */,
@@ -898,6 +904,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FeelTalk/FeelTalk.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -930,6 +937,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FeelTalk/FeelTalk.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;

@@ -16,4 +16,5 @@ target 'FeelTalk' do
   pod 'KakaoSDKShare'
   pod 'naveridlogin-sdk-ios'
   pod 'GoogleSignIn'
+  pod 'FirebaseMessaging'
 end
