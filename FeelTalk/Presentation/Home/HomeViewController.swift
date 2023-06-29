@@ -42,6 +42,11 @@ final class HomeViewController: UIViewController {
             .bind(onNext: {
                 print("hello")
             }).disposed(by: disposeBag)
+        
+        topSectionView.homeNavigationBar.pushChatViewButton.rx.tap
+            .bind(onNext: {
+                self.navigationController?.present(ChatViewController().self, animated: true)
+            }).disposed(by: disposeBag)
     }
     
     private func setConfig() {

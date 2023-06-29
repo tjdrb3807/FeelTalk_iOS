@@ -8,10 +8,8 @@
 import UIKit
 import KakaoSDKCommon
 import KakaoSDKAuth
-
 import FirebaseCore
 import FirebaseMessaging
-
 import UserNotifications
 
 @main

@@ -11,6 +11,7 @@ enum SuperViewTypeOfProfileImage {
     case home
     case question
     case challenge
+    case chat
 }
 
 final class CommonProfileImageView: UIImageView {
@@ -40,6 +41,9 @@ final class CommonProfileImageView: UIImageView {
             layer.borderColor = UIColor.white.cgColor
         case .challenge:
             layer.cornerRadius = ((UIScreen.main.bounds.height / 100) * 5.91) / 2
+            layer.borderColor = UIColor(named: "gray_300")?.cgColor
+        case .chat:
+            layer.cornerRadius = ((UIScreen.main.bounds.width / 100) * 7.46) / 2
             layer.borderColor = UIColor(named: "gray_300")?.cgColor
         }
     }

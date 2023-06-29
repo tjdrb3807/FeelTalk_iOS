@@ -7,17 +7,19 @@
 
 import UIKit
 import KakaoSDKAuth
+import RxSwift
+import RxCocoa
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    private let disposeBag = DisposeBag()
 
     var window: UIWindow?
-
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        let rootViewController = SignUpViewController()
+        let rootViewController = HomeViewController()
         let navigationController = UINavigationController(rootViewController: rootViewController)
         window?.rootViewController = navigationController
         window?.backgroundColor = .white
@@ -60,7 +62,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-
 }
 
