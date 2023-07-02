@@ -8,9 +8,17 @@
 import Foundation
 import Alamofire
 import RxSwift
+import RxCocoa
 
 class ChatRepositroy {
     private let disposeBag = DisposeBag()
+    static let shared = ChatRepositroy()
+    
+    let chatRoomStatus = BehaviorRelay<Bool>(value: false)
+    
+    func toggleChatRoomStatue(isInChat: Bool) {
+        
+    }
 }
 
 extension ChatRepositroy {

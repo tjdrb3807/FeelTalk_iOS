@@ -33,6 +33,7 @@ class BaseViewController: UIViewController {
         
         self.bindViewModel()
         self.setAttribute()
+        self.addSubViews()
         self.setConfig()
     
         self.view.addSubview(self.keyboardWrapperView)
@@ -45,7 +46,8 @@ class BaseViewController: UIViewController {
             .disposed(by: disposeBag)
     
         self.keyboardWrapperView.snp.makeConstraints {
-            $0.left.right.bottom.equalToSuperview()
+            $0.left.right.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(0.0).priority(.high)
         }
     
@@ -69,13 +71,15 @@ class BaseViewController: UIViewController {
   
     private func updateKeyboardHeight(_ height: CGFloat) {
         self.keyboardWrapperView.snp.updateConstraints {
-            $0.height.equalTo(self.keyboardHeight.value).priority(.high)
+            $0.height.equalTo(self.keyboardHeight.value - 32).priority(.high)
         }
     }
     
     func bindViewModel() {}
     
     func setAttribute() {}
+    
+    func addSubViews() {}
     
     func setConfig() {}
 }

@@ -53,5 +53,7 @@
 	<string>${KAKAO_NATIVE_APP_KEY}</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>마이크 이용 권한 요청 메세지</string>
 </dict>
 </plist>

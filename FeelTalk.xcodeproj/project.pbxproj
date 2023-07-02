@@ -73,9 +73,7 @@
 		4591AD302A3763C90029D3D8 /* QuestionInputViewPartnerAnswerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591AD2F2A3763C90029D3D8 /* QuestionInputViewPartnerAnswerSection.swift */; };
 		4591AD322A376E300029D3D8 /* QuestionInputViewAnswerSuccessButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591AD312A376E300029D3D8 /* QuestionInputViewAnswerSuccessButton.swift */; };
 		459794D22A447E090043166C /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459794D12A447E090043166C /* String.swift */; };
-		459BD9AE2A47459C00CB4738 /* ChatViewTopSectionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459BD9AD2A47459C00CB4738 /* ChatViewTopSectionBar.swift */; };
 		459BD9B22A47469300CB4738 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459BD9B12A47469300CB4738 /* BaseView.swift */; };
-		459BD9B82A4857B600CB4738 /* ChatViewBottomSectionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459BD9B72A4857B600CB4738 /* ChatViewBottomSectionBar.swift */; };
 		45A2B3F12A39475400CD3476 /* ChallengeViewNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A2B3F02A39475400CD3476 /* ChallengeViewNavigationBar.swift */; };
 		45A2B3F52A39478800CD3476 /* ChallengeViewCountLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A2B3F42A39478800CD3476 /* ChallengeViewCountLabel.swift */; };
 		45AC8A3D2A34F208001CA953 /* CommonProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AC8A3C2A34F207001CA953 /* CommonProfileImageView.swift */; };
@@ -101,6 +99,7 @@
 		45D4AF4F2A49396E00035654 /* ChatTextMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D4AF4E2A49396E00035654 /* ChatTextMessageCell.swift */; };
 		45E9EF4D2A488B4200E03817 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9EF4C2A488B4200E03817 /* BaseViewController.swift */; };
 		45E9EF4F2A488BA100E03817 /* PassThroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9EF4E2A488BA100E03817 /* PassThroughView.swift */; };
+		45FF8CE22A518FEE002ED491 /* ChatViewConstraintsNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FF8CE12A518FEE002ED491 /* ChatViewConstraintsNameSpace.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -172,9 +171,7 @@
 		4591AD2F2A3763C90029D3D8 /* QuestionInputViewPartnerAnswerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionInputViewPartnerAnswerSection.swift; sourceTree = "<group>"; };
 		4591AD312A376E300029D3D8 /* QuestionInputViewAnswerSuccessButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionInputViewAnswerSuccessButton.swift; sourceTree = "<group>"; };
 		459794D12A447E090043166C /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
-		459BD9AD2A47459C00CB4738 /* ChatViewTopSectionBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewTopSectionBar.swift; sourceTree = "<group>"; };
 		459BD9B12A47469300CB4738 /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
-		459BD9B72A4857B600CB4738 /* ChatViewBottomSectionBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewBottomSectionBar.swift; sourceTree = "<group>"; };
 		45A2B3F02A39475400CD3476 /* ChallengeViewNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeViewNavigationBar.swift; sourceTree = "<group>"; };
 		45A2B3F42A39478800CD3476 /* ChallengeViewCountLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeViewCountLabel.swift; sourceTree = "<group>"; };
 		45AC8A3C2A34F207001CA953 /* CommonProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonProfileImageView.swift; sourceTree = "<group>"; };
@@ -200,6 +197,7 @@
 		45D4AF4E2A49396E00035654 /* ChatTextMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTextMessageCell.swift; sourceTree = "<group>"; };
 		45E9EF4C2A488B4200E03817 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		45E9EF4E2A488BA100E03817 /* PassThroughView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughView.swift; sourceTree = "<group>"; };
+		45FF8CE12A518FEE002ED491 /* ChatViewConstraintsNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewConstraintsNameSpace.swift; sourceTree = "<group>"; };
 		4ED6E863B57DA25C5FE14B12 /* Pods-FeelTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.debug.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.debug.xcconfig"; sourceTree = "<group>"; };
 		58102C3C5ED2F798A20B785C /* Pods_FeelTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeelTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63683F033A68EBA863CDAFB3 /* Pods-FeelTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.release.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.release.xcconfig"; sourceTree = "<group>"; };
@@ -356,6 +354,7 @@
 			isa = PBXGroup;
 			children = (
 				4537EEAB2A442C2E00A9DEB8 /* ChatViewController.swift */,
+				45FF8CE12A518FEE002ED491 /* ChatViewConstraintsNameSpace.swift */,
 				457531BF2A4B26F10021080F /* ChatViewModel.swift */,
 				457531C12A4B26FB0021080F /* SubComponents */,
 			);
@@ -563,8 +562,6 @@
 		457531C12A4B26FB0021080F /* SubComponents */ = {
 			isa = PBXGroup;
 			children = (
-				459BD9AD2A47459C00CB4738 /* ChatViewTopSectionBar.swift */,
-				459BD9B72A4857B600CB4738 /* ChatViewBottomSectionBar.swift */,
 				45D4AF4E2A49396E00035654 /* ChatTextMessageCell.swift */,
 				4562474C2A4B9B650053B3F4 /* TestChatModel.swift */,
 			);
@@ -948,7 +945,6 @@
 				4591AD262A3724AB0029D3D8 /* QuestionListCell.swift in Sources */,
 				45AF0D542A4D5AD90041AE81 /* ShareChallengeChatResponseDTO.swift in Sources */,
 				4523F3B52A32AEC000B28EDC /* CoupleCodeCreateViewConroller.swift in Sources */,
-				459BD9AE2A47459C00CB4738 /* ChatViewTopSectionBar.swift in Sources */,
 				454BA2E32A3DE0F00001AF32 /* ChallengeCollectionViewCell.swift in Sources */,
 				450A851B2A335219008B5DFC /* NoteBackgroundView.swift in Sources */,
 				4523F3B32A32A0D100B28EDC /* UserNicknameInputViewModel.swift in Sources */,
@@ -956,6 +952,7 @@
 				454E85FC2A3615B60043B745 /* HomeQuestionArrivedLabel.swift in Sources */,
 				4591AD232A3724170029D3D8 /* QuestionViewBottomSectionList.swift in Sources */,
 				454E860C2A363E730043B745 /* HomeQuestionAnswerButton.swift in Sources */,
+				45FF8CE22A518FEE002ED491 /* ChatViewConstraintsNameSpace.swift in Sources */,
 				4591AD202A3721A00029D3D8 /* QuestionViewBottomSectionTitle.swift in Sources */,
 				454BA2E12A3DDF6F0001AF32 /* ChallengeViewProfileImageButton.swift in Sources */,
 				45AF0D572A4D5FC60041AE81 /* ChallengeCategoryType.swift in Sources */,
@@ -965,7 +962,6 @@
 				451231E82A34B07B00EF3528 /* HomeTopSectionView.swift in Sources */,
 				4591AD2C2A3752A00029D3D8 /* QuestionInputViewTitleLabel.swift in Sources */,
 				4591AD192A37108E0029D3D8 /* QuestionAnswerSectionView.swift in Sources */,
-				459BD9B82A4857B600CB4738 /* ChatViewBottomSectionBar.swift in Sources */,
 				45C1693B2A37A48600B5506E /* SignUpViewModel.swift in Sources */,
 				452885942A3211520077AA13 /* PersonalInfoContentView.swift in Sources */,
 				454E85EF2A3604870043B745 /* HomeNavigationBarView.swift in Sources */,

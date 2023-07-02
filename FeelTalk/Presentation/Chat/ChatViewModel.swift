@@ -8,67 +8,79 @@
 import RxSwift
 import RxCocoa
 
+enum ChatViewState {
+    case activeSendChat
+    case activeSendVoiceRecode
+    case activeVoiceRecode
+    case inActiveVoiceRecode
+    case pauseVoiceRecode
+}
+
 final class ChatViewModel: ViewModelType {
-    enum TextViewInnerButtonType {
-        case voiceRecode
-        case messageSendPossible
-        case messageSendImpossibe
-    }
-    
-    enum LifeCycleType {
-        case viewWillAppear
-        case viewVillDisAppear
-        case background
-    }
-    
     struct Input {
-        let viewWillAppearObserver: ControlEvent<Bool>
-        let viewWillDisappearObserver: ControlEvent<Bool>
-        let bottomBarInputTextViewTextObserver: ControlProperty<String>
-        let bottomBarInputTextViewBegineEditingObserver: ControlEvent<Void>
-        let bottomBarInputTextViewEndEditingObserver: ControlEvent<Void>
-        let tapBottomBarTextViewInnerButton: ControlEvent<Void>
+        let bottomBarMenuButtonTapObserver: ControlEvent<Void>
+        let inputTextViewBegineEditingObserver: ControlEvent<Void>
+        let inputTextViewEndEditingObserver: ControlEvent<Void>
+        let inputTextViewTextObserver: ControlProperty<String>
+        let transferButtonTapObserver: ControlEvent<Void>
     }
     
     struct Output {
-        let bottomBarTextViewInnerButtonStateObserver: PublishSubject<(Bool, UIImage?)>
+        let chatViewState: PublishRelay<ChatViewState>
     }
     
     var disposeBag = DisposeBag()
     
-    private let textViewInnerButtonTypeObservable = BehaviorRelay<TextViewInnerButtonType>(value: .voiceRecode)
-    private let bottomBarTextViewInnerButtonStateObserver = PublishSubject<(Bool, UIImage?)>()
+    private let chatViewStateObserver = BehaviorRelay<ChatViewState>(value: .inActiveVoiceRecode)
+    
+    // Bind Output
+    private let chatViewState = PublishRelay<ChatViewState>()
     
     func transform(input: Input) -> Output {
-        textViewInnerButtonTypeObservable
+        chatViewStateObserver
+            .bind(to: self.chatViewState)
+            .disposed(by: disposeBag)
+        
+        input.transferButtonTapObserver
+            .withLatestFrom(self.chatViewStateObserver) { $1 }
             .map { type in
                 switch type {
-                case .voiceRecode:
-                    return (true, UIImage(named: "icon_voice_recode"))
-                case .messageSendPossible:
-                    return (true, UIImage(named: "icon_chat_send_possible"))
-                case .messageSendImpossibe:
-                    return (false, UIImage(named: "icon_chat_send_possible"))
+                case .activeSendChat:
+                    return ChatViewState.inActiveVoiceRecode
+                case .activeSendVoiceRecode:
+                    return ChatViewState.activeVoiceRecode
+                case .activeVoiceRecode:
+                    return ChatViewState.pauseVoiceRecode
+                case .inActiveVoiceRecode:
+                    return ChatViewState.activeVoiceRecode
+                case .pauseVoiceRecode:
+                    return ChatViewState.activeSendVoiceRecode
                 }
-            }.bind(to: self.bottomBarTextViewInnerButtonStateObserver)
+            }.bind(to: self.chatViewStateObserver)
             .disposed(by: disposeBag)
         
-        input.bottomBarInputTextViewBegineEditingObserver
-            .withLatestFrom(input.bottomBarInputTextViewTextObserver) {
-                $1.count > 0 ? TextViewInnerButtonType.messageSendPossible : TextViewInnerButtonType.messageSendImpossibe
-            }.bind(to: textViewInnerButtonTypeObservable)
+        input.inputTextViewBegineEditingObserver
+            .withLatestFrom(input.inputTextViewTextObserver) {
+                $1.count > 0 ? ChatViewState.activeSendChat : ChatViewState.inActiveVoiceRecode
+            }.bind(to: chatViewStateObserver)
             .disposed(by: disposeBag)
         
-        input.bottomBarInputTextViewEndEditingObserver
-            .withLatestFrom(input.bottomBarInputTextViewTextObserver) {
-                $1.count > 0 ? TextViewInnerButtonType.messageSendPossible : TextViewInnerButtonType.voiceRecode
-            }.bind(to: textViewInnerButtonTypeObservable)
+        input.inputTextViewEndEditingObserver
+            .withLatestFrom(input.inputTextViewTextObserver) {
+                $1.count > 0 ? ChatViewState.activeSendChat : ChatViewState.inActiveVoiceRecode
+            }.bind(to: chatViewStateObserver)
             .disposed(by: disposeBag)
+
         
-        input.bottomBarInputTextViewTextObserver
+        input.inputTextViewTextObserver
             .skip(1)
-            .map { $0.count > 0 ? TextViewInnerButtonType.messageSendPossible : TextViewInnerButtonType.messageSendImpossibe}
-            .bind(to: textViewInnerButtonTypeObservable)
+            .withLatestFrom(self.chatViewStateObserver) {
+                if $1 == .activeVoiceRecode {
+                    return ChatViewState.activeVoiceRecode
+                } else {
+                    return $0.count > 0 ? ChatViewState.activeSendChat : ChatViewState.inActiveVoiceRecode
+                }
+            }.bind(to: chatViewStateObserver)
             .disposed(by: disposeBag)
         
 //        input.tapBottomBarTextViewInnerButton
@@ -78,9 +90,8 @@ final class ChatViewModel: ViewModelType {
 //            .distinctUntilChanged()
 //            .flatMapLatest(ChatModel.shared.sendTextChat)
 //            .share()
-            
         
-        return Output(bottomBarTextViewInnerButtonStateObserver: self.bottomBarTextViewInnerButtonStateObserver)
+        return Output(chatViewState: self.chatViewState)
     }
 }
 
