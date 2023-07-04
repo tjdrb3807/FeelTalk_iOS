@@ -11,10 +11,21 @@ import RxSwift
 import RxCocoa
 import RxKeyboard
 
-final class ChatViewController: BaseViewController {
+final class ChatViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let viewModel = ChatViewModel()
     var messages: [(message: String, chatSender: TestChatModel.ChatSender)] = []
+    
+    private lazy var fullStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.backgroundColor = .clear
+        stackView.isUserInteractionEnabled = true
+        
+        return stackView
+    }()
     
     // MARK: ChatView subComponents - topBar
     private lazy var topBar: UIView = {
@@ -34,7 +45,7 @@ final class ChatViewController: BaseViewController {
     private lazy var topBarFullHorizontalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.alignment = .lastBaseline
+        stackView.alignment = .center
         stackView.distribution = .fill
         stackView.backgroundColor = .clear
         stackView.isUserInteractionEnabled = true
@@ -48,7 +59,7 @@ final class ChatViewController: BaseViewController {
         label.textColor = .black
         label.numberOfLines = 1
         label.textAlignment = .left
-        label.font = UIFont(name: "pretendard-medium", size: ChatViewConstraintValueNameSpace.partnerNameLabelFontSize)
+        label.font = UIFont(name: "pretendard-medium", size: ChatViewNameSpace.partnerNameLabelFontSize)
         label.backgroundColor = .clear
         
         return label
@@ -89,7 +100,7 @@ final class ChatViewController: BaseViewController {
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-        stackView.spacing = ChatViewConstraintValueNameSpace.bottomBarSpacing
+        stackView.spacing = ChatViewNameSpace.bottomBarSpacing
         stackView.backgroundColor = .clear
         stackView.isUserInteractionEnabled = true
         
@@ -114,21 +125,21 @@ final class ChatViewController: BaseViewController {
     /// bottomBarFullHorizontalStackView view hierarchy
     ///
     /// - subViews
-    ///     - bottomBarMenuButton
+    ///     - additionalFunctionButton
     ///     - buttomBarContentVerticalStackView
     private lazy var bottomBarFullHorizontalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .lastBaseline
         stackView.distribution = .fill
-        stackView.spacing = ChatViewConstraintValueNameSpace.bottomBarFullHorizontalStackViewSpacing
+        stackView.spacing = ChatViewNameSpace.bottomBarFullHorizontalStackViewSpacing
         stackView.backgroundColor = .clear
         stackView.isUserInteractionEnabled = true
         
         return stackView
     }()
     
-    private lazy var bottomBarMenuButton: UIButton = {
+    private lazy var additionalFunctionButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "icon_plus"), for: .normal)
         button.backgroundColor = .clear
@@ -147,11 +158,11 @@ final class ChatViewController: BaseViewController {
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-        stackView.spacing = ChatViewConstraintValueNameSpace.bottomBarContentVerticalStackViewSpacing
+        stackView.spacing = ChatViewNameSpace.bottomBarContentVerticalStackViewSpacing
         stackView.backgroundColor = UIColor(named: "gray_100")
         stackView.layer.borderColor = UIColor(named: "gray_300")?.cgColor
-        stackView.layer.borderWidth = ChatViewConstraintValueNameSpace.bottomBarContentVerticalStackViewBorderWidth
-        stackView.layer.cornerRadius = ChatViewConstraintValueNameSpace.bottomBarContentVerticalStackViewCornerRadius
+        stackView.layer.borderWidth = ChatViewNameSpace.bottomBarContentVerticalStackViewBorderWidth
+        stackView.layer.cornerRadius = ChatViewNameSpace.bottomBarContentVerticalStackViewCornerRadius
         stackView.clipsToBounds = true
         stackView.isUserInteractionEnabled = true
         
@@ -178,7 +189,7 @@ final class ChatViewController: BaseViewController {
         stackView.axis = .horizontal
         stackView.alignment = .bottom
         stackView.distribution = .fill
-        stackView.spacing = ChatViewConstraintValueNameSpace.bottomBarcontentHorizontalStackViewSpacing
+        stackView.spacing = ChatViewNameSpace.bottomBarcontentHorizontalStackViewSpacing
         stackView.backgroundColor = .clear
         stackView.isUserInteractionEnabled = true
         
@@ -194,7 +205,7 @@ final class ChatViewController: BaseViewController {
     
     private lazy var inputTextView: UITextView = {
         let textView = UITextView()
-        textView.font = UIFont(name: "pretendard-regular", size: ChatViewConstraintValueNameSpace.inputTextViewFontSize)
+        textView.font = UIFont(name: "pretendard-regular", size: ChatViewNameSpace.inputTextViewFontSize)
         textView.textColor = .black
         textView.backgroundColor = .clear
         textView.textInputView.backgroundColor = .clear
@@ -216,7 +227,7 @@ final class ChatViewController: BaseViewController {
         let button = UIButton()
         button.setImage((UIImage(named: "icon_voice_recode_inactive")), for: .normal)
         button.backgroundColor = .clear
-        button.layer.cornerRadius = ChatViewConstraintValueNameSpace.transferButtonCornerRadius
+        button.layer.cornerRadius = ChatViewNameSpace.transferButtonCornerRadius
         
         return button
     }()
@@ -249,29 +260,55 @@ final class ChatViewController: BaseViewController {
         return view
     }()
     
+    private lazy var additinoalFunctionView: BaseView = {
+        let view = ChatAdditionalFunctionView()
+        
+        return view
+    }()
+    
     // MARK: Override method
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    
+        self.setAttribute()
+        self.addSubViews()
+        self.setConfig()
+        self.bindViewModel()
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         self.view.endEditing(true)
     }
     
-    override func bindViewModel() {
-        let input = ChatViewModel.Input.init(bottomBarMenuButtonTapObserver: bottomBarMenuButton.rx.tap,
-                                             inputTextViewBegineEditingObserver: inputTextView.rx.didBeginEditing,
-                                             inputTextViewEndEditingObserver: inputTextView.rx.didEndEditing,
-                                             inputTextViewTextObserver: inputTextView.rx.text.orEmpty,
-                                             transferButtonTapObserver: transferButton.rx.tap)
+    func bindViewModel() {
+        let input = ChatViewModel.Input(additionalFunctionButtonTapObserver: additionalFunctionButton.rx.tap,
+                                        inputTextViewBeginEdtingObserver: inputTextView.rx.didBeginEditing,
+                                        inputTextViewEndEditingObserver: inputTextView.rx.didEndEditing,
+                                        inputTextViewTextObserver: inputTextView.rx.text.orEmpty,
+                                        transferButtonTapObserver: transferButton.rx.tap)
+
 
         let output = viewModel.transform(input: input)
+        
 
-        output.chatViewState
-            .bind(onNext: { [weak self] state in
-                guard let self = self else { return }
-                self.setAttributeBasedOnChatViewState(state: state)
+        output.keyboardHeightObservable
+            .withUnretained(self)
+            .bind(onNext: { chatVC, keyboardHeight in
+                chatVC.updateKeyboardHeight(keyboardHeight)
             }).disposed(by: disposeBag)
+            
+        
+//        output.additionalFunctionViewHeight
+//            .drive(onNext: { [weak self] height in
+//                guard let self = self else { return }
+//                self.setAdditionalFunction(height: height)
+//            }).disposed(by: disposeBag)
+
     }
     
-    override func setAttribute() {
+    func setAttribute() {
         // TEST
         self.messages = Mock.getMockMessages()
         
@@ -279,22 +316,17 @@ final class ChatViewController: BaseViewController {
         view.backgroundColor = .white
     }
     
-    override func addSubViews() {
+    func addSubViews() {
         self.topBarAddSubView()
+        self.chatListAddSubView()
         self.bottomBarAddSubViews()
+        self.fullStackViewAddSubView()
     }
     
-    override func setConfig() {
+    func setConfig() {
         self.topBarMakeConstraints()
         self.bottomBarMakeConstraints()
-        
-//        [chatListView, bottomBar].forEach { keyboardSafeAreaView.addSubview($0) }
-//
-//        chatListView.snp.makeConstraints {
-//            $0.top.equalToSuperview().inset((UIScreen.main.bounds.height / 100) * 7.38)
-//            $0.leading.trailing.equalToSuperview()
-//            $0.bottom.equalTo(bottomBar.snp.top)
-//        }
+        self.fullStackViewMakeConstraints()
     }
     
     // MARK: Default setting method for ChatView
@@ -302,24 +334,23 @@ final class ChatViewController: BaseViewController {
         [partnerNameLabel, chatMenuButton].forEach { topBarFullHorizontalStackView.addArrangedSubview($0) }
         
         topBar.addSubview(topBarFullHorizontalStackView)
-        
-        view.addSubview(topBar)
     }
     
     private func topBarMakeConstraints() {
         chatMenuButton.snp.makeConstraints { $0.width.equalTo(chatMenuButton.snp.height) }
 
         topBarFullHorizontalStackView.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview().inset(ChatViewConstraintValueNameSpace.topBarVerticalSpacing)
-            $0.leading.equalToSuperview().inset(ChatViewConstraintValueNameSpace.topBarLeftSpacerWidth)
-            $0.trailing.equalToSuperview().inset(ChatViewConstraintValueNameSpace.topBarRightSpacerWidth)
+            $0.top.bottom.equalToSuperview().inset(ChatViewNameSpace.topBarVerticalSpacing)
+            $0.leading.equalToSuperview().inset(ChatViewNameSpace.topBarLeftSpacerWidth)
+            $0.trailing.equalToSuperview().inset(ChatViewNameSpace.topBarRightSpacerWidth)
             $0.centerY.equalToSuperview()
         }
-
-        topBar.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
-            $0.height.equalTo(ChatViewConstraintValueNameSpace.topBarHeight)
-        }
+        
+        topBar.snp.makeConstraints { $0.height.equalTo(ChatViewNameSpace.topBarHeight) }
+    }
+    
+    private func chatListAddSubView() {
+        fullStackView.addArrangedSubview(chatListView)
     }
     
     private func bottomBarAddSubViews() {
@@ -329,11 +360,11 @@ final class ChatViewController: BaseViewController {
         
         [bottomBarContentVerticalStackViewTopSpace, bottomBarContentHorizontalStackView, bottomBarContentVerticalStackViewBottomSpace].forEach { bottomBarContentVerticalStackView.addArrangedSubview($0) }
 
-        [bottomBarMenuButton, bottomBarContentVerticalStackView, bottomBarFullHorizontalStackViewRightSpace].forEach { bottomBarFullHorizontalStackView.addArrangedSubview($0) }
+        [additionalFunctionButton, bottomBarContentVerticalStackView, bottomBarFullHorizontalStackViewRightSpace].forEach { bottomBarFullHorizontalStackView.addArrangedSubview($0) }
 
         [bottomBarTopSpace, bottomBarFullHorizontalStackView, bottomBarBottomSpace].forEach { bottomBar.addArrangedSubview($0) }
         
-        keyboardSafeAreaView.addSubview(bottomBar)
+        view.addSubview(bottomBar)
     }
     
     private func bottomBarMakeConstraints() {
@@ -342,90 +373,169 @@ final class ChatViewController: BaseViewController {
         }
         
         bottomBarContentHorizontalStackViewLeftSpace.snp.makeConstraints {
-            $0.width.equalTo(ChatViewConstraintValueNameSpace.bottomBarContentHorizontalStackViewLeftSpaceWidth)
+            $0.width.equalTo(ChatViewNameSpace.bottomBarContentHorizontalStackViewLeftSpaceWidth)
             $0.height.equalToSuperview()
         }
         
         bottomBarContentHorizontalStackViewMiddleSpace.snp.makeConstraints {
-            $0.width.equalTo(ChatViewConstraintValueNameSpace.bottomBarContentHorizontalStackViewMiddleSpaceWidth)
+            $0.width.equalTo(ChatViewNameSpace.bottomBarContentHorizontalStackViewMiddleSpaceWidth)
             $0.height.equalToSuperview()
         }
         
         bottomBarContentHorizontalStackViewRightSpace.snp.makeConstraints {
-            $0.width.equalTo(ChatViewConstraintValueNameSpace.btttomBarContenthorizontalStackViewRightSpaceWidth)
+            $0.width.equalTo(ChatViewNameSpace.btttomBarContenthorizontalStackViewRightSpaceWidth)
             $0.height.equalToSuperview()
         }
         
         transferButton.snp.makeConstraints {
-            $0.width.equalTo(ChatViewConstraintValueNameSpace.transferButtonWidth)
+            $0.width.equalTo(ChatViewNameSpace.transferButtonWidth)
             $0.height.equalTo(transferButton.snp.width)
         }
         
         bottomBarContentVerticalStackViewTopSpace.snp.makeConstraints {
             $0.width.equalToSuperview()
-            $0.height.equalTo(ChatViewConstraintValueNameSpace.bottomBarContentVerticalStackViewTopSpaceHeight)
+            $0.height.equalTo(ChatViewNameSpace.bottomBarContentVerticalStackViewTopSpaceHeight)
         }
         
         bottomBarContentVerticalStackViewBottomSpace.snp.makeConstraints {
             $0.width.equalToSuperview()
-            $0.height.equalTo(ChatViewConstraintValueNameSpace.bottomBarContentVerticalStackViewBottomSpace)
+            $0.height.equalTo(ChatViewNameSpace.bottomBarContentVerticalStackViewBottomSpace)
         }
         
-        bottomBarMenuButton.snp.makeConstraints {
-            $0.width.equalTo(ChatViewConstraintValueNameSpace.bottomBarMenuButtonWidth)
-            $0.height.equalTo(bottomBarMenuButton.snp.width)
+        additionalFunctionButton.snp.makeConstraints {
+            $0.width.equalTo(ChatViewNameSpace.additionalFunctionButtonWidth)
+            $0.height.equalTo(additionalFunctionButton.snp.width)
         }
         
         bottomBarFullHorizontalStackViewRightSpace.snp.makeConstraints {
-            $0.width.equalTo(ChatViewConstraintValueNameSpace.bottomBarFullHorizontalStackViewRightSpaceWidth)
+            $0.width.equalTo(ChatViewNameSpace.bottomBarFullHorizontalStackViewRightSpaceWidth)
             $0.height.equalToSuperview()
         }
         
         bottomBarTopSpace.snp.makeConstraints {
             $0.width.equalToSuperview()
-            $0.height.equalTo(ChatViewConstraintValueNameSpace.bottomBarTopSpaceHeight)
+            $0.height.equalTo(ChatViewNameSpace.bottomBarTopSpaceHeight)
         }
         
         bottomBarBottomSpace.snp.makeConstraints {
             $0.width.equalToSuperview()
-            $0.height.equalTo(ChatViewConstraintValueNameSpace.bottomBarBottomSpaceHeight)
+            $0.height.equalTo(ChatViewNameSpace.bottomBarBottomSpaceHeight)
         }
+    }
+    
+    private func fullStackViewAddSubView() {
+        [topBar, chatListView, bottomBar].forEach { fullStackView.addArrangedSubview($0) }
         
-        bottomBar.snp.makeConstraints { $0.leading.trailing.bottom.equalToSuperview() }
+        view.addSubview(fullStackView)
+    }
+    
+    private func fullStackViewMakeConstraints() {
+        fullStackView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
     }
 }
 
+// MARK: Observable inner method
+
 extension ChatViewController {
-    private func setAttributeBasedOnChatViewState(state: ChatViewState) {
-        switch state {
-        case .activeSendChat:
-            transferButton.rx.image().onNext(UIImage(named: "icon_chat_send_active"))
-            transferButton.rx.backgroundColor.onNext(UIColor.clear)
-            bottomBarFullHorizontalStackView.rx.backgroundColor.onNext(UIColor(named: "gray_100"))
-            bottomBarFullHorizontalStackView.layer.rx.borderColor.onNext(UIColor(named: "gray_300")?.cgColor)
-        case .activeSendVoiceRecode:
-            transferButton.rx.image().onNext(UIImage(named: "icon_voice_recode_send"))
-            transferButton.rx.backgroundColor.onNext(UIColor.white)
-            bottomBarFullHorizontalStackView.rx.backgroundColor.onNext(UIColor(named: "main_500"))
-            bottomBarFullHorizontalStackView.layer.rx.borderColor.onNext(UIColor.clear.cgColor)
-        case .activeVoiceRecode:
-            transferButton.rx.image().onNext(UIImage(named: "icon_voice_recode_active"))
-            transferButton.rx.backgroundColor.onNext(UIColor(named: "main_500"))
-            bottomBarFullHorizontalStackView.rx.backgroundColor.onNext(UIColor(named: "main_300"))
-            bottomBarFullHorizontalStackView.layer.rx.borderColor.onNext((UIColor(named: "main_400")?.cgColor))
-        case .inActiveVoiceRecode:
-            transferButton.rx.image().onNext(UIImage(named: "icon_voice_recode_inactive"))
-            transferButton.rx.backgroundColor.onNext(UIColor.clear)
-            bottomBarFullHorizontalStackView.rx.backgroundColor.onNext(UIColor(named: "gray_100"))
-            bottomBarFullHorizontalStackView.layer.rx.borderColor.onNext(UIColor(named: "gray_300")?.cgColor)
-        case .pauseVoiceRecode:
-            transferButton.rx.image().onNext(UIImage(named: "icon_voice_recode_pause"))
-            transferButton.rx.backgroundColor.onNext(UIColor.white)
-            bottomBarFullHorizontalStackView.rx.backgroundColor.onNext(UIColor(named: "main_500"))
-            bottomBarFullHorizontalStackView.layer.rx.borderColor.onNext(UIColor.clear.cgColor)
-        }
+    private func updateKeyboardHeight(_ keyboardHeight: CGFloat) {
+        fullStackView.snp.updateConstraints { $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(-keyboardHeight) }
+        view.layoutIfNeeded()
     }
 }
+//extension ChatViewController {
+//    private func setAdditionalFunction(height: CGFloat) {
+//        if height > 0 {
+//            additionalFunctionButton.rx.image().onNext((UIImage(named: "icon_cancel")))
+//
+//            view.addSubview(additinoalFunctionView)
+//
+//            additinoalFunctionView.snp.makeConstraints {
+//                $0.leading.trailing.bottom.equalToSuperview()
+//                $0.height.equalTo(height)
+//            }
+//
+//            bottomBar.snp.remakeConstraints {
+//                $0.leading.trailing.equalToSuperview()
+//                $0.bottom.equalTo(additinoalFunctionView.snp.top)
+//            }
+//
+//            view.endEditing(true)
+//        } else {
+//            additionalFunctionButton.rx.image().onNext((UIImage(named: "icon_plus")))
+//
+//            additinoalFunctionView.removeFromSuperview()
+//
+//            keyboardSafeAreaView.addSubview(bottomBar)
+//
+//            bottomBar.snp.remakeConstraints {
+//                $0.leading.trailing.bottom.equalToSuperview()
+//            }
+//        }
+//    }
+//}
+
+
+
+//extension ChatViewController {
+//    private func setAdditionalFunctionViewHeight(height: CGFloat) {
+//        if height > 0 {
+//            view.addSubview(additinoalFunctionView)
+//
+//            additinoalFunctionView.snp.makeConstraints {
+//                $0.leading.trailing.bottom.equalToSuperview()
+//                $0.height.equalTo(height)
+//            }
+//
+//            bottomBar.snp.remakeConstraints {
+//                $0.leading.trailing.equalToSuperview()
+//                $0.bottom.equalTo(additinoalFunctionView.snp.top)
+//            }
+//        } else {
+//            additinoalFunctionView.removeFromSuperview()
+//
+//            bottomBar.snp.remakeConstraints {
+//                $0.leading.trailing.bottom.equalToSuperview()
+//            }
+//        }
+//    }
+//
+//    private func setAttributeAdditionalFunctionButton(state: Bool) {
+//        state ? additionalFunctionButton.rx.image().onNext(UIImage(named: "icon_cancel")) : additionalFunctionButton.rx.image().onNext((UIImage(named: "icon_plus")))
+//    }
+//
+//    private func setAttributeBasedOnChatViewState(state: ChatViewState) {
+//        switch state {
+//        case .activeSendChat:
+//            transferButton.rx.image().onNext(UIImage(named: "icon_chat_send_active"))
+//            transferButton.rx.backgroundColor.onNext(UIColor.clear)
+//            bottomBarContentVerticalStackView.rx.backgroundColor.onNext(UIColor(named: "gray_100"))
+//            bottomBarContentVerticalStackView.layer.rx.borderColor.onNext(UIColor(named: "gray_300")?.cgColor)
+//        case .activeSendVoiceRecode:
+//            transferButton.rx.image().onNext(UIImage(named: "icon_voice_recode_send"))
+//            transferButton.rx.backgroundColor.onNext(UIColor.white)
+//            bottomBarContentVerticalStackView.rx.backgroundColor.onNext(UIColor(named: "main_500"))
+//            bottomBarContentVerticalStackView.layer.rx.borderColor.onNext(UIColor.clear.cgColor)
+//        case .activeVoiceRecode:
+//            transferButton.rx.image().onNext(UIImage(named: "icon_voice_recode_active"))
+//            transferButton.rx.backgroundColor.onNext(UIColor(named: "main_500"))
+//            bottomBarContentVerticalStackView.rx.backgroundColor.onNext(UIColor(named: "main_300"))
+//            bottomBarContentVerticalStackView.layer.rx.borderColor.onNext((UIColor(named: "main_400")?.cgColor))
+//        case .inActiveVoiceRecode:
+//            transferButton.rx.image().onNext(UIImage(named: "icon_voice_recode_inactive"))
+//            transferButton.rx.backgroundColor.onNext(UIColor.clear)
+//            bottomBarContentVerticalStackView.rx.backgroundColor.onNext(UIColor(named: "gray_100"))
+//            bottomBarContentVerticalStackView.layer.rx.borderColor.onNext(UIColor(named: "gray_300")?.cgColor)
+//        case .pauseVoiceRecode:
+//            transferButton.rx.image().onNext(UIImage(named: "icon_voice_recode_pause"))
+//            transferButton.rx.backgroundColor.onNext(UIColor.white)
+//            bottomBarContentVerticalStackView.rx.backgroundColor.onNext(UIColor(named: "main_500"))
+//            bottomBarContentVerticalStackView.layer.rx.borderColor.onNext(UIColor.clear.cgColor)
+//        }
+//    }
+//}
 
 extension ChatViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -458,6 +568,7 @@ import SwiftUI
 struct ChatViewController_Previews: PreviewProvider {
     static var previews: some View {
         ChatViewController_Presentable()
+            .edgesIgnoringSafeArea(.bottom)
     }
     
     struct ChatViewController_Presentable: UIViewControllerRepresentable {

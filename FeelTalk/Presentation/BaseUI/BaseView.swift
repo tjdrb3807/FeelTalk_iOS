@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 
 class BaseView: UIView {
     private(set) var didSetUpConstraints = false
@@ -17,6 +16,7 @@ class BaseView: UIView {
         backgroundColor = .clear
 
         self.setAttribute()
+        self.addSubViews()
         self.setConfig()
     }
     
@@ -26,6 +26,10 @@ class BaseView: UIView {
     }
     
     func setAttribute() {
+        // Override point
+    }
+    
+    func addSubViews() {
         // Override point
     }
     

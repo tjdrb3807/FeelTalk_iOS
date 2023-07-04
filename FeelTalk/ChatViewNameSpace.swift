@@ -1,5 +1,5 @@
 //
-//  ChatViewConstraintsNameSpace.swift
+//  ChatViewNameSpace.swift
 //  FeelTalk
 //
 //  Created by 전성규 on 2023/07/02.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-enum ChatViewConstraintValueNameSpace {
+enum ChatViewNameSpace {
     // MARK: TopBar constraint value.
     static let partnerNameLabelFontSize: CGFloat = 18.0
     static let topBarHeight: CGFloat = (UIScreen.main.bounds.height / 100) * 7.38
@@ -17,6 +17,8 @@ enum ChatViewConstraintValueNameSpace {
     static let topBarVerticalSpacing: CGFloat = (UIScreen.main.bounds.height / 100) * 0.73
     
     // MARK: BottomBar constraint value.
+    static let additionalFunctionButtonWidth: CGFloat = (UIScreen.main.bounds.width / 100) * 12.8
+    
     static let bottomBarBottomSpaceHeight: CGFloat = 0.0
     
     static let bottomBarContentHorizontalStackViewLeftSpaceWidth: CGFloat = (UIScreen.main.bounds.width / 100) * 1.6
@@ -32,8 +34,6 @@ enum ChatViewConstraintValueNameSpace {
     
     static let bottomBarFullHorizontalStackViewRightSpaceWidth: CGFloat = (UIScreen.main.bounds.width / 100) * 3.2
     static let bottomBarFullHorizontalStackViewSpacing: CGFloat = 0.0
-    
-    static let bottomBarMenuButtonWidth: CGFloat = (UIScreen.main.bounds.width / 100) * 12.8
     
     static let bottomBarSpacing: CGFloat = (UIScreen.main.bounds.height / 100) * 1.10
     

@@ -7,6 +7,7 @@
 
 import RxSwift
 import RxCocoa
+import RxKeyboard
 
 enum ChatViewState {
     case activeSendChat
@@ -18,31 +19,49 @@ enum ChatViewState {
 
 final class ChatViewModel: ViewModelType {
     struct Input {
-        let bottomBarMenuButtonTapObserver: ControlEvent<Void>
-        let inputTextViewBegineEditingObserver: ControlEvent<Void>
+        let additionalFunctionButtonTapObserver: ControlEvent<Void>
+        let inputTextViewBeginEdtingObserver: ControlEvent<Void>
         let inputTextViewEndEditingObserver: ControlEvent<Void>
         let inputTextViewTextObserver: ControlProperty<String>
         let transferButtonTapObserver: ControlEvent<Void>
     }
     
     struct Output {
-        let chatViewState: PublishRelay<ChatViewState>
+        let additionalFunctionViewHeight: Driver<CGFloat>
+        let keyboardHeightObservable: BehaviorRelay<CGFloat>
     }
     
     var disposeBag = DisposeBag()
-    
+
+    private let additionalFunctionViewHeight = BehaviorRelay<CGFloat>(value: 0.0)
     private let chatViewStateObserver = BehaviorRelay<ChatViewState>(value: .inActiveVoiceRecode)
+    private let keyboardHeight = BehaviorRelay<CGFloat>(value: 0.0)
     
-    // Bind Output
-    private let chatViewState = PublishRelay<ChatViewState>()
-    
+
     func transform(input: Input) -> Output {
-        chatViewStateObserver
-            .bind(to: self.chatViewState)
+        RxKeyboard.instance.visibleHeight
+            .asObservable()
+            .filter { 0 <= $0 }
+            .bind { [weak self] in
+                guard let self = self else { return }
+                keyboardHeight.accept($0)
+            }.disposed(by: disposeBag)
+            
+        /// additionalFunctionView 높이 설정
+        input.additionalFunctionButtonTapObserver
+            .asObservable()
+            .scan(false) { lastState, newState in !lastState }
+            .withLatestFrom(keyboardHeight) {
+                if $0 {
+                    return $1 == 0.0 ? 335.0 : $1
+                } else {
+                    return 0.0
+                }
+            }.bind(to: additionalFunctionViewHeight)
             .disposed(by: disposeBag)
         
         input.transferButtonTapObserver
-            .withLatestFrom(self.chatViewStateObserver) { $1 }
+            .withLatestFrom(self.chatViewStateObserver)
             .map { type in
                 switch type {
                 case .activeSendChat:
@@ -59,54 +78,7 @@ final class ChatViewModel: ViewModelType {
             }.bind(to: self.chatViewStateObserver)
             .disposed(by: disposeBag)
         
-        input.inputTextViewBegineEditingObserver
-            .withLatestFrom(input.inputTextViewTextObserver) {
-                $1.count > 0 ? ChatViewState.activeSendChat : ChatViewState.inActiveVoiceRecode
-            }.bind(to: chatViewStateObserver)
-            .disposed(by: disposeBag)
-        
-        input.inputTextViewEndEditingObserver
-            .withLatestFrom(input.inputTextViewTextObserver) {
-                $1.count > 0 ? ChatViewState.activeSendChat : ChatViewState.inActiveVoiceRecode
-            }.bind(to: chatViewStateObserver)
-            .disposed(by: disposeBag)
-
-        
-        input.inputTextViewTextObserver
-            .skip(1)
-            .withLatestFrom(self.chatViewStateObserver) {
-                if $1 == .activeVoiceRecode {
-                    return ChatViewState.activeVoiceRecode
-                } else {
-                    return $0.count > 0 ? ChatViewState.activeSendChat : ChatViewState.inActiveVoiceRecode
-                }
-            }.bind(to: chatViewStateObserver)
-            .disposed(by: disposeBag)
-        
-//        input.tapBottomBarTextViewInnerButton
-//            .withLatestFrom(self.textViewInnerButtonTypeObservable) { $1 }
-//            .filter { $0 == .messageSendPossible }
-//            .withLatestFrom(input.bottomBarInputTextViewTextObserver) { $1 }
-//            .distinctUntilChanged()
-//            .flatMapLatest(ChatModel.shared.sendTextChat)
-//            .share()
-        
-        return Output(chatViewState: self.chatViewState)
+        return Output(additionalFunctionViewHeight: additionalFunctionViewHeight.asDriver(),
+                      keyboardHeightObservable: keyboardHeight)
     }
 }
-
-
-//        inputTextView.rx.didChange
-//            .bind(onNext: { [weak self] in
-//                guard let self = self else { return }
-//                let size = CGSize(width: self.inputTextView.frame.width, height: self.inputTextView.frame.height)
-//                let estimatedSize = self.inputTextView.sizeThatFits(size)
-//                let isMaxHeight = estimatedSize.height >= 70.0 // 3줄 높이
-//                let state = isMaxHeight != self.inputTextView.isScrollEnabled ? true :  false
-//
-//                self.inputTextView.isScrollEnabled = state
-//                self.inputTextView.reloadInputViews()
-//                self.setNeedsUpdateConstraints()
-//
-//            }).disposed(by: disposeBag)
-
