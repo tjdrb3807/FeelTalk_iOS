@@ -33,7 +33,7 @@ final class ChatViewModel: ViewModelType {
     
     var disposeBag = DisposeBag()
 
-    private let additionalFunctionViewHeight = BehaviorRelay<CGFloat>(value: 0.0)
+    let additionalFunctionViewHeight = BehaviorRelay<CGFloat>(value: 0.0)
     private let chatViewStateObserver = BehaviorRelay<ChatViewState>(value: .inActiveVoiceRecode)
     private let keyboardHeight = BehaviorRelay<CGFloat>(value: 0.0)
     

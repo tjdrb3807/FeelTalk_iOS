@@ -12,8 +12,9 @@ import RxCocoa
 import RxKeyboard
 
 final class ChatViewController: UIViewController {
-    private let disposeBag = DisposeBag()
     private let viewModel = ChatViewModel()
+    private let disposeBag = DisposeBag()
+    
     var messages: [(message: String, chatSender: TestChatModel.ChatSender)] = []
     
     private lazy var fullStackView: UIStackView = {

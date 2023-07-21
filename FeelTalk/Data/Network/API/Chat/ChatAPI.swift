@@ -8,7 +8,7 @@
 import RxSwift
 import Alamofire
 
-public enum ChatAPI {
+enum ChatAPI {
     case changeChatRoomStatus(isInChat: Bool)
     case getLastestChatPageNo
     case loadChatList(pageNo: Int)
