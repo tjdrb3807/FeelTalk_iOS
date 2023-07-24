@@ -11,7 +11,7 @@ import SnapKit
 final class AdultCertificationView: UIStackView {
     lazy var idCard: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: SignUpNameSpace.idCardImage)
+        imageView.image = UIImage(named: SignUpViewNameSpace.idCardImage)
         imageView.backgroundColor = .clear
         
         return imageView
@@ -22,7 +22,7 @@ final class AdultCertificationView: UIStackView {
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .fill
-        stackView.spacing = SignUpNameSpace.explanationHorizontalStackViewSpacing
+        stackView.spacing = SignUpViewNameSpace.explanationHorizontalStackViewSpacing
         stackView.backgroundColor = .clear
         
         return stackView
@@ -30,11 +30,11 @@ final class AdultCertificationView: UIStackView {
     
     lazy var explanationLabel: UILabel = {
         let label = UILabel()
-        label.text = SignUpNameSpace.explanationLabelText
-        label.setLineSpacing(spacing: SignUpNameSpace.explanationLabelLineSpacing)
-        label.textColor = UIColor(named: SignUpNameSpace.explanationLabelTextColor)
-        label.font = UIFont(name: SignUpNameSpace.explanationLabelTextFont, size: SignUpNameSpace.explanationLabelTextSize)
-        label.numberOfLines = SignUpNameSpace.explanationLabelNumberOfLines
+        label.text = SignUpViewNameSpace.explanationLabelText
+        label.setLineSpacing(spacing: SignUpViewNameSpace.explanationLabelLineSpacing)
+        label.textColor = UIColor(named: SignUpViewNameSpace.explanationLabelTextColor)
+        label.font = UIFont(name: SignUpViewNameSpace.explanationLabelTextFont, size: SignUpViewNameSpace.explanationLabelTextSize)
+        label.numberOfLines = SignUpViewNameSpace.explanationLabelNumberOfLines
         label.textAlignment = .center
         
         return label
@@ -42,7 +42,7 @@ final class AdultCertificationView: UIStackView {
     
     private lazy var checkImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: SignUpNameSpace.checkImageViewImage)
+        imageView.image = UIImage(named: SignUpViewNameSpace.checkImageViewImage)
         imageView.backgroundColor = .clear
         
         return imageView
@@ -50,11 +50,11 @@ final class AdultCertificationView: UIStackView {
     
     lazy var authButtton: UIButton = {
         let button = UIButton()
-        button.setTitle(SignUpNameSpace.authButtonTitle, for: .normal)
-        button.titleLabel?.font = UIFont(name: SignUpNameSpace.authButtonTitle, size: SignUpNameSpace.authButtonTitleSize)
-        button.backgroundColor = UIColor(named: SignUpNameSpace.authButtonBackgroundColor)
+        button.setTitle(SignUpViewNameSpace.authButtonTitle, for: .normal)
+        button.titleLabel?.font = UIFont(name: SignUpViewNameSpace.authButtonTitle, size: SignUpViewNameSpace.authButtonTitleSize)
+        button.backgroundColor = UIColor(named: SignUpViewNameSpace.authButtonBackgroundColor)
         button.titleLabel?.textColor = .white
-        button.layer.cornerRadius = SignUpNameSpace.authButtonHeight / 2
+        button.layer.cornerRadius = SignUpViewNameSpace.authButtonHeight / 2
         
         return button
     }()
@@ -79,7 +79,7 @@ final class AdultCertificationView: UIStackView {
         axis = .vertical
         alignment = .center
         distribution = .fill
-        spacing = SignUpNameSpace.adultCertificationViewSpacing
+        spacing = SignUpViewNameSpace.adultCertificationViewSpacing
         backgroundColor = .clear
     }
     
@@ -91,13 +91,13 @@ final class AdultCertificationView: UIStackView {
     
     private func setConfiguration() {
         idCard.snp.makeConstraints {
-            $0.height.equalTo(SignUpNameSpace.idCardHeight)
+            $0.height.equalTo(SignUpViewNameSpace.idCardHeight)
             $0.leading.trailing.equalToSuperview()
         }
         
         authButtton.snp.makeConstraints {
-            $0.height.equalTo(SignUpNameSpace.authButtonHeight)
-            $0.leading.trailing.equalToSuperview().inset(SignUpNameSpace.authButtonLeadingInset)
+            $0.height.equalTo(SignUpViewNameSpace.authButtonHeight)
+            $0.leading.trailing.equalToSuperview().inset(SignUpViewNameSpace.authButtonLeadingInset)
         }
     }
 }
@@ -111,7 +111,7 @@ extension AdultCertificationView {
         
         spacingView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(SignUpNameSpace.spacingViewHeight)
+            $0.height.equalTo(SignUpViewNameSpace.spacingViewHeight)
         }
         
         informationConsentView.snp.makeConstraints {

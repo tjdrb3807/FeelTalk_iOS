@@ -11,12 +11,12 @@ import SnapKit
 final class InformationPhraseView: UIView {
     lazy var informationLabel: UILabel = {
         let label = UILabel()
-        label.text = SignUpNameSpace.informationLabelText
+        label.text = SignUpViewNameSpace.informationLabelText
         label.textColor = .black
-        label.font = UIFont(name: SignUpNameSpace.informationLableTextFont, size: SignUpNameSpace.informationLabelTextSize)
+        label.font = UIFont(name: SignUpViewNameSpace.informationLableTextFont, size: SignUpViewNameSpace.informationLabelTextSize)
         label.backgroundColor = .clear
-        label.numberOfLines = SignUpNameSpace.informationLabelNumberOfLines
-        label.setLineSpacing(spacing: SignUpNameSpace.informationLabelLineSpacing)
+        label.numberOfLines = SignUpViewNameSpace.informationLabelNumberOfLines
+        label.setLineSpacing(spacing: SignUpViewNameSpace.informationLabelLineSpacing)
         
         return label
     }()
@@ -38,23 +38,10 @@ final class InformationPhraseView: UIView {
     
     private func setConfiguration() {
         informationLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(SignUpNameSpace.informationLabelTopInset)
-            $0.leading.equalToSuperview().inset(SignUpNameSpace.informationLabelLeadingInset)
+            $0.top.equalToSuperview().inset(SignUpViewNameSpace.informationLabelTopInset)
+            $0.leading.equalToSuperview().inset(SignUpViewNameSpace.informationLabelLeadingInset)
+            $0.bottom.equalToSuperview().inset(10)
         }
-    }
-}
-
-extension UILabel {
-    func setLineSpacing(spacing: CGFloat) {
-        guard let text = text else { return }
-
-        let attributeString = NSMutableAttributedString(string: text)
-        let style = NSMutableParagraphStyle()
-        style.lineSpacing = spacing
-        attributeString.addAttribute(.paragraphStyle,
-                                     value: style,
-                                     range: NSRange(location: 0, length: attributeString.length))
-        attributedText = attributeString
     }
 }
 

@@ -20,9 +20,7 @@ final class DefaultKakaoRepository: KakaoRepository {
     func login() -> Single<SNSLogin> {
         debugPrint("[CALL]: KakaoRepository - login")
         return Single.create { observer -> Disposable in
-            print("dddd")
             if (UserApi.isKakaoTalkLoginAvailable()) {
-                print("01")
                 UserApi.shared.loginWithKakaoTalk { (oauthToken, error) in
                     if let error = error {
                         observer(.failure(error))
@@ -31,7 +29,7 @@ final class DefaultKakaoRepository: KakaoRepository {
                             observer(.failure(KakaoLoginError.refreshTokenError))
                             return
                         }
-                        
+                                                
                         observer(.success(SNSLogin(snsType: .kakao,
                                                    refreshToken: refreshToken,
                                                    authCode: nil,
@@ -42,7 +40,6 @@ final class DefaultKakaoRepository: KakaoRepository {
                     
                 }
             } else {
-                print("02")
                 UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
                     if let error = error {
                         observer(.failure(error))

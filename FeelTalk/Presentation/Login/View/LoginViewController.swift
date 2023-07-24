@@ -114,6 +114,7 @@ final class LoginViewController: UIViewController {
     // MARK: Default ui settings method.
     private func setAttribute() {
         view.backgroundColor = UIColor(named: LoginViewNameSpace.loginViewBackgroundColor)
+        navigationController?.navigationBar.isHidden = true
     }
     
     private func addSubComponent() {

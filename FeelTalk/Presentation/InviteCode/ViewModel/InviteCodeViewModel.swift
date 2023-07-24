@@ -21,6 +21,7 @@ final class InviteCodeViewModel {
     
     struct Input {
         let viewDidLoad: ControlEvent<Bool>
+        let tapPresentBottomSheetViewButton: ControlEvent<Void>
     }
     
     struct Output {
@@ -28,22 +29,25 @@ final class InviteCodeViewModel {
     }
     
     init(inviteCodeControllable: InviteCodeViewControllable, coupleUseCase: CoupleUseCase) {
-        print("InviteCodeViewModel")
         self.controllable = inviteCodeControllable
         self.coupleUseCase = coupleUseCase
     }
     
     func transfer(input: Input) -> Output {
-        print("transfer")
         let output = Output()
         
         input.viewDidLoad
             .withUnretained(self)
             .bind { vm, _ in
-                print("hello")
                 vm.coupleUseCase.getInviteCode()
                     .bind(to: output.inviteCode)
                     .disposed(by: vm.disposBag)
+            }.disposed(by: disposBag)
+        
+        input.tapPresentBottomSheetViewButton
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.controllable?.performTransition(vm, to: .bottomSheet)
             }.disposed(by: disposBag)
         
         return output

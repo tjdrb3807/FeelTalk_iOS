@@ -46,24 +46,37 @@ class LoginViewModel {
     }
     
     func transfer(input: Input) -> Output {
-        // GOOGLE
-        input.tapGoogleLoginButton
-            .map {
-                debugPrint("[TAP]: LoginViewController - googleLoginButton.")
-                return SNSType.google
-            }.withUnretained(self)
-            .bind(onNext: { vm, snsType in
-                
-            }).disposed(by: disposeBag)
+        // APPLE Login
+        input.tapAppleLoginButton
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.loginUseCase.appleLogin()
+                    .bind(to: vm.snsLogin)
+                    .disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
         
-        // KAKAO
+        // GOOGLE Login
+        input.tapGoogleLoginButton
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.loginUseCase.googleLogin()
+                    .asObservable()
+                    .bind(to: vm.snsLogin)
+                    .disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
+        
+        // KAKAO Login
         input.tapKakaoLoginButton
             .withUnretained(self)
             .bind(onNext: { vm, _ in
                 vm.loginUseCase.kakaoLogin()
+                    .asObservable()
+                    .bind(to: vm.snsLogin)
+                    .disposed(by: vm.disposeBag)
             }).disposed(by: disposeBag)
         
-        // NAVER
+        // NAVER Login
         input.tapNaverLoginButton
             .withUnretained(self)
             .bind(onNext: { vm, _ in
@@ -75,8 +88,8 @@ class LoginViewModel {
         snsLogin
             .asSignal()
             .withUnretained(self)
-            .emit { vm, event in
-                vm.delegate?.reciveData(reseponse: event)
+            .emit { vm, snsLogin in
+                vm.delegate?.reciveData(reseponse: snsLogin)
             }.disposed(by: disposeBag)
         
         snsLogin
@@ -88,7 +101,7 @@ class LoginViewModel {
                                         authCode: snsLogin.authCode,
                                         idToken: snsLogin.idToken,
                                         state: snsLogin.state,
-                                        authorizationCode: snsLogin.authCode)
+                                        authorizationCode: snsLogin.authorizationCode)
                 .asObservable()
                 .bind(to: vm.signUpState)
                 .disposed(by: vm.disposeBag)

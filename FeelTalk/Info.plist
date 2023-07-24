@@ -35,6 +35,8 @@
 	<false/>
 	<key>GIDClientID</key>
 	<string>422145577673-r3mps4c0nc5cn9cp4fq7onvdm7m9qpql.apps.googleusercontent.com</string>
+	<key>GIDServerClientID</key>
+	<string>422145577673-9pi0ubc9n5k1soetj6bn9uh4l0d76hm9.apps.googleusercontent.com</string>
 	<key>KAKAO_NATIVE_APP_KEY</key>
 	<string>${KAKAO_NATIVE_APP_KEY}</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -75,5 +77,10 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

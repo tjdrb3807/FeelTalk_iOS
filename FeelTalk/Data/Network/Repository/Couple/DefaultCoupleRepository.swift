@@ -13,7 +13,6 @@ import RxCocoa
 final class DefaultCoupleRepository: CoupleRepository {
     func getInviteCode(accessToken: String) -> Single<String> {
         return Single.create { observer -> Disposable in
-            print(accessToken)
             AF.request(CoupleAPI.getInviteCode(accessToken: accessToken))
                 .responseDecodable(of: BaseResponseDTO<InviteCodeResponseDTO?>.self) { response in
                     switch response.result {
@@ -33,5 +32,23 @@ final class DefaultCoupleRepository: CoupleRepository {
             
             return Disposables.create()
         }
+    }
+    
+    func registerInviteCode(accessToken: String, inviteCode: String) {
+        AF.request(CoupleAPI.registerInviteCode(accessToken: accessToken, inviteCode: inviteCode))
+            .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                switch response.result {
+                case .success(let responseDTO):
+                    if responseDTO.status == "fail" {
+                        guard let message = responseDTO.message else { return }
+                        debugPrint("[ERROR]: CoupleRepository - registerInviteCode")
+                        debugPrint("[ERROR MESSAGE]: \(message)")
+                    } else {
+                        print("registerInviteCode \(responseDTO.status)")
+                    }
+                case .failure(let error):
+                    debugPrint(error.localizedDescription)
+                }
+            }
     }
 }

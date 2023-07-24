@@ -8,7 +8,7 @@
 import UIKit
 
 public enum InviteCodeFlow {
-    case main
+    case bottomSheet
 }
 
 final class InviteCodeCoordinator: BaseCoordinator {
@@ -20,7 +20,7 @@ final class InviteCodeCoordinator: BaseCoordinator {
         let viewModel = InviteCodeViewModel(inviteCodeControllable: self,
                                             coupleUseCase: DefaultCoupleUaseCase(coupleRepository: DefaultCoupleRepository(),
                                                                                  authRepository: DefaultAuthRepository()))
-        let vc = InviteCodeViewConroller.create(with: viewModel)
+        let vc = InviteCodeViewController.create(with: viewModel)
         
         self.navigationController.pushViewController(vc, animated: true)
     }
@@ -28,6 +28,8 @@ final class InviteCodeCoordinator: BaseCoordinator {
 
 extension InviteCodeCoordinator: InviteCodeViewControllable {
     func performTransition(_ inviteCodeViewModel: InviteCodeViewModel, to transition: InviteCodeFlow) {
-        print("hello")
+        let inviteCodeBottomSheetCoordinator = InviteCodeBottomSheetCoordinator(navigationController: navigationController)
+        inviteCodeBottomSheetCoordinator.start()
+        addChildCoordinator(inviteCodeBottomSheetCoordinator)
     }
 }

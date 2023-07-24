@@ -37,10 +37,7 @@ class DefaultNaverLoginRepository: NSObject, NaverRepository {
 extension DefaultNaverLoginRepository: NaverThirdPartyLoginConnectionDelegate {
         func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
             debugPrint("[SUCCESS]: Naver login")
-            
-//            getRefreshToken()
-//                .bind(to: refreshToken)
-//                .disposed(by: disposeBag)
+        
             getSNSLoginInfo()
                 .bind(to: snsLoginInfo)
                 .disposed(by: disposeBag)

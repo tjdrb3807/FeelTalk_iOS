@@ -31,10 +31,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        // Kakao
         if let url = URLContexts.first?.url {
+            // Kakao
             if (AuthApi.isKakaoTalkLoginUrl(url)) {
                 _ = AuthController.handleOpenUrl(url: url)
+            } else {
+                // Google
+                GIDSignIn.sharedInstance.handle(url)
             }
         }
         
@@ -43,10 +46,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .getSharedInstance()
             .receiveAccessToken(URLContexts.first?.url)
         
-        // Google
-        if let url = URLContexts.first?.url {
-            GIDSignIn.sharedInstance.handle(url)
-        }
+//        // Google
+//        if let url = URLContexts.first?.url {
+//            GIDSignIn.sharedInstance.handle(url)
+//        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

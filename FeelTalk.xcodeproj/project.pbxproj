@@ -26,9 +26,9 @@
 		45151A412A6389150024A10D /* EachConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45151A402A6389150024A10D /* EachConsentView.swift */; };
 		45151A432A63D86C0024A10D /* NicknameCoordiantor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45151A422A63D86C0024A10D /* NicknameCoordiantor.swift */; };
 		45151A452A654C6C0024A10D /* SNSLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45151A442A654C6C0024A10D /* SNSLogin.swift */; };
-		4522F7DC2A6690630050A89E /* SignUpNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522F7DB2A6690630050A89E /* SignUpNameSpace.swift */; };
+		4522F7DC2A6690630050A89E /* SignUpViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522F7DB2A6690630050A89E /* SignUpViewNameSpace.swift */; };
 		4523F3B32A32A0D100B28EDC /* NicknameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4523F3B22A32A0D100B28EDC /* NicknameViewModel.swift */; };
-		4523F3B52A32AEC000B28EDC /* InviteCodeViewConroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4523F3B42A32AEC000B28EDC /* InviteCodeViewConroller.swift */; };
+		4523F3B52A32AEC000B28EDC /* InviteCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4523F3B42A32AEC000B28EDC /* InviteCodeViewController.swift */; };
 		452D32632A671301001DBB24 /* SignUpInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D32622A671301001DBB24 /* SignUpInfo.swift */; };
 		452D32652A67B565001DBB24 /* InviteCodeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D32642A67B565001DBB24 /* InviteCodeCoordinator.swift */; };
 		452D32672A67B56C001DBB24 /* InviteCodeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D32662A67B56C001DBB24 /* InviteCodeViewModel.swift */; };
@@ -58,12 +58,14 @@
 		454E86052A3632ED0043B745 /* HomeCoupleSignalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E86042A3632ED0043B745 /* HomeCoupleSignalView.swift */; };
 		454E860A2A36348E0043B745 /* HomeSignalButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E86092A36348E0043B745 /* HomeSignalButton.swift */; };
 		454E860C2A363E730043B745 /* HomeQuestionAnswerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E860B2A363E730043B745 /* HomeQuestionAnswerButton.swift */; };
+		456026872A6C4E5800BEE4ED /* FCMHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456026862A6C4E5800BEE4ED /* FCMHandler.swift */; };
 		456247342A4B52AA0053B3F4 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456247332A4B52AA0053B3F4 /* Date.swift */; };
 		4562473F2A4B8E170053B3F4 /* BaseResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4562473E2A4B8E170053B3F4 /* BaseResponseDTO.swift */; };
 		456247432A4B8FCA0053B3F4 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456247422A4B8FCA0053B3F4 /* Router.swift */; };
 		456247472A4B90730053B3F4 /* ChatAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456247462A4B90730053B3F4 /* ChatAPI.swift */; };
 		456247492A4B92840053B3F4 /* ClonectAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456247482A4B92840053B3F4 /* ClonectAPI.swift */; };
 		4562474D2A4B9B650053B3F4 /* TestChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4562474C2A4B9B650053B3F4 /* TestChatModel.swift */; };
+		4566BE082A6B284700B336AB /* InviteCodeBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4566BE072A6B284700B336AB /* InviteCodeBottomSheetView.swift */; };
 		4572A8AC2A41A54D00E69BF5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4572A8AB2A41A54D00E69BF5 /* GoogleService-Info.plist */; };
 		457441D02A368CD00060C9B4 /* QuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457441CF2A368CCF0060C9B4 /* QuestionViewController.swift */; };
 		457441D32A368D590060C9B4 /* QuestionViewNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457441D22A368D590060C9B4 /* QuestionViewNavigationBar.swift */; };
@@ -71,7 +73,6 @@
 		457441D82A36A0210060C9B4 /* QuestionCoupleInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457441D72A36A0210060C9B4 /* QuestionCoupleInfoView.swift */; };
 		457531C02A4B26F10021080F /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457531BF2A4B26F10021080F /* ChatViewModel.swift */; };
 		45807D982A32F8B800EBBD25 /* CoupleCodeNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45807D972A32F8B800EBBD25 /* CoupleCodeNoteView.swift */; };
-		4581BF6A2A6974D500AA8B23 /* FCMRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4581BF692A6974D500AA8B23 /* FCMRepository.swift */; };
 		458454F22A3B4D82005DF429 /* DoneChallengeCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458454F12A3B4D82005DF429 /* DoneChallengeCollectionViewController.swift */; };
 		458454F42A3B4D99005DF429 /* WantChallengeCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458454F32A3B4D99005DF429 /* WantChallengeCollectionViewController.swift */; };
 		458C24282A5D304800BDB047 /* DefaultNaverLoginRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C24272A5D304800BDB047 /* DefaultNaverLoginRepository.swift */; };
@@ -111,7 +112,7 @@
 		45AE81432A68AECD00DEC4E2 /* DefaultTokenRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE81422A68AECD00DEC4E2 /* DefaultTokenRepository.swift */; };
 		45AE81462A68B7A800DEC4E2 /* TokenRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE81452A68B7A800DEC4E2 /* TokenRepository.swift */; };
 		45AE814B2A68B8F400DEC4E2 /* AutoLoginResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE814A2A68B8F400DEC4E2 /* AutoLoginResponseDTO.swift */; };
-		45AE814D2A68E40D00DEC4E2 /* KakaoRePository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE814C2A68E40D00DEC4E2 /* KakaoRePository.swift */; };
+		45AE814D2A68E40D00DEC4E2 /* KakaoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE814C2A68E40D00DEC4E2 /* KakaoRepository.swift */; };
 		45AF0D4D2A4D57080041AE81 /* ChatBaseResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF0D4C2A4D57080041AE81 /* ChatBaseResponseDTO.swift */; };
 		45AF0D512A4D58840041AE81 /* ShareQuestionChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF0D502A4D58840041AE81 /* ShareQuestionChatResponseDTO.swift */; };
 		45AF0D542A4D5AD90041AE81 /* ShareChallengeChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF0D532A4D5AD90041AE81 /* ShareChallengeChatResponseDTO.swift */; };
@@ -124,6 +125,10 @@
 		45AF0D692A4D911E0041AE81 /* ChatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF0D682A4D911E0041AE81 /* ChatType.swift */; };
 		45AF0D6B2A4D93320041AE81 /* EmojiType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF0D6A2A4D93320041AE81 /* EmojiType.swift */; };
 		45B508AD2A34E68B00DBAF92 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B508AC2A34E68B00DBAF92 /* HomeViewController.swift */; };
+		45B6AA392A6DC5CE004F20F0 /* DefaultAppleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B6AA382A6DC5CE004F20F0 /* DefaultAppleRepository.swift */; };
+		45B6AA3B2A6DC9DF004F20F0 /* AppleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B6AA3A2A6DC9DF004F20F0 /* AppleRepository.swift */; };
+		45B6AA3D2A6DD482004F20F0 /* DefaultGoogleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B6AA3C2A6DD482004F20F0 /* DefaultGoogleRepository.swift */; };
+		45B6AA3F2A6E445A004F20F0 /* GoogleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B6AA3E2A6E445A004F20F0 /* GoogleRepository.swift */; };
 		45BDA4572A60847800A6BBC1 /* MainTapBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BDA4562A60847800A6BBC1 /* MainTapBarController.swift */; };
 		45C1693F2A37AD6A00B5506E /* DefaultKakaoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C1693E2A37AD6A00B5506E /* DefaultKakaoRepository.swift */; };
 		45D0E67A2A555D6700A602D1 /* SNSType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D0E6792A555D6700A602D1 /* SNSType.swift */; };
@@ -134,7 +139,19 @@
 		45D0E6B62A56A44D00A602D1 /* DefaultSignUpRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D0E6B52A56A44D00A602D1 /* DefaultSignUpRepository.swift */; };
 		45D0E6B82A56A4F800A602D1 /* SignUpRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D0E6B72A56A4F800A602D1 /* SignUpRepository.swift */; };
 		45D0E6BA2A56A6D600A602D1 /* SignUpUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D0E6B92A56A6D600A602D1 /* SignUpUseCase.swift */; };
+		45D3125A2A6AFF0B001E4D25 /* InviteCodeBottomSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D312592A6AFF0B001E4D25 /* InviteCodeBottomSheetViewController.swift */; };
+		45D3125C2A6B0A02001E4D25 /* InviteCodeBottomSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D3125B2A6B0A02001E4D25 /* InviteCodeBottomSheetViewModel.swift */; };
+		45D3125E2A6B0A1E001E4D25 /* InputInviewCodeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D3125D2A6B0A1E001E4D25 /* InputInviewCodeCoordinator.swift */; };
+		45D312602A6B0B28001E4D25 /* RegisterInviteCodeRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D3125F2A6B0B28001E4D25 /* RegisterInviteCodeRequestDTO.swift */; };
+		45D312652A6B10C2001E4D25 /* NoDataResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D312642A6B10C2001E4D25 /* NoDataResponseDTO.swift */; };
 		45D4AF4F2A49396E00035654 /* ChatTextMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D4AF4E2A49396E00035654 /* ChatTextMessageCell.swift */; };
+		45DDA6922A6D2F2B00F2C62B /* CoupleRegistrationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6912A6D2F2B00F2C62B /* CoupleRegistrationObserver.swift */; };
+		45DDA6942A6D4E3400F2C62B /* InviteCodeBottomSheetNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6932A6D4E3400F2C62B /* InviteCodeBottomSheetNameSpace.swift */; };
+		45DDA6A22A6D877700F2C62B /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6A12A6D877700F2C62B /* CustomNavigationBar.swift */; };
+		45DDA6A42A6D89C100F2C62B /* CustomNavigationBarNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6A32A6D89C100F2C62B /* CustomNavigationBarNameSpace.swift */; };
+		45DDA6A72A6D93FB00F2C62B /* CustomProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6A62A6D93FB00F2C62B /* CustomProgressBar.swift */; };
+		45DDA6AA2A6D992200F2C62B /* CustomPrograssBarNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6A92A6D992200F2C62B /* CustomPrograssBarNameSpace.swift */; };
+		45DDA6AC2A6D9B8900F2C62B /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6AB2A6D9B8900F2C62B /* UILabel.swift */; };
 		45E85D292A580E8B004B558C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E85D282A580E8B004B558C /* LoginViewController.swift */; };
 		45E85D342A58100A004B558C /* LoginButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E85D332A58100A004B558C /* LoginButton.swift */; };
 		45E85D372A5813E4004B558C /* LoginButtonNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E85D362A5813E4004B558C /* LoginButtonNameSpace.swift */; };
@@ -172,9 +189,9 @@
 		45151A402A6389150024A10D /* EachConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EachConsentView.swift; sourceTree = "<group>"; };
 		45151A422A63D86C0024A10D /* NicknameCoordiantor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameCoordiantor.swift; sourceTree = "<group>"; };
 		45151A442A654C6C0024A10D /* SNSLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSLogin.swift; sourceTree = "<group>"; };
-		4522F7DB2A6690630050A89E /* SignUpNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpNameSpace.swift; sourceTree = "<group>"; };
+		4522F7DB2A6690630050A89E /* SignUpViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewNameSpace.swift; sourceTree = "<group>"; };
 		4523F3B22A32A0D100B28EDC /* NicknameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameViewModel.swift; sourceTree = "<group>"; };
-		4523F3B42A32AEC000B28EDC /* InviteCodeViewConroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeViewConroller.swift; sourceTree = "<group>"; };
+		4523F3B42A32AEC000B28EDC /* InviteCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeViewController.swift; sourceTree = "<group>"; };
 		452D32622A671301001DBB24 /* SignUpInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpInfo.swift; sourceTree = "<group>"; };
 		452D32642A67B565001DBB24 /* InviteCodeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeCoordinator.swift; sourceTree = "<group>"; };
 		452D32662A67B56C001DBB24 /* InviteCodeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeViewModel.swift; sourceTree = "<group>"; };
@@ -204,12 +221,14 @@
 		454E86042A3632ED0043B745 /* HomeCoupleSignalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoupleSignalView.swift; sourceTree = "<group>"; };
 		454E86092A36348E0043B745 /* HomeSignalButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSignalButton.swift; sourceTree = "<group>"; };
 		454E860B2A363E730043B745 /* HomeQuestionAnswerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeQuestionAnswerButton.swift; sourceTree = "<group>"; };
+		456026862A6C4E5800BEE4ED /* FCMHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMHandler.swift; sourceTree = "<group>"; };
 		456247332A4B52AA0053B3F4 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		4562473E2A4B8E170053B3F4 /* BaseResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResponseDTO.swift; sourceTree = "<group>"; };
 		456247422A4B8FCA0053B3F4 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		456247462A4B90730053B3F4 /* ChatAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAPI.swift; sourceTree = "<group>"; };
 		456247482A4B92840053B3F4 /* ClonectAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonectAPI.swift; sourceTree = "<group>"; };
 		4562474C2A4B9B650053B3F4 /* TestChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestChatModel.swift; sourceTree = "<group>"; };
+		4566BE072A6B284700B336AB /* InviteCodeBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeBottomSheetView.swift; sourceTree = "<group>"; };
 		4572A8AB2A41A54D00E69BF5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4572A8AD2A41B9DD00E69BF5 /* FeelTalk.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FeelTalk.entitlements; sourceTree = "<group>"; };
 		457441CF2A368CCF0060C9B4 /* QuestionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewController.swift; sourceTree = "<group>"; };
@@ -218,7 +237,6 @@
 		457441D72A36A0210060C9B4 /* QuestionCoupleInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCoupleInfoView.swift; sourceTree = "<group>"; };
 		457531BF2A4B26F10021080F /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		45807D972A32F8B800EBBD25 /* CoupleCodeNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleCodeNoteView.swift; sourceTree = "<group>"; };
-		4581BF692A6974D500AA8B23 /* FCMRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMRepository.swift; sourceTree = "<group>"; };
 		458454F12A3B4D82005DF429 /* DoneChallengeCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoneChallengeCollectionViewController.swift; sourceTree = "<group>"; };
 		458454F32A3B4D99005DF429 /* WantChallengeCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WantChallengeCollectionViewController.swift; sourceTree = "<group>"; };
 		458C24272A5D304800BDB047 /* DefaultNaverLoginRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNaverLoginRepository.swift; sourceTree = "<group>"; };
@@ -258,7 +276,7 @@
 		45AE81422A68AECD00DEC4E2 /* DefaultTokenRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTokenRepository.swift; sourceTree = "<group>"; };
 		45AE81452A68B7A800DEC4E2 /* TokenRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRepository.swift; sourceTree = "<group>"; };
 		45AE814A2A68B8F400DEC4E2 /* AutoLoginResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoLoginResponseDTO.swift; sourceTree = "<group>"; };
-		45AE814C2A68E40D00DEC4E2 /* KakaoRePository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoRePository.swift; sourceTree = "<group>"; };
+		45AE814C2A68E40D00DEC4E2 /* KakaoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoRepository.swift; sourceTree = "<group>"; };
 		45AF0D4C2A4D57080041AE81 /* ChatBaseResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBaseResponseDTO.swift; sourceTree = "<group>"; };
 		45AF0D502A4D58840041AE81 /* ShareQuestionChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareQuestionChatResponseDTO.swift; sourceTree = "<group>"; };
 		45AF0D532A4D5AD90041AE81 /* ShareChallengeChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareChallengeChatResponseDTO.swift; sourceTree = "<group>"; };
@@ -271,6 +289,10 @@
 		45AF0D682A4D911E0041AE81 /* ChatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatType.swift; sourceTree = "<group>"; };
 		45AF0D6A2A4D93320041AE81 /* EmojiType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiType.swift; sourceTree = "<group>"; };
 		45B508AC2A34E68B00DBAF92 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		45B6AA382A6DC5CE004F20F0 /* DefaultAppleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAppleRepository.swift; sourceTree = "<group>"; };
+		45B6AA3A2A6DC9DF004F20F0 /* AppleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleRepository.swift; sourceTree = "<group>"; };
+		45B6AA3C2A6DD482004F20F0 /* DefaultGoogleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultGoogleRepository.swift; sourceTree = "<group>"; };
+		45B6AA3E2A6E445A004F20F0 /* GoogleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleRepository.swift; sourceTree = "<group>"; };
 		45BDA4562A60847800A6BBC1 /* MainTapBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTapBarController.swift; sourceTree = "<group>"; };
 		45C1693E2A37AD6A00B5506E /* DefaultKakaoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultKakaoRepository.swift; sourceTree = "<group>"; };
 		45D0E6792A555D6700A602D1 /* SNSType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSType.swift; sourceTree = "<group>"; };
@@ -281,7 +303,19 @@
 		45D0E6B52A56A44D00A602D1 /* DefaultSignUpRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSignUpRepository.swift; sourceTree = "<group>"; };
 		45D0E6B72A56A4F800A602D1 /* SignUpRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpRepository.swift; sourceTree = "<group>"; };
 		45D0E6B92A56A6D600A602D1 /* SignUpUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpUseCase.swift; sourceTree = "<group>"; };
+		45D312592A6AFF0B001E4D25 /* InviteCodeBottomSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeBottomSheetViewController.swift; sourceTree = "<group>"; };
+		45D3125B2A6B0A02001E4D25 /* InviteCodeBottomSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeBottomSheetViewModel.swift; sourceTree = "<group>"; };
+		45D3125D2A6B0A1E001E4D25 /* InputInviewCodeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputInviewCodeCoordinator.swift; sourceTree = "<group>"; };
+		45D3125F2A6B0B28001E4D25 /* RegisterInviteCodeRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterInviteCodeRequestDTO.swift; sourceTree = "<group>"; };
+		45D312642A6B10C2001E4D25 /* NoDataResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoDataResponseDTO.swift; sourceTree = "<group>"; };
 		45D4AF4E2A49396E00035654 /* ChatTextMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTextMessageCell.swift; sourceTree = "<group>"; };
+		45DDA6912A6D2F2B00F2C62B /* CoupleRegistrationObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleRegistrationObserver.swift; sourceTree = "<group>"; };
+		45DDA6932A6D4E3400F2C62B /* InviteCodeBottomSheetNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeBottomSheetNameSpace.swift; sourceTree = "<group>"; };
+		45DDA6A12A6D877700F2C62B /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
+		45DDA6A32A6D89C100F2C62B /* CustomNavigationBarNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBarNameSpace.swift; sourceTree = "<group>"; };
+		45DDA6A62A6D93FB00F2C62B /* CustomProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressBar.swift; sourceTree = "<group>"; };
+		45DDA6A92A6D992200F2C62B /* CustomPrograssBarNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPrograssBarNameSpace.swift; sourceTree = "<group>"; };
+		45DDA6AB2A6D9B8900F2C62B /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
 		45E85D282A580E8B004B558C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		45E85D332A58100A004B558C /* LoginButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButton.swift; sourceTree = "<group>"; };
 		45E85D362A5813E4004B558C /* LoginButtonNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonNameSpace.swift; sourceTree = "<group>"; };
@@ -364,11 +398,13 @@
 				4537EEB22A4441C900A9DEB8 /* BaseUI */,
 				454BA2DB2A3DDB3D0001AF32 /* Challenge */,
 				4537EEAD2A442CC700A9DEB8 /* Chat */,
-				45AC8A3E2A34F20D001CA953 /* CommonUI */,
+				45AC8A3E2A34F20D001CA953 /* Custom */,
 				453FA77F2A62950300558AD0 /* Coordinator */,
 				459794D32A447F080043166C /* Extension */,
+				456026852A6C4DE900BEE4ED /* FCM */,
 				45B508AB2A34E67C00DBAF92 /* Home */,
 				45807D992A32F8C400EBBD25 /* InviteCode */,
+				45D312582A6AFEDB001E4D25 /* InviteCodeBottomSheet */,
 				45E85D2A2A580E90004B558C /* Login */,
 				45BDA4582A60847D00A6BBC1 /* Main */,
 				45AC97BD2A328C1200A2B63D /* Nickname */,
@@ -395,7 +431,7 @@
 		4522F7DD2A6690690050A89E /* NameSpace */ = {
 			isa = PBXGroup;
 			children = (
-				4522F7DB2A6690630050A89E /* SignUpNameSpace.swift */,
+				4522F7DB2A6690630050A89E /* SignUpViewNameSpace.swift */,
 			);
 			name = NameSpace;
 			path = ViewModel/NameSpace;
@@ -405,6 +441,7 @@
 			isa = PBXGroup;
 			children = (
 				452D326D2A67B8B7001DBB24 /* Response */,
+				45D312612A6B0B2F001E4D25 /* Request */,
 			);
 			path = Couple;
 			sourceTree = "<group>";
@@ -609,6 +646,15 @@
 			path = SubComponents;
 			sourceTree = "<group>";
 		};
+		456026852A6C4DE900BEE4ED /* FCM */ = {
+			isa = PBXGroup;
+			children = (
+				456026862A6C4E5800BEE4ED /* FCMHandler.swift */,
+				45DDA6912A6D2F2B00F2C62B /* CoupleRegistrationObserver.swift */,
+			);
+			path = FCM;
+			sourceTree = "<group>";
+		};
 		456247392A4B8CE20053B3F4 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -623,6 +669,7 @@
 			isa = PBXGroup;
 			children = (
 				4562473E2A4B8E170053B3F4 /* BaseResponseDTO.swift */,
+				45D312642A6B10C2001E4D25 /* NoDataResponseDTO.swift */,
 				45AF0D4B2A4D56640041AE81 /* Chat */,
 				452D326A2A67B87F001DBB24 /* Couple */,
 				45E85D512A585736004B558C /* Login */,
@@ -697,9 +744,11 @@
 		45769F7F2A5C4D82002377B1 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				45B6AA382A6DC5CE004F20F0 /* DefaultAppleRepository.swift */,
+				45B6AA3C2A6DD482004F20F0 /* DefaultGoogleRepository.swift */,
+				45C1693E2A37AD6A00B5506E /* DefaultKakaoRepository.swift */,
 				45E85D592A585B55004B558C /* DefaultLoginRepository.swift */,
 				458C24272A5D304800BDB047 /* DefaultNaverLoginRepository.swift */,
-				45C1693E2A37AD6A00B5506E /* DefaultKakaoRepository.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -707,11 +756,10 @@
 		45807D992A32F8C400EBBD25 /* InviteCode */ = {
 			isa = PBXGroup;
 			children = (
-				452D32642A67B565001DBB24 /* InviteCodeCoordinator.swift */,
-				452D327A2A67EC5E001DBB24 /* InviteCodeNameSpace.swift */,
-				4523F3B42A32AEC000B28EDC /* InviteCodeViewConroller.swift */,
-				452D32662A67B56C001DBB24 /* InviteCodeViewModel.swift */,
-				45807D9A2A32F8D000EBBD25 /* SubConponents */,
+				45DDA6992A6D582100F2C62B /* Coordinator */,
+				45DDA69A2A6D582900F2C62B /* NameSpace */,
+				45DDA69B2A6D583200F2C62B /* View */,
+				45DDA69C2A6D583800F2C62B /* ViewModel */,
 			);
 			path = InviteCode;
 			sourceTree = "<group>";
@@ -722,24 +770,19 @@
 				45807D972A32F8B800EBBD25 /* CoupleCodeNoteView.swift */,
 				450A851A2A335219008B5DFC /* NoteBackgroundView.swift */,
 				452D32782A67EAB1001DBB24 /* InviteCodeInfoPhraseVIew.swift */,
+				4566BE072A6B284700B336AB /* InviteCodeBottomSheetView.swift */,
 			);
 			path = SubConponents;
-			sourceTree = "<group>";
-		};
-		4581BF682A6974B500AA8B23 /* FCM */ = {
-			isa = PBXGroup;
-			children = (
-				4581BF692A6974D500AA8B23 /* FCMRepository.swift */,
-			);
-			path = FCM;
 			sourceTree = "<group>";
 		};
 		458C242B2A5D34B800BDB047 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				45B6AA3A2A6DC9DF004F20F0 /* AppleRepository.swift */,
+				45AE814C2A68E40D00DEC4E2 /* KakaoRepository.swift */,
 				45E85D4D2A584E7B004B558C /* LoginRepository.swift */,
 				458C24292A5D334800BDB047 /* NaverRepository.swift */,
-				45AE814C2A68E40D00DEC4E2 /* KakaoRePository.swift */,
+				45B6AA3E2A6E445A004F20F0 /* GoogleRepository.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -884,25 +927,28 @@
 				459794D12A447E090043166C /* String.swift */,
 				456247332A4B52AA0053B3F4 /* Date.swift */,
 				45AE812E2A685A0800DEC4E2 /* UIViewController.swift */,
+				45DDA6AB2A6D9B8900F2C62B /* UILabel.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		45AC8A3E2A34F20D001CA953 /* CommonUI */ = {
+		45AC8A3E2A34F20D001CA953 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
 				45AC8A3C2A34F207001CA953 /* CommonProfileImageView.swift */,
+				45DDA6A82A6D940500F2C62B /* ProgressBar */,
+				45DDA6A52A6D89CA00F2C62B /* NavigationBar */,
 			);
-			path = CommonUI;
+			path = Custom;
 			sourceTree = "<group>";
 		};
 		45AC97BD2A328C1200A2B63D /* Nickname */ = {
 			isa = PBXGroup;
 			children = (
-				45AC97BB2A328C0800A2B63D /* NicknameViewController.swift */,
-				45151A422A63D86C0024A10D /* NicknameCoordiantor.swift */,
-				458C244F2A5FFFB200BDB047 /* NickNameNameSpace.swift */,
-				4523F3B22A32A0D100B28EDC /* NicknameViewModel.swift */,
+				45DDA69E2A6D750F00F2C62B /* Coordinator */,
+				45DDA69F2A6D751600F2C62B /* NameSpace */,
+				45DDA69D2A6D750700F2C62B /* View */,
+				45DDA6A02A6D751E00F2C62B /* ViewModel */,
 			);
 			path = Nickname;
 			sourceTree = "<group>";
@@ -1019,7 +1065,6 @@
 				458C242E2A5D8F5200BDB047 /* Authenticaiton */,
 				45AE81332A68AB1100DEC4E2 /* Chat */,
 				452D32752A67D596001DBB24 /* Couple */,
-				4581BF682A6974B500AA8B23 /* FCM */,
 				45AE81322A68AAC900DEC4E2 /* Keychain */,
 				45769F7F2A5C4D82002377B1 /* Login */,
 				458C24432A5EA6E300BDB047 /* SignUp */,
@@ -1137,6 +1182,140 @@
 				458C24442A5EAC0D00BDB047 /* SignUp */,
 			);
 			path = UseCase;
+			sourceTree = "<group>";
+		};
+		45D312582A6AFEDB001E4D25 /* InviteCodeBottomSheet */ = {
+			isa = PBXGroup;
+			children = (
+				45DDA6972A6D57B100F2C62B /* Coordinator */,
+				45DDA6982A6D57B900F2C62B /* NameSpace */,
+				45DDA6952A6D57A400F2C62B /* View */,
+				45DDA6962A6D57AA00F2C62B /* ViewModel */,
+			);
+			path = InviteCodeBottomSheet;
+			sourceTree = "<group>";
+		};
+		45D312612A6B0B2F001E4D25 /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				45D3125F2A6B0B28001E4D25 /* RegisterInviteCodeRequestDTO.swift */,
+			);
+			path = Request;
+			sourceTree = "<group>";
+		};
+		45DDA6952A6D57A400F2C62B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				45D312592A6AFF0B001E4D25 /* InviteCodeBottomSheetViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		45DDA6962A6D57AA00F2C62B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				45D3125B2A6B0A02001E4D25 /* InviteCodeBottomSheetViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		45DDA6972A6D57B100F2C62B /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				45D3125D2A6B0A1E001E4D25 /* InputInviewCodeCoordinator.swift */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		45DDA6982A6D57B900F2C62B /* NameSpace */ = {
+			isa = PBXGroup;
+			children = (
+				45DDA6932A6D4E3400F2C62B /* InviteCodeBottomSheetNameSpace.swift */,
+			);
+			path = NameSpace;
+			sourceTree = "<group>";
+		};
+		45DDA6992A6D582100F2C62B /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				452D32642A67B565001DBB24 /* InviteCodeCoordinator.swift */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		45DDA69A2A6D582900F2C62B /* NameSpace */ = {
+			isa = PBXGroup;
+			children = (
+				452D327A2A67EC5E001DBB24 /* InviteCodeNameSpace.swift */,
+			);
+			path = NameSpace;
+			sourceTree = "<group>";
+		};
+		45DDA69B2A6D583200F2C62B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4523F3B42A32AEC000B28EDC /* InviteCodeViewController.swift */,
+				45807D9A2A32F8D000EBBD25 /* SubConponents */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		45DDA69C2A6D583800F2C62B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				452D32662A67B56C001DBB24 /* InviteCodeViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		45DDA69D2A6D750700F2C62B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				45AC97BB2A328C0800A2B63D /* NicknameViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		45DDA69E2A6D750F00F2C62B /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				45151A422A63D86C0024A10D /* NicknameCoordiantor.swift */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		45DDA69F2A6D751600F2C62B /* NameSpace */ = {
+			isa = PBXGroup;
+			children = (
+				458C244F2A5FFFB200BDB047 /* NickNameNameSpace.swift */,
+			);
+			path = NameSpace;
+			sourceTree = "<group>";
+		};
+		45DDA6A02A6D751E00F2C62B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				4523F3B22A32A0D100B28EDC /* NicknameViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		45DDA6A52A6D89CA00F2C62B /* NavigationBar */ = {
+			isa = PBXGroup;
+			children = (
+				45DDA6A12A6D877700F2C62B /* CustomNavigationBar.swift */,
+				45DDA6A32A6D89C100F2C62B /* CustomNavigationBarNameSpace.swift */,
+			);
+			path = NavigationBar;
+			sourceTree = "<group>";
+		};
+		45DDA6A82A6D940500F2C62B /* ProgressBar */ = {
+			isa = PBXGroup;
+			children = (
+				45DDA6A62A6D93FB00F2C62B /* CustomProgressBar.swift */,
+				45DDA6A92A6D992200F2C62B /* CustomPrograssBarNameSpace.swift */,
+			);
+			path = ProgressBar;
 			sourceTree = "<group>";
 		};
 		45E85D2A2A580E90004B558C /* Login */ = {
@@ -1361,6 +1540,7 @@
 				45AF0D5D2A4D63040041AE81 /* CoupleQuestionChatResponseDTO.swift in Sources */,
 				450416EA2A3C3BAC00BEED0A /* ChallengeViewTabBar.swift in Sources */,
 				45AE812F2A685A0800DEC4E2 /* UIViewController.swift in Sources */,
+				45D312652A6B10C2001E4D25 /* NoDataResponseDTO.swift in Sources */,
 				45807D982A32F8B800EBBD25 /* CoupleCodeNoteView.swift in Sources */,
 				45E85D402A58458D004B558C /* LoginViewModel.swift in Sources */,
 				456247492A4B92840053B3F4 /* ClonectAPI.swift in Sources */,
@@ -1374,6 +1554,7 @@
 				458454F42A3B4D99005DF429 /* WantChallengeCollectionViewController.swift in Sources */,
 				452D32832A68262E001DBB24 /* Token.swift in Sources */,
 				45D0E6BA2A56A6D600A602D1 /* SignUpUseCase.swift in Sources */,
+				45B6AA3B2A6DC9DF004F20F0 /* AppleRepository.swift in Sources */,
 				4591AD302A3763C90029D3D8 /* QuestionInputViewPartnerAnswerSection.swift in Sources */,
 				4591AD2E2A3763B10029D3D8 /* QuestionInputViewMyAnswerSection.swift in Sources */,
 				450416E82A3C382600BEED0A /* ChallengeViewTabBarButton.swift in Sources */,
@@ -1381,20 +1562,23 @@
 				452D32712A67B974001DBB24 /* CoupleAPI.swift in Sources */,
 				45AE81392A68AC6600DEC4E2 /* RenewAccessTokenResponseDTO.swift in Sources */,
 				452D327B2A67EC5E001DBB24 /* InviteCodeNameSpace.swift in Sources */,
-				4522F7DC2A6690630050A89E /* SignUpNameSpace.swift in Sources */,
+				4522F7DC2A6690630050A89E /* SignUpViewNameSpace.swift in Sources */,
 				450416EC2A3C420500BEED0A /* ChallengeViewController.swift in Sources */,
 				45C1693F2A37AD6A00B5506E /* DefaultKakaoRepository.swift in Sources */,
 				453FA7852A62962800558AD0 /* AppCoordinator.swift in Sources */,
 				452D32632A671301001DBB24 /* SignUpInfo.swift in Sources */,
 				452D32652A67B565001DBB24 /* InviteCodeCoordinator.swift in Sources */,
+				45DDA6AC2A6D9B8900F2C62B /* UILabel.swift in Sources */,
 				458C24482A5EDD9A00BDB047 /* InformationPhraseView.swift in Sources */,
-				4581BF6A2A6974D500AA8B23 /* FCMRepository.swift in Sources */,
 				458C24502A5FFFB200BDB047 /* NickNameNameSpace.swift in Sources */,
+				45D3125E2A6B0A1E001E4D25 /* InputInviewCodeCoordinator.swift in Sources */,
 				452D326F2A67B8EC001DBB24 /* InviteCodeResponseDTO.swift in Sources */,
 				458C24282A5D304800BDB047 /* DefaultNaverLoginRepository.swift in Sources */,
-				45AE814D2A68E40D00DEC4E2 /* KakaoRePository.swift in Sources */,
+				45AE814D2A68E40D00DEC4E2 /* KakaoRepository.swift in Sources */,
 				454E85F62A36091F0043B745 /* HomeCoupleProfileImageView.swift in Sources */,
 				4591AD1B2A371C690029D3D8 /* QuestionViewBottomSection.swift in Sources */,
+				45B6AA3F2A6E445A004F20F0 /* GoogleRepository.swift in Sources */,
+				45D3125C2A6B0A02001E4D25 /* InviteCodeBottomSheetViewModel.swift in Sources */,
 				45E85D542A5858A6004B558C /* LoginAPI.swift in Sources */,
 				458C24332A5E8F2C00BDB047 /* SignUpViewController.swift in Sources */,
 				454E86052A3632ED0043B745 /* HomeCoupleSignalView.swift in Sources */,
@@ -1406,16 +1590,22 @@
 				45AF0D672A4D7CBD0041AE81 /* DefaultChatRepository.swift in Sources */,
 				459794D22A447E090043166C /* String.swift in Sources */,
 				457441D62A369F490060C9B4 /* QuestionViewTopSection.swift in Sources */,
+				45D312602A6B0B28001E4D25 /* RegisterInviteCodeRequestDTO.swift in Sources */,
 				45BDA4572A60847800A6BBC1 /* MainTapBarController.swift in Sources */,
 				45AF0D512A4D58840041AE81 /* ShareQuestionChatResponseDTO.swift in Sources */,
 				4591AD322A376E300029D3D8 /* QuestionInputViewAnswerSuccessButton.swift in Sources */,
+				45B6AA3D2A6DD482004F20F0 /* DefaultGoogleRepository.swift in Sources */,
+				45DDA6942A6D4E3400F2C62B /* InviteCodeBottomSheetNameSpace.swift in Sources */,
 				45AF0D592A4D61D00041AE81 /* GetLastestChatPageNoResponseDTO.swift in Sources */,
+				45DDA6AA2A6D992200F2C62B /* CustomPrograssBarNameSpace.swift in Sources */,
 				45AF0D692A4D911E0041AE81 /* ChatType.swift in Sources */,
 				45E85D5C2A586123004B558C /* Login.swift in Sources */,
 				450955E42A2F9CBD00BDAC8E /* AppDelegate.swift in Sources */,
+				45DDA6A22A6D877700F2C62B /* CustomNavigationBar.swift in Sources */,
 				45A14BA22A51D5B800DEFF40 /* ChatAdditionalFunctionView.swift in Sources */,
 				454E86022A3630CE0043B745 /* HomeBottomSectionView.swift in Sources */,
 				45E85D3E2A583997004B558C /* LoginViewNameSpace.swift in Sources */,
+				45DDA6922A6D2F2B00F2C62B /* CoupleRegistrationObserver.swift in Sources */,
 				45AE81462A68B7A800DEC4E2 /* TokenRepository.swift in Sources */,
 				457441D02A368CD00060C9B4 /* QuestionViewController.swift in Sources */,
 				4591AD282A3750B90029D3D8 /* QuestionInputViewController.swift in Sources */,
@@ -1426,10 +1616,11 @@
 				45E85D372A5813E4004B558C /* LoginButtonNameSpace.swift in Sources */,
 				4591AD262A3724AB0029D3D8 /* QuestionListCell.swift in Sources */,
 				45AF0D542A4D5AD90041AE81 /* ShareChallengeChatResponseDTO.swift in Sources */,
-				4523F3B52A32AEC000B28EDC /* InviteCodeViewConroller.swift in Sources */,
+				4523F3B52A32AEC000B28EDC /* InviteCodeViewController.swift in Sources */,
 				454BA2E32A3DE0F00001AF32 /* ChallengeCollectionViewCell.swift in Sources */,
 				450A851B2A335219008B5DFC /* NoteBackgroundView.swift in Sources */,
 				452D32802A6801C3001DBB24 /* CoupleUseCase.swift in Sources */,
+				45DDA6A42A6D89C100F2C62B /* CustomNavigationBarNameSpace.swift in Sources */,
 				4523F3B32A32A0D100B28EDC /* NicknameViewModel.swift in Sources */,
 				458C24372A5E8F5600BDB047 /* SignUpViewModel.swift in Sources */,
 				458454F22A3B4D82005DF429 /* DoneChallengeCollectionViewController.swift in Sources */,
@@ -1444,6 +1635,7 @@
 				454BA2E12A3DDF6F0001AF32 /* ChallengeViewProfileImageButton.swift in Sources */,
 				45D0E6B02A56A09B00A602D1 /* SignUpRequestDTO.swift in Sources */,
 				45AF0D572A4D5FC60041AE81 /* ChallengeCategoryType.swift in Sources */,
+				456026872A6C4E5800BEE4ED /* FCMHandler.swift in Sources */,
 				45D4AF4F2A49396E00035654 /* ChatTextMessageCell.swift in Sources */,
 				456247342A4B52AA0053B3F4 /* Date.swift in Sources */,
 				4562474D2A4B9B650053B3F4 /* TestChatModel.swift in Sources */,
@@ -1455,6 +1647,7 @@
 				4591AD192A37108E0029D3D8 /* QuestionAnswerSectionView.swift in Sources */,
 				458C24312A5D8F8900BDB047 /* AuthRepository.swift in Sources */,
 				45E85D292A580E8B004B558C /* LoginViewController.swift in Sources */,
+				4566BE082A6B284700B336AB /* InviteCodeBottomSheetView.swift in Sources */,
 				453FA7812A62950D00558AD0 /* Coordinator.swift in Sources */,
 				454E85EF2A3604870043B745 /* HomeNavigationBarView.swift in Sources */,
 				45E9EF4F2A488BA100E03817 /* PassThroughView.swift in Sources */,
@@ -1469,12 +1662,15 @@
 				45AF0D5B2A4D62450041AE81 /* LoadChatListResponseDTO.swift in Sources */,
 				45D0E6B62A56A44D00A602D1 /* DefaultSignUpRepository.swift in Sources */,
 				456247432A4B8FCA0053B3F4 /* Router.swift in Sources */,
+				45DDA6A72A6D93FB00F2C62B /* CustomProgressBar.swift in Sources */,
 				45D0E6AC2A56A00F00A602D1 /* SignUpResponseDTO.swift in Sources */,
 				45E85D342A58100A004B558C /* LoginButton.swift in Sources */,
 				45AF0D6B2A4D93320041AE81 /* EmojiType.swift in Sources */,
+				45B6AA392A6DC5CE004F20F0 /* DefaultAppleRepository.swift in Sources */,
 				45D0E67A2A555D6700A602D1 /* SNSType.swift in Sources */,
 				45E85D4E2A584E7B004B558C /* LoginRepository.swift in Sources */,
 				459BD9B22A47469300CB4738 /* BaseView.swift in Sources */,
+				45D3125A2A6AFF0B001E4D25 /* InviteCodeBottomSheetViewController.swift in Sources */,
 				4537EEAC2A442C2E00A9DEB8 /* ChatViewController.swift in Sources */,
 				45AE81312A6867C900DEC4E2 /* KeychainRepository.swift in Sources */,
 				45AE81432A68AECD00DEC4E2 /* DefaultTokenRepository.swift in Sources */,
@@ -1628,9 +1824,9 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "마이크 이용 권한 요청 메세지";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1640,9 +1836,12 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = feeltalk_development;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1663,9 +1862,9 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "마이크 이용 권한 요청 메세지";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1675,9 +1874,12 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = feeltalk_development;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

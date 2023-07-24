@@ -11,41 +11,6 @@ import RxSwift
 import RxCocoa
 
 final class DefaultLoginRepository: NSObject, LoginRepository {
-//    func reLogin(snsType: SNSType,
-//                 refreshToken: String?,
-//                 authCode: String?,
-//                 idToken: String?,
-//                 state: String?,
-//                 authorizationCode: String?) -> Observable<Login> {
-//        return Observable.create { observer -> Disposable in
-//            AF.request(LoginAPI.reLogin(request: .init(snsType: snsType.rawValue,
-//                                                       refreshToken: refreshToken,
-//                                                       authCode: authCode,
-//                                                       idToken: idToken,
-//                                                       state: state,
-//                                                       authorizationCode: authorizationCode)))
-//            .responseDecodable(of: BaseResponseDTO<ReLoginReseponseDTO?>.self) { response in
-//                switch response.result {
-//                case .success(let responseDTO):
-//                    if responseDTO.status == "success" {
-//                        guard let reLoginResponseDTO = responseDTO.data! else { return }
-//                        observer.onNext(reLoginResponseDTO.toDomain())
-//                    } else {
-//                        guard let message = responseDTO.message else { return }
-//                        // TODO: ERROR 처리로 추후 리펙토링
-//                        debugPrint("[ERROR relogin]: \(message)")
-//                    }
-//                case .failure(let error):
-//                    // TODO: ERROR 처리로 추후 리펙토링
-//                    print("[ERROR]: \(error.localizedDescription)")
-//                    observer.onError(error)
-//                }
-//            }
-//
-//            return Disposables.create()
-//        }
-//    }
-    
     func autoLogin(accessToken: String) -> Single<String> {
         return Single.create { observer -> Disposable in
             AF.request(LoginAPI.autoLogin(accessToken: accessToken))
@@ -70,11 +35,11 @@ final class DefaultLoginRepository: NSObject, LoginRepository {
     
     
     func reLogin(snsType: SNSType,
-                   refreshToken: String?,
-                   authCode: String?,
-                   idToken: String?,
-                   state: String?,
-                   authorizationCode: String?) -> Single<Login> {
+                 refreshToken: String?,
+                 authCode: String?,
+                 idToken: String?,
+                 state: String?,
+                 authorizationCode: String?) -> Single<Login> {
         return Single.create { observer -> Disposable in
             AF.request(LoginAPI.reLogin(request: .init(snsType: snsType.rawValue,
                                                        refreshToken: refreshToken,
@@ -94,6 +59,7 @@ final class DefaultLoginRepository: NSObject, LoginRepository {
                         debugPrint("[ERROR]: LoginRepository - reLogin \n[ERROR MESSAGE]: \(message)")
                     }
                 case .failure(let error):
+                    print(error.localizedDescription)
                     observer(.failure(error))
                 }
             }
@@ -113,21 +79,5 @@ extension DefaultLoginRepository {
         guard let reLoginResponseDTO = responseDTO.data else { return nil }
         
         return reLoginResponseDTO
-    }
-}
-
-// MARK: TEST
-extension DefaultLoginRepository {
-    func reLoginTest(snsType: SNSType,
-                     refreshToken: String?,
-                     authCode: String?,
-                     idToken: String?,
-                     state: String?,
-                     authorizationCode: String?) -> Observable<Login> {
-        return Observable.create { observer -> Disposable in
-            observer.onNext(Login(signUpState: .newbie, accessToken: nil, refreshToken: nil, expiresIn: nil))
-            
-            return Disposables.create()
-        }
     }
 }

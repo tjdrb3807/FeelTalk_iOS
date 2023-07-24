@@ -60,7 +60,7 @@ final class CoupleCodeNoteView: UIView {
     
     lazy var coupleCodeLabel: UILabel = {
         let label = UILabel()
-//        label.text = "FPFK41E"
+        label.text = "FPFK41E"
         label.font = UIFont(name: "pretendard-medium", size: 24.0)
         label.textColor = .black
         label.backgroundColor = .clear

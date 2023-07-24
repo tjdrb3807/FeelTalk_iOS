@@ -31,9 +31,10 @@ final class LoginCoordinator: BaseCoordinator {
         let viewModel = LoginViewModel(loginControllable: self,
                                        delegate: self,
                                        loginUseCase: DefaultLoginUseCase(loginRepository: DefaultLoginRepository(),
+                                                                         appleRepository: DefaultAppleRepository(),
+                                                                         googleRepositroy: DefaultGoogleRepository(),
                                                                          naverRepository: DefaultNaverLoginRepository(),
-                                                                         kakaoRepository: DefaultKakaoRepository(),
-                                                                         authRepository: DefaultAuthRepository()))
+                                                                         kakaoRepository: DefaultKakaoRepository()))
         let viewController = LoginViewController.create(with: viewModel)
         
         self.navigationController.pushViewController(viewController, animated: true)

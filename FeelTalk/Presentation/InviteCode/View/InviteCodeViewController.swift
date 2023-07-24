@@ -10,10 +10,10 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class InviteCodeViewConroller: UIViewController {
+final class InviteCodeViewController: UIViewController {
     private var viewModel: InviteCodeViewModel!
     
-    private let dispossBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     private lazy var viewTitleLabel: UILabel = {
         let label = UILabel()
@@ -31,7 +31,7 @@ final class InviteCodeViewConroller: UIViewController {
     private lazy var noteBackgroundView: NoteBackgroundView = { NoteBackgroundView() }()
     private lazy var coupleCodeNoteView: CoupleCodeNoteView = { CoupleCodeNoteView() }()
     
-    private lazy var inputCodeButton: UIButton = {
+    private lazy var presentBottomSheetViewButton: UIButton = {
         let button = UIButton()
         button.setTitle(InviteCodeNameSpace.inputCodeButtonTitleText, for: .normal)
         button.titleLabel?.font = UIFont(name: InviteCodeNameSpace.inputCodeButtonTitleTextFont,
@@ -52,25 +52,15 @@ final class InviteCodeViewConroller: UIViewController {
         self.setConfiguration()
     }
     
-    final class func create(with viewModel: InviteCodeViewModel) -> InviteCodeViewConroller {
-        let viewController = InviteCodeViewConroller()
-        viewController.viewModel = viewModel
-
-        return viewController
-    }
-    
     private func bind(to viewModel: InviteCodeViewModel) {
-        print("[CALL]: InviteCodeViewController.bind(viewModel:)")
-        let input = InviteCodeViewModel.Input(viewDidLoad: self.rx.viewWillAppear)
+        let input = InviteCodeViewModel.Input(viewDidLoad: self.rx.viewWillAppear,
+                                              tapPresentBottomSheetViewButton: presentBottomSheetViewButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
         
         output.inviteCode
-            .withUnretained(self)
-            .bind(onNext: { vc, code in
-                print(code)
-                vc.coupleCodeNoteView.coupleCodeLabel.rx.text.onNext(code)
-            }).disposed(by: dispossBag)
+            .bind(to: coupleCodeNoteView.coupleCodeLabel.rx.text)
+            .disposed(by: disposeBag)
     }
     
     private func setAttribute() {
@@ -82,7 +72,7 @@ final class InviteCodeViewConroller: UIViewController {
          infoPhraseView,
          noteBackgroundView,
          coupleCodeNoteView,
-         inputCodeButton
+         presentBottomSheetViewButton
         ].forEach { view.addSubview($0) }
     }
     
@@ -95,7 +85,16 @@ final class InviteCodeViewConroller: UIViewController {
     }
 }
 
-extension InviteCodeViewConroller {
+extension InviteCodeViewController {
+    final class func create(with viewModel: InviteCodeViewModel) -> InviteCodeViewController {
+        let viewController = InviteCodeViewController()
+        viewController.viewModel = viewModel
+
+        return viewController
+    }
+}
+
+extension InviteCodeViewController {
     func makeViewTitleLableConstraints() {
         viewTitleLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
@@ -123,12 +122,12 @@ extension InviteCodeViewConroller {
         coupleCodeNoteView.snp.makeConstraints {
             $0.top.equalTo(infoPhraseView.snp.bottom).offset(InviteCodeNameSpace.inviteCodeNoteViewTopOffset)
             $0.leading.trailing.equalToSuperview().inset(InviteCodeNameSpace.inviteCodeNoteViewHorizontalInset)
-            $0.bottom.equalTo(inputCodeButton.snp.top).offset(InviteCodeNameSpace.inviteCodeNoteViewBottomOffset)
+            $0.bottom.equalTo(presentBottomSheetViewButton.snp.top).offset(InviteCodeNameSpace.inviteCodeNoteViewBottomOffset)
         }
     }
     
     func makeInputCodeButtonConstraints() {
-        inputCodeButton.snp.makeConstraints {
+        presentBottomSheetViewButton.snp.makeConstraints {
             $0.bottom.equalTo(view.safeAreaInsets.bottom)
             $0.leading.trailing.equalToSuperview().inset(InviteCodeNameSpace.baseHorizontalInset)
             $0.height.equalTo(InviteCodeNameSpace.inputCodeButtonHeight)
@@ -147,7 +146,7 @@ struct InviteCodeViewConroller_Previews: PreviewProvider {
     
     struct InviteCodeViewConroller_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            InviteCodeViewConroller()
+            InviteCodeViewController()
         }
         
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

@@ -11,8 +11,8 @@ import SnapKit
 final class InformationConsentView: UIStackView {
     private lazy var totalConsentView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(named: SignUpNameSpace.totalConsentViewBackgroundColor)
-        view.layer.cornerRadius = SignUpNameSpace.totalConsentViewCornerRadius
+        view.backgroundColor = UIColor(named: SignUpViewNameSpace.totalConsentViewBackgroundColor)
+        view.layer.cornerRadius = SignUpViewNameSpace.totalConsentViewCornerRadius
         
         return view
     }()
@@ -22,7 +22,7 @@ final class InformationConsentView: UIStackView {
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .fillProportionally
-        stackView.spacing = SignUpNameSpace.totalConsentViewFullHorizontalStackViewSpacing
+        stackView.spacing = SignUpViewNameSpace.totalConsentViewFullHorizontalStackViewSpacing
         stackView.backgroundColor = .clear
         stackView.isUserInteractionEnabled = true
         
@@ -31,7 +31,7 @@ final class InformationConsentView: UIStackView {
     
     lazy var totalConsentButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: SignUpNameSpace.totalConsentButtonImage), for: .normal)
+        button.setImage(UIImage(named: SignUpViewNameSpace.totalConsentButtonImage), for: .normal)
         button.contentMode = .scaleAspectFit
         button.backgroundColor = .clear
         
@@ -40,9 +40,9 @@ final class InformationConsentView: UIStackView {
     
     private lazy var totalConsentLabel: UILabel = {
         let label = UILabel()
-        label.text = SignUpNameSpace.totalConsentLabelText
+        label.text = SignUpViewNameSpace.totalConsentLabelText
         label.textColor = .black
-        label.font = UIFont(name: SignUpNameSpace.totalConsentLabelTextFont, size: SignUpNameSpace.totalConsentLabelTextSize)
+        label.font = UIFont(name: SignUpViewNameSpace.totalConsentLabelTextFont, size: SignUpViewNameSpace.totalConsentLabelTextSize)
         label.backgroundColor = .clear
         
         return label
@@ -50,7 +50,7 @@ final class InformationConsentView: UIStackView {
     
     private lazy var presentDetailConsentViewButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: SignUpNameSpace.presentDetailConsentViewButtonImage), for: .normal)
+        button.setImage(UIImage(named: SignUpViewNameSpace.presentDetailConsentViewButtonImage), for: .normal)
         button.backgroundColor = .clear
         
         return button
@@ -61,7 +61,7 @@ final class InformationConsentView: UIStackView {
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .fill
-        stackView.spacing = SignUpNameSpace.consentHorizontalStackViewSpacing
+        stackView.spacing = SignUpViewNameSpace.consentHorizontalStackViewSpacing
         stackView.backgroundColor = .clear
         stackView.isUserInteractionEnabled = true
         
@@ -75,7 +75,7 @@ final class InformationConsentView: UIStackView {
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
-        stackView.spacing = SignUpNameSpace.consentVerticalStackViewSpacing
+        stackView.spacing = SignUpViewNameSpace.consentVerticalStackViewSpacing
         stackView.backgroundColor = .clear
         stackView.isUserInteractionEnabled = true
         
@@ -104,7 +104,7 @@ final class InformationConsentView: UIStackView {
         axis = .vertical
         alignment = .fill
         distribution = .fillProportionally
-        spacing = SignUpNameSpace.informationConsentViewSpacing
+        spacing = SignUpViewNameSpace.informationConsentViewSpacing
         backgroundColor = .clear
         isUserInteractionEnabled = true
     }
@@ -122,18 +122,18 @@ final class InformationConsentView: UIStackView {
     }
     
     private func setConfiguration() {
-        totalConsentButton.snp.makeConstraints { $0.width.equalTo(SignUpNameSpace.totalConsentButtonWidth) }
+        totalConsentButton.snp.makeConstraints { $0.width.equalTo(SignUpViewNameSpace.totalConsentButtonWidth) }
         
-        presentDetailConsentViewButton.snp.makeConstraints { $0.width.equalTo(SignUpNameSpace.presentDetailConsetnViewButtonWidth) }
+        presentDetailConsentViewButton.snp.makeConstraints { $0.width.equalTo(SignUpViewNameSpace.presentDetailConsetnViewButtonWidth) }
         
         totalConsentViewFullHorizontalStackView.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview().inset(SignUpNameSpace.totalConsentViewFullhorizontalStackViewVerticalInset)
-            $0.leading.trailing.equalToSuperview().inset(SignUpNameSpace.totalConsetnViewFullhorizontalStackViewHorizontalInset)
+            $0.top.bottom.equalToSuperview().inset(SignUpViewNameSpace.totalConsentViewFullhorizontalStackViewVerticalInset)
+            $0.leading.trailing.equalToSuperview().inset(SignUpViewNameSpace.totalConsetnViewFullhorizontalStackViewHorizontalInset)
         }
         
-        totalConsentView.snp.makeConstraints { $0.height.equalTo(SignUpNameSpace.totalConsetnViewHeight) }
+        totalConsentView.snp.makeConstraints { $0.height.equalTo(SignUpViewNameSpace.totalConsetnViewHeight) }
         
-        spacingView.snp.makeConstraints { $0.width.equalTo(SignUpNameSpace.spacingViewHeight) }
+        spacingView.snp.makeConstraints { $0.width.equalTo(SignUpViewNameSpace.spacingViewHeight) }
     }
 }
 

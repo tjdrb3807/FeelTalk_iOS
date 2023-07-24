@@ -17,35 +17,32 @@ protocol LoginUseCase {
                  state: String?,
                  authorizationCode: String?) -> Single<SignUpState>
     
+    func appleLogin() -> PublishRelay<SNSLogin>
+    func googleLogin() -> Single<SNSLogin>
     func naverLogin() -> Observable<SNSLogin>
     func kakaoLogin() -> Single<SNSLogin>
-    
-    // MARK: TEST
-    func reLoginTest(snsType: SNSType,
-                     refreshToken: String?,
-                     authCode: String?,
-                     idToken: String?,
-                     state: String?,
-                     authorizationCode: String?) -> Observable<SignUpState>
 }
 
 final class DefaultLoginUseCase: LoginUseCase {
     // MARK: Dependencies
     private let loginRepository: LoginRepository
+    private let appleRepository: AppleRepository
+    private let googleRepository: GoogleRepository
     private let naverRepository: NaverRepository
     private let kakaoRepository: KakaoRepository
-    private let authRepository: AuthRepository
     
     private let disposeBag = DisposeBag()
     
     init(loginRepository: LoginRepository,
+         appleRepository: AppleRepository,
+         googleRepositroy: GoogleRepository,
          naverRepository: NaverRepository,
-         kakaoRepository: KakaoRepository,
-         authRepository: AuthRepository) {
+         kakaoRepository: KakaoRepository) {
         self.loginRepository = loginRepository
+        self.appleRepository = appleRepository
+        self.googleRepository = googleRepositroy
         self.naverRepository = naverRepository
         self.kakaoRepository = kakaoRepository
-        self.authRepository = authRepository
     }
     
     // MARK: Default busniess logic
@@ -97,52 +94,28 @@ final class DefaultLoginUseCase: LoginUseCase {
 
 // MARK: SNS login busniess logic.
 extension DefaultLoginUseCase {
+    func appleLogin() -> PublishRelay<SNSLogin> {
+        debugPrint("[CALL]: LoginUseCase - appleLogin")
+        appleRepository.login()
+        
+        return appleRepository.loginCompleted
+    }
+    
+    func googleLogin() -> Single<SNSLogin> {
+        debugPrint("[CALL]: LoginUseCase - googleLogin")
+        return googleRepository.login()
+    }
+    
     func naverLogin() -> Observable<SNSLogin> {
         debugPrint("[CALL]: LoginUseCase - naverLogin")
         naverRepository.login()
         
-//        return naverRepository.refreshToken
         return naverRepository.snsLoginInfo
     }
     
     func kakaoLogin() -> Single<SNSLogin> {
         debugPrint("[CALL]: LoginUseCAse - kakaoLogin")
         return kakaoRepository.login()
-    }
-}
-
-// MARK: TEST
-extension DefaultLoginUseCase {
-    func reLoginTest(snsType: SNSType,
-                     refreshToken: String?,
-                     authCode: String?,
-                     idToken: String?,
-                     state: String?,
-                     authorizationCode: String?) -> Observable<SignUpState> {
-        return Observable.create { [weak self] observer -> Disposable in
-            guard let self = self else { return Disposables.create() }
-            loginRepository.reLoginTest(snsType: snsType,
-                                        refreshToken: refreshToken,
-                                        authCode: authCode,
-                                        idToken: idToken,
-                                        state: state,
-                                        authorizationCode: authorizationCode)
-            .withUnretained(self)
-            .bind(onNext: { useCase, data in
-                guard data.signUpState == .newbie else {
-                    if useCase.authRepository.create(token: data.accessToken!, key: "accessToken") &&
-                        useCase.authRepository.create(token: data.refreshToken!, key: "refreshToken") {
-                        observer.onNext(data.signUpState)
-                    }
-                    
-                    return
-                }
-                
-                observer.onNext(data.signUpState)
-            }).disposed(by: disposeBag)
-            
-            return Disposables.create()
-        }
     }
 }
 

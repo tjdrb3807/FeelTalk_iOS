@@ -16,6 +16,7 @@ final class SignUpViewController: UIViewController {
     
     var snsLogin: SNSLogin?
     
+    // MARK: SubComponents
     private lazy var fullVerticalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -27,17 +28,19 @@ final class SignUpViewController: UIViewController {
         return stackView
     }()
     
+    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(viewType: .signUp) }()
+    private lazy var progressBar: CustomProgressBar = { CustomProgressBar(persentage: (1/3)) }()
     private lazy var informationPhrase: InformationPhraseView = { return InformationPhraseView() }()
     private lazy var spacing: UIView = { return UIView() }()
     private lazy var adultCertificationView: AdultCertificationView = { return AdultCertificationView() }()
     
     private lazy var nextButton: UIButton = {
         let button = UIButton()
-        button.setTitle(SignUpNameSpace.nextButtonTitle, for: .normal)
+        button.setTitle(SignUpViewNameSpace.nextButtonTitle, for: .normal)
         button.titleLabel?.textColor = .white
-        button.titleLabel?.font = UIFont(name: SignUpNameSpace.nextButtonTitleFont, size: SignUpNameSpace.nextButtonTitleSize)
-        button.backgroundColor = UIColor(named: SignUpNameSpace.nextButtonBackgroundColor)
-        button.layer.cornerRadius = SignUpNameSpace.nextButtonHeight / 2
+        button.titleLabel?.font = UIFont(name: SignUpViewNameSpace.nextButtonTitleFont, size: SignUpViewNameSpace.nextButtonTitleSize)
+        button.backgroundColor = UIColor(named: SignUpViewNameSpace.nextButtonBackgroundColor)
+        button.layer.cornerRadius = SignUpViewNameSpace.nextButtonHeight / 2
         button.isEnabled = false
         
         return button
@@ -75,18 +78,18 @@ final class SignUpViewController: UIViewController {
         output.setInfoConsentUI
             .withUnretained(self)
             .bind(onNext: { vc, _ in
-                vc.informationPhrase.informationLabel.rx.text.onNext(SignUpNameSpace.infomationLabelUpdateText)
-                vc.adultCertificationView.idCard.snp.updateConstraints { $0.height.equalTo(SignUpNameSpace.idCardUpdateHeight) }
+                vc.informationPhrase.informationLabel.rx.text.onNext(SignUpViewNameSpace.infomationLabelUpdateText)
+                vc.adultCertificationView.idCard.snp.updateConstraints { $0.height.equalTo(SignUpViewNameSpace.idCardUpdateHeight) }
                 vc.adultCertificationView.idCard.rx.contentMode.onNext(.scaleAspectFit)
-                vc.adultCertificationView.explanationLabel.rx.text.onNext(SignUpNameSpace.explanationLabelUpdateText)
+                vc.adultCertificationView.explanationLabel.rx.text.onNext(SignUpViewNameSpace.explanationLabelUpdateText)
                 vc.adultCertificationView.setAuthSuccessUI()
                 
                 vc.view.addSubview(vc.nextButton)
                 
                 vc.nextButton.snp.makeConstraints {
-                    $0.leading.trailing.equalToSuperview().inset(SignUpNameSpace.nextButtonUpdateHorizontalInset)
+                    $0.leading.trailing.equalToSuperview().inset(SignUpViewNameSpace.nextButtonUpdateHorizontalInset)
                     $0.bottom.equalTo(vc.view.safeAreaLayoutGuide.snp.bottom)
-                    $0.height.equalTo(SignUpNameSpace.nextButtonUpdateHeight)
+                    $0.height.equalTo(SignUpViewNameSpace.nextButtonUpdateHeight)
                 }
             }).disposed(by: disposeBag)
         
@@ -126,10 +129,13 @@ final class SignUpViewController: UIViewController {
     
     private func addSubComponent() {
         addFullVerticalStackViewSubComponents()
-        view.addSubview(fullVerticalStackView)
+        
+        [navigationBar, progressBar, fullVerticalStackView].forEach { view.addSubview($0) }
     }
     
     private func setConfiguration() {
+        makeNavigationBarConstraints()
+        makePrograssBarConstraints()
         makeInformationPhraseConstraints()
         makeSpacingConstraints()
         makeIdCardConstraints()
@@ -139,6 +145,22 @@ final class SignUpViewController: UIViewController {
 
 // MARK: UI setting method.
 extension SignUpViewController {
+    private func makeNavigationBarConstraints() {
+        navigationBar.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(CustomNavigationBarNameSpace.navigationBarHeight)
+        }
+    }
+    
+    private func makePrograssBarConstraints() {
+        progressBar.snp.makeConstraints {
+            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(CustomProgressBarNameSpace.progressBarHeight)
+        }
+    }
+    
     private func addFullVerticalStackViewSubComponents() {
         [informationPhrase, spacing, adultCertificationView].forEach { fullVerticalStackView.addArrangedSubview($0) }
     }
@@ -146,26 +168,26 @@ extension SignUpViewController {
     private func makeInformationPhraseConstraints() {
         informationPhrase.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(SignUpNameSpace.informationPhraseHeight)
+            $0.height.equalTo(SignUpViewNameSpace.informationPhraseHeight)
         }
     }
     
     private func makeSpacingConstraints() {
         spacing.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(SignUpNameSpace.signUpSpacingViewHeight)
+            $0.height.equalTo(SignUpViewNameSpace.signUpSpacingViewHeight)
         }
     }
     
     private func makeIdCardConstraints() {
         adultCertificationView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(SignUpNameSpace.adutlCertificationViewHorizontalInset)
+            $0.leading.trailing.equalToSuperview().inset(SignUpViewNameSpace.adutlCertificationViewHorizontalInset)
         }
     }
     
     private func makeFullVerticalStackViewConstraints() {
         fullVerticalStackView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(SignUpNameSpace.fullHorizontalStackViewTopOffset)
+            $0.top.equalTo(progressBar.snp.bottom).offset(SignUpViewNameSpace.fullHorizontalStackViewTopOffset)
             $0.leading.trailing.equalToSuperview()
         }
     }
@@ -178,6 +200,7 @@ import SwiftUI
 struct SignUpViewController_Previews: PreviewProvider {
     static var previews: some View {
         SignUpViewController_Presentable()
+            .edgesIgnoringSafeArea(.top)
     }
     
     struct SignUpViewController_Presentable: UIViewControllerRepresentable {

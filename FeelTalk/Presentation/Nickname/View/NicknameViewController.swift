@@ -16,6 +16,10 @@ final class NicknameViewController: UIViewController {
     
     var signUpInfo: SignUpInfo?
     
+    // MARK: SubComponents
+    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(viewType: .signUp) }()
+    private lazy var progressBar: CustomProgressBar = { CustomProgressBar(persentage: 2/3) }()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = NicknameNameSpace.titleLabelText
@@ -57,6 +61,12 @@ final class NicknameViewController: UIViewController {
         textField.backgroundColor = UIColor(named: NicknameNameSpace.nicknameTextFieldBackgroundColor)
         textField.layer.cornerRadius = NicknameNameSpace.nicknameTextFieldCornerRadius
         
+        let paddingView = UIView(frame: CGRect(origin: .zero,
+                                               size: CGSize(width: NicknameNameSpace.nicknameTextFieldLeftPadding,
+                                                            height: NicknameNameSpace.nicknameTextFieldHeight)))
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
+        
         return textField
     }()
     
@@ -67,7 +77,7 @@ final class NicknameViewController: UIViewController {
         button.titleLabel?.font = UIFont(name: NicknameNameSpace.nextButtonTitleFont,
                                          size: NicknameNameSpace.nextButtonTitleSize)
         button.backgroundColor = UIColor(named: NicknameNameSpace.nextButtonDeactiveBackgoundColor)
-        button.layer.cornerRadius = NicknameNameSpace.nextButtonHeight / 2
+        button.layer.cornerRadius = NicknameNameSpace.nextButtonBaseCornerRadius
         button.isEnabled = false
         
         return button
@@ -116,12 +126,24 @@ final class NicknameViewController: UIViewController {
     private func setAttribute()  { view.backgroundColor = .white }
     
     private func addSubComponents() {
-        [titleLabel, descriptionLabel, nicknameLabel, nicknameTextField, nextButton].forEach { view.addSubview($0) }
+        [navigationBar, progressBar, titleLabel, descriptionLabel, nicknameLabel, nicknameTextField, nextButton].forEach { view.addSubview($0) }
     }
     
     private func setConfiguration() {
+        navigationBar.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(CustomNavigationBarNameSpace.navigationBarHeight)
+        }
+        
+        progressBar.snp.makeConstraints {
+            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(CustomProgressBarNameSpace.progressBarHeight)
+        }
+        
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(NicknameNameSpace.titleLabelTopOffset)
+            $0.top.equalTo(progressBar.snp.bottom).offset(NicknameNameSpace.titleLabelTopOffset)
             $0.leading.equalToSuperview().inset(NicknameNameSpace.baseLeadingInset)
             $0.height.equalTo(NicknameNameSpace.titleLabelHeight)
         }
@@ -162,13 +184,13 @@ extension NicknameViewController {
                 $0.leading.equalToSuperview().inset(NicknameNameSpace.baseLeadingInset)
                 $0.trailing.equalToSuperview().inset(NicknameNameSpace.baseTrailingInset)
             }
-            nextButton.layer.cornerRadius = NicknameNameSpace.nextButtonHeight / 2
+            nextButton.layer.cornerRadius = NicknameNameSpace.nextButtonBaseCornerRadius
         } else {
             nextButton.snp.updateConstraints {
                 $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(keyboardHeight)
                 $0.leading.trailing.equalToSuperview()
             }
-            nextButton.layer.cornerRadius = 0.0 }
+            nextButton.layer.cornerRadius = NicknameNameSpace.nextButtonUpdateCornerRadius }
     
         view.layoutIfNeeded()
     }

@@ -1,5 +1,5 @@
 //
-//  SignUpNameSpace.swift
+//  SignUpViewNameSpace.swift
 //  FeelTalk
 //
 //  Created by 전성규 on 2023/07/18.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum SignUpNameSpace {
+enum SignUpViewNameSpace {
     // MARK: SignUpViewController SubComponents
     static let nextButtonTitle: String = "다음"
     static let nextButtonTitleFont: String = "pretendard-medium"
@@ -19,7 +19,7 @@ enum SignUpNameSpace {
     
     static let signUpSpacingViewHeight: CGFloat = (UIScreen.main.bounds.height / 100) * 5.66
     
-    static let fullHorizontalStackViewTopOffset: CGFloat = (UIScreen.main.bounds.height / 100) * 1.97
+    static let fullHorizontalStackViewTopOffset: CGFloat = (UIScreen.main.bounds.height / 100) * 2.21
     
     
     // MARK: InformationPhraseView

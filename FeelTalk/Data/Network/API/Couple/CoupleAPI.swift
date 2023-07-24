@@ -10,6 +10,7 @@ import Alamofire
 
 enum CoupleAPI {
     case getInviteCode(accessToken: String)
+    case registerInviteCode(accessToken: String, inviteCode: String)
 }
     
 extension CoupleAPI: Router, URLRequestConvertible {
@@ -19,6 +20,8 @@ extension CoupleAPI: Router, URLRequestConvertible {
         switch self {
         case .getInviteCode:
             return "/api/v1/member/invite-code"
+        case .registerInviteCode:
+            return "/api/v1/couple"
         }
     }
         
@@ -26,16 +29,21 @@ extension CoupleAPI: Router, URLRequestConvertible {
         switch self {
         case .getInviteCode:
             return .get
+        case .registerInviteCode:
+            return .post
         }
     }
         
     var header: [String : String] {
         switch self {
-        case .getInviteCode(let accessToken):
-            print(accessToken)
+        case .getInviteCode(accessToken: let accessToken):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
-                    "Authorization": accessToken]
+                    "Authorization": "Bearer \(accessToken)"]
+        case .registerInviteCode(accessToken: let accessToken, inviteCode: _):
+            return ["Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": "Bearer \(accessToken)"]
         }
     }
         
@@ -43,12 +51,14 @@ extension CoupleAPI: Router, URLRequestConvertible {
         switch self {
         case .getInviteCode:
             return nil
+        case .registerInviteCode(accessToken: _, inviteCode: let inviteCode):
+            return ["inviteCode": inviteCode]
         }
     }
         
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .getInviteCode:
+        case .getInviteCode, .registerInviteCode:
             return JSONEncoding.default
         }
     }
@@ -59,8 +69,6 @@ extension CoupleAPI: Router, URLRequestConvertible {
         
         request.method = method
         request.headers = HTTPHeaders(header)
-    
-        print(request.headers)
         
         if let encoding = encoding {
             return try encoding.encode(request, with: parameters)

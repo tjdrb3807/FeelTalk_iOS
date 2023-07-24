@@ -18,13 +18,5 @@ protocol LoginRepository {
                  idToken: String?,
                  state: String?,
                  authorizationCode: String?) -> Single<Login>
-    
-    // MARK: TEST
-    func reLoginTest(snsType: SNSType,
-                     refreshToken: String?,
-                     authCode: String?,
-                     idToken: String?,
-                     state: String?,
-                     authorizationCode: String?) -> Observable<Login>
 }
 

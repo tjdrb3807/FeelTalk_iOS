@@ -24,10 +24,10 @@ final class EachConsentView: UIStackView {
         
         switch infoContent {
         case .adultConsent:
-            button.setImage(UIImage(named: SignUpNameSpace.checkButtonSelectedImage), for: .normal)
+            button.setImage(UIImage(named: SignUpViewNameSpace.checkButtonSelectedImage), for: .normal)
             button.isUserInteractionEnabled = false
         case .serviceConsent, .personalInfoConsent, .sensitiveInfoConsent, .marketingInfoConsent:
-            button.setImage(UIImage(named: SignUpNameSpace.checkButtonUnselectedImage), for: .normal)
+            button.setImage(UIImage(named: SignUpViewNameSpace.checkButtonUnselectedImage), for: .normal)
             button.setImage(UIImage(named: "icon_check_selected"), for: .selected)
             button.isEnabled = true
         }
@@ -46,14 +46,14 @@ final class EachConsentView: UIStackView {
         case .adultConsent:
             break
         case .serviceConsent, .personalInfoConsent, .sensitiveInfoConsent:
-            label.text = SignUpNameSpace.restConsentOptionLabelText
-            label.textColor = UIColor(named: SignUpNameSpace.restConsentOptionLabelTextColor)
+            label.text = SignUpViewNameSpace.restConsentOptionLabelText
+            label.textColor = UIColor(named: SignUpViewNameSpace.restConsentOptionLabelTextColor)
         case .marketingInfoConsent:
-            label.text = SignUpNameSpace.marketingConsentOptionLabelText
-            label.textColor = UIColor(named: SignUpNameSpace.marketingConsetnOptionLabelTextColor)
+            label.text = SignUpViewNameSpace.marketingConsentOptionLabelText
+            label.textColor = UIColor(named: SignUpViewNameSpace.marketingConsetnOptionLabelTextColor)
         }
         
-        label.font = UIFont(name: SignUpNameSpace.optionLabelTextFont, size: SignUpNameSpace.optionLabelTextSize)
+        label.font = UIFont(name: SignUpViewNameSpace.optionLabelTextFont, size: SignUpViewNameSpace.optionLabelTextSize)
         label.backgroundColor = .clear
         
         return label
@@ -66,23 +66,23 @@ final class EachConsentView: UIStackView {
         
         switch infoContent {
         case .adultConsent:
-            label.text = SignUpNameSpace.adultConsentLabelText
+            label.text = SignUpViewNameSpace.adultConsentLabelText
             label.textColor = .black
         case .serviceConsent:
-            label.text = SignUpNameSpace.serviceConsentLabelText
-            label.textColor = UIColor(named: SignUpNameSpace.contentLabelTextColor)
+            label.text = SignUpViewNameSpace.serviceConsentLabelText
+            label.textColor = UIColor(named: SignUpViewNameSpace.contentLabelTextColor)
         case .personalInfoConsent:
-            label.text = SignUpNameSpace.personalInfoConsentLabelText
-            label.textColor = UIColor(named: SignUpNameSpace.contentLabelTextColor)
+            label.text = SignUpViewNameSpace.personalInfoConsentLabelText
+            label.textColor = UIColor(named: SignUpViewNameSpace.contentLabelTextColor)
         case .sensitiveInfoConsent:
-            label.text = SignUpNameSpace.sensitiveInfoConsentLabelText
-            label.textColor = UIColor(named: SignUpNameSpace.contentLabelTextColor)
+            label.text = SignUpViewNameSpace.sensitiveInfoConsentLabelText
+            label.textColor = UIColor(named: SignUpViewNameSpace.contentLabelTextColor)
         case .marketingInfoConsent:
-            label.text = SignUpNameSpace.marketingInfoConsentLabelText
-            label.textColor = UIColor(named: SignUpNameSpace.contentLabelTextColor)
+            label.text = SignUpViewNameSpace.marketingInfoConsentLabelText
+            label.textColor = UIColor(named: SignUpViewNameSpace.contentLabelTextColor)
         }
 
-        label.font = UIFont(name: SignUpNameSpace.contentLabelTextFont, size: SignUpNameSpace.contentLabelTextSize)
+        label.font = UIFont(name: SignUpViewNameSpace.contentLabelTextFont, size: SignUpViewNameSpace.contentLabelTextSize)
         label.backgroundColor = .clear
         
         return label
@@ -119,10 +119,10 @@ final class EachConsentView: UIStackView {
     }
     
     private func setConfiguration() {
-        checkButton.snp.makeConstraints { $0.width.equalTo(SignUpNameSpace.checkButtonWidth) }
-        firstSpacing.snp.makeConstraints { $0.width.equalTo(SignUpNameSpace.eachConsentViewFirstSpacingWidth)}
+        checkButton.snp.makeConstraints { $0.width.equalTo(SignUpViewNameSpace.checkButtonWidth) }
+        firstSpacing.snp.makeConstraints { $0.width.equalTo(SignUpViewNameSpace.eachConsentViewFirstSpacingWidth)}
         optionLabel.snp.makeConstraints { $0.width.equalTo(optionLabel.intrinsicContentSize) }
-        secondSpacing.snp.makeConstraints { $0.width.equalTo(SignUpNameSpace.eachConsetnViewSecontSpacinWidth)}
+        secondSpacing.snp.makeConstraints { $0.width.equalTo(SignUpViewNameSpace.eachConsetnViewSecontSpacinWidth)}
     }
 }
 

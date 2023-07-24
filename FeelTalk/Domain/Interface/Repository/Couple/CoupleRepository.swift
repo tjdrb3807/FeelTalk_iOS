@@ -11,4 +11,5 @@ import RxCocoa
 
 protocol CoupleRepository {
     func getInviteCode(accessToken: String) -> Single<String>
+    func registerInviteCode(accessToken: String, inviteCode: String)
 }
