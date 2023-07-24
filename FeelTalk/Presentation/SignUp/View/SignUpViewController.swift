@@ -79,6 +79,7 @@ final class SignUpViewController: UIViewController {
             .withUnretained(self)
             .bind(onNext: { vc, _ in
                 vc.informationPhrase.informationLabel.rx.text.onNext(SignUpViewNameSpace.infomationLabelUpdateText)
+                vc.spacing.snp.updateConstraints { $0.height.equalTo(SignUpViewNameSpace.signUpSpacingViewUpdateHeight) }
                 vc.adultCertificationView.idCard.snp.updateConstraints { $0.height.equalTo(SignUpViewNameSpace.idCardUpdateHeight) }
                 vc.adultCertificationView.idCard.rx.contentMode.onNext(.scaleAspectFit)
                 vc.adultCertificationView.explanationLabel.rx.text.onNext(SignUpViewNameSpace.explanationLabelUpdateText)

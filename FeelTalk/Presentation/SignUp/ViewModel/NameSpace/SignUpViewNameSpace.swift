@@ -18,6 +18,7 @@ enum SignUpViewNameSpace {
     static let nextButtonUpdateHorizontalInset: CGFloat = (UIScreen.main.bounds.width / 100) * 5.33
     
     static let signUpSpacingViewHeight: CGFloat = (UIScreen.main.bounds.height / 100) * 5.66
+    static let signUpSpacingViewUpdateHeight: CGFloat = 0.0
     
     static let fullHorizontalStackViewTopOffset: CGFloat = (UIScreen.main.bounds.height / 100) * 2.21
     

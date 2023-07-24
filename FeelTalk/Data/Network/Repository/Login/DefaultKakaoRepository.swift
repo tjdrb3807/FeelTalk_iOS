@@ -37,7 +37,6 @@ final class DefaultKakaoRepository: KakaoRepository {
                                                    authorizationCode: nil))
                         )
                     }
-                    
                 }
             } else {
                 UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
