@@ -29,7 +29,7 @@
 		4522F7DC2A6690630050A89E /* SignUpViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522F7DB2A6690630050A89E /* SignUpViewNameSpace.swift */; };
 		4523F3B32A32A0D100B28EDC /* NicknameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4523F3B22A32A0D100B28EDC /* NicknameViewModel.swift */; };
 		4523F3B52A32AEC000B28EDC /* InviteCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4523F3B42A32AEC000B28EDC /* InviteCodeViewController.swift */; };
-		452D32632A671301001DBB24 /* SignUpInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D32622A671301001DBB24 /* SignUpInfo.swift */; };
+		452D32632A671301001DBB24 /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D32622A671301001DBB24 /* SignUp.swift */; };
 		452D32652A67B565001DBB24 /* InviteCodeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D32642A67B565001DBB24 /* InviteCodeCoordinator.swift */; };
 		452D32672A67B56C001DBB24 /* InviteCodeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D32662A67B56C001DBB24 /* InviteCodeViewModel.swift */; };
 		452D326F2A67B8EC001DBB24 /* InviteCodeResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D326E2A67B8EC001DBB24 /* InviteCodeResponseDTO.swift */; };
@@ -77,8 +77,6 @@
 		458454F42A3B4D99005DF429 /* WantChallengeCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458454F32A3B4D99005DF429 /* WantChallengeCollectionViewController.swift */; };
 		458C24282A5D304800BDB047 /* DefaultNaverLoginRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C24272A5D304800BDB047 /* DefaultNaverLoginRepository.swift */; };
 		458C242A2A5D334800BDB047 /* NaverRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C24292A5D334800BDB047 /* NaverRepository.swift */; };
-		458C242D2A5D869700BDB047 /* DefaultAuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C242C2A5D869700BDB047 /* DefaultAuthRepository.swift */; };
-		458C24312A5D8F8900BDB047 /* AuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C24302A5D8F8900BDB047 /* AuthRepository.swift */; };
 		458C24332A5E8F2C00BDB047 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C24322A5E8F2C00BDB047 /* SignUpViewController.swift */; };
 		458C24372A5E8F5600BDB047 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C24362A5E8F5600BDB047 /* SignUpViewModel.swift */; };
 		458C24482A5EDD9A00BDB047 /* InformationPhraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C24472A5EDD9A00BDB047 /* InformationPhraseView.swift */; };
@@ -192,7 +190,7 @@
 		4522F7DB2A6690630050A89E /* SignUpViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewNameSpace.swift; sourceTree = "<group>"; };
 		4523F3B22A32A0D100B28EDC /* NicknameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameViewModel.swift; sourceTree = "<group>"; };
 		4523F3B42A32AEC000B28EDC /* InviteCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeViewController.swift; sourceTree = "<group>"; };
-		452D32622A671301001DBB24 /* SignUpInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpInfo.swift; sourceTree = "<group>"; };
+		452D32622A671301001DBB24 /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
 		452D32642A67B565001DBB24 /* InviteCodeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeCoordinator.swift; sourceTree = "<group>"; };
 		452D32662A67B56C001DBB24 /* InviteCodeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeViewModel.swift; sourceTree = "<group>"; };
 		452D326E2A67B8EC001DBB24 /* InviteCodeResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeResponseDTO.swift; sourceTree = "<group>"; };
@@ -241,8 +239,6 @@
 		458454F32A3B4D99005DF429 /* WantChallengeCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WantChallengeCollectionViewController.swift; sourceTree = "<group>"; };
 		458C24272A5D304800BDB047 /* DefaultNaverLoginRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNaverLoginRepository.swift; sourceTree = "<group>"; };
 		458C24292A5D334800BDB047 /* NaverRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaverRepository.swift; sourceTree = "<group>"; };
-		458C242C2A5D869700BDB047 /* DefaultAuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAuthRepository.swift; sourceTree = "<group>"; };
-		458C24302A5D8F8900BDB047 /* AuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRepository.swift; sourceTree = "<group>"; };
 		458C24322A5E8F2C00BDB047 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		458C24362A5E8F5600BDB047 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		458C24472A5EDD9A00BDB047 /* InformationPhraseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationPhraseView.swift; sourceTree = "<group>"; };
@@ -787,22 +783,6 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
-		458C242E2A5D8F5200BDB047 /* Authenticaiton */ = {
-			isa = PBXGroup;
-			children = (
-				458C242C2A5D869700BDB047 /* DefaultAuthRepository.swift */,
-			);
-			path = Authenticaiton;
-			sourceTree = "<group>";
-		};
-		458C242F2A5D8F7900BDB047 /* Authentication */ = {
-			isa = PBXGroup;
-			children = (
-				458C24302A5D8F8900BDB047 /* AuthRepository.swift */,
-			);
-			path = Authentication;
-			sourceTree = "<group>";
-		};
 		458C24342A5E8F3400BDB047 /* SignUp */ = {
 			isa = PBXGroup;
 			children = (
@@ -1062,7 +1042,6 @@
 		45AF0D652A4D7C8A0041AE81 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				458C242E2A5D8F5200BDB047 /* Authenticaiton */,
 				45AE81332A68AB1100DEC4E2 /* Chat */,
 				452D32752A67D596001DBB24 /* Couple */,
 				45AE81322A68AAC900DEC4E2 /* Keychain */,
@@ -1114,7 +1093,7 @@
 			isa = PBXGroup;
 			children = (
 				45E85D5B2A586123004B558C /* Login.swift */,
-				452D32622A671301001DBB24 /* SignUpInfo.swift */,
+				452D32622A671301001DBB24 /* SignUp.swift */,
 				45151A442A654C6C0024A10D /* SNSLogin.swift */,
 				452D32822A68262E001DBB24 /* Token.swift */,
 			);
@@ -1132,7 +1111,6 @@
 		45D0E6A42A55B02500A602D1 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				458C242F2A5D8F7900BDB047 /* Authentication */,
 				452D327E2A680152001DBB24 /* Couple */,
 				458C242B2A5D34B800BDB047 /* Login */,
 				458C24462A5EAC2200BDB047 /* SignUp */,
@@ -1535,7 +1513,6 @@
 				45AC8A3D2A34F208001CA953 /* CommonProfileImageView.swift in Sources */,
 				45E85D502A58572B004B558C /* ReLoginResponseDTO.swift in Sources */,
 				45AE81372A68AC2C00DEC4E2 /* RenewAccessTokenRequestDTO.swift in Sources */,
-				458C242D2A5D869700BDB047 /* DefaultAuthRepository.swift in Sources */,
 				45A14BA42A51D5C800DEFF40 /* ChatAdditionalFunctionButton.swift in Sources */,
 				45AF0D5D2A4D63040041AE81 /* CoupleQuestionChatResponseDTO.swift in Sources */,
 				450416EA2A3C3BAC00BEED0A /* ChallengeViewTabBar.swift in Sources */,
@@ -1566,7 +1543,7 @@
 				450416EC2A3C420500BEED0A /* ChallengeViewController.swift in Sources */,
 				45C1693F2A37AD6A00B5506E /* DefaultKakaoRepository.swift in Sources */,
 				453FA7852A62962800558AD0 /* AppCoordinator.swift in Sources */,
-				452D32632A671301001DBB24 /* SignUpInfo.swift in Sources */,
+				452D32632A671301001DBB24 /* SignUp.swift in Sources */,
 				452D32652A67B565001DBB24 /* InviteCodeCoordinator.swift in Sources */,
 				45DDA6AC2A6D9B8900F2C62B /* UILabel.swift in Sources */,
 				458C24482A5EDD9A00BDB047 /* InformationPhraseView.swift in Sources */,
@@ -1645,7 +1622,6 @@
 				4591AD2C2A3752A00029D3D8 /* QuestionInputViewTitleLabel.swift in Sources */,
 				45151A452A654C6C0024A10D /* SNSLogin.swift in Sources */,
 				4591AD192A37108E0029D3D8 /* QuestionAnswerSectionView.swift in Sources */,
-				458C24312A5D8F8900BDB047 /* AuthRepository.swift in Sources */,
 				45E85D292A580E8B004B558C /* LoginViewController.swift in Sources */,
 				4566BE082A6B284700B336AB /* InviteCodeBottomSheetView.swift in Sources */,
 				453FA7812A62950D00558AD0 /* Coordinator.swift in Sources */,

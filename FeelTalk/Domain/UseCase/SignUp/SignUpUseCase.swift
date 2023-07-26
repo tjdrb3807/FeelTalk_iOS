@@ -22,13 +22,11 @@ protocol SignUpUseCase {
 
 final class DefaultSignUpUseCase: SignUpUseCase {
     private let signUpRepository: SignUpRepository
-    private let authRepository: AuthRepository
     
     private let disposeBag = DisposeBag()
     
-    init(signUpRepository: SignUpRepository, authRepository: AuthRepository) {
+    init(signUpRepository: SignUpRepository) {
         self.signUpRepository = signUpRepository
-        self.authRepository = authRepository
     }
     
     func signUp(snsType: SNSType,

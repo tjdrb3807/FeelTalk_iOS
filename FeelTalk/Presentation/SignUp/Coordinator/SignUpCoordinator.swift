@@ -17,7 +17,7 @@ protocol SignUpCoordinatorDependencies: AnyObject {
 final class SignUpCoordinator: BaseCoordinator {
     weak var dependencies: SignUpCoordinatorDependencies?
     private var snsLogin: SNSLogin?
-    private var signUpInfo: SignUpInfo?
+    private var signUpInfo: SignUp?
     
     init(navigationController: UINavigationController, dependencies: SignUpCoordinatorDependencies, snsLogin: SNSLogin?) {
         self.snsLogin = snsLogin
@@ -28,8 +28,7 @@ final class SignUpCoordinator: BaseCoordinator {
     override func start() {
         let viewModel = SignUpViewModel(signUpControllable: self,
                                         delegate: self,
-                                        signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository(),
-                                                                            authRepository: DefaultAuthRepository()))
+                                        signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
         let vc = SignUpViewController.create(with: viewModel)
         vc.snsLogin = self.snsLogin
         
@@ -55,7 +54,7 @@ extension SignUpCoordinator: NicknameCoordinatorDependencies {
 }
 
 extension SignUpCoordinator: SendSignUpInfoDataDelegate {
-    func reciveData(response: SignUpInfo) {
+    func reciveData(response: SignUp) {
         self.signUpInfo = response
     }
 }

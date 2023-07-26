@@ -38,6 +38,7 @@ enum NicknameNameSpace {
     
     // MARK: NicknameTextField
     static let nicknameTextFieldPlaceholder: String = "연인에게 보여줄 닉네임을 적어주세요"
+    static let nicknameTextFieldPlaceholderColor: String = "gray_400"
     static let nicknameTextFieldBackgroundColor: String = "gray_200"
     static let nicknameTextFieldCornerRadius: CGFloat = 8.0
     static let nicknameTextFieldLeftPadding: CGFloat = (UIScreen.main.bounds.width / 100) * 3.2

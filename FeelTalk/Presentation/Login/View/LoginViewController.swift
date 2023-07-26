@@ -10,6 +10,9 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+/// ScressID: L010
+///
+/// 구글, 카카오, 네이버, 애플 로그인, 하단 문의하기 버튼
 final class LoginViewController: UIViewController {
     private var viewModel: LoginViewModel!
     private let disposeBag = DisposeBag()

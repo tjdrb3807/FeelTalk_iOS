@@ -14,7 +14,7 @@ final class NicknameViewController: UIViewController {
     private var viewModel: NicknameViewModel!
     private let disposeBag = DisposeBag()
     
-    var signUpInfo: SignUpInfo?
+    var signUpInfo: SignUp?
     
     // MARK: SubComponents
     private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(viewType: .signUp) }()
@@ -56,7 +56,8 @@ final class NicknameViewController: UIViewController {
     
     private lazy var nicknameTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = NicknameNameSpace.nicknameTextFieldPlaceholder
+        textField.attributedPlaceholder = NSAttributedString(string: NicknameNameSpace.nicknameTextFieldPlaceholder,
+                                                             attributes: [NSAttributedString.Key.foregroundColor: UIColor(named: NicknameNameSpace.nicknameTextFieldPlaceholderColor)!])
         textField.textColor = .black
         textField.backgroundColor = UIColor(named: NicknameNameSpace.nicknameTextFieldBackgroundColor)
         textField.layer.cornerRadius = NicknameNameSpace.nicknameTextFieldCornerRadius
@@ -101,7 +102,7 @@ final class NicknameViewController: UIViewController {
     
     private func bind(to viewModel: NicknameViewModel) {
         let input = NicknameViewModel.Input(inputNickname: nicknameTextField.rx.text.orEmpty,
-                                            tapNextButton: nextButton.rx.tap.map { _ in self.signUpInfo }.asObservable())
+                                            tapNextButton: nextButton.rx.tap.map { _ in self.signUpInfo })
         
         let output = viewModel.transform(input: input)
         

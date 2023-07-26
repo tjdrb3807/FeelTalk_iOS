@@ -16,14 +16,11 @@ protocol CoupleUseCase {
 
 final class DefaultCoupleUaseCase: CoupleUseCase {
     private let coupleRepository: CoupleRepository
-    private let authRepository: AuthRepository
     
     private let disposeBag = DisposeBag()
     
-    init(coupleRepository: CoupleRepository,
-         authRepository: AuthRepository) {
+    init(coupleRepository: CoupleRepository) {
         self.coupleRepository = coupleRepository
-        self.authRepository = authRepository
     }
     
     func getInviteCode() -> Observable<String> {

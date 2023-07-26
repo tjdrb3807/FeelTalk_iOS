@@ -22,7 +22,7 @@ protocol SignUpViewControllable: AnyObject {
 }
 
 protocol SendSignUpInfoDataDelegate: AnyObject {
-    func reciveData(response: SignUpInfo)
+    func reciveData(response: SignUp)
 }
 
 final class SignUpViewModel {
@@ -165,13 +165,14 @@ final class SignUpViewModel {
         
         input.tapNextButton
             .withLatestFrom(snsLogin) { $1! }
-            .withUnretained(toggleMarketingInfoConsent) { state, snsLogin -> SignUpInfo in
-                return SignUpInfo(snsType: snsLogin.snsType,
-                                  refreshToken: snsLogin.refreshToken,
-                                  authCode: snsLogin.authCode,
-                                  idToken: snsLogin.idToken,
-                                  authorizationCode: snsLogin.authorizationCode,
-                                  marketingConsent: state.value)}
+            .withUnretained(toggleMarketingInfoConsent) { state, snsLogin -> SignUp in
+                return SignUp(snsType: snsLogin.snsType,
+                              nickname: "",
+                              refreshToken: snsLogin.refreshToken,
+                              authCode: snsLogin.authCode,
+                              idToken: snsLogin.idToken,
+                              authorizationCode: snsLogin.authorizationCode,
+                              marketingConsent: state.value)}
             .withUnretained(self)
             .bind { vm, signUpInfo in
                 vm.delegate?.reciveData(response: signUpInfo)

@@ -10,6 +10,11 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+/// Sscreen ID: L020
+///
+/// 회원가입 첫 화면
+///
+/// 성인 인증 화면 유도 화면
 final class SignUpViewController: UIViewController {
     private var viewModel: SignUpViewModel!
     private let disposeBag = DisposeBag()
@@ -64,7 +69,6 @@ final class SignUpViewController: UIViewController {
     
     private func bind(to viewModel: SignUpViewModel) {
         let input = SignUpViewModel.Input(
-//            tapAuthButton: adultCertificationView.authButtton.rx.tap,
             tapAuthButton: adultCertificationView.authButtton.rx.tap.map { _ in self.snsLogin }.asObservable(),
                                           tapNextButton: nextButton.rx.tap,
                                           tapTotalConsentButton: adultCertificationView.informationConsentView.totalConsentButton.rx.tap,

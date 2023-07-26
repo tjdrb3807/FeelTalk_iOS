@@ -19,6 +19,10 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+//        print(KeychainRepository.getItem(key: "accessToken"))
+//        print(KeychainRepository.getItem(key: "refreshToken"))
+//        _ = KeychainRepository.deleteItem(key: "accessToken")
+//        _ = KeychainRepository.deleteItem(key: "refreshToken")
         // SNS setting
         setKakaoNativeAppKey()
         setNaverInstance()

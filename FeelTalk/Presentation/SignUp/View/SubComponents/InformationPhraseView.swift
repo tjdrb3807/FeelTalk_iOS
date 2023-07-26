@@ -33,7 +33,6 @@ final class InformationPhraseView: UIView {
     }
     
     private func addSubComponents() {
-        backgroundColor = .yellow
         addSubview(informationLabel)
     }
     

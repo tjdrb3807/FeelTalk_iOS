@@ -17,9 +17,9 @@ protocol NicknameCoordinatorDependencies: AnyObject {
 
 final class NicknameCoordiantor: BaseCoordinator {
     weak var dependencies: NicknameCoordinatorDependencies?
-    private var signUpInfo: SignUpInfo?
+    private var signUpInfo: SignUp?
     
-    init(navigationController: UINavigationController, dependencies: NicknameCoordinatorDependencies, signUpInfo: SignUpInfo?) {
+    init(navigationController: UINavigationController, dependencies: NicknameCoordinatorDependencies, signUpInfo: SignUp?) {
         self.signUpInfo = signUpInfo
         super.init(navigationController: navigationController)
         self.dependencies = dependencies
@@ -28,8 +28,7 @@ final class NicknameCoordiantor: BaseCoordinator {
     
     override func start() {
         let viewModel = NicknameViewModel(nicknameControllable: self,
-                                          signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository(),
-                                                                              authRepository: DefaultAuthRepository()))
+                                          signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
         let vc = NicknameViewController.create(with: viewModel)
         vc.signUpInfo = signUpInfo
         

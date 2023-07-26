@@ -21,15 +21,15 @@ final class DefaultGoogleRepository: GoogleRepository {
                 
                 signInResult.user.refreshTokensIfNeeded { user, error in
                     guard error == nil else { return }
-                    guard let user = user else { return }
+                    guard let user = user,
+                          let idToken = user.idToken?.tokenString,
+                          let authorizationCode = signInResult.serverAuthCode else {
+                        return
+                    }
                     
-                    guard let idToken = user.idToken?.tokenString else { return }
-                    
-                    guard let authCode = signInResult.serverAuthCode else { return }
-        
                     observer(.success(.init(snsType: .google,
                                             refreshToken: nil,
-                                            authCode: authCode,
+                                            authCode: authorizationCode,
                                             idToken: idToken,
                                             authorizationCode: nil)))
                 }

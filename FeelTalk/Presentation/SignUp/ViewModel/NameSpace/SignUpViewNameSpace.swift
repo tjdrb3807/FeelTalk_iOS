@@ -31,7 +31,10 @@ enum SignUpViewNameSpace {
                                               서비스 이용을 위해
                                               성인인증을 진행해주세요
                                               """
-    static let infomationLabelUpdateText: String = "이용약관에 동의해주세요"
+    static let infomationLabelUpdateText: String = """
+                                                   이용약관에 동의해주세요
+                                                   
+                                                   """
     static let informationLableTextFont: String = "pretendard-medium"
     static let informationLabelTextSize: CGFloat = 24.0
     static let informationLabelNumberOfLines: Int = 0

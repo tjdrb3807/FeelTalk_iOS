@@ -18,8 +18,7 @@ final class InviteCodeCoordinator: BaseCoordinator {
     
     override func start() {
         let viewModel = InviteCodeViewModel(inviteCodeControllable: self,
-                                            coupleUseCase: DefaultCoupleUaseCase(coupleRepository: DefaultCoupleRepository(),
-                                                                                 authRepository: DefaultAuthRepository()))
+                                            coupleUseCase: DefaultCoupleUaseCase(coupleRepository: DefaultCoupleRepository()))
         let vc = InviteCodeViewController.create(with: viewModel)
         
         self.navigationController.pushViewController(vc, animated: true)

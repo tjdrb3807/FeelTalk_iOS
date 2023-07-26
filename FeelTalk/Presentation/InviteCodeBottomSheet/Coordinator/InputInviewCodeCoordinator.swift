@@ -18,8 +18,7 @@ final class InviteCodeBottomSheetCoordinator: BaseCoordinator {
     
     override func start() {
         let viewModel = InviteCodeBottomSheetViewModel(bottomSheetControllable: self,
-                                             coupleUseCase: DefaultCoupleUaseCase(coupleRepository: DefaultCoupleRepository(),
-                                                                                  authRepository: DefaultAuthRepository()))
+                                             coupleUseCase: DefaultCoupleUaseCase(coupleRepository: DefaultCoupleRepository()))
         let viewController = InviteCodeBottomSheetViewController.create(with: viewModel)
         viewController.modalPresentationStyle = .overFullScreen
         self.navigationController.present(viewController, animated: false)
