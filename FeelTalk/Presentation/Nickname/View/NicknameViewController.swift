@@ -11,13 +11,13 @@ import RxSwift
 import RxCocoa
 
 final class NicknameViewController: UIViewController {
-    private var viewModel: NicknameViewModel!
+    var viewModel: NicknameViewModel!
     private let disposeBag = DisposeBag()
     
     var signUpInfo: SignUp?
     
     // MARK: SubComponents
-    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(viewType: .signUp) }()
+    private lazy var navigationBar: SignUpFlowNavigationBar = { SignUpFlowNavigationBar(viewType: .signUp) }()
     private lazy var progressBar: CustomProgressBar = { CustomProgressBar(persentage: 2/3) }()
     
     private lazy var titleLabel: UILabel = {
@@ -93,16 +93,10 @@ final class NicknameViewController: UIViewController {
         self.bind(to: viewModel)
     }
     
-    final class func create(with viewModel: NicknameViewModel) -> NicknameViewController {
-        let viewController = NicknameViewController()
-        viewController.viewModel = viewModel
-        
-        return viewController
-    }
-    
     private func bind(to viewModel: NicknameViewModel) {
         let input = NicknameViewModel.Input(inputNickname: nicknameTextField.rx.text.orEmpty,
-                                            tapNextButton: nextButton.rx.tap.map { _ in self.signUpInfo })
+                                            tapNextButton: nextButton.rx.tap,
+                                            tapNavigationBarLeftButton: navigationBar.leftButton.rx.tap)
         
         let output = viewModel.transform(input: input)
         
@@ -134,7 +128,7 @@ final class NicknameViewController: UIViewController {
         navigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(CustomNavigationBarNameSpace.navigationBarHeight)
+            $0.height.equalTo(SignUpFlowNavigationBarNameSpace.navigationBarHeight)
         }
         
         progressBar.snp.makeConstraints {

@@ -73,11 +73,13 @@ final class CoupleCodeNoteView: UIView {
     lazy var coupleCodeCopyButton: UIButton = {
         let button = UIButton()
         button.setTitle("코드복사", for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont(name: "pretendard-regular", size: 16.0)
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.borderWidth = 1.0
         button.layer.cornerRadius = ((UIScreen.main.bounds.height / 100) * 4.92) / 2
         button.clipsToBounds = true
-        button.backgroundColor = .black
+        button.backgroundColor = .white
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button

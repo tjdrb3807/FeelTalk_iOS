@@ -34,21 +34,25 @@ final class DefaultCoupleRepository: CoupleRepository {
         }
     }
     
-    func registerInviteCode(accessToken: String, inviteCode: String) {
-        AF.request(CoupleAPI.registerInviteCode(accessToken: accessToken, inviteCode: inviteCode))
-            .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
-                switch response.result {
-                case .success(let responseDTO):
-                    if responseDTO.status == "fail" {
-                        guard let message = responseDTO.message else { return }
-                        debugPrint("[ERROR]: CoupleRepository - registerInviteCode")
-                        debugPrint("[ERROR MESSAGE]: \(message)")
-                    } else {
-                        print("registerInviteCode \(responseDTO.status)")
+    func registerInviteCode(accessToken: String, inviteCode: String) -> Single<Bool> {
+        return Single.create { observer -> Disposable in
+            AF.request(CoupleAPI.registerInviteCode(accessToken: accessToken, inviteCode: inviteCode))
+                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "fail" {
+                            guard let message = responseDTO.message else { return }
+                            print(message)
+                            observer(.success(false))
+                        } else {
+                            observer(.success(true))
+                        }
+                    case .failure(let error):
+                        debugPrint(error.localizedDescription)
                     }
-                case .failure(let error):
-                    debugPrint(error.localizedDescription)
                 }
-            }
+            
+            return Disposables.create()
+        }
     }
 }

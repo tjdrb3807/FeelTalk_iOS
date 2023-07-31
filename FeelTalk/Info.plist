@@ -59,6 +59,7 @@
 		<string>pretendard-thin.ttf</string>
 		<string>pretendard-bold.ttf</string>
 		<string>pretendard-light.ttf</string>
+		<string>Montserrat-Bold.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

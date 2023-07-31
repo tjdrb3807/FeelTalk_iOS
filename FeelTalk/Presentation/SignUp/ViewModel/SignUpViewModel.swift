@@ -17,23 +17,13 @@ enum ConsentButtonType {
     case marketingInfoConsent
 }
 
-protocol SignUpViewControllable: AnyObject {
-    func performTransition(_ signUpViewModel: SignUpViewModel, to transition: SignUpFlow)
-}
-
-protocol SendSignUpInfoDataDelegate: AnyObject {
-    func reciveData(response: SignUp)
-}
-
 final class SignUpViewModel {
+    private weak var coordinator: SignUpCoordinator?
     private let signUpUseCase: SignUpUseCase
+    private var snsLogin: SNSLogin
     private let dispoasBag = DisposeBag()
     
-    weak var controllable: SignUpViewControllable?
-    weak var delegate: SendSignUpInfoDataDelegate?
-    
     private let isAdultAuth = BehaviorRelay<Bool>(value: false)
-    private let snsLogin = PublishSubject<SNSLogin?>()
     private let consentButtonTapped = PublishRelay<ConsentButtonType>()
     private let toggleTotalConsent = BehaviorRelay<Bool>(value: false)
     private let toggleServiceConsent = BehaviorRelay<Bool>(value: false)
@@ -49,6 +39,7 @@ final class SignUpViewModel {
         let tapPersonalInfoConsentButton: ControlEvent<Void>
         let tapSensitiveInfoConsentButton: ControlEvent<Void>
         let tapMarketingInfoConsentButton: ControlEvent<Void>
+        let tapNavigationBarLeftButton: ControlEvent<Void>
     }
     
     struct Output {
@@ -61,10 +52,10 @@ final class SignUpViewModel {
         let nextButtonIsEnable: PublishSubject<Bool> = PublishSubject<Bool>()
     }
     
-    init(signUpControllable: SignUpViewControllable, delegate: SendSignUpInfoDataDelegate, signUpUseCase: SignUpUseCase) {
-        self.controllable = signUpControllable
-        self.delegate = delegate
+    init(coordinator: SignUpCoordinator, signUpUseCase: SignUpUseCase, snsLogin: SNSLogin) {
+        self.coordinator = coordinator
         self.signUpUseCase = signUpUseCase
+        self.snsLogin = snsLogin
     }
     
     func transfer(input: Input) -> Output {
@@ -80,10 +71,6 @@ final class SignUpViewModel {
                 }.bind(to: owner.isAdultAuth)
                     .disposed(by: owner.dispoasBag)
             }).disposed(by: dispoasBag)
-        
-        input.tapAuthButton
-            .bind(to: snsLogin)
-            .disposed(by: dispoasBag)
         
         Observable<ConsentButtonType>
             .merge([
@@ -164,20 +151,26 @@ final class SignUpViewModel {
             .disposed(by: dispoasBag)
         
         input.tapNextButton
-            .withLatestFrom(snsLogin) { $1! }
-            .withUnretained(toggleMarketingInfoConsent) { state, snsLogin -> SignUp in
-                return SignUp(snsType: snsLogin.snsType,
-                              nickname: "",
-                              refreshToken: snsLogin.refreshToken,
-                              authCode: snsLogin.authCode,
-                              idToken: snsLogin.idToken,
-                              authorizationCode: snsLogin.authorizationCode,
-                              marketingConsent: state.value)}
             .withUnretained(self)
-            .bind { vm, signUpInfo in
-                vm.delegate?.reciveData(response: signUpInfo)
-                vm.controllable?.performTransition(vm, to: .nickname)
+            .withLatestFrom(toggleMarketingInfoConsent) { vm, state -> SignUp in
+                return SignUp(snsType: vm.0.snsLogin.snsType,
+                              nickname: "",
+                              refreshToken: vm.0.snsLogin.refreshToken,
+                              authCode: vm.0.snsLogin.authCode,
+                              idToken: vm.0.snsLogin.idToken,
+                              authorizationCode: vm.0.snsLogin.authCode,
+                              marketingConsent: state)
+            }.withUnretained(self)
+            .bind { vm, signUp in
+                vm.coordinator?.showNicknameFlow(with: signUp)
             }.disposed(by: dispoasBag)
+            
+        
+        input.tapNavigationBarLeftButton
+            .withUnretained(self)
+            .bind(onNext: { vm, _ in
+                vm.coordinator?.finish()
+            }).disposed(by: dispoasBag)
         
         isAdultAuth
             .filter { _ in true }

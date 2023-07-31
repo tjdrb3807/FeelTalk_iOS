@@ -14,7 +14,7 @@ import RxCocoa
 ///
 /// 구글, 카카오, 네이버, 애플 로그인, 하단 문의하기 버튼
 final class LoginViewController: UIViewController {
-    private var viewModel: LoginViewModel!
+    var viewModel: LoginViewModel!
     private let disposeBag = DisposeBag()
     
     // MARK: LoginViewController sub components.
@@ -96,13 +96,6 @@ final class LoginViewController: UIViewController {
         self.bind(to: viewModel)
     }
     
-    final class func create(with viewModel: LoginViewModel) -> LoginViewController {
-        let viewController = LoginViewController()
-        viewController.viewModel = viewModel
-        
-        return viewController
-    }
-    
     private func bind(to viewModel: LoginViewModel) {
         let input = LoginViewModel.Input(tapAppleLoginButton: appleLoginButton.rx.tap,
                                          tapGoogleLoginButton: googleLoginButton.rx.tap,
@@ -111,7 +104,7 @@ final class LoginViewController: UIViewController {
 
 
 
-        let output = viewModel.transfer(input: input)
+        _ = viewModel.transfer(input: input)
     }
     
     // MARK: Default ui settings method.

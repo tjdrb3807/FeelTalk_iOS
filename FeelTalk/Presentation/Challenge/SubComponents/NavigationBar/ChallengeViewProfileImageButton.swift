@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 
 final class ChallengeViewProfileImageButton: UIButton {
-    private lazy var partnerImageView = CommonProfileImageView(superViewType: .challenge)
-    private lazy var myImageView = CommonProfileImageView(superViewType: .challenge)
+    private lazy var partnerImageView = ProfileImageView(superViewType: .challenge)
+    private lazy var myImageView = ProfileImageView(superViewType: .challenge)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -81,13 +81,13 @@ final class ChallengeViewController: UIViewController {
         
 }
 
-//extension Reactive where Base: ChallengeViewController {
-//    var changeIndex: Binder<Int> {
-//        Binder(base) { base, index in
-//            base.tabBar.rx.changeIndex.onNext(index)
-//        }
-//    }
-//}
+extension Reactive where Base: ChallengeViewController {
+    var changeIndex: Binder<Int> {
+        Binder(base) { base, index in
+            base.tabBar.rx.changeIndex.onNext(index)
+        }
+    }
+}
 
 #if DEBUG
 

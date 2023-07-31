@@ -9,14 +9,9 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-protocol InviteCodeViewControllable: AnyObject {
-    func performTransition(_ inviteCodeViewModel: InviteCodeViewModel, to transition: InviteCodeFlow)
-}
-
 final class InviteCodeViewModel {
+    private weak var coordinator: InviteCodeCoordinator?
     private let coupleUseCase: CoupleUseCase
-    weak var controllable: InviteCodeViewControllable?
-    
     private let disposBag = DisposeBag()
     
     struct Input {
@@ -28,8 +23,8 @@ final class InviteCodeViewModel {
         let inviteCode: PublishRelay<String> = PublishRelay<String>()
     }
     
-    init(inviteCodeControllable: InviteCodeViewControllable, coupleUseCase: CoupleUseCase) {
-        self.controllable = inviteCodeControllable
+    init(coordinator: InviteCodeCoordinator, coupleUseCase: CoupleUseCase) {
+        self.coordinator = coordinator
         self.coupleUseCase = coupleUseCase
     }
     
@@ -47,7 +42,7 @@ final class InviteCodeViewModel {
         input.tapPresentBottomSheetViewButton
             .withUnretained(self)
             .bind { vm, _ in
-                vm.controllable?.performTransition(vm, to: .bottomSheet)
+                vm.coordinator?.showInviteCodeBottomSheetCoordinator()
             }.disposed(by: disposBag)
         
         return output

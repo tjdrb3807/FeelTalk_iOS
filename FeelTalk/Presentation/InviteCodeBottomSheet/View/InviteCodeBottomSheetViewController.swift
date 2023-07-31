@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class InviteCodeBottomSheetViewController: UIViewController {
-    private var viewModel: InviteCodeBottomSheetViewModel!
+    var viewModel: InviteCodeBottomSheetViewModel!
     private let disposeBag = DisposeBag()
     
     // MARK: SubComponents
@@ -182,16 +182,6 @@ final class InviteCodeBottomSheetViewController: UIViewController {
     
     @objc private func dimmedViewTapped(_ tapRecognizer: UITapGestureRecognizer) {
         hideBottomSheetAndGoBack()
-    }
-}
-
-// MARK: View create method
-extension InviteCodeBottomSheetViewController {
-    final class func create(with viewModel: InviteCodeBottomSheetViewModel) -> InviteCodeBottomSheetViewController {
-        let viewController = InviteCodeBottomSheetViewController()
-        viewController.viewModel = viewModel
-        
-        return viewController
     }
 }
 

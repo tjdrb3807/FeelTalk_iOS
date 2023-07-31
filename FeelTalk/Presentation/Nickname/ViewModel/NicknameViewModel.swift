@@ -10,27 +10,26 @@ import RxSwift
 import RxCocoa
 import RxKeyboard
 
-protocol NicknameViewControllable: AnyObject {
-    func performTransition(_ nicknameViewModel: NicknameViewModel, to transition: nickNameFlow)
-}
-
 class NicknameViewModel {
     // MARK: Dependencies
+    private weak var coodinator: NicknameCoordinator?
     private let signUpUseCase: SignUpUseCase
     private let disposeBag = DisposeBag()
+    private var signUp: SignUp
     
-    // MARK: Delegate
-    weak var controllable: NicknameViewControllable?
-    
-    init(nicknameControllable: NicknameViewControllable, signUpUseCase: SignUpUseCase) {
-        self.controllable = nicknameControllable
+    init(coordinator: NicknameCoordinator,
+         signUpUseCase: SignUpUseCase,
+         signUp: SignUp) {
+        self.coodinator  = coordinator
         self.signUpUseCase = signUpUseCase
+        self.signUp = signUp
     }
     
     // MARK: ViewModel input stream.
     struct Input {
         let inputNickname: ControlProperty<String>
-        let tapNextButton: Observable<SignUp?>
+        let tapNextButton: ControlEvent<Void>
+        let tapNavigationBarLeftButton: ControlEvent<Void>
     }
     
     // MARK: ViewModel output stream.
@@ -67,64 +66,41 @@ class NicknameViewModel {
             .bind(to: output.activateNextButton)
             .disposed(by: disposeBag)
         
-//        input.tapNextButton
-//            .asObservable()
-//            .withLatestFrom(input.inputNickname) { [weak self] signUpInfo, nickname in
-//                guard let signUpInfo = signUpInfo,
-//                      let self = self else { return }
-//                signUpUseCase.signUp(snsType: signUpInfo.snsType,
-//                                     nickname: nickname,
-//                                     refreshToken: signUpInfo.refreshToken,
-//                                     authCode: signUpInfo.authCode,
-//                                     idToken: signUpInfo.idToken,
-//                                     state: signUpInfo.state,
-//                                     authorizationCode: signUpInfo.authorizationCode,
-//                                     marketingConsent: signUpInfo.marketingConsent)
-//            }.map { _ in nickNameFlow.invietCode }
-//            .withUnretained(self)
-//            .bind(onNext: { vm, flow in
-//                vm.controllable?.performTransition(vm, to: flow)
-//            }).disposed(by: disposeBag)
-        
-//        input.tapNextButton
-//            .withUnretained(self)
-//            .withLatestFrom(input.inputNickname) { vm, nickname in
-//                guard let signUpInfo = vm.1 else { return }
-//
-//                vm.0.signUpUseCase.signUp(snsType: signUpInfo.snsType,
-//                                          nickname: nickname,
-//                                          refreshToken: signUpInfo.refreshToken,
-//                                          authCode: signUpInfo.authCode,
-//                                          idToken: signUpInfo.idToken,
-//                                          state: signUpInfo.state,
-//                                          authorizationCode: signUpInfo.authorizationCode,
-//                                          marketingConsent: signUpInfo.marketingConsent)
-//
-//                vm.0.controllable?.performTransition(vm.0, to: .invietCode)
-//            }.
-        
         // 회원가입
+//        input.tapNextButton
+//            .withUnretained(self)
+//            .withLatestFrom(input.inputNickname) { vm, nickname -> SignUp in
+//                vm.0.signUp.nickname = nickname
+//
+//                return vm.0.signUp
+//            }.withUnretained(self)
+//            .map { vm, signUp -> Void in
+//                vm.signUpUseCase.signUp(snsType: vm.signUp.snsType,
+//                                        nickname: vm.signUp.nickname,
+//                                        refreshToken: vm.signUp.refreshToken,
+//                                        authCode: vm.signUp.authCode,
+//                                        idToken: vm.signUp.idToken,
+//                                        state: vm.signUp.state,
+//                                        authorizationCode: vm.signUp.authorizationCode,
+//                                        marketingConsent: vm.signUp.marketingConsent)
+//            }.withUnretained(self)
+//            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
+//            .bind { vm, _ in
+//                vm.coodinator?.showInviteCodeFlow()
+//            }.disposed(by: disposeBag)
+        
         input.tapNextButton
-            .withLatestFrom(input.inputNickname) { data, nickname -> SignUp? in
-                guard var signUpData = data else { return nil }
-                signUpData.nickname = nickname
-                
-                return signUpData
-            }.withUnretained(self)
-            .bind { vm, signUp in
-                guard let signUp = signUp else { return }
-                
-                vm.signUpUseCase.signUp(snsType: signUp.snsType,
-                                        nickname: signUp.nickname,
-                                        refreshToken: signUp.refreshToken,
-                                        authCode: signUp.authCode,
-                                        idToken: signUp.idToken,
-                                        state: signUp.state,
-                                        authorizationCode: signUp.authorizationCode,
-                                        marketingConsent: signUp.marketingConsent)
-
-                vm.controllable?.performTransition(vm, to: .invietCode)
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coodinator?.showInviteCodeFlow()
             }.disposed(by: disposeBag)
+        
+        input.tapNavigationBarLeftButton
+            .asObservable()
+            .withUnretained(self)
+            .bind(onNext: { vm, _ in
+                vm.coodinator?.popViewController()
+            }).disposed(by: disposeBag)
         
         return output
     }

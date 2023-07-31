@@ -11,7 +11,7 @@ import RxCocoa
 
 protocol CoupleUseCase {
     func getInviteCode() -> Observable<String>
-    func registerInviteCode(_ code: String)
+    func registerInviteCode(_ code: String) -> Single<Bool>
 }
 
 final class DefaultCoupleUaseCase: CoupleUseCase {
@@ -37,9 +37,18 @@ final class DefaultCoupleUaseCase: CoupleUseCase {
         }
     }
     
-    func registerInviteCode(_ code: String) {
-        guard let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return }
-        
-        coupleRepository.registerInviteCode(accessToken: accessToken, inviteCode: code)
+    func registerInviteCode(_ code: String) -> Single<Bool> {
+        return Single.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create()}
+            
+            coupleRepository.registerInviteCode(accessToken: accessToken, inviteCode: code)
+                .subscribe(onSuccess: { observer(.success($0)) },
+                           onFailure: { observer(.failure($0)) },
+                           onDisposed: nil)
+                .disposed(by: disposeBag)
+            
+            return Disposables.create()
+        }
     }
 }

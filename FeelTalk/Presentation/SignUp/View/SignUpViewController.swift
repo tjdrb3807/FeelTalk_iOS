@@ -16,7 +16,7 @@ import RxCocoa
 ///
 /// 성인 인증 화면 유도 화면
 final class SignUpViewController: UIViewController {
-    private var viewModel: SignUpViewModel!
+    var viewModel: SignUpViewModel!
     private let disposeBag = DisposeBag()
     
     var snsLogin: SNSLogin?
@@ -33,7 +33,7 @@ final class SignUpViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(viewType: .signUp) }()
+    private lazy var navigationBar: SignUpFlowNavigationBar = { SignUpFlowNavigationBar(viewType: .signUp) }()
     private lazy var progressBar: CustomProgressBar = { CustomProgressBar(persentage: (1/3)) }()
     private lazy var informationPhrase: InformationPhraseView = { return InformationPhraseView() }()
     private lazy var spacing: UIView = { return UIView() }()
@@ -60,13 +60,6 @@ final class SignUpViewController: UIViewController {
         self.bind(to: viewModel)
     }
     
-    final class func create(with viewModel: SignUpViewModel) -> SignUpViewController {
-        let viewController = SignUpViewController()
-        viewController.viewModel = viewModel
-
-        return viewController
-    }
-    
     private func bind(to viewModel: SignUpViewModel) {
         let input = SignUpViewModel.Input(
             tapAuthButton: adultCertificationView.authButtton.rx.tap.map { _ in self.snsLogin }.asObservable(),
@@ -75,7 +68,9 @@ final class SignUpViewController: UIViewController {
                                           tapServiceConsentButton: adultCertificationView.informationConsentView.serviceConsentRow.checkButton.rx.tap,
                                           tapPersonalInfoConsentButton: adultCertificationView.informationConsentView.personalInfoConsentRow.checkButton.rx.tap,
                                           tapSensitiveInfoConsentButton: adultCertificationView.informationConsentView.sensitiveInfoConsentRow.checkButton.rx.tap,
-                                          tapMarketingInfoConsentButton: adultCertificationView.informationConsentView.marketingInfoConsentRow.checkButton.rx.tap)
+                                          tapMarketingInfoConsentButton: adultCertificationView.informationConsentView.marketingInfoConsentRow.checkButton.rx.tap,
+                                          tapNavigationBarLeftButton:
+                                              navigationBar.leftButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
         
@@ -154,7 +149,7 @@ extension SignUpViewController {
         navigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(CustomNavigationBarNameSpace.navigationBarHeight)
+            $0.height.equalTo(SignUpFlowNavigationBarNameSpace.navigationBarHeight)
         }
     }
     

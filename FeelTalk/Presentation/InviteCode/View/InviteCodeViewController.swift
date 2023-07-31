@@ -11,22 +11,11 @@ import RxSwift
 import RxCocoa
 
 final class InviteCodeViewController: UIViewController {
-    private var viewModel: InviteCodeViewModel!
+    var viewModel: InviteCodeViewModel!
     
     private let disposeBag = DisposeBag()
-    
-    private lazy var viewTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = InviteCodeNameSpace.viewTitleLabelText
-        label.textColor = .black
-        label.font = UIFont(name: InviteCodeNameSpace.viewTitleLabelTextFont,
-                            size: InviteCodeNameSpace.viewTitleLabelTextSize)
-        label.textAlignment = .center
-        label.backgroundColor = .clear
-        
-        return label
-    }()
-    
+
+    private lazy var navigationBar: SignUpFlowNavigationBar = { SignUpFlowNavigationBar(viewType: .inviteCode) }()
     private lazy var infoPhraseView: InviteCodeInfoPhraseView = { InviteCodeInfoPhraseView() }()
     private lazy var noteBackgroundView: NoteBackgroundView = { NoteBackgroundView() }()
     private lazy var coupleCodeNoteView: CoupleCodeNoteView = { CoupleCodeNoteView() }()
@@ -50,6 +39,13 @@ final class InviteCodeViewController: UIViewController {
         self.setAttribute()
         self.addSubComponents()
         self.setConfiguration()
+        
+        self.coupleCodeNoteView.coupleCodeCopyButton.rx.tap
+            .asObservable()
+            .withUnretained(self)
+            .bind(onNext: { vm, _ in
+                UIPasteboard.general.string = vm.coupleCodeNoteView.coupleCodeLabel.text
+            }).disposed(by: disposeBag)
     }
     
     private func bind(to viewModel: InviteCodeViewModel) {
@@ -68,7 +64,7 @@ final class InviteCodeViewController: UIViewController {
     }
     
     private func addSubComponents() {
-        [viewTitleLabel,
+        [navigationBar,
          infoPhraseView,
          noteBackgroundView,
          coupleCodeNoteView,
@@ -77,7 +73,7 @@ final class InviteCodeViewController: UIViewController {
     }
     
     private func setConfiguration() {
-        makeViewTitleLableConstraints()
+        makeNavigationBarConstraints()
         makeInfoPhraseViewConstraints()
         makeNoteBackgroundViewConstraints()
         makeInviteCodeNoteViewMakeConstraints()
@@ -86,25 +82,17 @@ final class InviteCodeViewController: UIViewController {
 }
 
 extension InviteCodeViewController {
-    final class func create(with viewModel: InviteCodeViewModel) -> InviteCodeViewController {
-        let viewController = InviteCodeViewController()
-        viewController.viewModel = viewModel
-
-        return viewController
-    }
-}
-
-extension InviteCodeViewController {
-    func makeViewTitleLableConstraints() {
-        viewTitleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview()
+    func makeNavigationBarConstraints() {
+        navigationBar.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(InviteCodeNameSpace.viewTitleLabelHeight)
+            $0.height.equalTo(SignUpFlowNavigationBarNameSpace.navigationBarHeight)
         }
     }
+    
     func makeInfoPhraseViewConstraints() {
         infoPhraseView.snp.makeConstraints {
-            $0.top.equalTo(viewTitleLabel.snp.bottom).offset(InviteCodeNameSpace.inviteCodeInfoPhraseViewTopOffset)
+            $0.top.equalTo(navigationBar.snp.bottom).offset(InviteCodeNameSpace.inviteCodeInfoPhraseViewTopOffset)
             $0.leading.trailing.equalToSuperview().inset(InviteCodeNameSpace.baseHorizontalInset)
             $0.height.equalTo(InviteCodeNameSpace.inviteCodeINfoPhraseViewHeight)
         }
@@ -122,13 +110,12 @@ extension InviteCodeViewController {
         coupleCodeNoteView.snp.makeConstraints {
             $0.top.equalTo(infoPhraseView.snp.bottom).offset(InviteCodeNameSpace.inviteCodeNoteViewTopOffset)
             $0.leading.trailing.equalToSuperview().inset(InviteCodeNameSpace.inviteCodeNoteViewHorizontalInset)
-            $0.bottom.equalTo(presentBottomSheetViewButton.snp.top).offset(InviteCodeNameSpace.inviteCodeNoteViewBottomOffset)
         }
     }
     
     func makeInputCodeButtonConstraints() {
         presentBottomSheetViewButton.snp.makeConstraints {
-            $0.bottom.equalTo(view.safeAreaInsets.bottom)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             $0.leading.trailing.equalToSuperview().inset(InviteCodeNameSpace.baseHorizontalInset)
             $0.height.equalTo(InviteCodeNameSpace.inputCodeButtonHeight)
         }
@@ -142,6 +129,7 @@ import SwiftUI
 struct InviteCodeViewConroller_Previews: PreviewProvider {
     static var previews: some View {
         InviteCodeViewConroller_Presentable()
+            .edgesIgnoringSafeArea(.all)
     }
     
     struct InviteCodeViewConroller_Presentable: UIViewControllerRepresentable {

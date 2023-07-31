@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 
 final class HomeCoupleProfileImageView: UIView {
-    private lazy var partnerProfileImage = CommonProfileImageView(superViewType: .home)
-    private lazy var myProfileImage = CommonProfileImageView(superViewType: .home)
+    private lazy var partnerProfileImage = ProfileImageView(superViewType: .home)
+    private lazy var myProfileImage = ProfileImageView(superViewType: .home)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

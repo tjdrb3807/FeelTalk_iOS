@@ -1,0 +1,109 @@
+//
+//  QuestionTableViewCell.swift
+//  FeelTalk
+//
+//  Created by 전성규 on 2023/07/29.
+//
+
+import UIKit
+import SnapKit
+
+final class QuestionTableViewCell: UITableViewCell {
+    private lazy var indexLabel: UILabel = {
+        let label = UILabel()
+        label.text = QuestionTableViewCellNameSpace.indexLabelText
+        label.textColor = .black
+        label.textAlignment = .center
+        label.font = UIFont(name: QuestionTableViewCellNameSpace.indexLabelTextFont,
+                            size: QuestionTableViewCellNameSpace.indexLabelTextSize)
+        label.backgroundColor = UIColor(named: QuestionTableViewCellNameSpace.indexLabelBackgroundColor)
+        label.layer.cornerRadius = QuestionTableViewCellNameSpace.indexLabelCornerRadius
+        label.clipsToBounds = true
+        
+        return label
+    }()
+    
+    private lazy var questionBodyLable: UILabel = {
+        let label = UILabel()
+        label.text = QuestionTableViewCellNameSpace.questionBodyLabelText
+        label.textColor = .black
+        label.font = UIFont(name: QuestionTableViewCellNameSpace.questionBodyLabelTextFont,
+                            size: QuestionTableViewCellNameSpace.questionBodyLabelTextSize)
+        label.backgroundColor = .clear
+        
+        return label
+    }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        self.setAttributes()
+        self.addSubComponents()
+        self.setConfigurations()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: QuestionTableViewCellNameSpace.topEdegeInset,
+                                                                     left: QuestionTableViewCellNameSpace.leftEdegeInset,
+                                                                     bottom: QuestionTableViewCellNameSpace.bottomEdegeInset,
+                                                                     right: QuestionTableViewCellNameSpace.rightEdegeInset))
+    }
+    
+    private func setAttributes() {
+        backgroundColor = UIColor(named: QuestionTableViewCellNameSpace.backgroundColor)
+        contentView.backgroundColor = .white
+        contentView.layer.cornerRadius = QuestionTableViewCellNameSpace.cornerRadius
+        contentView.clipsToBounds = true
+    }
+    
+    private func addSubComponents() {
+        [indexLabel, questionBodyLable].forEach { contentView.addSubview($0) }
+    }
+    
+    private func setConfigurations() {
+        makeIndexLabelConstraints()
+        makeQuestionBodyLabelConstraints()
+    }
+}
+
+extension QuestionTableViewCell {
+    private func makeIndexLabelConstraints() {
+        indexLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(QuestionTableViewCellNameSpace.indexLabelLeadingInset)
+            $0.centerY.equalTo(contentView.snp.centerY)
+            $0.width.height.equalTo(QuestionTableViewCellNameSpace.indexLabelHeight)
+        }
+    }
+    
+    private func makeQuestionBodyLabelConstraints() {
+        questionBodyLable.snp.makeConstraints {
+            $0.leading.equalTo(indexLabel.snp.trailing).offset(QuestionTableViewCellNameSpace.questionBodyLabelLeadingOffset)
+            $0.centerY.equalTo(indexLabel)
+        }
+    }
+}
+
+#if DEBUG
+
+import SwiftUI
+
+struct QuestionTableViewCell_Previews: PreviewProvider {
+    static var previews: some View {
+        QuestionTableViewCell_Presentable()
+    }
+    
+    struct QuestionTableViewCell_Presentable: UIViewRepresentable {
+        func makeUIView(context: Context) -> some UIView {
+            QuestionTableViewCell()
+        }
+        
+        func updateUIView(_ uiView: UIViewType, context: Context) {}
+    }
+}
+
+#endif
