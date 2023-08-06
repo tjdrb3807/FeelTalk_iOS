@@ -67,30 +67,24 @@ class NicknameViewModel {
             .disposed(by: disposeBag)
         
         // 회원가입
-//        input.tapNextButton
-//            .withUnretained(self)
-//            .withLatestFrom(input.inputNickname) { vm, nickname -> SignUp in
-//                vm.0.signUp.nickname = nickname
-//
-//                return vm.0.signUp
-//            }.withUnretained(self)
-//            .map { vm, signUp -> Void in
-//                vm.signUpUseCase.signUp(snsType: vm.signUp.snsType,
-//                                        nickname: vm.signUp.nickname,
-//                                        refreshToken: vm.signUp.refreshToken,
-//                                        authCode: vm.signUp.authCode,
-//                                        idToken: vm.signUp.idToken,
-//                                        state: vm.signUp.state,
-//                                        authorizationCode: vm.signUp.authorizationCode,
-//                                        marketingConsent: vm.signUp.marketingConsent)
-//            }.withUnretained(self)
-//            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-//            .bind { vm, _ in
-//                vm.coodinator?.showInviteCodeFlow()
-//            }.disposed(by: disposeBag)
-        
         input.tapNextButton
             .withUnretained(self)
+            .withLatestFrom(input.inputNickname) { vm, nickname -> SignUp in
+                vm.0.signUp.nickname = nickname
+
+                return vm.0.signUp
+            }.withUnretained(self)
+            .map { vm, signUp -> Void in
+                vm.signUpUseCase.signUp(snsType: vm.signUp.snsType,
+                                        nickname: vm.signUp.nickname,
+                                        refreshToken: vm.signUp.refreshToken,
+                                        authCode: vm.signUp.authCode,
+                                        idToken: vm.signUp.idToken,
+                                        state: vm.signUp.state,
+                                        authorizationCode: vm.signUp.authorizationCode,
+                                        marketingConsent: vm.signUp.marketingConsent)
+            }.withUnretained(self)
+            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
             .bind { vm, _ in
                 vm.coodinator?.showInviteCodeFlow()
             }.disposed(by: disposeBag)

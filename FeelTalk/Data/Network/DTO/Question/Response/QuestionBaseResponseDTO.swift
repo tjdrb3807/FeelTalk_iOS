@@ -8,17 +8,17 @@
 import Foundation
 
 struct QuestionBaseResponseDTO: Decodable {
-    let index: Int
-    let pageNo: Int
-    let title: String
-    let header: String
-    let body: String
-    let highlight: [Int]
-    let myAnswer: String?
-    let partnerAnswer: String?
-    let isMyAnswer: Bool
-    let isPartnerAnswer: Bool
-    let createAt: Date
+    let index: Int // ok
+    let pageNo: Int //ok
+    let title: String //ok
+    let header: String //ok
+    let body: String //ok
+    let highlight: [Int] //ok
+    let myAnswer: String? //ok
+    let partnerAnswer: String? //ok
+    let isMyAnswer: Bool // ok
+    let isPartnerAnswer: Bool //ok
+    let createAt: String //ok
     
     enum CodingKeys: String, CodingKey {
         case index

@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class MainFlowNavigationBar: UIView {
     enum NavigationType {
@@ -15,9 +17,10 @@ final class MainFlowNavigationBar: UIView {
     }
     
     private let navigationType: NavigationType
+    private let disposeBag = DisposeBag()
     
     // MARK: SubComponents
-    private lazy var titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         
         switch navigationType {
@@ -35,34 +38,36 @@ final class MainFlowNavigationBar: UIView {
         return label
     }()
     
-    private lazy var buttonContainerView: UIView = {
-        let view = UIView()
-        view.layer.shadowOffset = CGSize(width: MainFlowNavigationBarNameSpace.buttonContainerViewShadowOffsetWidth,
-                                           height: MainFlowNavigationBarNameSpace.buttonContainerViewShadowOffestHeight)
-        view.layer.shadowColor = UIColor(red: MainFlowNavigationBarNameSpace.buttonContainerViewShadowColorRed,
-                                           green: MainFlowNavigationBarNameSpace.buttonContainerViewShadowColorGreen,
-                                           blue: MainFlowNavigationBarNameSpace.buttonContainerViewShadowColorBlue,
-                                           alpha: MainFlowNavigationBarNameSpace.buttonContainerViewShadowColorAlpha).cgColor
-        view.layer.shadowOpacity = MainFlowNavigationBarNameSpace.buttonContainerViewShadowOpacity
-        view.layer.shadowRadius = MainFlowNavigationBarNameSpace.buttonContainerViewShadowRadius
-        view.clipsToBounds = false
-        
-        return view
-    }()
+//    private lazy var buttonContainerView: UIView = {
+//        let view = UIView()
+//        view.layer.shadowOffset = CGSize(width: MainFlowNavigationBarNameSpace.buttonContainerViewShadowOffsetWidth,
+//                                           height: MainFlowNavigationBarNameSpace.buttonContainerViewShadowOffestHeight)
+//        view.layer.shadowColor = UIColor(red: MainFlowNavigationBarNameSpace.buttonContainerViewShadowColorRed,
+//                                           green: MainFlowNavigationBarNameSpace.buttonContainerViewShadowColorGreen,
+//                                           blue: MainFlowNavigationBarNameSpace.buttonContainerViewShadowColorBlue,
+//                                           alpha: MainFlowNavigationBarNameSpace.buttonContainerViewShadowColorAlpha).cgColor
+//        view.layer.shadowOpacity = MainFlowNavigationBarNameSpace.buttonContainerViewShadowOpacity
+//        view.layer.shadowRadius = MainFlowNavigationBarNameSpace.buttonContainerViewShadowRadius
+//        view.clipsToBounds = false
+//
+//        return view
+//    }()
     
-    // TODO: 파트너 프로필 이미지로 변경
-    private lazy var chatRoomButton: UIButton = {
-        let button = UIButton()
-        button.setBackgroundImage(UIImage(named: MainFlowNavigationBarNameSpace.chatRoomButtonBackgroundImage), for: .normal)
-        button.backgroundColor = UIColor(named: MainFlowNavigationBarNameSpace.chatRoomButtonBackgroundColor)
-        
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = MainFlowNavigationBarNameSpace.chatRoomButtonBorderWidth
-        button.layer.cornerRadius = MainFlowNavigationBarNameSpace.chatRoomButtonCornerRadius
-        button.clipsToBounds = true
-        
-        return button
-    }()
+//    // TODO: 파트너 프로필 이미지로 변경
+//    lazy var chatRoomButton: UIButton = {
+//        let button = UIButton()
+//        button.setBackgroundImage(UIImage(named: MainFlowNavigationBarNameSpace.chatRoomButtonBackgroundImage), for: .normal)
+//        button.backgroundColor = UIColor(named: MainFlowNavigationBarNameSpace.chatRoomButtonBackgroundColor)
+//
+//        button.layer.borderColor = UIColor.white.cgColor
+//        button.layer.borderWidth = MainFlowNavigationBarNameSpace.chatRoomButtonBorderWidth
+//        button.layer.cornerRadius = MainFlowNavigationBarNameSpace.chatRoomButtonCornerRadius
+//        button.clipsToBounds = true
+//
+//        return button
+//    }()
+    
+    lazy var chatRoomButton: ChatRoomButton = { ChatRoomButton() }()
     
     init(navigationType: NavigationType) {
         self.navigationType = navigationType
@@ -72,7 +77,6 @@ final class MainFlowNavigationBar: UIView {
         self.addSubComponents()
         self.setConfiguration()
     }
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -98,22 +102,24 @@ final class MainFlowNavigationBar: UIView {
     }
     
     private func addSubComponents() {
-        addButtonContainerViewSubComponents()
-        [titleLabel, buttonContainerView].forEach { addSubview($0) }
+//        addButtonContainerViewSubComponents()
+//        [titleLabel, buttonContainerView].forEach { addSubview($0) }
+        [titleLabel, chatRoomButton].forEach { addSubview($0) }
     }
     
     private func setConfiguration() {
         makeTitleLabelConstraints()
         makeChatRoomButtonConstraints()
-        makeButtonViewConstraints()
+//        makeChatRoomButtonConstraints()
+//        makeButtonViewConstraints()
     }
 }
 
 // MARK: UI setting method
 extension MainFlowNavigationBar {
-    private func addButtonContainerViewSubComponents() {
-        buttonContainerView.addSubview(chatRoomButton)
-    }
+//    private func addButtonContainerViewSubComponents() {
+//        buttonContainerView.addSubview(chatRoomButton)
+//    }
     
     private func makeTitleLabelConstraints() {
         titleLabel.snp.makeConstraints {
@@ -123,16 +129,24 @@ extension MainFlowNavigationBar {
     }
     
     private func makeChatRoomButtonConstraints() {
-        chatRoomButton.snp.makeConstraints { $0.edges.equalToSuperview() }
-    }
-    
-    private func makeButtonViewConstraints() {
-        buttonContainerView.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(MainFlowNavigationBarNameSpace.buttonContainerViewTrailingInset)
+        chatRoomButton.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(20)
             $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(MainFlowNavigationBarNameSpace.buttonbuttonContainerViewHeight)
+            $0.width.height.equalTo(ChatRoomButtonNameSpace.height)
         }
     }
+    
+//    private func makeChatRoomButtonConstraints() {
+//        chatRoomButton.snp.makeConstraints { $0.edges.equalToSuperview() }
+//    }
+    
+//    private func makeButtonViewConstraints() {
+//        buttonContainerView.snp.makeConstraints {
+//            $0.trailing.equalToSuperview().inset(MainFlowNavigationBarNameSpace.buttonContainerViewTrailingInset)
+//            $0.centerY.equalToSuperview()
+//            $0.width.height.equalTo(MainFlowNavigationBarNameSpace.buttonbuttonContainerViewHeight)
+//        }
+//    }
 }
 
 #if DEBUG

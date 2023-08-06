@@ -7,13 +7,22 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class QuestionTableView: UITableView {
+    
+    lazy var questionTableHeader: QuestionTableHeaderView = {
+        QuestionTableHeaderView(frame: CGRect(x: QuestionTableHeaderViewNameSpace.x,
+                                              y: QuestionTableHeaderViewNameSpace.y,
+                                              width: UIScreen.main.bounds.width,
+                                              height: QuestionTableHeaderViewNameSpace.height))
+    }()
+    
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: .grouped)
         
         self.setAttributes()
-        self.setConfigurations()
     }
     
     required init?(coder: NSCoder) {
@@ -22,51 +31,13 @@ final class QuestionTableView: UITableView {
     
     private func setAttributes() {
         backgroundColor = UIColor(named: QuestionTableViewCellNameSpace.backgroundColor)
-        tableHeaderView = QuestionTableHeaderView(frame: CGRect(x: 0.0,
-                                                                y: 0.0,
-                                                                width: UIScreen.main.bounds.width,
-                                                                height: QuestionTableHeaderViewNameSpace.height))
-        register(QuestionTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: QuestionTableSectionHeaderViewNameSpace.identifier)
+        tableHeaderView = questionTableHeader
         register(QuestionTableViewCell.self, forCellReuseIdentifier: QuestionTableViewCellNameSpace.identifier)
         rowHeight = QuestionTableViewCellNameSpace.hegith
         separatorStyle = .none
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false
-        delegate = self
-        dataSource = self
     }
-    
-    private func setConfigurations() {
-        
-    }
-}
-
-// TODO: RxSwift로 변경
-extension QuestionTableView: UITableViewDataSource {
-    // TableView Header
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard section == 0, let headerCell = tableView.dequeueReusableHeaderFooterView(withIdentifier: QuestionTableSectionHeaderViewNameSpace.identifier) as? QuestionTableSectionHeaderView else { return nil }
-        
-        return headerCell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? QuestionTableSectionHeaderViewNameSpace.height : 0
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        20
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: QuestionTableViewCellNameSpace.identifier, for: indexPath) as? QuestionTableViewCell else { return UITableViewCell() }
-        
-        return cell
-    }
-}
-
-extension QuestionTableView: UITableViewDelegate {
-
 }
 
 #if DEBUG

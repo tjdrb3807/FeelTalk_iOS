@@ -7,8 +7,13 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class QuestionTableViewCell: UITableViewCell {
+    let model = PublishRelay<Question>()
+    private let disposeBag = DisposeBag()
+    
     private lazy var indexLabel: UILabel = {
         let label = UILabel()
         label.text = QuestionTableViewCellNameSpace.indexLabelText
@@ -59,6 +64,7 @@ final class QuestionTableViewCell: UITableViewCell {
         contentView.backgroundColor = .white
         contentView.layer.cornerRadius = QuestionTableViewCellNameSpace.cornerRadius
         contentView.clipsToBounds = true
+        setUpData()
     }
     
     private func addSubComponents() {
@@ -85,6 +91,17 @@ extension QuestionTableViewCell {
             $0.leading.equalTo(indexLabel.snp.trailing).offset(QuestionTableViewCellNameSpace.questionBodyLabelLeadingOffset)
             $0.centerY.equalTo(indexLabel)
         }
+    }
+}
+
+extension QuestionTableViewCell {
+    private func setUpData() {
+        self.model
+            .withUnretained(self)
+            .bind { c, question in
+                c.indexLabel.rx.text.onNext(String(question.index))
+                c.questionBodyLable.rx.text.onNext(question.body)
+            }.disposed(by: disposeBag)
     }
 }
 

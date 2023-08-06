@@ -11,6 +11,9 @@ import Alamofire
 enum QuestionAPI {
     case getLatestQuestionPageNo(accessToken: String)
     case getTodayQuestion(accessToken: String)
+    case getQuestionList(accessToken: String, questionPage: QuestionPage)
+    case getQuestion(accessToken: String, index: Int)
+    case answerQuestion(accessToken: String, answer: QuestionAnswer )
 }
 
 extension QuestionAPI: Router, URLRequestConvertible {
@@ -21,20 +24,34 @@ extension QuestionAPI: Router, URLRequestConvertible {
         case .getLatestQuestionPageNo:
             return "/api/v1/couple-question/last/page-no"
         case .getTodayQuestion:
-            return "/api/v1/couple-question/recent"
+            return "/api/v1/couple-question/today"
+        case .getQuestionList:
+            return "/api/v1/couple-questions"
+        case .getQuestion(accessToken: _, index: let index):
+            return "/api/v1/couple-question/\(index)"
+        case .answerQuestion:
+            return "/api/v1/couple-question"
         }
     }
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .getLatestQuestionPageNo, .getTodayQuestion:
+        case .getLatestQuestionPageNo, .getTodayQuestion, .getQuestion:
             return .get
+        case .getQuestionList:
+            return .post
+        case .answerQuestion:
+            return .put
         }
     }
     
     var header: [String : String] {
         switch self {
-        case .getLatestQuestionPageNo(accessToken: let accessToken), .getTodayQuestion(accessToken: let accessToken):
+        case .getLatestQuestionPageNo(accessToken: let accessToken),
+                .getTodayQuestion(accessToken: let accessToken),
+                .getQuestionList(accessToken: let accessToken, questionPage: _),
+                .getQuestion(accessToken: let accessToken, index: _),
+                .answerQuestion(accessToken: let accessToken, answer: _):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
                     "Authorization": "Bearer \(accessToken)"]
@@ -43,14 +60,19 @@ extension QuestionAPI: Router, URLRequestConvertible {
     
     var parameters: [String : Any]? {
         switch self {
-        case .getLatestQuestionPageNo, .getTodayQuestion:
+        case .getLatestQuestionPageNo, .getTodayQuestion, .getQuestion:
             return nil
+        case .getQuestionList(accessToken: _, questionPage: let questionPage):
+            return ["pageNo": questionPage.pageNo]
+        case .answerQuestion(accessToken: _, answer: let answer):
+            return ["index": answer.index,
+                    "myAnswer": answer.myAnswer]
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .getLatestQuestionPageNo, .getTodayQuestion:
+        case .getLatestQuestionPageNo, .getTodayQuestion, .getQuestionList, .getQuestion, .answerQuestion:
             return JSONEncoding.default
         }
     }

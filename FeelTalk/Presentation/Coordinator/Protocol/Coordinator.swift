@@ -11,6 +11,7 @@ enum CoordinatorType {
     case app, login, tab
     case home, question, challenge
     case signUp, nickname, inviteCode, inviteCodeBottomSheet
+    case answer
 }
 
 protocol Coordinator: AnyObject {

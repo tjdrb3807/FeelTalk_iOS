@@ -7,12 +7,26 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class QuestionTableHeaderView: UITableViewHeaderFooterView {
-    // MARK: SubComponents
+    let model = PublishRelay<Question>()
+    private let disposeBag = DisposeBag()
+    
+    private lazy var spacingView: UIView = { UIView() }()
+    
+    private lazy var todayQuestionView: UIView = {
+        let view  = UIView()
+        view.backgroundColor = UIColor(named: QuestionTableHeaderViewNameSpace.todayQuestionViewBackgroundColor)
+        view.layer.cornerRadius = QuestionTableHeaderViewNameSpace.todayQuestionViewCornerRadius
+        view.clipsToBounds = true
+        
+        return view
+    }()
+    
     private lazy var questionIndexLabel: UILabel = {
         let label = UILabel()
-        label.text = QuestionTableHeaderViewNameSpace.questionIndexLabelText
         label.textAlignment = .center
         label.textColor = UIColor(named: QuestionTableHeaderViewNameSpace.questionIndexLabelTextColor)
         label.font = UIFont(name: QuestionTableHeaderViewNameSpace.questionIndexLabelTextFont,
@@ -37,8 +51,8 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
     
     private lazy var questionHeaderLabel: UILabel = {
         let label = UILabel()
-        label.text = QuestionTableHeaderViewNameSpace.questionHeaderLabelText
         label.textColor = .white
+        label.textAlignment = .left
         label.font = UIFont(name: QuestionTableHeaderViewNameSpace.questionLabelTextFont,
                             size: QuestionTableHeaderViewNameSpace.questionLabelTextSize)
         label.backgroundColor = .clear
@@ -48,8 +62,8 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
     
     private lazy var questionBodyLabel: UILabel = {
         let label = UILabel()
-        label.text = QuestionTableHeaderViewNameSpace.questionBodyLabelText
         label.textColor = .white
+        label.textAlignment = .left
         label.font = UIFont(name: QuestionTableHeaderViewNameSpace.questionLabelTextFont,
                             size: QuestionTableHeaderViewNameSpace.questionLabelTextSize)
         label.backgroundColor = .clear
@@ -57,16 +71,16 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
         return label
     }()
     
-    private lazy var questionAnswerButton: UIButton = {
+    lazy var questionAnswerButton: UIButton = {
         let button = UIButton()
-        button.setTitle(QuestionTableHeaderViewNameSpace.questionAnswerButtonNormalTitleText, for: .normal)
-        button.setTitle(QuestionTableHeaderViewNameSpace.questionAnswerButtonSelectedTitleText, for: .selected)
-        button.titleLabel?.textColor = .white
+        button.setTitle(QuestionTableHeaderViewNameSpace.questionAnswerButtonBaseTitleText,
+                        for: .normal)
+        button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: QuestionTableHeaderViewNameSpace.questionAnswerButtonTitleTextFont,
                                          size: QuestionTableHeaderViewNameSpace.questionAnswerButtonTitleTextSize)
         button.backgroundColor = .black
-        button.layer.cornerRadius = QuestionTableHeaderViewNameSpace.questionAnswerButtonCornerRadius
-        button.clipsToBounds =  true
+        button.layer.cornerRadius = QuestionTableHeaderViewNameSpace.qusetionAnswerButtonCornerRadius
+        button.clipsToBounds = true
         
         return button
     }()
@@ -79,10 +93,22 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
         return imageView
     }()
     
+    private lazy var sectionHeaderLabel: UILabel = {
+        let label = UILabel()
+        label.text = QuestionTableHeaderViewNameSpace.sectionHeaderLabelText
+        label.textColor = .black
+        label.textAlignment = .left
+        label.font = UIFont(name: QuestionTableHeaderViewNameSpace.sectionHeaderLabelTextFont,
+                            size: QuestionTableHeaderViewNameSpace.sectionHeaderLabelTextSize)
+        label.backgroundColor = .clear
+        
+        return label
+    }()
+    
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-        
-        self.setAttributes()
+
+        self.setUpData()
         self.addSubComponents()
         self.setConfigurations()
     }
@@ -91,46 +117,64 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: QuestionTableHeaderViewNameSpace.contentViewTopEdegeInset,
-                                                                     left: QuestionTableHeaderViewNameSpace.contentViewLeftEdegeInset,
-                                                                     bottom: QuestionTableHeaderViewNameSpace.contentViewBottomEdegeInset,
-                                                                     right: QuestionTableHeaderViewNameSpace.contentViewRightEdegeInset))
-    }
-    
     private func setAttributes() {
-        backgroundColor = .clear
-        contentView.backgroundColor = UIColor(named: QuestionTableHeaderViewNameSpace.backgroundColor)
-        contentView.layer.cornerRadius = QuestionTableHeaderViewNameSpace.corderRadius
-        clipsToBounds = true
+        setUpData()
     }
     
     private func addSubComponents() {
-        [backgroundImageView,
-         questionIndexLabel,
-         newSignalLabel,
-         questionHeaderLabel,
-         questionBodyLabel,
-         questionAnswerButton].forEach { contentView.addSubview($0) }
+        addQuestionTableViewSubComponents()
+        addTodayQuestionViewSubComponents()
     }
     
     private func setConfigurations() {
+        makeSpacingViewConstraints()
+        makeTodayQuestionViewConstraints()
         makeQuestionIndexLabelConstraints()
         makeNewSignalLabelConstraints()
         makeQuestionHeaderLabelConstraints()
         makeQuestionBodyLabelConstraints()
         makeQuestionAnswerButtonConstraints()
         makeBackgroundImageViewConstraints()
+        makeSectionHeaderLabelConstraints()
     }
 }
 
+// MARK: UI setting method
 extension QuestionTableHeaderView {
+    private func addQuestionTableViewSubComponents() {
+        [spacingView, todayQuestionView, sectionHeaderLabel].forEach { addSubview($0) }
+    }
+    
+    private func makeSpacingViewConstraints() {
+        spacingView.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(spacingView.snp.top).offset(QuestionTableHeaderViewNameSpace.spacingViewHeight)
+        }
+    }
+    
+    private func makeTodayQuestionViewConstraints() {
+        todayQuestionView.snp.makeConstraints {
+            $0.top.equalTo(spacingView.snp.bottom).offset(QuestionTableHeaderViewNameSpace.todayQuestionViewTopOffset)
+            $0.leading.equalToSuperview().inset(QuestionTableHeaderViewNameSpace.todayQuestionViewLeadingInset)
+            $0.trailing.equalTo(todayQuestionView.snp.leading).offset(QuestionTableHeaderViewNameSpace.todqyQuestionViewWidth)
+            $0.bottom.equalTo(todayQuestionView.snp.top).offset(QuestionTableHeaderViewNameSpace.todayQuestionViewHeight)
+        }
+    }
+    
+    private func addTodayQuestionViewSubComponents() {
+        [backgroundImageView,
+         questionIndexLabel, newSignalLabel,
+         questionHeaderLabel, questionBodyLabel,
+        questionAnswerButton].forEach { todayQuestionView.addSubview($0) }
+    }
+    
     private func makeQuestionIndexLabelConstraints() {
         questionIndexLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(QuestionTableHeaderViewNameSpace.questionIndexLabelTopInset)
             $0.leading.equalToSuperview().inset(QuestionTableHeaderViewNameSpace.questionIndexLabelLeadingInset)
-            $0.width.height.equalTo(QuestionTableHeaderViewNameSpace.questionIndexLabelHeight)
+            $0.trailing.equalTo(questionIndexLabel.snp.leading).offset(QuestionTableHeaderViewNameSpace.questionIndexLabelWidth)
+            $0.bottom.equalTo(questionIndexLabel.snp.top).offset(QuestionTableHeaderViewNameSpace.questionIndexLabelHeight)
         }
     }
     
@@ -141,36 +185,69 @@ extension QuestionTableHeaderView {
         }
     }
     
-    
     private func makeQuestionHeaderLabelConstraints() {
         questionHeaderLabel.snp.makeConstraints {
             $0.top.equalTo(questionIndexLabel.snp.bottom).offset(QuestionTableHeaderViewNameSpace.questionHeaderLabelTopOffset)
-            $0.leading.equalTo(questionIndexLabel)
-            $0.height.equalTo(QuestionTableHeaderViewNameSpace.questionLabelHeight)
+            $0.leading.equalToSuperview().inset(QuestionTableHeaderViewNameSpace.questionHeaderLabelLeadingInset)
+            $0.bottom.equalTo(questionHeaderLabel.snp.top).offset(QuestionTableHeaderViewNameSpace.questionLabelHeight)
         }
     }
     
     private func makeQuestionBodyLabelConstraints() {
         questionBodyLabel.snp.makeConstraints {
             $0.top.equalTo(questionHeaderLabel.snp.bottom)
-            $0.leading.equalTo(questionHeaderLabel.snp.leading)
-            $0.height.equalTo(QuestionTableHeaderViewNameSpace.questionLabelHeight)
+            $0.leading.equalTo(questionHeaderLabel)
+            $0.bottom.equalTo(questionBodyLabel.snp.top).offset(QuestionTableHeaderViewNameSpace.questionLabelHeight)
         }
     }
     
-    private func makeQuestionAnswerButtonConstraints() {
+    private func makeQuestionAnswerButtonConstraints(){
         questionAnswerButton.snp.makeConstraints {
             $0.top.equalTo(questionBodyLabel.snp.bottom).offset(QuestionTableHeaderViewNameSpace.questionAnswerButtonTopOffset)
-            $0.leading.equalTo(questionIndexLabel)
-            $0.width.equalTo(QuestionTableHeaderViewNameSpace.questionAnswerButtonWidth)
-            $0.height.equalTo(QuestionTableHeaderViewNameSpace.questionAnswerButtonHeight)
+            $0.leading.equalToSuperview().inset(QuestionTableHeaderViewNameSpace.qusetionAnswerButtonLeadingInset)
+            $0.trailing.equalTo(questionAnswerButton.snp.leading).offset(QuestionTableHeaderViewNameSpace.questionAnswerButtonWidth)
+            $0.bottom.equalTo(questionAnswerButton.snp.top).offset(QuestionTableHeaderViewNameSpace.questionAnswerButtonHeight)
         }
     }
     
     private func makeBackgroundImageViewConstraints() {
         backgroundImageView.snp.makeConstraints {
-            $0.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(questionHeaderLabel.snp.top).offset(QuestionTableHeaderViewNameSpace.backgroundImageViewTopOffset)
+            $0.leading.equalToSuperview().inset(QuestionTableHeaderViewNameSpace.backgroundImageViewLeadingInset)
+            $0.trailing.equalTo(todayQuestionView.snp.trailing)
+            $0.bottom.equalTo(todayQuestionView.snp.bottom)
         }
+    }
+    
+    private func makeSectionHeaderLabelConstraints() {
+        sectionHeaderLabel.snp.makeConstraints {
+            $0.top.equalTo(todayQuestionView.snp.bottom).offset(QuestionTableHeaderViewNameSpace.sectionHeaderLabelTopOffset)
+            $0.leading.equalToSuperview().inset(QuestionTableHeaderViewNameSpace.sectionHeaderLabelLeadingInset)
+            $0.bottom.equalTo(sectionHeaderLabel.snp.top).offset(QuestionTableHeaderViewNameSpace.sectionHeaderLabelHeight)
+        }
+    }
+}
+
+// MARK: Data setUp method.
+extension QuestionTableHeaderView {
+    private func setUpData() {
+        self.model
+            .withUnretained(self)
+            .bind { v, question in
+                v.questionIndexLabel.rx.text.onNext(String(question.index))
+                v.questionHeaderLabel.rx.text.onNext(question.header)
+                v.questionBodyLabel.rx.text.onNext(question.body)
+                
+                if question.isMyAnswer {
+                    v.questionAnswerButton.rx.title().onNext(QuestionTableHeaderViewNameSpace.questionAnswerButtonUpdateTitleText)
+                    v.questionAnswerButton.setTitleColor(UIColor(named: QuestionTableHeaderViewNameSpace.questionAnswerButtonUpdateTitleTextColor), for: .normal)
+                    v.questionAnswerButton.rx.backgroundColor.onNext(UIColor(named: QuestionTableHeaderViewNameSpace.questionAnswerButtonUpdateBackgroundColor))
+                } else {
+                    v.questionAnswerButton.rx.title().onNext(QuestionTableHeaderViewNameSpace.questionAnswerButtonBaseTitleText)
+                    v.questionAnswerButton.setTitleColor(.white, for: .normal)
+                    v.questionAnswerButton.rx.backgroundColor.onNext(.black)
+                }
+            }.disposed(by: disposeBag)
     }
 }
 

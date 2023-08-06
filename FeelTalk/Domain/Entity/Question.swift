@@ -18,5 +18,5 @@ struct Question {
     var partnerAnser: String?
     var isMyAnswer: Bool
     var isPartnerAnswer: Bool
-    let createAt: Date
+    let createAt: String
 }

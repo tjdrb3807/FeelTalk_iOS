@@ -50,23 +50,16 @@ final class InviteCodeBottomSheetViewModel {
             .disposed(by: disposeBag)
         
         // 커플 등록
-//        input.tapConnectionButton
-//            .withLatestFrom(input.inputInviteCode)
-//            .withUnretained(self)
-//            .bind { vm, inviteCode in
-//                vm.coupleUseCase.registerInviteCode(inviteCode)
-//                    .subscribe(
-//                        onSuccess: { state in if state { vm.controllable?.performTransition(vm, to: .main) } },
-//                        onFailure: { error in print(error.localizedDescription) },
-//                        onDisposed: nil)
-//                    .disposed(by: vm.disposeBag)
-//            }.disposed(by: disposeBag)
-        
-        // Coordiantor Test
         input.tapConnectionButton
+            .withLatestFrom(input.inputInviteCode)
             .withUnretained(self)
-            .bind { vm, _ in
-                vm.coordinator?.finish()
+            .bind { vm, inviteCode in
+                vm.coupleUseCase.registerInviteCode(inviteCode)
+                    .subscribe(
+                        onSuccess: { state in if state { vm.coordinator?.finish() } },
+                        onFailure: { error in print(error.localizedDescription) },
+                        onDisposed: nil)
+                    .disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
         
         return output

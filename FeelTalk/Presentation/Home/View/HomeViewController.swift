@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class HomeViewController: UIViewController {
+    var viewModel: HomeViewModel!
     private let disposeBag = DisposeBag()
     
     private lazy var totalVerticalStackView: UIStackView = {
@@ -33,20 +34,12 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
         
-        self.bindViewModel()
+        self.bind(to: viewModel)
         self.setConfig()
     }
     
-    private func bindViewModel() {
-        bottomSectionView.coupleSignalView.mySignalButton.rx.tap
-            .bind(onNext: {
-                print("hello")
-            }).disposed(by: disposeBag)
+    private func bind(to viewModel: HomeViewModel) {
         
-        topSectionView.homeNavigationBar.pushChatViewButton.rx.tap
-            .bind(onNext: {
-                self.navigationController?.present(ChatViewController().self, animated: true)
-            }).disposed(by: disposeBag)
     }
     
     private func setConfig() {

@@ -14,3 +14,9 @@ struct GetLatestQuestionPageNoResponseDTO: Decodable {
         case pageNo
     }
 }
+
+extension GetLatestQuestionPageNoResponseDTO {
+    func toDomain() -> QuestionPage {
+        return .init(pageNo: pageNo)
+    }
+}

@@ -24,7 +24,6 @@ final class FCMHandler {
         
         switch type {
         case "createCouple":
-            print(type)
             handleCoupleRegistration(userInfo)
         default:
             print("fcm 타입에 매칭되는 타입이 존재하지 않습니다.")
@@ -32,7 +31,6 @@ final class FCMHandler {
     }
     
     func handleCoupleRegistration(_ data: [AnyHashable: Any]) {
-        CoupleRegistrationObserver.shared.set(isCoupleRegistrationCompleted: true)
         print(data["message"])
         print(data["title"])
     }

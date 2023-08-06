@@ -68,8 +68,11 @@ final class DefaultLoginUseCase: LoginUseCase {
                     guard login.signUpState == .newbie else {
                         // 이미 회원가입을 한 경우 토큰, 만료시간 현시점 기준으로 업데이트
                         guard let accessToken = login.accessToken,
-                              let refreshToken = login.refreshToken
+                              let refreshToken = login.refreshToken,
+                              let expiresIn = login.expiresIn
                         else { return }
+                        
+                        let expiresTiem = Date(timeIntervalSinceNow: TimeInterval(expiresIn))
                         
                         //TODO: expiresIn 추가 로직 필요
                         KeychainRepository.updateItem(value: accessToken, key: "accessToken") &&

@@ -58,7 +58,7 @@ final class InviteCodeBottomSheetViewController: UIViewController {
         return label
     }()
     
-    private lazy var inviteCodetextField: UITextField = {
+    private lazy var inviteCodeTextField: UITextField = {
         let textField = UITextField()
         textField.textColor = .black
         textField.placeholder = InviteCodeBottomSheetNameSpace.textFieldPlaceholerText
@@ -110,7 +110,7 @@ final class InviteCodeBottomSheetViewController: UIViewController {
     
     // MARK: MVVM
     private func bind(to viewModel: InviteCodeBottomSheetViewModel) {
-        let input = InviteCodeBottomSheetViewModel.Input(inputInviteCode: inviteCodetextField.rx.text.orEmpty,
+        let input = InviteCodeBottomSheetViewModel.Input(inputInviteCode: inviteCodeTextField.rx.text.orEmpty,
                                                tapConnectionButton: connectionButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
@@ -187,13 +187,12 @@ final class InviteCodeBottomSheetViewController: UIViewController {
 
 // MARK: Subcomponents setting method
 extension InviteCodeBottomSheetViewController {
-    private func addBottomSheetViewSubComponenets() {
-        [gradder, titleLabel, inviteCodetextField, connectionButton].forEach { bottomSheetView.addSubview($0) }
-    }
-    
     private func addViewControllerSubComponents() {
         [dimmedView, bottomSheetView].forEach { view.addSubview($0) }
-        [bottomSheetView].forEach { view.addSubview($0) }
+    }
+    
+    private func addBottomSheetViewSubComponenets() {
+        [gradder, titleLabel, inviteCodeTextField, connectionButton].forEach { bottomSheetView.addSubview($0) }
     }
     
     private func makeDimmedViewConstraints() {
@@ -226,7 +225,7 @@ extension InviteCodeBottomSheetViewController {
     }
     
     private func makeTextFieldConstraints() {
-        inviteCodetextField.snp.makeConstraints {
+        inviteCodeTextField.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(InviteCodeBottomSheetNameSpace.textFieldTopOffest)
             $0.leading.trailing.equalToSuperview().inset(InviteCodeBottomSheetNameSpace.baseSidesInset)
             $0.height.equalTo(InviteCodeBottomSheetNameSpace.textFieldHeight)
@@ -235,7 +234,7 @@ extension InviteCodeBottomSheetViewController {
     
     private func makeConnectionButtonConstraints() {
         connectionButton.snp.makeConstraints {
-            $0.top.equalTo(inviteCodetextField.snp.bottom).offset(InviteCodeBottomSheetNameSpace.connectionButtonTopOffset)
+            $0.top.equalTo(inviteCodeTextField.snp.bottom).offset(InviteCodeBottomSheetNameSpace.connectionButtonTopOffset)
             $0.leading.trailing.equalToSuperview().inset(InviteCodeBottomSheetNameSpace.baseSidesInset)
             $0.height.equalTo(InviteCodeBottomSheetNameSpace.connectionButtonHeight)
         }

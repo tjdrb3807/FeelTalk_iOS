@@ -80,9 +80,9 @@ class LoginViewModel {
                     case .newbie:
                         vm.coordinator?.showSignUpFlow(with: snsLogin)
                     case .solo:
-                        break
+                        vm.coordinator?.showInviteCodeFlow()
                     case .couple:
-                        break
+                        vm.coordinator?.finish()
                     }
                 }.disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)

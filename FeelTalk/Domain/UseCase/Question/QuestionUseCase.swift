@@ -10,25 +10,83 @@ import RxSwift
 import RxCocoa
 
 protocol QuestionUseCase {
-    
+    func getLatestQuestionPageNo() -> Observable<QuestionPage>
+    func getTodayQuestion() -> Single<Question>
+    func getQuestionList(questionPage: QuestionPage) -> Observable<[Question]>
+    func getQuestion(index: Int) -> Observable<Question>
+//    func answerQuestion(answer: QuestionAnswer) -> Bool
 }
 
 final class DefaultQuestionUseCase: QuestionUseCase {
-    // MARK: Dependencies
     private let questionRepository: QuestionRepository
-    
     private let disposbag = DisposeBag()
     
     init(questionRepository: QuestionRepository) {
         self.questionRepository = questionRepository
     }
     
-//    func getLatestQuestionPageNo() {
-//        guard let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else {
-//            print("저장된 accessToken이 존재하지 않습니다.")
-//        }
-//        
-//        questionRepository.getTodayQuestion(accessToken: accessToken)
-//            .subscribe(onSuccess: <#T##((Int) -> Void)?##((Int) -> Void)?##(Int) -> Void#>, onFailure: <#T##((Error) -> Void)?##((Error) -> Void)?##(Error) -> Void#>, onDisposed: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
-//    }
+    func getQuestionList(questionPage: QuestionPage) -> Observable<[Question]> {
+        print("CALL getQuestList")
+        return Observable.create { [weak self] observer -> Disposable in
+            guard let self = self else { return Disposables.create() }
+            guard let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            questionRepository.getQuestionList(accessToken: accessToken, questionPage: questionPage)
+                .asObservable()
+                .bind(onNext: { questions in
+                    observer.onNext(questions)
+                }).disposed(by: disposbag)
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getQuestion(index: Int) -> Observable<Question> {
+        return Observable.create { [weak self] observer -> Disposable in
+            guard let self = self else { return Disposables.create()}
+            guard let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            questionRepository.getQuestion(accessToken: accessToken, index: index)
+                .asObservable()
+                .bind(onNext: { question in
+                    observer.onNext(question)
+                }).disposed(by: disposbag)
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getLatestQuestionPageNo() -> Observable<QuestionPage> {
+        print("[CALL]: QuestionUseCase - getLatestQuestionPageNo() ")
+        return Observable.create { [weak self] observer in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            
+            questionRepository.getLatestQuestionPageNo(accessToken: accessToken)
+                .subscribe(
+                    onSuccess: { questionPage in
+                        observer.onNext(questionPage)
+                    },
+                    onFailure: { error in
+                        print(error.localizedDescription)
+                    },
+                    onDisposed: nil)
+                .disposed(by: disposbag)
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getTodayQuestion() -> Single<Question> {
+        return Single.create { [weak self] observer -> Disposable in
+            guard let self = self else { return Disposables.create()}
+            guard let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            questionRepository.getTodayQuestion(accessToken: accessToken)
+                .subscribe(
+                    onSuccess: { observer(.success($0)) },
+                    onFailure: { observer(.failure($0)) },
+                    onDisposed: nil)
+                .disposed(by: disposbag)
+            
+            return Disposables.create()
+        }
+    }
 }

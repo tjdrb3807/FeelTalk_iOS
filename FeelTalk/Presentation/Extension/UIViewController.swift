@@ -9,6 +9,19 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+extension UIViewController {
+    // 키보드 숨기기
+    func hideKeyboardWhenTappedAround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
+
 extension Reactive where Base: UIViewController {
     var viewDidLoad: ControlEvent<Void> {
         let soucre = self.methodInvoked(#selector(Base.viewDidLoad)).map { _ in }

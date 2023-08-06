@@ -9,8 +9,11 @@ import UIKit
 
 enum MainFlowNavigationBarNameSpace {
     // MARK: MainFlowNavigationBar
-    static let navigationBarHeight: CGFloat = (UIScreen.main.bounds.height / 100) * 7.38 // 60
+    static let baseHeight: CGFloat = (UIScreen.main.bounds.height / 100) * 7.38 // 60
+    static let updateHeight: CGFloat = 0.0
     static let navigationBarQuestionTypeBackgrountColor: String = "gray_100"
+    static let animateDuration: CGFloat = 0.2
+    static let scrollVelocityCriteria: CGFloat = 0.0
     
     // MARK: TitleLabel
     static let titleLableQuestionTypeText: String = "질문"
@@ -36,8 +39,6 @@ enum MainFlowNavigationBarNameSpace {
     static let chatRoomButtonBackgroundColor: String = "main_500"
     static let chatRoomButtonBorderWidth: CGFloat = 3.0
     static let chatRoomButtonCornerRadius: CGFloat = buttonbuttonContainerViewHeight / 2
-    
-    
  
     // MARK: Shadow
     static let shadowOffsetWidth: CGFloat = 0.0
