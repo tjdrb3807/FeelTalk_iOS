@@ -1,0 +1,14 @@
+//
+//  ChatRoomViewModel.swift
+//  FeelTalk
+//
+//  Created by 전성규 on 2023/08/11.
+//
+
+import Foundation
+import RxSwift
+import RxCocoa
+
+final class ChatRoomViewModel {
+    
+}

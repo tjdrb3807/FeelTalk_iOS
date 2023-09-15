@@ -13,7 +13,8 @@ enum QuestionAPI {
     case getTodayQuestion(accessToken: String)
     case getQuestionList(accessToken: String, questionPage: QuestionPage)
     case getQuestion(accessToken: String, index: Int)
-    case answerQuestion(accessToken: String, answer: QuestionAnswer )
+    case answerQuestion(accessToken: String, answer: QuestionAnswer)
+    case preseForAnswer(accessToken: String, index: Int)
 }
 
 extension QuestionAPI: Router, URLRequestConvertible {
@@ -31,6 +32,8 @@ extension QuestionAPI: Router, URLRequestConvertible {
             return "/api/v1/couple-question/\(index)"
         case .answerQuestion:
             return "/api/v1/couple-question"
+        case .preseForAnswer:
+            return "/api/v1/couple-question/chase-up"
         }
     }
     
@@ -38,7 +41,7 @@ extension QuestionAPI: Router, URLRequestConvertible {
         switch self {
         case .getLatestQuestionPageNo, .getTodayQuestion, .getQuestion:
             return .get
-        case .getQuestionList:
+        case .getQuestionList, .preseForAnswer:
             return .post
         case .answerQuestion:
             return .put
@@ -51,7 +54,8 @@ extension QuestionAPI: Router, URLRequestConvertible {
                 .getTodayQuestion(accessToken: let accessToken),
                 .getQuestionList(accessToken: let accessToken, questionPage: _),
                 .getQuestion(accessToken: let accessToken, index: _),
-                .answerQuestion(accessToken: let accessToken, answer: _):
+                .answerQuestion(accessToken: let accessToken, answer: _),
+                .preseForAnswer(accessToken: let accessToken, index: _):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
                     "Authorization": "Bearer \(accessToken)"]
@@ -67,12 +71,14 @@ extension QuestionAPI: Router, URLRequestConvertible {
         case .answerQuestion(accessToken: _, answer: let answer):
             return ["index": answer.index,
                     "myAnswer": answer.myAnswer]
+        case .preseForAnswer(accessToken: _, index: let index):
+            return ["index": index]
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .getLatestQuestionPageNo, .getTodayQuestion, .getQuestionList, .getQuestion, .answerQuestion:
+        case .getLatestQuestionPageNo, .getTodayQuestion, .getQuestionList, .getQuestion, .answerQuestion, .preseForAnswer:
             return JSONEncoding.default
         }
     }

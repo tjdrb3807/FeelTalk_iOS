@@ -19,6 +19,22 @@ extension UILabel {
         attributedText = attributeString
     }
     
+    func setLineHeight(height: CGFloat) {
+        guard let text = text else { return }
+        
+        let style = NSMutableParagraphStyle()
+        style.maximumLineHeight = height
+        style.minimumLineHeight = height
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: style,
+            .baselineOffset: (height - font.lineHeight) / 2
+        ]
+        let attributeString = NSAttributedString(string: text, attributes: attributes)
+        
+        attributedText = attributeString
+    }
+    
     func asColor(targetStringList: [String], color: UIColor?) {
         let fullText = text ?? ""
         let attributedString = NSMutableAttributedString(string: fullText)
@@ -29,5 +45,14 @@ extension UILabel {
             
             attributedText = attributedString
         }
+    }
+    
+    func asFont(targetString: String, font: UIFont) {
+        let fullText = text ?? ""
+        let attributedString = NSMutableAttributedString(string: fullText)
+        let range = (fullText as NSString).range(of: targetString)
+        
+        attributedString.addAttribute(.font, value: font, range: range)
+        attributedText = attributedString
     }
 }

@@ -123,4 +123,26 @@ final class DefaultQuestionRepository: QuestionRepository {
             return Disposables.create()
         }
     }
+    
+    func preseForAnswer(accessToken: String, index: Int) -> Single<Bool> {
+        return Single.create { observer -> Disposable in
+            AF.request(QuestionAPI.preseForAnswer(accessToken: accessToken, index: index))
+                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            observer(.success(true))
+                        } else {
+                            guard let message = responseDTO.message else { return }
+                            print(message)
+                            observer(.success(false))
+                        }
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+            
+            return Disposables.create()
+        }
+    }
 }

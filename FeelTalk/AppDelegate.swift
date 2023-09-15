@@ -120,6 +120,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
         
+        print("willPresent")
+        print(userInfo)
+        
         debugPrint("willPresent: userInfo = \(userInfo)")
         
         completionHandler([.banner, .sound, .badge])
@@ -128,6 +131,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     /// Background / Kill or terminated
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
+        
+        print("didReceive")
+        print(userInfo)
         
         debugPrint("didReceive: userInfo = \(userInfo)")
     }

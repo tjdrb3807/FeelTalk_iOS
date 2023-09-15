@@ -1,0 +1,49 @@
+//
+//  DefaultChallengeCoordinator.swift
+//  FeelTalk
+//
+//  Created by 전성규 on 2023/08/14.
+//
+
+import UIKit
+import RxSwift
+import RxCocoa
+
+final class DefaultChallengeCoordinator: ChallengeCoordinator {
+    var finishDelegate: CoordinatorFinishDelegate?
+    var navigationController: UINavigationController
+    var childCoordinators: [Coordinator] = []
+    var challengeViewController: ChallengeViewController
+    var type: CoordinatorType = .challenge
+    var challengeModel = PublishRelay<Challenge>()
+    private let disposeBag = DisposeBag()
+    
+    init(_ navigationController: UINavigationController) {
+        self.navigationController = navigationController
+        self.challengeViewController = ChallengeViewController()
+    
+    }
+    
+    func start() {
+        self.challengeViewController.viewModel = ChallengeViewModel(coordinator: self, challengeUseCase: DefaultChallengeUseCase(challengeRepository: DefaultChallengeRepository()))
+        self.navigationController.pushViewController(challengeViewController, animated: true)
+    }
+    
+    func showChallengeDetailFlow() {
+        let challengeDetailCoordinator = DefaultChallengeDetailCoordinator(self.navigationController)
+        
+        challengeModel
+            .bind { model in
+                challengeDetailCoordinator.challengeModel.accept(model)
+            }.disposed(by: disposeBag)
+            
+        challengeDetailCoordinator.finishDelegate = self
+        challengeDetailCoordinator.start()
+    }
+}
+
+extension DefaultChallengeCoordinator: CoordinatorFinishDelegate {
+    func coordinatorDidFinish(childCoordinator: Coordinator) {
+        
+    }
+}

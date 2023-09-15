@@ -20,7 +20,7 @@ final class PartnerNoAnswerView: UIView {
         return label
     }()
     
-    private lazy var answerChaseUpButton: UIButton = {
+    lazy var answerChaseUpButton: UIButton = {
         let button = UIButton()
         button.setTitle(PartnerNoAnswerViewNameSpace.answerChaseUpButtonTitleText,
                         for: .normal)

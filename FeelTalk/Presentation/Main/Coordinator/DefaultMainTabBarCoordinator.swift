@@ -6,14 +6,17 @@
 //
 
 import UIKit
+import SnapKit
 
 enum TabBarPage: String, CaseIterable {
-    case home, question
+    case home, question, challenge, myPage
     
     init?(index: Int) {
         switch index {
         case 0: self = .home
         case 1: self = .question
+        case 2: self = .challenge
+        case 3: self = .myPage
         default: return nil
         }
     }
@@ -22,6 +25,8 @@ enum TabBarPage: String, CaseIterable {
         switch self {
         case .home: return 0
         case .question: return 1
+        case .challenge: return 2
+        case .myPage: return 3
         }
     }
     
@@ -29,6 +34,8 @@ enum TabBarPage: String, CaseIterable {
         switch self {
         case .home: return "icon_home_tab_bar_normal"
         case .question: return "icon_question_tab_bar_normal"
+        case .challenge: return "icon_challenge_tab_bar_normal"
+        case .myPage: return "icon_user"  // TODO: 추후 변경
         }
     }
 }
@@ -72,8 +79,8 @@ final class DefaultMainTabBarCoordinator: MainTabBarCoordinator {
         self.tabBarController.selectedIndex = TabBarPage.home.pageOfNumber()
         self.tabBarController.view.backgroundColor = .white
         self.tabBarController.tabBar.backgroundColor = .white
+        self.tabBarController.tabBar.barTintColor = .white
         self.tabBarController.tabBar.tintColor = .black
-        
         self.navigationController.pushViewController(self.tabBarController, animated: true)
     }
     
@@ -106,6 +113,16 @@ final class DefaultMainTabBarCoordinator: MainTabBarCoordinator {
             questionCoordinator.finishDelegate = self
             self.childCoordinators.append(questionCoordinator)
             questionCoordinator.start()
+        case .challenge:
+            let challengeCoordiantor = DefaultChallengeCoordinator(tabNavigationController)
+            challengeCoordiantor.finishDelegate = self
+            self.childCoordinators.append(challengeCoordiantor)
+            challengeCoordiantor.start()
+        case .myPage:
+            let myPageCoordinator = DefaultMyPageCoordinator(tabNavigationController)
+            myPageCoordinator.finishDelegate = self
+            self.childCoordinators.append(myPageCoordinator)
+            myPageCoordinator.start()
         }
     }
 }

@@ -15,4 +15,5 @@ protocol QuestionRepository {
     func getQuestionList(accessToken: String, questionPage: QuestionPage) -> Single<[Question]>
     func getQuestion(accessToken: String, index: Int) ->Single<Question>
     func answerQuestion(accessToken: String, answer: QuestionAnswer) -> Single<Bool>
+    func preseForAnswer(accessToken: String, index: Int) -> Single<Bool>
 }

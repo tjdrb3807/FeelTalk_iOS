@@ -35,13 +35,12 @@ final class QuestionViewController: UIViewController {
             tapQuestionAnswerButton: questionTableView.questionTableHeader.questionAnswerButton.rx.tap
                 .withLatestFrom(questionTableView.questionTableHeader.model),
             questionSelected: questionTableView.rx.modelSelected(Question.self).asObservable(),
-            prefetchRow: questionTableView.rx.prefetchRows.compactMap(\.last?.row),
             isPagination: questionTableView.rx.didScroll
                 .withUnretained(self)
                 .map { vm, _ in
                     let contentOffsetY = vm.questionTableView.contentOffset.y
                     let contentSizeHeight = vm.questionTableView.contentSize.height
-                    let paginationY = contentOffsetY * 0.9  // TODO: page 30개로 늘리면 변경
+                    let paginationY = contentOffsetY * 0.2  // TODO: page 30개로 늘리면 변경
                     
                     return contentOffsetY > contentSizeHeight - paginationY ? true : false
                 }

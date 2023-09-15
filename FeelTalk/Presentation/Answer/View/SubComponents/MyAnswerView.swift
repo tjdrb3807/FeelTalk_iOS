@@ -41,6 +41,7 @@ final class MyAnswerView: UIStackView {
                                                    right: MyAnswerViewNameSpace.answerTextViewContainerRightInset)
         textView.layer.borderColor = UIColor.clear.cgColor
         textView.layer.borderWidth = MyAnswerViewNameSpace.answerTextViewBorderWitdh
+        textView.isScrollEnabled = false
         
         return textView
     }()
@@ -59,7 +60,7 @@ final class MyAnswerView: UIStackView {
     
     private func setAttributes() {
         self.axis = .vertical
-        self.distribution = .fill
+        self.distribution = .fillProportionally
         self.spacing = MyAnswerViewNameSpace.spacing
         self.isUserInteractionEnabled = true
     }

@@ -16,7 +16,7 @@ final class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.bind(to: viewModel)
+//        self.bind(to: viewModel)
         self.setAttributes()
     }
     

@@ -13,6 +13,7 @@ import RxCocoa
 final class AnswerViewController: UIViewController {
     // MARK: Dependencies
     var viewModel: AnswerViewModel!
+    private let model = PublishRelay<Question>()
     private let disposeBag = DisposeBag()
     
     // MARK: SubComponents
@@ -77,10 +78,12 @@ final class AnswerViewController: UIViewController {
         return button
     }()
     
+    private lazy var alert: AlertView = { AlertView() }()
+    
     // MARK: ViewController life cycle method.
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    
         self.setAttribute()
         self.addSubComponents()
         self.setConfigurations()
@@ -98,8 +101,10 @@ final class AnswerViewController: UIViewController {
         let input = AnswerViewModel.Input(
             viewWillAppear: self.rx.viewWillAppear,
             inputAnswer: myAnswerView.answerTextView.rx.text.orEmpty,
-            tapAnswerCompletedButton: answerCompletedButton.rx.tap,
-            tapPopButton: popButton.rx.tap)
+            tapAnswerCompletedButton: answerCompletedButton.rx.tap.withLatestFrom(model),
+            tapPopButton: popButton.rx.tap,
+            tapAlertLeftButton: alert.leftButton.rx.tap,
+            tapAlertRightButton: alert.rightButton.rx.tap.withLatestFrom(alert.model))
         
         let output = viewModel.transfer(input: input)
         
@@ -119,14 +124,22 @@ final class AnswerViewController: UIViewController {
         output.question
             .withUnretained(self)
             .bind { vc, model in
-                print(model)
-                vc.setData(with: model)
+                vc.model.accept(model)
+            }.disposed(by: disposeBag)
+        
+        output.isHiddenAlert
+            .withUnretained(self)
+            .bind { vc, state in
+                vc.alert.model.accept(.cancelAnswer)
+                vc.alert.rx.isHidden.onNext(state)
             }.disposed(by: disposeBag)
     }
     
     private func setAttribute() {
         view.backgroundColor = .clear
         hideKeyboardWhenTappedAround()
+        showAlert()
+        setData()
     }
     
     private func addSubComponents() {
@@ -147,13 +160,14 @@ final class AnswerViewController: UIViewController {
         makeMyAnswerViewConstraints()
         makePartnerAnswerViewConstraints()
         makeAnswerCompletedButtonConstraints()
+        makeAlertConstraints()
     }
 }
 
 // MARK: UI setting method.
 extension AnswerViewController {
     private func addViewControllerSubComponents() {
-        [dimmedView, chatRoomButton, bottomSheetView].forEach { view.addSubview($0) }
+        [dimmedView, chatRoomButton, bottomSheetView, alert].forEach { view.addSubview($0) }
     }
     
     private func makeDimmedViewConstraints() {
@@ -230,6 +244,10 @@ extension AnswerViewController {
             $0.height.equalTo(AnswerViewControllerNameSpace.answerCompletedButtonHeight)
         }
     }
+    
+    private func makeAlertConstraints() {
+        alert.snp.makeConstraints { $0.edges.equalToSuperview() }
+    }
 }
 
 // MARK: Animation method
@@ -244,9 +262,22 @@ extension AnswerViewController {
             self.view.layoutIfNeeded()
         }, completion: nil)
     }
+    
+    private func showAlert() {
+        Observable<AlertType>
+            .merge(popButton.rx.tap.map { .cancelAnswer },
+                   answerCompletedButton.rx.tap.map { .sendAnswer }
+            ).withLatestFrom(model) { (type: $0, model: $1) }
+            .filter { !$0.model.isMyAnswer }
+            .withUnretained(self)
+            .bind { vm, data in
+                vm.alert.model.accept(data.type)
+                vm.alert.rx.isHidden.onNext(false)
+            }.disposed(by: disposeBag)
+    }
 }
 
-// MARK: Update method.
+// MARK: Data setting method
 extension AnswerViewController {
     private func updateKeyboardHeight(_ keyboardHeight: CGFloat) {
         if keyboardHeight == 0.0 {
@@ -277,14 +308,20 @@ extension AnswerViewController {
         answerCompletedButton.rx.isEnabled.onNext(state)
     }
     
-    private func setData(with model: Question) {
-        self.questionTitleView.setDate(title: model.title,
-                                       header: model.header,
-                                       body: model.body,
-                                       highlight: model.highlight)
-        self.myAnswerView.setData(with: model)
-        self.partnerAnswerView.setData(with: model)
-        self.updateAnswerCompletedButton(isMyAnswer: model.isMyAnswer, isPartnerAnswer: model.isPartnerAnswer)
+    private func setData() {
+        model
+            .withUnretained(self)
+            .bind { vc, question in
+                vc.alert.rx.isHidden.onNext(true)
+                vc.questionTitleView.setDate(title: question.title,
+                                             header: question.header,
+                                             body: question.body,
+                                             highlight: question.highlight)
+                vc.myAnswerView.setData(with: question)
+                vc.partnerAnswerView.setData(with: question)
+                vc.updateAnswerCompletedButton(isMyAnswer: question.isMyAnswer,
+                                               isPartnerAnswer: question.isPartnerAnswer)
+            }.disposed(by: disposeBag)
     }
     
     private func updateAnswerCompletedButton(isMyAnswer: Bool, isPartnerAnswer: Bool) {

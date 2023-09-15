@@ -14,6 +14,7 @@ final class MainFlowNavigationBar: UIView {
     enum NavigationType {
         case home
         case question
+        case challenge
     }
     
     private let navigationType: NavigationType
@@ -28,6 +29,8 @@ final class MainFlowNavigationBar: UIView {
             break
         case .question:
             label.text = MainFlowNavigationBarNameSpace.titleLableQuestionTypeText
+        case .challenge:
+            label.text = "섹스챌린지"
         }
         
         label.font = UIFont(name: MainFlowNavigationBarNameSpace.titleLabelTextFont,
@@ -86,7 +89,7 @@ final class MainFlowNavigationBar: UIView {
         switch navigationType {
         case .home:
             break
-        case .question:
+        case .question, .challenge:
             backgroundColor = UIColor(named: MainFlowNavigationBarNameSpace.navigationBarQuestionTypeBackgrountColor)
         }
         

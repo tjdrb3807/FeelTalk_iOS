@@ -30,6 +30,14 @@
 				<string>com.googleusercontent.apps.422145577673-r3mps4c0nc5cn9cp4fq7onvdm7m9qpql</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>feeltalk</string>
+			</array>
+		</dict>
 	</array>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>

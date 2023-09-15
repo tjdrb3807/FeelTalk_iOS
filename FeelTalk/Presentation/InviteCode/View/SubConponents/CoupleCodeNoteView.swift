@@ -85,7 +85,6 @@ final class CoupleCodeNoteView: UIView {
         return button
     }()
     
-    
     private lazy var refreshView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear

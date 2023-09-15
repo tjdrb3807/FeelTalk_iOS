@@ -42,10 +42,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .getSharedInstance()
             .receiveAccessToken(URLContexts.first?.url)
         
-//        // Google
-//        if let url = URLContexts.first?.url {
-//            GIDSignIn.sharedInstance.handle(url)
-//        }
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -14,7 +14,8 @@ protocol QuestionUseCase {
     func getTodayQuestion() -> Single<Question>
     func getQuestionList(questionPage: QuestionPage) -> Observable<[Question]>
     func getQuestion(index: Int) -> Observable<Question>
-//    func answerQuestion(answer: QuestionAnswer) -> Bool
+    func answerQuestion(answer: QuestionAnswer) -> Observable<Bool>
+//    func preseForAnswer(index: Int) -> Observable<Bool>
 }
 
 final class DefaultQuestionUseCase: QuestionUseCase {
@@ -89,4 +90,26 @@ final class DefaultQuestionUseCase: QuestionUseCase {
             return Disposables.create()
         }
     }
+    
+    func answerQuestion(answer: QuestionAnswer) -> Observable<Bool> {
+        return Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            questionRepository.answerQuestion(accessToken: accessToken, answer: answer)
+                .subscribe(
+                    onSuccess: { state in
+                        observer.onNext(state)
+                    },
+                    onFailure: { error in
+                        print(error.localizedDescription)
+                    },
+                    onDisposed: nil)
+                .disposed(by: disposbag)
+            
+            return Disposables.create()
+        }
+    }
+    
+    
+        
 }
