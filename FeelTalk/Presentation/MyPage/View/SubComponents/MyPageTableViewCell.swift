@@ -16,7 +16,7 @@ final class MyPageTableViewCell: UITableViewCell {
     
     private lazy var rightImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: MyPageTableViewCellNameSpace.rightImageViewNoticeTypeImage)
+        imageView.image = UIImage(named: MyPageTableViewCellNameSpace.rightImageConfigurationSettingsTypeImage)
         imageView.contentMode = .center
         imageView.backgroundColor = .clear
         
@@ -25,7 +25,7 @@ final class MyPageTableViewCell: UITableViewCell {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = MyPageTableViewCellNameSpace.titleLabelSuggestionTypeText
+        label.text = MyPageTableViewCellNameSpace.titleLabelConfigurationSettingsTypeText
         label.textColor = .black
         label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                             size: MyPageTableViewCellNameSpace.titleLabelTextSize)
@@ -96,23 +96,23 @@ extension MyPageTableViewCell {
 extension MyPageTableViewCell {
     private func updataRightImageView(with type: MyPageTableViewCellType) {
         switch type {
-        case .notice:
-            rightImageView.rx.image.onNext(UIImage(named: MyPageTableViewCellNameSpace.rightImageViewNoticeTypeImage))
-        case .customerService:
-            rightImageView.rx.image.onNext(UIImage(named: MyPageTableViewCellNameSpace.rightImageViewCustomerServiceTypeImage))
-        case .suggestion:
-            rightImageView.rx.image.onNext(UIImage(named: MyPageTableViewCellNameSpace.rightImageViewSuggestionTypeImage))
+        case .configurationSettings:
+            rightImageView.rx.image.onNext(UIImage(named: MyPageTableViewCellNameSpace.rightImageConfigurationSettingsTypeImage))
+        case .inquiry:
+            rightImageView.rx.image.onNext(UIImage(named: MyPageTableViewCellNameSpace.rightImageViewInquriyTypeImage))
+        case .questionSuggestions:
+            rightImageView.rx.image.onNext(UIImage(named: MyPageTableViewCellNameSpace.rightImageViewQuestionSuggestionsTypeImage))
         }
     }
     
     private func updateTitleLabelText(with type: MyPageTableViewCellType) {
         switch type {
-        case .notice:
-            titleLabel.rx.text.onNext(MyPageTableViewCellNameSpace.titleLabelNoticeTypeText)
-        case .customerService:
-            titleLabel.rx.text.onNext(MyPageTableViewCellNameSpace.titleLabelCustomerServiceTypeText)
-        case .suggestion:
-            titleLabel.rx.text.onNext(MyPageTableViewCellNameSpace.titleLabelSuggestionTypeText)
+        case .configurationSettings:
+            titleLabel.rx.text.onNext(MyPageTableViewCellNameSpace.titleLabelConfigurationSettingsTypeText)
+        case .inquiry:
+            titleLabel.rx.text.onNext(MyPageTableViewCellNameSpace.titleLabelInquriyTypeText)
+        case .questionSuggestions:
+            titleLabel.rx.text.onNext(MyPageTableViewCellNameSpace.titleLabelQuestionSuggestionsTypeText)
         }
     }
 }

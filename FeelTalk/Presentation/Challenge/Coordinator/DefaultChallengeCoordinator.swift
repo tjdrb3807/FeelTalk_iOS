@@ -36,7 +36,7 @@ final class DefaultChallengeCoordinator: ChallengeCoordinator {
             .bind { model in
                 challengeDetailCoordinator.challengeModel.accept(model)
             }.disposed(by: disposeBag)
-            
+        childCoordinators.append(challengeDetailCoordinator)
         challengeDetailCoordinator.finishDelegate = self
         challengeDetailCoordinator.start()
     }

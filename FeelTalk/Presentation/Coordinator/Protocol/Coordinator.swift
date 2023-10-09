@@ -13,8 +13,11 @@ enum CoordinatorType {
     case signUp, nickname, inviteCode, inviteCodeBottomSheet
     case answer
     case challengeDetail
-    case configurationSettings
+    case settingList, inquiry, suggestions
+    case partnerInfo, breakUp
+    case lockingSettings, lockingPassword
     case chat
+    case alert
 }
 
 protocol Coordinator: AnyObject {

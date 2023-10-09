@@ -9,6 +9,7 @@ target 'FeelTalk' do
   pod 'RxSwift', '6.5.0'
   pod 'RxCocoa', '6.5.0'
   pod 'RxKeyboard'
+  pod 'RxDataSources', '~> 5.0'
   pod 'SnapKit', '~> 5.6.0'
   pod 'KakaoSDKCommon'
   pod 'KakaoSDKAuth'

@@ -54,7 +54,7 @@ final class MyPagePartnerInfoButton: UIButton {
         let label = UILabel()
         label.text = MyPagePartnerInfoButtonNameSpace.descriptionLabelText
         label.textColor = UIColor(named: CommonColorNameSpace.main500)
-        label.font = UIFont(name: CommonFontNameSpace.pretendardBold,  // TODO: Semi bolde로
+        label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
                             size: MyPagePartnerInfoButtonNameSpace.descriptionLabelTextSize)
         label.backgroundColor = .clear
         
@@ -204,7 +204,10 @@ struct MyPagePartnerInfoButton_Previews: PreviewProvider {
     
     struct MyPagePartnerInfoButton_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            MyPagePartnerInfoButton()
+            let view = MyPagePartnerInfoButton()
+            view.partnerInfo.accept(.init(nickname: "Partner"))
+            
+            return view
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

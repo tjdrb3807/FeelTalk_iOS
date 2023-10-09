@@ -8,7 +8,7 @@
 import Foundation
 
 enum MyPageTableViewCellType {
-    case notice
-    case customerService
-    case suggestion
+    case configurationSettings
+    case inquiry
+    case questionSuggestions
 }

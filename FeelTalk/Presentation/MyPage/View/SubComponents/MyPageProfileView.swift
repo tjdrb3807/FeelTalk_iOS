@@ -28,20 +28,6 @@ final class MyPageProfileView: UIView {
         return stackView
     }()
     
-    private lazy var myProfileStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .center
-        stackView.distribution = .fillProportionally
-        stackView.spacing = MyPageProfileViewNameSpace.myProfileStackViewSpacing
-        stackView.backgroundColor = .clear
-        stackView.isUserInteractionEnabled = true
-        
-        return stackView
-    }()
-    
-    lazy var myProfileButton: MyPageProfileButton = { MyPageProfileButton() }()
-    
     private lazy var myNicknameStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -54,20 +40,23 @@ final class MyPageProfileView: UIView {
         return stackView
     }()
     
+    private lazy var spacing: UIView = { UIView() }()
+    
     private lazy var myNicknameLabel: UILabel = {
         let label = UILabel()
-        label.text = "UserName"
         label.textColor = .black
+        label.backgroundColor = .clear
         label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
                             size: MyPageProfileViewNameSpace.myNicknameLabelTextSize)
         label.sizeToFit()
+        label.setLineHeight(height: MyPageProfileViewNameSpace.myNicknameLabelLineHeight)
         
         return label
     }()
     
     private lazy var snsImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: MyPageProfileViewNameSpace.kakaoImage)
+        imageView.backgroundColor = .clear
         
         return imageView
     }()
@@ -75,7 +64,9 @@ final class MyPageProfileView: UIView {
     lazy var partnerInfoButton: MyPagePartnerInfoButton = { MyPagePartnerInfoButton() }()
     
     override init(frame: CGRect) {
-        super.init(frame: frame)
+        super.init(frame: CGRect(origin: .zero,
+                                 size: CGSize(width: UIScreen.main.bounds.width - (MyPageProfileViewNameSpace.leadingInset + MyPageProfileViewNameSpace.trailingInset),
+                                              height: MyPageProfileViewNameSpace.height)))
         
         self.bind()
         self.setConfigurations()
@@ -91,8 +82,8 @@ final class MyPageProfileView: UIView {
         userInfo
             .withUnretained(self)
             .bind { v, info in
-                v.updateMyNicknameLabel(with: info)
-                v.updateSNSImageView(with: info)
+                v.setUpMyNicknameLabel(with: info)
+                v.setUpSNSImageView(with: info)
             }.disposed(by: disposeBag)
         
         partnerInfo
@@ -105,19 +96,28 @@ final class MyPageProfileView: UIView {
         layer.borderColor = UIColor(named: CommonColorNameSpace.gray200)?.cgColor
         layer.borderWidth = MyPageProfileViewNameSpace.borderWidth
         layer.cornerRadius = MyPageProfileViewNameSpace.cornerRadius
+        
+        layer.shadowPath = UIBezierPath(roundedRect: self.bounds,
+                                        cornerRadius: MyPageProfileViewNameSpace.cornerRadius).cgPath
+        layer.shadowColor = UIColor(red: MyPageProfileViewNameSpace.shadowRedColor,
+                                    green: MyPageProfileViewNameSpace.shadowGreenColor,
+                                    blue: MyPageProfileViewNameSpace.shadowBlueColor,
+                                    alpha: MyPageProfileViewNameSpace.shadowColorAlpha).cgColor
+        layer.shadowOffset = CGSize(width: MyPageProfileViewNameSpace.shadowOffsetWidth,
+                                    height: MyPageProfileViewNameSpace.shadowOffsetHeight)
+        layer.shadowOpacity = MyPageProfileViewNameSpace.shadowOpacity
+        layer.shadowRadius = MyPageProfileViewNameSpace.shadowRadius
     }
     
     private func addSubComponents() {
         addViewSubComponent()
         addTotalStackViewSubComponents()
-        addMyProfileStackViewSubComponents()
         addMyNicknameStackViewSubComponents()
     }
     
     private func setConstraints() {
         makeTotalStackViewConstraints()
-        makeProfileStackViewConstraints()
-        makeMyProfileButtonConstraints()
+        makeMyNicknameStackViewConstraints()
         makeMyNicknameLabelConstraints()
         makePartnerInfoButtonConstraints()
     }
@@ -136,26 +136,15 @@ extension MyPageProfileView {
     }
     
     private func addTotalStackViewSubComponents() {
-        [myProfileStackView, partnerInfoButton].forEach { totalStackView.addArrangedSubview($0) }
+        [myNicknameStackView, partnerInfoButton].forEach { totalStackView.addArrangedSubview($0) }
     }
     
-    private func makeProfileStackViewConstraints() {
-        myProfileStackView.snp.makeConstraints { $0.height.equalTo(MyPageProfileButtonNameSpace.profileImageViewWidth) }
-    }
-    
-    private func addMyProfileStackViewSubComponents() {
-        [myProfileButton, myNicknameStackView].forEach { myProfileStackView.addArrangedSubview($0) }
-    }
-    
-    private func makeMyProfileButtonConstraints() {
-        myProfileButton.snp.makeConstraints {
-            $0.width.equalTo(MyPageProfileButtonNameSpace.profileImageViewWidth)
-            $0.height.equalTo(MyPageProfileButtonNameSpace.profileImageViewHeight)
-        }
+    private func makeMyNicknameStackViewConstraints() {
+        myNicknameStackView.snp.makeConstraints { $0.height.equalTo(MyPageProfileViewNameSpace.myNicknameStackViewHeight) }
     }
     
     private func addMyNicknameStackViewSubComponents() {
-        [myNicknameLabel, snsImageView].forEach { myNicknameStackView.addArrangedSubview($0) }
+        [spacing, myNicknameLabel, snsImageView].forEach { myNicknameStackView.addArrangedSubview($0) }
     }
     
     private func makeMyNicknameLabelConstraints() {
@@ -169,12 +158,12 @@ extension MyPageProfileView {
 
 // MARK: Update configuration settings method.
 extension MyPageProfileView {
-    private func updateMyNicknameLabel(with myInfo: MyInfo) {
+    private func setUpMyNicknameLabel(with myInfo: MyInfo) {
         myNicknameLabel.rx.text.onNext(myInfo.nickname)
         myNicknameLabel.snp.updateConstraints { $0.width.equalTo(myNicknameLabel.intrinsicContentSize) }
     }
     
-    private func updateSNSImageView(with myInfo: MyInfo) {
+    private func setUpSNSImageView(with myInfo: MyInfo) {
         switch myInfo.snsType {
         case .appleIOS:
             snsImageView.rx.image.onNext(UIImage(named: MyPageProfileViewNameSpace.appleLogoImage))
@@ -199,7 +188,10 @@ struct MyPageProfileView_Previews: PreviewProvider {
     
     struct MyPageProfileView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            MyPageProfileView()
+            let view = MyPageProfileView()
+            view.userInfo.accept(.init(nickname: "성규", snsType: .naver))
+            
+            return view
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

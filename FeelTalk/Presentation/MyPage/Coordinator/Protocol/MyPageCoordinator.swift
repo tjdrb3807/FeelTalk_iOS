@@ -10,5 +10,11 @@ import Foundation
 protocol MyPageCoordinator: Coordinator {
     var myPageViewController: MyPageViewController { get set }
     
-    func showConfigurationSettingsFlow()
+    func showPartnerInfoFlow()
+    
+    func showSettingListFlow()
+    
+    func showInquiryFlow()
+    
+    func showSuggestionsFlow()
 }

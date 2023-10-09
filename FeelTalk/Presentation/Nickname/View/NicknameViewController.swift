@@ -212,7 +212,19 @@ struct NicknameViewController_Previews: PreviewProvider {
 
     struct NicknameViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            NicknameViewController()
+            let viewController = NicknameViewController()
+            let viewModel = NicknameViewModel(coordinator: DefaultNicknameCoordinator(UINavigationController()),
+                                              signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()),
+                                              signUp: .init(snsType: .naver,
+                                                            nickname: "nickname",
+                                                            refreshToken: nil,
+                                                            authCode: nil,
+                                                            idToken: nil,
+                                                            authorizationCode: nil,
+                                                            marketingConsent: true))
+            viewController.viewModel = viewModel
+            
+            return viewController
         }
 
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

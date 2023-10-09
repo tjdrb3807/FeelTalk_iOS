@@ -54,10 +54,10 @@ final class SignUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.setAttribute()
-        self.addSubComponent()
-        self.setConfiguration()
         self.bind(to: viewModel)
+        self.setProperties()
+        self.addSubComponent()
+        self.setConstraints()
     }
     
     private func bind(to viewModel: SignUpViewModel) {
@@ -123,7 +123,7 @@ final class SignUpViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    private func setAttribute() {
+    private func setProperties() {
         view.backgroundColor = .white
     }
     
@@ -133,7 +133,7 @@ final class SignUpViewController: UIViewController {
         [navigationBar, progressBar, fullVerticalStackView].forEach { view.addSubview($0) }
     }
     
-    private func setConfiguration() {
+    private func setConstraints() {
         makeNavigationBarConstraints()
         makePrograssBarConstraints()
         makeInformationPhraseConstraints()
@@ -205,7 +205,17 @@ struct SignUpViewController_Previews: PreviewProvider {
     
     struct SignUpViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            SignUpViewController()
+            let vc = SignUpViewController()
+            let vm = SignUpViewModel(coordinator: DefaultSignUpCoordinator(UINavigationController()),
+                                                 signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()),
+                                                 snsLogin: .init(snsType: .appleIOS,
+                                                                 refreshToken: nil,
+                                                                 authCode: nil,
+                                                                 idToken: nil,
+                                                                 authorizationCode: nil))
+            vc.viewModel = vm
+            
+            return vc
         }
         
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

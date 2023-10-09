@@ -10,24 +10,27 @@ import SnapKit
 
 final class ChatRoomButton: UIButton {
     override init(frame: CGRect) {
-        super.init(frame: frame)
+        super.init(frame: CGRect(origin: .zero,
+                                 size: CGSize(width: 56,
+                                              height: 56)))
         
-        self.setAttributes()
+        self.setConfigurations()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setAttributes() {
-        self.setBackgroundImage(UIImage(named: ChatRoomButtonNameSpace.backgroundImage),
+    private func setConfigurations() {
+        setBackgroundImage(UIImage(named: ChatRoomButtonNameSpace.backgroundImage),
                                 for: .normal)
-        self.backgroundColor = UIColor(named: ChatRoomButtonNameSpace.backgroundColor)
+        backgroundColor = UIColor(named: ChatRoomButtonNameSpace.backgroundColor)
         
-        self.layer.borderColor = UIColor.white.cgColor
-        self.layer.borderWidth = ChatRoomButtonNameSpace.borderWidth
-        self.layer.cornerRadius = ChatRoomButtonNameSpace.cornerRadius
-        self.clipsToBounds = true
+        layer.borderColor = UIColor.white.cgColor
+        layer.borderWidth = ChatRoomButtonNameSpace.borderWidth
+        layer.cornerRadius = ChatRoomButtonNameSpace.cornerRadius
+        
+        
     }
 }
 

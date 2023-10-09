@@ -140,7 +140,11 @@ struct QuestionViewController_Previews: PreviewProvider {
     
     struct QuestionViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            QuestionViewController()
+            let vc = QuestionViewController()
+            vc.viewModel = QuestionViewModel(coordiantor: DefaultQuestionCoordinator(UINavigationController()),
+                                                         questionUseCase: DefaultQuestionUseCase(questionRepository: DefaultQuestionRepository()))
+            
+            return vc
         }
         
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

@@ -288,7 +288,12 @@ struct ChallengeDetailViewController_Previews: PreviewProvider {
     
     struct ChallengeDetailViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            ChallengeDetailViewController()
+            let vc = ChallengeDetailViewController()
+            let vm = ChallengeDetailViewModel(coordinator: DefaultChallengeDetailCoordinator(UINavigationController()),
+                                              challengeUseCase: DefaultChallengeUseCase(challengeRepository: DefaultChallengeRepository()))
+            vc.viewModel = vm
+            
+            return vc
         }
         
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

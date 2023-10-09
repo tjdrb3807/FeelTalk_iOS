@@ -16,12 +16,11 @@ final class MyPageViewModel {
     
     private let userInfo = PublishRelay<MyInfo>()
     private let partnerInfo = PublishRelay<PartnerInfo>()
-    private let typeList: [MyPageTableViewCellType] = [.notice, .customerService, .suggestion]
+    private let typeList: [MyPageTableViewCellType] = [.configurationSettings, .inquiry, .questionSuggestions]
+    let showBottomSheet = PublishRelay<SubmitType>()
     
     struct Input {
         let viewWillAppear: ControlEvent<Bool>
-        let tapPushConfigurationSettingsButton: ControlEvent<Void>
-        let tapMyProfileButton: ControlEvent<Void>
         let tapPartnerInfoButton: ControlEvent<Void>
         let tapTableViewCell: ControlEvent<MyPageTableViewCellType>
     }
@@ -30,6 +29,7 @@ final class MyPageViewModel {
         let userInfo: PublishRelay<MyInfo>
         let partnerInfo: PublishRelay<PartnerInfo>
         let cellData: Driver<[MyPageTableViewCellType]>
+        let showBottomSheet: PublishRelay<SubmitType>
     }
     
     init(coordinator: MyPageCoordinator, userUseCase: UserUseCase) {
@@ -51,33 +51,40 @@ final class MyPageViewModel {
                     .disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
         
-        input.tapPushConfigurationSettingsButton
-            .withUnretained(self)
-            .bind { vm, _ in
-                vm.coordinator?.showConfigurationSettingsFlow()
-            }.disposed(by: disposeBag)
-        
-        input.tapMyProfileButton
-            .withUnretained(self)
-            .bind { vm, _ in
-                print("tapMyProfileInfoButton")
-            }.disposed(by: disposeBag)
-        
+        /// PartnerInfoCoordinator 화면 전환
         input.tapPartnerInfoButton
             .withUnretained(self)
             .bind { vm, _ in
-                print("tapPartnerInfoButton")
+                vm.coordinator?.showPartnerInfoFlow()
             }.disposed(by: disposeBag)
         
-        /// CellType에 따른 화면 전환
+        /// ConfigurationCoordiantor 화면 전환
         input.tapTableViewCell
+            .filter { $0 == .configurationSettings }
             .withUnretained(self)
-            .bind { vc, type in
-                print(type)
+            .bind { vm, _ in
+                vm.coordinator?.showSettingListFlow()
+            }.disposed(by: disposeBag)
+        
+        /// InquiryCoordinator 화면 전환
+        input.tapTableViewCell
+            .filter { $0 == .inquiry }
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.showInquiryFlow()
+            }.disposed(by: disposeBag)
+        
+        /// SuggestionsCoordiantor 화면 전환
+        input.tapTableViewCell
+            .filter { $0 == .questionSuggestions }
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.showSuggestionsFlow()                
             }.disposed(by: disposeBag)
         
         return Output(userInfo: self.userInfo,
                       partnerInfo: self.partnerInfo,
-                      cellData: Driver.just(typeList))
+                      cellData: Driver.just(typeList),
+                      showBottomSheet: self.showBottomSheet)
     }
 }

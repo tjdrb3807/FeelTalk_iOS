@@ -14,29 +14,57 @@ final class MyPageViewController: UIViewController {
     var viewModel: MyPageViewModel!
     private let disposeBag = DisposeBag()
     
-    // MARK: SubComponents
-    private lazy var navigationBar: MyPageNavigationBar = { MyPageNavigationBar() }()
+    private lazy var navigationBar: MainNavigationBar = { MainNavigationBar(type: .myPage) }()
     
-    private lazy var profileView: MyPageProfileView = { MyPageProfileView() }()
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = true
+        scrollView.alwaysBounceVertical = true
+        scrollView.indicatorStyle = .black
+        
+        return scrollView
+    }()
+    
+    private lazy var contentStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.distribution = .fillProportionally
+        stackView.spacing = MyPageViewNameSpace.contentStackViewSpacing
+        stackView.backgroundColor = .clear
+        
+        return stackView
+    }()
+    
+    private lazy var topSpacingView: UIView = { UIView() }()
+    
+    lazy var profileView: MyPageProfileView = { MyPageProfileView() }()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
+        tableView.layer.borderColor = UIColor(named: CommonColorNameSpace.gray200)?.cgColor
+        tableView.layer.borderWidth = MyPageViewNameSpace.borderWidth
         tableView.layer.cornerRadius = MyPageViewNameSpace.tableViewCornerRadius
-        tableView.clipsToBounds = true
+        
         tableView.separatorStyle = .singleLine
         tableView.separatorInset = UIEdgeInsets(top: MyPageViewNameSpace.tableViewSeparatorTopInset,
                                                 left: MyPageViewNameSpace.tableViewSeparatorLeftInset,
                                                 bottom: MyPageViewNameSpace.tableViewSeparatorBottomInset,
                                                 right: MyPageViewNameSpace.tableViewSeparatorRightInset)
         tableView.separatorColor = UIColor(named: CommonColorNameSpace.gray100)
+        tableView.isScrollEnabled = false
         
         tableView.register(MyPageTableViewCell.self,
                            forCellReuseIdentifier: MyPageTableViewCellNameSpace.identifier)
-        tableView.delegate = self
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
         
         return tableView
     }()
+    
+    private lazy var bottomSheet: CustomBottomSheetView = { CustomBottomSheetView() }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,8 +77,6 @@ final class MyPageViewController: UIViewController {
     
     private func bind(to viewModel: MyPageViewModel) {
         let input = MyPageViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
-                                          tapPushConfigurationSettingsButton: navigationBar.pushConfigurationSettingsButton.rx.tap,
-                                          tapMyProfileButton: profileView.myProfileButton.rx.tap,
                                           tapPartnerInfoButton: profileView.partnerInfoButton.rx.tap,
                                           tapTableViewCell: tableView.rx.modelSelected(MyPageTableViewCellType.self))
         
@@ -72,6 +98,22 @@ final class MyPageViewController: UIViewController {
                 
                 return cell
             }.disposed(by: disposeBag)
+        
+        output.showBottomSheet
+            .withUnretained(self)
+            .delay(RxTimeInterval.seconds(1), scheduler: MainScheduler())
+            .bind { vc, type in
+                vc.bottomSheet.type.accept(type)
+                guard !vc.view.subviews.contains(where: {
+                    $0 is CustomBottomSheetView
+                }) else { return }
+                let bottomSheet = vc.bottomSheet
+                vc.view.addSubview(bottomSheet)
+                bottomSheet.snp.makeConstraints { $0.edges.equalToSuperview()}
+                vc.view.layoutIfNeeded()
+
+                bottomSheet.show(type: type)
+            }.disposed(by: disposeBag)
     }
     
     private func setAttributes() {
@@ -81,31 +123,50 @@ final class MyPageViewController: UIViewController {
     
     private func addSubComponents() {
         addViewSubComponents()
+        addScrollViewSubComponents()
+        addContentStackViewSubComponents()
     }
     
     private func setConfigurations() {
-        makeNavigationBarConstraints()
+        navigationBar.makeNavigationBarConstraints()
+        makeScrollViewConstraints()
+        makeContentStackViewConstraints()
+        makeTopSpacingViewConstraints()
         makeProfileViewConstraints()
         makeTableViewConstraints()
     }
 }
 
 extension MyPageViewController {
-    private func addViewSubComponents() {
-        [navigationBar, profileView, tableView].forEach { view.addSubview($0) }
+    private func addViewSubComponents() { [navigationBar, scrollView].forEach { view.addSubview($0) } }
+    
+    private func makeScrollViewConstraints() {
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.left.trailing.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
     }
     
-    private func makeNavigationBarConstraints() {
-        navigationBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(navigationBar.snp.top).offset(MyPageNavigationBarNameSpace.height)
+    private func addScrollViewSubComponents() { scrollView.addSubview(contentStackView) }
+    
+    private func makeContentStackViewConstraints() {
+        contentStackView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalToSuperview()
         }
+    }
+    
+    private func addContentStackViewSubComponents() {
+        [topSpacingView, profileView, tableView].forEach { contentStackView.addArrangedSubview($0) }
+    }
+    
+    private func makeTopSpacingViewConstraints() {
+        topSpacingView.snp.makeConstraints { $0.height.equalTo(MyPageViewNameSpace.topSpacingViewHeight) }
     }
     
     private func makeProfileViewConstraints() {
         profileView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom).offset(MyPageProfileViewNameSpace.topOffset)
             $0.leading.equalToSuperview().inset(MyPageProfileViewNameSpace.leadingInset)
             $0.trailing.equalToSuperview().inset(MyPageProfileViewNameSpace.trailingInset)
             $0.bottom.equalTo(profileView.snp.top).offset(MyPageProfileViewNameSpace.height)
@@ -114,7 +175,6 @@ extension MyPageViewController {
     
     private func makeTableViewConstraints() {
         tableView.snp.makeConstraints {
-            $0.top.equalTo(profileView.snp.bottom).offset(MyPageViewNameSpace.tableViewTopOffset)
             $0.leading.equalToSuperview().inset(MyPageViewNameSpace.tableViewLeadingInset)
             $0.trailing.equalToSuperview().inset(MyPageViewNameSpace.tableViewTrailingInset)
             $0.bottom.equalTo(tableView.snp.top).offset(MyPageViewNameSpace.tableViewBottomOffset)
@@ -144,7 +204,16 @@ struct MyPageViewController_Previews: PreviewProvider {
     
     struct MyPageViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            MyPageViewController()
+            let viewController = MyPageViewController()
+            let viewModel = MyPageViewModel(coordinator: DefaultMyPageCoordinator(UINavigationController()),
+                                            userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
+    
+            viewController.profileView.userInfo.accept(MyInfo(nickname: "SeooongGyu", snsType: .appleIOS))
+            viewController.profileView.partnerInfoButton.partnerInfo.accept(PartnerInfo(nickname: "Partner"))
+        
+            viewController.viewModel = viewModel
+            
+            return viewController
         }
         
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

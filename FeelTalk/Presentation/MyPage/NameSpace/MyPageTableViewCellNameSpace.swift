@@ -15,15 +15,15 @@ enum MyPageTableViewCellNameSpace {
     static let firstOrLastCellHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 7.38        // 60.0
     
     // MARK: RightImageView
-    static let rightImageViewNoticeTypeImage: String = "icon_speaker"
-    static let rightImageViewCustomerServiceTypeImage: String = "icon_headset"
-    static let rightImageViewSuggestionTypeImage: String = "icon_speech_bubble"
+    static let rightImageConfigurationSettingsTypeImage: String = "icon_my_page_gear"
+    static let rightImageViewInquriyTypeImage: String = "icon_my_page_speech_bubble"
+    static let rightImageViewQuestionSuggestionsTypeImage: String = "icon_my_page_note"
     static let rightImageViewLeadingInset: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 2.13 // 8.0
     
     // MARK: TitleLabel
-    static let titleLabelNoticeTypeText: String = "공지사항"
-    static let titleLabelCustomerServiceTypeText: String = "고객센터"
-    static let titleLabelSuggestionTypeText: String = "필톡 질문 제안하기"
+    static let titleLabelConfigurationSettingsTypeText: String = "환경설정"
+    static let titleLabelInquriyTypeText: String = "문의하기"
+    static let titleLabelQuestionSuggestionsTypeText: String = "새로운 질문 제안하기"
     static let titleLabelTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26         // 16.0
     static let titleLabelLaedingOffset: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 1.06    // 4.0
 }

@@ -18,4 +18,10 @@ extension UIScrollView {
             setContentOffset(bottomOffset, animated: true)
         }
     }
+    
+    func setTapGesture() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
+        self.addGestureRecognizer(tap)
+    }
 }

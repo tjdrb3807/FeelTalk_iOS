@@ -20,5 +20,6 @@ enum CommonColorNameSpace {
     // MARK: Main
     static let main100: String = "main_100"
     static let main300: String = "main_300"
+    static let main400: String = "main_400"
     static let main500: String = "main_500"
 }

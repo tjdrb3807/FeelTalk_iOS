@@ -101,7 +101,12 @@ struct ChallengeViewController_Previews: PreviewProvider {
     
     struct ChallengeViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            ChallengeViewController()
+            let vc = ChallengeViewController()
+            let vm = ChallengeViewModel(coordinator: DefaultChallengeCoordinator(UINavigationController()),
+                                        challengeUseCase: DefaultChallengeUseCase(challengeRepository: DefaultChallengeRepository()))
+            vc.viewModel = vm
+            
+            return vc
         }
         
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

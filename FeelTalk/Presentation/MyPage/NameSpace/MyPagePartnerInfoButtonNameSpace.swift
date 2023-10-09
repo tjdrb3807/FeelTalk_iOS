@@ -36,7 +36,7 @@ enum MyPagePartnerInfoButtonNameSpace {
     
     // MARK: PartnerNicknameLabel
     static let partnerNicknameLabelDefaultText: String = "UserName님과 함께하고 있어요"
-    static let partnerNicknameLabelTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26       // 16.0
+    static let partnerNicknameLabelTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 3.73       // 14.0
     static let partnerNicknameLabelTextLineHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 2.95   // 24.0
     
     // MARK: RightArrowImageView

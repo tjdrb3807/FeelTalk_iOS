@@ -16,5 +16,5 @@ enum CommonFontNameSpace {
     static let pretendardLight: String = "pretendard-light"
     static let pretendardMedium: String = "pretendard-medium"
     static let pretendardRegular: String = "pretendard-regular"
-    static let pretendardSemiBold: String = "pretendard-semi_bold"    
+    static let pretendardSemiBold: String = "pretendard-semiBold"    
 }

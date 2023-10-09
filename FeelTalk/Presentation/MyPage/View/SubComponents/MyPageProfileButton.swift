@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+// MARK: 간소화 버전에서는 위 버튼을 사용하지 않는다.
 final class MyPageProfileButton: UIButton {
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
