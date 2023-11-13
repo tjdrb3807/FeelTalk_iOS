@@ -12,7 +12,7 @@ import RxCocoa
 
 final class ChallengeDetailNavigationBar: UIView {
     private let disposeBag = DisposeBag()
-    let viewMode = PublishRelay<ChallengeDetailViewMode>()
+    let mode = PublishRelay<ChallengeDetailViewMode>()
     
     lazy var popButton: UIButton = {
         let button = UIButton()
@@ -50,7 +50,7 @@ final class ChallengeDetailNavigationBar: UIView {
     }
     
     private func bind() {
-        viewMode
+        mode
             .withUnretained(self)
             .bind { v, mode in
                 v.updateNavigationItems(mode)
@@ -120,11 +120,19 @@ import SwiftUI
 struct ChallengeDetailNavigationBar_Previews: PreviewProvider {
     static var previews: some View {
         ChallengeDetailNavigationBar_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width,
+                   height: ChallengeDetailNavigationBarNameSpace.height,
+                   alignment: .center)
     }
     
     struct ChallengeDetailNavigationBar_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            ChallengeDetailNavigationBar()
+            let v = ChallengeDetailNavigationBar()
+            v.mode.accept(.ongoing)
+            
+            
+            return v
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

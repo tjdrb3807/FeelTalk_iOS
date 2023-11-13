@@ -61,7 +61,9 @@ final class AnswerViewController: UIViewController {
     }()
     
     private lazy var questionTitleView: QuestionTitleView = { QuestionTitleView() }()
+    
     private lazy var myAnswerView: MyAnswerView = { MyAnswerView() }()
+    
     private lazy var partnerAnswerView: PartnerAnswerView = { PartnerAnswerView() }()
     
     private lazy var answerCompletedButton: UIButton = {
@@ -257,7 +259,8 @@ extension AnswerViewController {
         
         UIView.animate(withDuration: AnswerViewControllerNameSpace.dimmedViewAnimateDuration,
                        delay: AnswerViewControllerNameSpace.dimmedViewAnimateDelay,
-                       options: .overrideInheritedDuration , animations: {
+                       options: .curveEaseInOut,
+                       animations: {
             self.dimmedView.alpha = AnswerViewControllerNameSpace.dimmedViewAlpha
             self.view.layoutIfNeeded()
         }, completion: nil)
@@ -358,7 +361,14 @@ struct AnswerViewController_Previews: PreviewProvider {
     
     struct AnswerViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            AnswerViewController()
+            let vc = AnswerViewController()
+            let vm = AnswerViewModel(coordinator: DefaultAnswerCoordinator(UINavigationController()),
+                                     questionUseCase: DefaultQuestionUseCase(
+                                        questionRepository: DefaultQuestionRepository()))
+            
+            vc.viewModel = vm
+            
+            return vc
         }
         
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

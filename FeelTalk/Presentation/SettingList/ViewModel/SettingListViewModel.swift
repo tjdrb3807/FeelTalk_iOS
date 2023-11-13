@@ -24,6 +24,7 @@ final class SettingListViewModel {
     
     struct Output {
         let sectionModel: BehaviorRelay<[SettingListSectionModel]>
+        
     }
     
     init(coordinatro: SettingListCoordinator, configurationUseCase: ConfigurationUseCase) {
@@ -37,8 +38,10 @@ final class SettingListViewModel {
             .withUnretained(self)
             .bind { vm, _ in
                 vm.configurationUseCase.getConfigurationInfo()
-                    
-                
+                    .map { $0.isLock }
+                    .map { vm.switchString(to: $0) }
+                    .bind(to: vm.isLock)
+                    .disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
 
         return Output(sectionModel: self.sectionModel)

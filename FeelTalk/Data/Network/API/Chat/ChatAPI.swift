@@ -2,96 +2,65 @@
 //  ChatAPI.swift
 //  FeelTalk
 //
-//  Created by 전성규 on 2023/06/28.
+//  Created by 전성규 on 2023/10/18.
 //
 
-import RxSwift
+import Foundation
 import Alamofire
 
 enum ChatAPI {
-    case changeChatRoomStatus(isInChat: Bool)
-    case getLastestChatPageNo
-    case loadChatList(pageNo: Int)
-    case sendEmoji(emoji: String)
-    case sendTextChat(message: String)
-    case shareQuestion(index: Int)
-    case shareChallenge(index: Int)
+    case sendTextChat(accessToken: String, _ dto: SendTextChatRequestDTO)
+    case getLatestChatPageNo(accessToken: String)
 }
 
 extension ChatAPI: Router, URLRequestConvertible {
-    public var baseURL: String { ClonectAPI.BASE_URL }
+    var baseURL: String { ClonectAPI.BASE_URL }
     
-    public var path: String {
+    var path: String {
         switch self {
-        case .changeChatRoomStatus:
-            return "/api/v1/member/chatting-room-status"
-        case .getLastestChatPageNo:
-            return "/api/v1/chatting-message/lastest/page-no"
-        case .loadChatList:
-            return "/api/v1/chatting-message"
-        case .sendEmoji:
-            return "/api/v1/chatting-message/emoji"
         case .sendTextChat:
             return "/api/v1/chatting-message/text"
-        case .shareChallenge:
-            return "/api/v1/chatting-message/challenge"
-        case .shareQuestion:
-            return "/api/v1/chatting-message/question"
+        case .getLatestChatPageNo:
+            return "/api/v1/chatting-message/last/page-no"
         }
     }
     
-    public var method: Alamofire.HTTPMethod {
+    var method: Alamofire.HTTPMethod {
         switch self {
-        case .changeChatRoomStatus:
-            return .put
-        case .getLastestChatPageNo, .loadChatList:
-            return .get
-        case .sendTextChat, .shareQuestion, .shareChallenge, .sendEmoji:
+        case .sendTextChat:
             return .post
+        case .getLatestChatPageNo:
+            return .get
         }
     }
     
-    // TODO: accessToken 어떻게 넘겨줄기 고민
-    public var header: [String : String] {
+    var header: [String : String] {
         switch self {
-        case .changeChatRoomStatus, .getLastestChatPageNo, .loadChatList, .sendEmoji, .sendTextChat, .shareChallenge, .shareQuestion:
-            return [
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-//                "accessToken": accessToken
-            ]
+        case .sendTextChat(accessToken: let accessToken, _),
+                .getLatestChatPageNo(accessToken: let accessToken):
+            return ["Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": "Bearer \(accessToken)"]
         }
     }
     
-    public var parameters: [String : Any]? {
+    var parameters: [String : Any]? {
         switch self {
-        case .changeChatRoomStatus(isInChat: let isInChat):
-            return ["isInChat": isInChat]
-        case .getLastestChatPageNo:
+        case .sendTextChat(accessToken: _, let dto):
+            return ["message": dto.message]
+        case .getLatestChatPageNo:
             return nil
-        case .loadChatList(pageNo: let pageNo):
-            return ["pageNo": pageNo]
-        case .sendEmoji(emoji: let emoji):
-            return ["emoji": emoji]
-        case .sendTextChat(message: let message):
-            return ["message": message]
-        case .shareChallenge(index: let index):
-            return ["index": index]
-        case .shareQuestion(index: let index):
-            return ["index": index]
         }
     }
     
-    public var encoding: Alamofire.ParameterEncoding? {
+    var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .changeChatRoomStatus, .loadChatList, .sendEmoji, .sendTextChat, .shareChallenge, .shareQuestion:
+        case .sendTextChat, .getLatestChatPageNo:
             return JSONEncoding.default
-        case .getLastestChatPageNo:
-            return nil
         }
     }
     
-    public func asURLRequest() throws -> URLRequest {
+    func asURLRequest() throws -> URLRequest {
         let url = URL(string: baseURL + path)
         var request = URLRequest(url: url!)
         

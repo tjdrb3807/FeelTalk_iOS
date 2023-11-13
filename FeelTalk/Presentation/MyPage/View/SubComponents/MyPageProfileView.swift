@@ -184,6 +184,10 @@ import SwiftUI
 struct MyPageProfileView_Previews: PreviewProvider {
     static var previews: some View {
         MyPageProfileView_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width - (CommonConstraintNameSpace.leadingInset + CommonConstraintNameSpace.trailingInset),
+                   height: MyPageProfileViewNameSpace.height,
+                   alignment: .center)
     }
     
     struct MyPageProfileView_Presentable: UIViewRepresentable {

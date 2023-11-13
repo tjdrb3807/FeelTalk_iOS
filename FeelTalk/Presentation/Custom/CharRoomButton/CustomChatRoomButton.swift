@@ -36,6 +36,8 @@ final class CustomChatRoomButton: UIButton {
     }
     
     private func setConfigurations() {
+        backgroundColor = .clear
+        
         layer.shadowPath = UIBezierPath(roundedRect: self.bounds,
                                         cornerRadius: CustomChatRoomButtonNameSpace.profileImageViewCornerRadius).cgPath
         layer.shadowColor = UIColor(red: CustomChatRoomButtonNameSpace.shadowRedColor,
@@ -68,6 +70,10 @@ import SwiftUI
 struct CustomChatRoomButton_Previews: PreviewProvider {
     static var previews: some View {
         CustomChatRoomButton_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: CustomChatRoomButtonNameSpace.profileImageViewWidth,
+                   height: CustomChatRoomButtonNameSpace.profileImageViewHeight,
+                   alignment: .center)
     }
     
     struct CustomChatRoomButton_Presentable: UIViewRepresentable {

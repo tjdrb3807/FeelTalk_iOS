@@ -52,6 +52,8 @@ final class ChallengeDetailViewController: UIViewController {
         return button
     }()
     
+    private lazy var alertView: CustomAlertView = { CustomAlertView(type: .challengeAddCancel) }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -90,7 +92,7 @@ final class ChallengeDetailViewController: UIViewController {
         output.viewMode
             .withUnretained(self)
             .bind { vc, mode in
-                vc.navigationBar.viewMode.accept(mode)
+                vc.navigationBar.mode.accept(mode)
                 vc.descriptionView.viewMode.accept(mode)
                 vc.contentView.titleInputView.viewMode.accept(mode)
                 vc.contentView.deadlineInputView.viewMode.accept(mode)

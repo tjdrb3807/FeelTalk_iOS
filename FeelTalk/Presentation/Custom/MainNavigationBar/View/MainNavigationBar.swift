@@ -37,7 +37,7 @@ final class MainNavigationBar: UIView {
         return label
     }()
     
-    private lazy var chatRoomButton: CustomChatRoomButton = { CustomChatRoomButton() }()
+    lazy var chatRoomButton: CustomChatRoomButton = { CustomChatRoomButton() }()
     
     init(type: MainNavigationBarType) {
         self.type = type
@@ -117,6 +117,10 @@ import SwiftUI
 struct MainNavigationBar_Previews: PreviewProvider {
     static var previews: some View {
         MainNavigationBar_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width,
+                   height: MainNavigationBarNameSpace.height,
+                   alignment: .center)
     }
     
     struct MainNavigationBar_Presentable: UIViewRepresentable {

@@ -17,19 +17,20 @@ final class MyPageViewModel {
     private let userInfo = PublishRelay<MyInfo>()
     private let partnerInfo = PublishRelay<PartnerInfo>()
     private let typeList: [MyPageTableViewCellType] = [.configurationSettings, .inquiry, .questionSuggestions]
-    let showBottomSheet = PublishRelay<SubmitType>()
+    let showBottomSheet = PublishRelay<CustomBottomSheetType>()
     
     struct Input {
         let viewWillAppear: ControlEvent<Bool>
         let tapPartnerInfoButton: ControlEvent<Void>
         let tapTableViewCell: ControlEvent<MyPageTableViewCellType>
+        let tapChatRoomButton: ControlEvent<Void>
     }
     
     struct Output {
         let userInfo: PublishRelay<MyInfo>
         let partnerInfo: PublishRelay<PartnerInfo>
         let cellData: Driver<[MyPageTableViewCellType]>
-        let showBottomSheet: PublishRelay<SubmitType>
+        let showBottomSheet: PublishRelay<CustomBottomSheetType>
     }
     
     init(coordinator: MyPageCoordinator, userUseCase: UserUseCase) {
@@ -49,6 +50,12 @@ final class MyPageViewModel {
                 vm.userUseCase.getPartnerInfo()
                     .bind(to: vm.partnerInfo)
                     .disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
+        
+        input.tapChatRoomButton
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.showChatFlow()
             }.disposed(by: disposeBag)
         
         /// PartnerInfoCoordinator 화면 전환

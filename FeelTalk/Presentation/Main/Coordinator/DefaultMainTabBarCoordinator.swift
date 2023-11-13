@@ -21,6 +21,15 @@ enum TabBarPage: String, CaseIterable {
         }
     }
     
+    func toTitle() -> String {
+        switch self {
+        case .home: return "홈"
+        case .question: return "질문"
+        case .challenge: return "챌린지"
+        case .myPage: return "마이"
+        }
+    }
+    
     func pageOfNumber() -> Int {
         switch self {
         case .home: return 0
@@ -32,10 +41,19 @@ enum TabBarPage: String, CaseIterable {
     
     func toIconName() -> String {
         switch self {
-        case .home: return "icon_home_tab_bar_normal"
-        case .question: return "icon_question_tab_bar_normal"
-        case .challenge: return "icon_challenge_tab_bar_normal"
-        case .myPage: return "icon_user"  // TODO: 추후 변경
+        case .home: return "icon_tab_home_normal"
+        case .question: return "icon_tab_question_normal"
+        case .challenge: return "icon_tab_challenge_normal"
+        case .myPage: return "icon_tab_my_normal"  // TODO: 추후 변경
+        }
+    }
+    
+    func toSelectedIconName() -> String {
+        switch self {
+        case .home: return "icon_tab_home_selected"
+        case .question: return "icon_tab_question_selected"
+        case .challenge: return "icon_tab_challenge_selected"
+        case .myPage: return "icon_tab_my_selected"
         }
     }
 }
@@ -49,15 +67,13 @@ final class DefaultMainTabBarCoordinator: MainTabBarCoordinator {
     
     required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
-        self.tabBarController = UITabBarController()
+        self.tabBarController = MainTabBarController()
     }
     
     func start() {
         let pages: [TabBarPage] = TabBarPage.allCases
-        let controllers: [UINavigationController] = pages.map {
-            self.createTabNavigationController(of: $0)
-        }
-        
+        let controllers: [UINavigationController] = pages.map { self.createTabNavigationController(of: $0) }
+
         self.configureTabBarController(with: controllers)
     }
     
@@ -77,17 +93,17 @@ final class DefaultMainTabBarCoordinator: MainTabBarCoordinator {
     private func configureTabBarController(with tabViewControllers: [UIViewController]) {
         self.tabBarController.setViewControllers(tabViewControllers, animated: true)
         self.tabBarController.selectedIndex = TabBarPage.home.pageOfNumber()
-        self.tabBarController.view.backgroundColor = .white
-        self.tabBarController.tabBar.backgroundColor = .white
-        self.tabBarController.tabBar.barTintColor = .white
-        self.tabBarController.tabBar.tintColor = .black
         self.navigationController.pushViewController(self.tabBarController, animated: true)
     }
     
     private func configureTabBarItem(of page: TabBarPage) -> UITabBarItem {
-        return UITabBarItem(title: nil,
-                            image: UIImage(named: page.toIconName()),
-                            tag: page.pageOfNumber())
+//        return UITabBarItem(title: page.toTitle(),
+//                            image: UIImage(named: page.toIconName()),
+//                            tag: page.pageOfNumber())
+        
+        UITabBarItem(title: page.toTitle(),
+                     image: UIImage(named: page.toIconName())?.withRenderingMode(.alwaysOriginal),
+                     selectedImage: UIImage(named: page.toSelectedIconName())?.withRenderingMode(.alwaysOriginal))
     }
     
     private func createTabNavigationController(of page: TabBarPage) -> UINavigationController {

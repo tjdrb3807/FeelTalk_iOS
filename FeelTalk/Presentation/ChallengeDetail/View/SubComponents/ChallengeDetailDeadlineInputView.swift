@@ -35,7 +35,7 @@ final class ChallengeDetailDeadlineInputView: UIStackView {
         let label = UILabel()
         label.text = ChallengeDetailDeadlineInputViewNameSpace.descriptionLabelText
         label.textColor = UIColor(named: ChallengeDetailDeadlineInputViewNameSpace.descriptionLabelTextColor)
-        label.font = UIFont(name: ChallengeDetailDeadlineInputViewNameSpace.desctiptionLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
                             size: ChallengeDetailDeadlineInputViewNameSpace.descriptionLabelTextSize)
         label.setLineHeight(height: ChallengeDetailDeadlineInputViewNameSpace.descriptionLabelLineHeight)
         label.backgroundColor = .clear
@@ -60,7 +60,7 @@ final class ChallengeDetailDeadlineInputView: UIStackView {
         let textField = UITextField()
         textField.text = dateFormat(date: Date())
         textField.textColor = .black
-        textField.font = UIFont(name: ChallengeDetailDeadlineInputViewNameSpace.deadlineTextFieldTextFont,
+        textField.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                                 size: ChallengeDetailDeadlineInputViewNameSpace.deadlineTextFieldTextSize)
         textField.backgroundColor = UIColor(named: ChallengeDetailDeadlineInputViewNameSpace.deadlineTextFiedlDefaultBackgroundColor)
         textField.layer.cornerRadius = ChallengeDetailDeadlineInputViewNameSpace.deadlineTextFieldCornerRadius
@@ -98,7 +98,7 @@ final class ChallengeDetailDeadlineInputView: UIStackView {
         label.textColor = UIColor(named: ChallengeDetailDeadlineInputViewNameSpace.dDayLabelTextColor)
         label.textAlignment = .center
         label.numberOfLines = ChallengeDetailDeadlineInputViewNameSpace.dDayLabelNumberOfLines
-        label.font = UIFont(name: ChallengeDetailDeadlineInputViewNameSpace.dDayLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
                             size: ChallengeDetailDeadlineInputViewNameSpace.dDayLabelTextSize)
         label.backgroundColor = UIColor(named: ChallengeDetailDeadlineInputViewNameSpace.dDayLabelBackgroundColor)
         label.layer.cornerRadius = ChallengeDetailDeadlineInputViewNameSpace.dDayLabelCornerRadius
@@ -241,6 +241,10 @@ import SwiftUI
 struct ChallengeDetailDeadlineInputView_Previews: PreviewProvider {
     static var previews: some View {
         ChallengeDetailDeadlineInputView_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width,
+                   height: ChallengeDetailDeadlineInputViewNameSpace.height,
+                   alignment: .center)
     }
     
     struct ChallengeDetailDeadlineInputView_Presentable: UIViewRepresentable {

@@ -18,7 +18,6 @@ enum ChallengeDetailTitleInputViewNameSpace {
     // MARK: DescriptionLabel
     static let descriptionLabelText: String = "챌린지명"
     static let desctiptionLabelTextColor: String = "gray_600"
-    static let descriptionLabelTextFont: String = "pretendard-bold"
     static let descriptionLabelTextSize: CGFloat = (UIScreen.main.bounds.width / 100) * 3.2     // 12.0
     static let descriptionLabelLineHeight: CGFloat = (UIScreen.main.bounds.height / 100) * 2.21 // 18.0
     

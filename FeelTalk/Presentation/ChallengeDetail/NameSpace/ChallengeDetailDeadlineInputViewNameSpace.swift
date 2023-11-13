@@ -26,7 +26,6 @@ enum ChallengeDetailDeadlineInputViewNameSpace {
     static let stackViewSpacing: CGFloat = (UIScreen.main.bounds.width / 100) * 3.2                  // 12.0
     
     // MARK: DeadlineTextField
-    static let deadlineTextFieldTextFont: String = "pretendard-regular"
     static let deadlineTextFieldTextSize: CGFloat = (UIScreen.main.bounds.width / 100) * 4.26            // 16.0
     static let deadlineTextFiedlDefaultBackgroundColor: String = "gray_200"
     static let deadlineTextFieldCornerRadius: CGFloat = 12.0

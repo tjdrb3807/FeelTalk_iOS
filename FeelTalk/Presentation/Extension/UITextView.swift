@@ -21,4 +21,16 @@ extension UITextView {
         self.rx.backgroundColor.onNext(.white) :
         self.rx.backgroundColor.onNext(UIColor(named: "gray_200"))
     }
+    
+    func setLineAndLetterSpacing(_ text: String) {
+        let style = NSMutableParagraphStyle()
+        
+        style.lineSpacing = 1.25
+        let attributedString = NSMutableAttributedString(string: text)
+        
+        attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(0), range: NSRange(location: 0, length: attributedString.length))
+        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: style, range: NSRange(location: 0, length: attributedString.length))
+        
+        self.attributedText = attributedString
+    }
 }

@@ -14,6 +14,7 @@ enum CustomAlertViewType {
     case inquiry
     case suggestion
     case breakUp
+    case challengeAddCancel
 }
 
 final class CustomAlertView: UIView {
@@ -61,6 +62,8 @@ final class CustomAlertView: UIView {
             label.text = CustomAlertViewNameSpace.titleLabelSuggestionTypeText
         case .breakUp:
             label.text = CustomAlertViewNameSpace.titleLableBreakUpTypeText
+        case .challengeAddCancel:
+            label.text = CustomAlertViewNameSpace.titleLabelChallengeAddCancelTypeText
         }
         
         label.textColor = .black
@@ -78,10 +81,11 @@ final class CustomAlertView: UIView {
         let label = UILabel()
         
         switch type {
-        case .inquiry, .suggestion:
+        case .inquiry, .suggestion, .challengeAddCancel:
             label.text = CustomAlertViewNameSpace.descriptionLabelDeleteGuideText
         case .breakUp:
             label.text = CustomAlertViewNameSpace.descriptionLabelBreakUpTypeText
+            
         }
         
         label.textColor = .black
@@ -111,7 +115,7 @@ final class CustomAlertView: UIView {
         let button = UIButton()
         
         switch type {
-        case .inquiry, .suggestion:
+        case .inquiry, .suggestion, .challengeAddCancel:
             button.setTitle(CustomAlertViewNameSpace.leftButtonContinuingTitleText,
                             for: .normal)
         case .breakUp:
@@ -136,6 +140,9 @@ final class CustomAlertView: UIView {
                             for: .normal)
         case .breakUp:
             button.setTitle(CustomAlertViewNameSpace.rightButtonBreakUpTypeTitleText,
+                            for: .normal)
+        case .challengeAddCancel:
+            button.setTitle(CustomAlertViewNameSpace.rightButtonChallengeAddCancelTypeText,
                             for: .normal)
         }
         
@@ -273,7 +280,7 @@ struct CustomAlertView_Previews: PreviewProvider {
     
     struct CustomAlertView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            let view = CustomAlertView(type: .breakUp)
+            let view = CustomAlertView(type: .challengeAddCancel)
             view.show()
             
             return view

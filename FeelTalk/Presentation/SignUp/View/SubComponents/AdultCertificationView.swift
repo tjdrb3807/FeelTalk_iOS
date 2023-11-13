@@ -139,4 +139,3 @@ struct AdultCertificationView_Previews: PreviewProvider {
 }
 
 #endif
-

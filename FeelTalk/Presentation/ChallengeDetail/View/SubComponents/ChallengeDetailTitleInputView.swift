@@ -36,7 +36,7 @@ final class ChallengeDetailTitleInputView: UIStackView {
         let label = UILabel()
         label.text = ChallengeDetailTitleInputViewNameSpace.descriptionLabelText
         label.textColor = UIColor(named: ChallengeDetailTitleInputViewNameSpace.desctiptionLabelTextColor)
-        label.font = UIFont(name: ChallengeDetailTitleInputViewNameSpace.descriptionLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
                             size: ChallengeDetailTitleInputViewNameSpace.descriptionLabelTextSize)
         label.setLineHeight(height: ChallengeDetailTitleInputViewNameSpace.descriptionLabelLineHeight)
         label.backgroundColor = .clear
@@ -233,6 +233,10 @@ import SwiftUI
 struct ChallengeDetailTitleInputView_Previews: PreviewProvider {
     static var previews: some View {
         ChallengeDetailTitleInputView_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width,
+                   height: ChallengeDetailTitleInputViewNameSpace.height,
+                   alignment: .center)
     }
     
     struct ChallengeDetailTitleInputView_Presentable: UIViewRepresentable {

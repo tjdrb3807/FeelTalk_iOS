@@ -78,7 +78,8 @@ final class MyPageViewController: UIViewController {
     private func bind(to viewModel: MyPageViewModel) {
         let input = MyPageViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
                                           tapPartnerInfoButton: profileView.partnerInfoButton.rx.tap,
-                                          tapTableViewCell: tableView.rx.modelSelected(MyPageTableViewCellType.self))
+                                          tapTableViewCell: tableView.rx.modelSelected(MyPageTableViewCellType.self),
+                                          tapChatRoomButton: navigationBar.chatRoomButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
         

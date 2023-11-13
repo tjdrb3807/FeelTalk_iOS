@@ -9,9 +9,10 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import RxGesture
 
 final class CustomBottomSheetView: UIView {
-    let type = PublishRelay<SubmitType>()
+    let type = PublishRelay<CustomBottomSheetType>()
     private let disposeBag = DisposeBag()
     
     private lazy var dimmedView: UIView = {
@@ -110,7 +111,7 @@ final class CustomBottomSheetView: UIView {
         super.init(frame: frame)
         
         self.bind()
-        self.setConfigurations()
+        self.setProperties()
         self.addSubComponents()
         self.setConstraints()
     }
@@ -123,9 +124,9 @@ final class CustomBottomSheetView: UIView {
         type
             .withUnretained(self)
             .bind { v, type in
-                v.setUpTitleLabel(with: type)
-                v.setUpImageView(with: type)
-                v.setUpDescriptionLable(with: type)
+                v.setTitleLabelProperties(with: type)
+                v.setImageViewProperties(with: type)
+                v.setDescriptionLableProperties(with: type)
             }.disposed(by: disposeBag)
         
         confirmButton.rx.tap
@@ -133,9 +134,16 @@ final class CustomBottomSheetView: UIView {
             .bind { v, _ in
                 v.hide()
             }.disposed(by: disposeBag)
+        
+        dimmedView.rx.tapGesture()
+            .when(.recognized)
+            .withUnretained(self)
+            .bind { v, tap in
+                v.hide()
+            }.disposed(by: disposeBag)
     }
     
-    private func setConfigurations() {
+    private func setProperties() {
         backgroundColor = .clear
     }
     
@@ -212,7 +220,7 @@ extension CustomBottomSheetView {
 }
 
 extension CustomBottomSheetView {
-    private func setUpTitleLabel(with type: SubmitType) {
+    private func setTitleLabelProperties(with type: CustomBottomSheetType) {
         switch type {
         case .inquiry:
             titleLabel.rx.text.onNext(CustomBottomSheetViewNameSpcae.titleLabelInquiryTypeText)
@@ -224,7 +232,7 @@ extension CustomBottomSheetView {
         titleLabel.textAlignment = .center
     }
     
-    private func setUpImageView(with type: SubmitType) {
+    private func setImageViewProperties(with type: CustomBottomSheetType) {
         switch type {
         case .inquiry:
             imageView.rx.image.onNext(UIImage(named: CustomBottomSheetViewNameSpcae.imageViewInquiryTypeImage))
@@ -233,7 +241,7 @@ extension CustomBottomSheetView {
         }
     }
     
-    private func setUpDescriptionLable(with type: SubmitType) {
+    private func setDescriptionLableProperties(with type: CustomBottomSheetType) {
         switch type {
         case .inquiry:
             descriptionLabel.rx.text.onNext(CustomBottomSheetViewNameSpcae.descriptionLabelInquiryTypeText)
@@ -248,8 +256,9 @@ extension CustomBottomSheetView {
     }
 }
 
+// MARK: Animation
 extension CustomBottomSheetView {
-    public func show(completion: @escaping () -> Void = {}, type: SubmitType) {
+    public func show(completion: @escaping () -> Void = {}, type: CustomBottomSheetType) {
         switch type {
         case .inquiry:
             bottomSheetView.snp.remakeConstraints {

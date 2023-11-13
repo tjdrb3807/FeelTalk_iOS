@@ -22,4 +22,12 @@ enum CommonColorNameSpace {
     static let main300: String = "main_300"
     static let main400: String = "main_400"
     static let main500: String = "main_500"
+    static let main600: String = "main_600"
+    
+    // MARK: Signal
+    static let signal100: String = "signal_100"
+    static let signal075: String = "signal_075"
+    static let signal050: String = "signal_050"
+    static let signal025: String = "signal_025"
+    static let signal000: String = "signal_000"
 }

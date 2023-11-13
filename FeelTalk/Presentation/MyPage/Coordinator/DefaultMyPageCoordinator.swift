@@ -26,6 +26,13 @@ final class DefaultMyPageCoordinator: MyPageCoordinator {
         self.navigationController.pushViewController(myPageViewController, animated: true)
     }
     
+    func showChatFlow() {
+        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
+        chatCoordinator.finishDelegate = self
+        childCoordinators.append(chatCoordinator)
+        chatCoordinator.start()
+    }
+    
     func showPartnerInfoFlow() {
         let partnerInfoCoordinator = DefaultPartnerInfoCoordinator(self.navigationController)
         partnerInfoCoordinator.finishDelegate = self

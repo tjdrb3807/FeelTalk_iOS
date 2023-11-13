@@ -34,6 +34,7 @@ enum CustomAlertViewNameSpace {
     static let titleLabelInquiryTypeText: String = "문의사항 작성을 그만두시겠어요?"
     static let titleLabelSuggestionTypeText: String = "질문 제안을 그만 두시겠어요?"
     static let titleLableBreakUpTypeText: String = "정말 연인을 끊으시겠어요?"
+    static let titleLabelChallengeAddCancelTypeText: String = "챌린지 등록을 그만두시겠어요?"
     static let titleLabelNumberOfLines: Int = 1
     static let titleLabelTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.8          // 18.0
     static let titleLabelLineHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 3.32         // 27.0
@@ -60,5 +61,6 @@ enum CustomAlertViewNameSpace {
     // MARK: RightButton
     static let rightButtonGetoutTitleText: String = "나가기"
     static let rightButtonBreakUpTypeTitleText: String = "연인끊기"
+    static let rightButtonChallengeAddCancelTypeText: String = "삭제하기"
     
 }

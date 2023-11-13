@@ -18,6 +18,7 @@ enum CoordinatorType {
     case lockingSettings, lockingPassword
     case chat
     case alert
+    case signal
 }
 
 protocol Coordinator: AnyObject {
