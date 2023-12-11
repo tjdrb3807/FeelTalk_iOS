@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import RxKeyboard
 
 final class AdultAuthViewController: UIViewController {
     var viewModel: AdultAuthViewModel!
@@ -90,6 +91,10 @@ final class AdultAuthViewController: UIViewController {
         return button
     }()
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -120,16 +125,41 @@ final class AdultAuthViewController: UIViewController {
                     .genderNumberInputView
                     .genderNumberInputTextField.becomeFirstResponder()
             }.disposed(by: disposeBag)
+        
+        phoneInfoInputView.newsAgencyButton.selectedNewsAgency
+            .skip(1)
+            .withUnretained(self)
+            .bind { vc, _ in
+                vc.phoneInfoInputView.phoneNumberInputView.becomeFirstResponder()
+            }.disposed(by: disposeBag)
     }
     
     private func bind(to viewModel: AdultAuthViewModel) {
+        let showNewsAgnecyBottomSheet = PublishRelay<Void>
+            .merge(phoneInfoInputView.newsAgencyButton.rx.tap.asObservable(),
+                   idCardNumberInputView.genderNumberInputView.genderNumberTextFiledInputAccessoryView.rightButton.rx.tap.asObservable())
+        
+        let showAuthConsentBottomSheet = PublishRelay<Void>
+            .merge(phoneInfoInputView.phoneNumberInputAccessoryView.rightButton.rx.tap.asObservable(),
+                   consentView.consentButton.rx.tap.asObservable())
+        
+        Observable
+            .merge(showNewsAgnecyBottomSheet,
+                   showAuthConsentBottomSheet)
+            .withLatestFrom(RxKeyboard.instance.isHidden)
+            .filter { !$0 }
+            .withUnretained(self)
+            .bind { vc, state in
+                vc.view.endEditing(state)
+            }.disposed(by: disposeBag)
+        
         let input = AdultAuthViewModel.Input(
             inputName: nameInputView.rx.text.orEmpty.asObservable(),
             inputBirthday: idCardNumberInputView.birthdayInputTextField.rx.text.orEmpty.asObservable(),
             inputGenderNumber: idCardNumberInputView.genderNumberInputView.genderNumberInputTextField.rx.text.orEmpty.asObservable(),
-            tapNewsAgencyButton: phoneInfoInputView.newsAgencyButton.rx.tap.asObservable(),
+            tapNewsAgencyButton: showNewsAgnecyBottomSheet,
             inputPhoneNumber: phoneInfoInputView.phoneNumberInputView.rx.text.orEmpty.asObservable(),
-            tapConsentButton: consentView.consentButton.rx.tap.asObservable(),
+            tapConsentButton: showAuthConsentBottomSheet,
             inputAuthNumber: authNumberInfoview.numberInputView.authNumberInputView.rx.text.orEmpty.asObservable(),
             tapAuthButton: authNumberInfoview.numberInputView.authButton.rx.tap.asObservable(),
             tapCompleteButton: completeButton.rx.tap.asObservable(),
@@ -142,6 +172,10 @@ final class AdultAuthViewController: UIViewController {
             .skip(1)
             .withUnretained(self)
             .bind { vc, height in
+                height > 0.0 ?
+                vc.spacingView.rx.isHidden.onNext(true) :
+                vc.spacingView.rx.isHidden.onNext(false)
+                        
                 let height = height > 0.0 ? -height + vc.view.safeAreaInsets.bottom : 0.0
                 vc.updateKeyboardHeight(height)
             }.disposed(by: disposeBag)

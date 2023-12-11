@@ -60,7 +60,7 @@ final class AdultAuthNewsAgencyButton: UIButton {
                 case .kt:
                     return "KT"
                 case .lg:
-                    return "LG U++"
+                    return "LG U+"
                 case .sktThrifty:
                     return "STK 알뜰폰"
                 case .ktThrifty:

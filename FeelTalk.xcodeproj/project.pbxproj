@@ -20,7 +20,6 @@
 		4505651D2B1EFBD800ED13BE /* AdultAuthConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505651C2B1EFBD800ED13BE /* AdultAuthConsentView.swift */; };
 		4505651F2B1F32C600ED13BE /* AdultAuthWarningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505651E2B1F32C600ED13BE /* AdultAuthWarningView.swift */; };
 		450565232B1F34AB00ED13BE /* AdultAuthWarningViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450565222B1F34AB00ED13BE /* AdultAuthWarningViewNameSpace.swift */; };
-		450565252B1F37E800ED13BE /* AdultAuthConsentViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450565242B1F37E800ED13BE /* AdultAuthConsentViewNameSpace.swift */; };
 		4507675A2AB96CD7000B247C /* LockingHintSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450767592AB96CD7000B247C /* LockingHintSettingsViewController.swift */; };
 		4507675C2AB96F91000B247C /* LockingHintSettingsDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4507675B2AB96F91000B247C /* LockingHintSettingsDescriptionView.swift */; };
 		4507675E2AB974F8000B247C /* LockingHintSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4507675D2AB974F8000B247C /* LockingHintSettingsViewModel.swift */; };
@@ -73,7 +72,6 @@
 		451D0D592A7BD70200C4656D /* ChatRoomButtonNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451D0D582A7BD70200C4656D /* ChatRoomButtonNameSpace.swift */; };
 		451DC2502AC29F5B003648A7 /* SuggestionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451DC24F2AC29F5B003648A7 /* SuggestionsViewController.swift */; };
 		451DC2522AC2A2FD003648A7 /* SuggestionsDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451DC2512AC2A2FD003648A7 /* SuggestionsDescriptionView.swift */; };
-		451DC2542AC2BCD6003648A7 /* SuggestionsIdeaInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451DC2532AC2BCD6003648A7 /* SuggestionsIdeaInputView.swift */; };
 		451DC2562AC2C291003648A7 /* SuggestionsEmailInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451DC2552AC2C291003648A7 /* SuggestionsEmailInputView.swift */; };
 		451DC2582AC2D2FD003648A7 /* SuggestionsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451DC2572AC2D2FD003648A7 /* SuggestionsCoordinator.swift */; };
 		451DC25A2AC2D30A003648A7 /* DefaultSuggestionsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451DC2592AC2D30A003648A7 /* DefaultSuggestionsCoordinator.swift */; };
@@ -164,7 +162,6 @@
 		454CCA832AB2F50300405F8B /* MyPageViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454CCA822AB2F50300405F8B /* MyPageViewNameSpace.swift */; };
 		454CCA862AB2F6AE00405F8B /* MyPageTableViewCellNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454CCA852AB2F6AE00405F8B /* MyPageTableViewCellNameSpace.swift */; };
 		454F18F12B258904009605A4 /* AuthConsentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454F18F02B258904009605A4 /* AuthConsentViewController.swift */; };
-		454F18F52B258DAD009605A4 /* AuthConsentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454F18F42B258DAD009605A4 /* AuthConsentViewModel.swift */; };
 		454F18F72B258DCD009605A4 /* AuthConsentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454F18F62B258DCD009605A4 /* AuthConsentCoordinator.swift */; };
 		454F18F92B258DD7009605A4 /* DefaultAuthConsentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454F18F82B258DD7009605A4 /* DefaultAuthConsentCoordinator.swift */; };
 		454F18FE2B259369009605A4 /* AuthConsentViewControllerNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454F18FD2B259369009605A4 /* AuthConsentViewControllerNameSpace.swift */; };
@@ -458,6 +455,10 @@
 		45DDA6A72A6D93FB00F2C62B /* CustomProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6A62A6D93FB00F2C62B /* CustomProgressBar.swift */; };
 		45DDA6AA2A6D992200F2C62B /* CustomPrograssBarNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6A92A6D992200F2C62B /* CustomPrograssBarNameSpace.swift */; };
 		45DDA6AC2A6D9B8900F2C62B /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DDA6AB2A6D9B8900F2C62B /* UILabel.swift */; };
+		45DE4C6C2B275A8700D3DA75 /* SuggestionsIdeaInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DE4C6B2B275A8700D3DA75 /* SuggestionsIdeaInputView.swift */; };
+		45DE4C6E2B275ABD00D3DA75 /* ChallengeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DE4C6D2B275ABD00D3DA75 /* ChallengeCollectionViewCell.swift */; };
+		45DE4C702B275AF400D3DA75 /* AdultAuthConsentViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DE4C6F2B275AF400D3DA75 /* AdultAuthConsentViewNameSpace.swift */; };
+		45DE4C722B275B3F00D3DA75 /* AuthConsentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DE4C712B275B3F00D3DA75 /* AuthConsentViewModel.swift */; };
 		45E05E0A2AFB75E600D63F86 /* ChallengeTabBarItemNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E05E092AFB75E600D63F86 /* ChallengeTabBarItemNameSpace.swift */; };
 		45E149E82B0BF16500DFB83A /* LoginSpeechBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E149E72B0BF16500DFB83A /* LoginSpeechBubbleView.swift */; };
 		45E149EA2B0BF6BF00DFB83A /* LoginSpeechBubbleViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E149E92B0BF6BF00DFB83A /* LoginSpeechBubbleViewNameSpace.swift */; };
@@ -480,7 +481,6 @@
 		45E85D5A2A585B55004B558C /* DefaultLoginRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E85D592A585B55004B558C /* DefaultLoginRepository.swift */; };
 		45E85D5C2A586123004B558C /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E85D5B2A586123004B558C /* Login.swift */; };
 		45E8BDCF2AC0959B0095FEF2 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E8BDCE2AC0959B0095FEF2 /* CustomButton.swift */; };
-		45E8BEFD2AEABB3900AB2207 /* ChallengeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E8BEFC2AEABB3900AB2207 /* ChallengeCollectionViewCell.swift */; };
 		45E9EF4F2A488BA100E03817 /* PassThroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9EF4E2A488BA100E03817 /* PassThroughView.swift */; };
 		45EBA43A2AEA35F300A6856E /* ChallengeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EBA4392AEA35F300A6856E /* ChallengeCell.swift */; };
 		45EBCE862ACE992B00918FB3 /* PartnerInfoViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EBCE852ACE992B00918FB3 /* PartnerInfoViewNameSpace.swift */; };
@@ -539,7 +539,6 @@
 		4505651C2B1EFBD800ED13BE /* AdultAuthConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultAuthConsentView.swift; sourceTree = "<group>"; };
 		4505651E2B1F32C600ED13BE /* AdultAuthWarningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultAuthWarningView.swift; sourceTree = "<group>"; };
 		450565222B1F34AB00ED13BE /* AdultAuthWarningViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultAuthWarningViewNameSpace.swift; sourceTree = "<group>"; };
-		450565242B1F37E800ED13BE /* AdultAuthConsentViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultAuthConsentViewNameSpace.swift; sourceTree = "<group>"; };
 		450767592AB96CD7000B247C /* LockingHintSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockingHintSettingsViewController.swift; sourceTree = "<group>"; };
 		4507675B2AB96F91000B247C /* LockingHintSettingsDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockingHintSettingsDescriptionView.swift; sourceTree = "<group>"; };
 		4507675D2AB974F8000B247C /* LockingHintSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockingHintSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -594,7 +593,6 @@
 		451D0D582A7BD70200C4656D /* ChatRoomButtonNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomButtonNameSpace.swift; sourceTree = "<group>"; };
 		451DC24F2AC29F5B003648A7 /* SuggestionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewController.swift; sourceTree = "<group>"; };
 		451DC2512AC2A2FD003648A7 /* SuggestionsDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsDescriptionView.swift; sourceTree = "<group>"; };
-		451DC2532AC2BCD6003648A7 /* SuggestionsIdeaInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsIdeaInputView.swift; sourceTree = "<group>"; };
 		451DC2552AC2C291003648A7 /* SuggestionsEmailInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsEmailInputView.swift; sourceTree = "<group>"; };
 		451DC2572AC2D2FD003648A7 /* SuggestionsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsCoordinator.swift; sourceTree = "<group>"; };
 		451DC2592AC2D30A003648A7 /* DefaultSuggestionsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSuggestionsCoordinator.swift; sourceTree = "<group>"; };
@@ -685,7 +683,6 @@
 		454CCA822AB2F50300405F8B /* MyPageViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewNameSpace.swift; sourceTree = "<group>"; };
 		454CCA852AB2F6AE00405F8B /* MyPageTableViewCellNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableViewCellNameSpace.swift; sourceTree = "<group>"; };
 		454F18F02B258904009605A4 /* AuthConsentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConsentViewController.swift; sourceTree = "<group>"; };
-		454F18F42B258DAD009605A4 /* AuthConsentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConsentViewModel.swift; sourceTree = "<group>"; };
 		454F18F62B258DCD009605A4 /* AuthConsentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConsentCoordinator.swift; sourceTree = "<group>"; };
 		454F18F82B258DD7009605A4 /* DefaultAuthConsentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAuthConsentCoordinator.swift; sourceTree = "<group>"; };
 		454F18FD2B259369009605A4 /* AuthConsentViewControllerNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConsentViewControllerNameSpace.swift; sourceTree = "<group>"; };
@@ -981,6 +978,10 @@
 		45DDA6A62A6D93FB00F2C62B /* CustomProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressBar.swift; sourceTree = "<group>"; };
 		45DDA6A92A6D992200F2C62B /* CustomPrograssBarNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPrograssBarNameSpace.swift; sourceTree = "<group>"; };
 		45DDA6AB2A6D9B8900F2C62B /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
+		45DE4C6B2B275A8700D3DA75 /* SuggestionsIdeaInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsIdeaInputView.swift; sourceTree = "<group>"; };
+		45DE4C6D2B275ABD00D3DA75 /* ChallengeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeCollectionViewCell.swift; sourceTree = "<group>"; };
+		45DE4C6F2B275AF400D3DA75 /* AdultAuthConsentViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultAuthConsentViewNameSpace.swift; sourceTree = "<group>"; };
+		45DE4C712B275B3F00D3DA75 /* AuthConsentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConsentViewModel.swift; sourceTree = "<group>"; };
 		45E05E092AFB75E600D63F86 /* ChallengeTabBarItemNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeTabBarItemNameSpace.swift; sourceTree = "<group>"; };
 		45E149E72B0BF16500DFB83A /* LoginSpeechBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSpeechBubbleView.swift; sourceTree = "<group>"; };
 		45E149E92B0BF6BF00DFB83A /* LoginSpeechBubbleViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSpeechBubbleViewNameSpace.swift; sourceTree = "<group>"; };
@@ -1003,7 +1004,6 @@
 		45E85D592A585B55004B558C /* DefaultLoginRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoginRepository.swift; sourceTree = "<group>"; };
 		45E85D5B2A586123004B558C /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		45E8BDCE2AC0959B0095FEF2 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
-		45E8BEFC2AEABB3900AB2207 /* ChallengeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeCollectionViewCell.swift; sourceTree = "<group>"; };
 		45E9EF4E2A488BA100E03817 /* PassThroughView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughView.swift; sourceTree = "<group>"; };
 		45EBA4392AEA35F300A6856E /* ChallengeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeCell.swift; sourceTree = "<group>"; };
 		45EBCE852ACE992B00918FB3 /* PartnerInfoViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartnerInfoViewNameSpace.swift; sourceTree = "<group>"; };
@@ -1561,7 +1561,7 @@
 			children = (
 				451DC2512AC2A2FD003648A7 /* SuggestionsDescriptionView.swift */,
 				451DC2552AC2C291003648A7 /* SuggestionsEmailInputView.swift */,
-				451DC2532AC2BCD6003648A7 /* SuggestionsIdeaInputView.swift */,
+				45DE4C6B2B275A8700D3DA75 /* SuggestionsIdeaInputView.swift */,
 			);
 			path = SubComponents;
 			sourceTree = "<group>";
@@ -2050,7 +2050,7 @@
 		454F18FA2B258EC7009605A4 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				454F18F42B258DAD009605A4 /* AuthConsentViewModel.swift */,
+				45DE4C712B275B3F00D3DA75 /* AuthConsentViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -2795,7 +2795,7 @@
 			isa = PBXGroup;
 			children = (
 				450565172B1ECDDC00ED13BE /* AdultAuthConsentButtonNameSpace.swift */,
-				450565242B1F37E800ED13BE /* AdultAuthConsentViewNameSpace.swift */,
+				45DE4C6F2B275AF400D3DA75 /* AdultAuthConsentViewNameSpace.swift */,
 				45004D3F2B1D945100E154DD /* AdultAuthIDCardNumberInputViewNameSpace.swift */,
 				45178A282B22011F00559147 /* AdultAuthNewsAgencyButtonNameSpace.swift */,
 				4505650E2B1EB84400ED13BE /* AdultAuthNumberDescriptionViewNameSpace.swift */,
@@ -4114,7 +4114,7 @@
 			isa = PBXGroup;
 			children = (
 				453619FF2AF0DC850071AE84 /* ChallengeCollectionView.swift */,
-				45E8BEFC2AEABB3900AB2207 /* ChallengeCollectionViewCell.swift */,
+				45DE4C6D2B275ABD00D3DA75 /* ChallengeCollectionViewCell.swift */,
 				45EBA4392AEA35F300A6856E /* ChallengeCell.swift */,
 			);
 			path = PagerView;
@@ -4653,11 +4653,11 @@
 				457D97092AB20AA300E7DCFE /* MyPageNavigationBarNameSpace.swift in Sources */,
 				45E149F92B0DED6A00DFB83A /* SignUpAdultAuthenticationView.swift in Sources */,
 				45767DF32B2060AF00CA445A /* CustomTextFieldNameSpace.swift in Sources */,
+				45DE4C6C2B275A8700D3DA75 /* SuggestionsIdeaInputView.swift in Sources */,
 				454749972A78C4FF0011BB3D /* QuestionListResponseDTO.swift in Sources */,
 				45400CFE2AB41FB30055141F /* PartnerInfo.swift in Sources */,
 				452D32832A68262E001DBB24 /* Token.swift in Sources */,
 				45FBA5E42AAC435800281431 /* MyPagePartnerInfoButtonNameSpace.swift in Sources */,
-				454F18F52B258DAD009605A4 /* AuthConsentViewModel.swift in Sources */,
 				45BF13B82A8B4DE9001CA108 /* ChallengeTabBarItemType.swift in Sources */,
 				45D0E6BA2A56A6D600A602D1 /* SignUpUseCase.swift in Sources */,
 				4554F7002AEACC68006F994D /* ChallengeCellNameSpace.swift in Sources */,
@@ -4684,7 +4684,6 @@
 				45E149F72B0CE00D00DFB83A /* UserStateResponseDTO.swift in Sources */,
 				45EBCEAF2ACEEAEA00918FB3 /* ServiceTerminationStatementInfoView.swift in Sources */,
 				45B6AAC72B24ABA900271AE6 /* BottomSheetViewControllerNameSpace.swift in Sources */,
-				450565252B1F37E800ED13BE /* AdultAuthConsentViewNameSpace.swift in Sources */,
 				45AFA4AD2AD4192D00CBCF64 /* DefaultSettingListCoordinator.swift in Sources */,
 				457016402A77AE690006CB1D /* DefaultNicknameCoordinator.swift in Sources */,
 				45400D042AB441BA0055141F /* ConfigurationInfo.swift in Sources */,
@@ -4726,11 +4725,9 @@
 				455560BB2AA4828400EDFFFA /* ChallengeCount.swift in Sources */,
 				45FAEBA92AC16692007DF1C5 /* CustomTextViewNameSpace.swift in Sources */,
 				458DD8502AC0A47400BEF7E5 /* CustomToolbarNameSpace.swift in Sources */,
-				451DC2542AC2BCD6003648A7 /* SuggestionsIdeaInputView.swift in Sources */,
 				454CCA702AB2C22800405F8B /* DefaultUserRepository.swift in Sources */,
 				45CB06652A90A50E0081BE88 /* ChallengeDetailNavigationBar.swift in Sources */,
 				45C319552A7AC8EF007DAB84 /* PartnerGotAnswerViewNameSpace.swift in Sources */,
-				45E8BEFD2AEABB3900AB2207 /* ChallengeCollectionViewCell.swift in Sources */,
 				451DC2602AC2D339003648A7 /* SuggestionsViewModel.swift in Sources */,
 				45EBCEA42ACEC93200918FB3 /* BreakUpCoordinator.swift in Sources */,
 				45B6AA3F2A6E445A004F20F0 /* GoogleRepository.swift in Sources */,
@@ -4974,6 +4971,7 @@
 				45FCF2752AE55717001F3B16 /* SignalViewModel.swift in Sources */,
 				4505650F2B1EB84400ED13BE /* AdultAuthNumberDescriptionViewNameSpace.swift in Sources */,
 				45405C262B023C1600980F0F /* ChatType.swift in Sources */,
+				45DE4C702B275AF400D3DA75 /* AdultAuthConsentViewNameSpace.swift in Sources */,
 				4584418A2AEA820F00E21226 /* ChallengeCountingView.swift in Sources */,
 				45405C2D2B036DE200980F0F /* ChatAPI.swift in Sources */,
 				454623592A8CA78F00FEFEC6 /* DefaultChallengeRepository.swift in Sources */,
@@ -5055,6 +5053,7 @@
 				45400D162AB445160055141F /* ConfigurationUseCase.swift in Sources */,
 				457CFEDA2ABAAD72006979BA /* LockingPasswordViewMode.swift in Sources */,
 				458441902AEA888000E21226 /* ChallengeTabBarItem.swift in Sources */,
+				45DE4C722B275B3F00D3DA75 /* AuthConsentViewModel.swift in Sources */,
 				45AFA4A92AD4167900CBCF64 /* SettingListViewController.swift in Sources */,
 				459BD9B22A47469300CB4738 /* BaseView.swift in Sources */,
 				45DBDE6E2AE96524006B8482 /* ChallengeAddButtonNameSpace.swift in Sources */,
@@ -5084,6 +5083,7 @@
 				45E85D572A585917004B558C /* ReLoginRequestDTO.swift in Sources */,
 				451DC25A2AC2D30A003648A7 /* DefaultSuggestionsCoordinator.swift in Sources */,
 				45AF95A32A9750B30033A2DC /* UITextView.swift in Sources */,
+				45DE4C6E2B275ABD00D3DA75 /* ChallengeCollectionViewCell.swift in Sources */,
 				4570165B2A780CE30006CB1D /* HomeCoordinator.swift in Sources */,
 				456C13D22ABFFF8E00EEB433 /* InquiryViewController.swift in Sources */,
 				457DC6C22B0F446900E47538 /* SignUpTitleViewNameSpace.swift in Sources */,
