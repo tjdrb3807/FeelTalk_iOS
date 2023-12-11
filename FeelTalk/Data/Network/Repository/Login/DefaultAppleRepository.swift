@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class DefaultAppleRepository: NSObject, AppleRepository {
-    let loginCompleted = PublishRelay<SNSLogin>()
+    let appleLogin = PublishSubject<SNSLogin01>()
     
     func login() {
         let provider = ASAuthorizationAppleIDProvider()
@@ -27,16 +27,26 @@ final class DefaultAppleRepository: NSObject, AppleRepository {
 extension DefaultAppleRepository: ASAuthorizationControllerDelegate {
     /// Apple login success
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        switch authorization.credential {
+        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+            let userIdentifier = appleIDCredential.user
+            let fullName = appleIDCredential.fullName
+            let email = appleIDCredential.email
+            
+            appleLogin.onNext(.init(oauthId: userIdentifier,
+                                    snsType: SNSType.apple.rawValue))
+            
+        case let passwordCredential as ASPasswordCredential:
+            let username = passwordCredential.user
+            let password = passwordCredential.password
+            
+        default:
+            break
+        }
         
         guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
-           let authData = appleIDCredential.authorizationCode,
-           let authorizationCode = String(data: authData, encoding: .utf8) else { return }
-        
-        loginCompleted.accept(.init(snsType: .appleIOS,
-                                    refreshToken: nil,
-                                    authCode: nil,
-                                    idToken: nil,
-                                    authorizationCode: authorizationCode))
+              let authData = appleIDCredential.authorizationCode,
+              let _ = String(data: authData, encoding: .utf8) else { return }
     }
     
     /// Apple login fail

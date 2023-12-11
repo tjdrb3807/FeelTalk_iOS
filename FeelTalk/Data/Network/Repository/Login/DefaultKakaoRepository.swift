@@ -16,26 +16,32 @@ enum KakaoSignUpError: Error {
     case refreshTokenError
 }
 
+enum KakaoLoginError: Error {
+    case refreshTokenError
+    case idTokenError
+    case idError
+}
+
 final class DefaultKakaoRepository: KakaoRepository {
-    func login() -> Single<SNSLogin> {
-        debugPrint("[CALL]: KakaoRepository - login")
-        return Single.create { observer -> Disposable in
+    private let disposeBag = DisposeBag()
+    
+    func login() -> Single<SNSLogin01> {
+        Single.create { [weak self] observer -> Disposable in
+            guard let self = self else { return Disposables.create() }
+            
             if (UserApi.isKakaoTalkLoginAvailable()) {
                 UserApi.shared.loginWithKakaoTalk { (oauthToken, error) in
+                    
+                    
                     if let error = error {
                         observer(.failure(error))
                     } else {
-                        guard let refreshToken = oauthToken?.refreshToken else {
-                            observer(.failure(KakaoLoginError.refreshTokenError))
-                            return
-                        }
-                                                
-                        observer(.success(SNSLogin(snsType: .kakao,
-                                                   refreshToken: refreshToken,
-                                                   authCode: nil,
-                                                   idToken: nil,
-                                                   authorizationCode: nil))
-                        )
+                        self.getOauthId()
+                            .asObservable()
+                            .subscribe { id in
+                                observer(.success(SNSLogin01(oauthId: id,
+                                                             snsType: SNSType.kakao.rawValue)))
+                            }.disposed(by: self.disposeBag)
                     }
                 }
             } else {
@@ -43,18 +49,36 @@ final class DefaultKakaoRepository: KakaoRepository {
                     if let error = error {
                         observer(.failure(error))
                     } else {
-                        guard let refreshToken = oauthToken?.refreshToken else {
-                            observer(.failure(KakaoLoginError.refreshTokenError))
-                            return
-                        }
-                        
-                        observer(.success(SNSLogin(snsType: .kakao,
-                                                   refreshToken: refreshToken,
-                                                   authCode: nil,
-                                                   idToken: nil,
-                                                   authorizationCode: nil))
-                        )
+                        self.getOauthId()
+                            .asObservable()
+                            .subscribe { id in
+                                observer(.success(SNSLogin01(oauthId: id,
+                                                             snsType: SNSType.kakao.rawValue)))
+                            }.disposed(by: self.disposeBag)
                     }
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+}
+
+extension DefaultKakaoRepository {
+    private func getOauthId() -> Single<String> {
+        Single.create { observer -> Disposable in
+            UserApi.shared.me { (user, error) in
+                if let error = error {
+                    observer(.failure(error))
+                } else {
+                    guard let id = user?.id else {
+                        observer(.failure(KakaoLoginError.idError))
+                        
+                        return
+                    }
+                    
+                    let oauthId = String(id)
+                    observer(.success(oauthId))
                 }
             }
             

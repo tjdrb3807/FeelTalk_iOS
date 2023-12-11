@@ -9,9 +9,8 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-protocol NaverRepository {
-//    var refreshToken: PublishSubject<String> { get }
-    var snsLoginInfo: PublishSubject<SNSLogin> { get }
+protocol NaverRepository {    
+    var snsLoginInfo: PublishSubject<SNSLogin01> { get }
     
     func login()
 }

@@ -17,63 +17,23 @@ final class LoginViewController: UIViewController {
     var viewModel: LoginViewModel!
     private let disposeBag = DisposeBag()
     
-    // MARK: LoginViewController sub components.
+    private lazy var logoView: LoginLogoView = { LoginLogoView() }()
     
-    /// introductionVerticalStackView
-    /// - SubComponents
-    ///
-    ///     - feelTalkImageView
-    ///     - introductionLabel
-    private lazy var introVerticalStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .leading
-        stackView.distribution = .fill
-        stackView.spacing = LoginViewNameSpace.introductionVerticalStackViewSpacing
-        stackView.backgroundColor = .clear
+    private lazy var bottomSheet: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 40.0
+        view.clipsToBounds = true
         
-        return stackView
+        return view
     }()
     
-    // TODO: 디자인 미완성, 추후 변경작업 진행
-    private lazy var feelTalkImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.backgroundColor = UIColor(named: "gray_300")
-        
-        return imageView
-    }()
-    
-    private lazy var introLabel: UILabel = {
-        let label = UILabel()
-        label.text = LoginViewNameSpace.introductionText
-        label.textColor = .black
-        label.font = UIFont(name: LoginViewNameSpace.introductionLableFont, size: LoginViewNameSpace.introductionLabelSize)
-        label.numberOfLines = LoginViewNameSpace.introductionLabelLines
-        label.backgroundColor = .clear
-        
-        
-        let attrString = NSMutableAttributedString(string: label.text!)
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = LoginViewNameSpace.introductionLabelLineSpacing
-        attrString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attrString.length))
-        label.attributedText = attrString
-        
-        return label
-    }()
-    
-    /// loginButtonVerticalStackView
-    /// - SubComponents
-    ///
-    ///     - kakaoLoginButton
-    ///     - googleLoginButton
-    ///     - naverLoginButton
-    ///     - appleLoginButton
-    private lazy var loginButtonVerticalStackView: UIStackView = {
+    private lazy var loginButtonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
-        stackView.spacing = LoginViewNameSpace.loginButtonVerticalStackViewSpacing
+        stackView.spacing = LoginViewNameSpace.loginButtonStackViewSpacing
         stackView.backgroundColor = .clear
         stackView.isUserInteractionEnabled = true
         
@@ -81,19 +41,27 @@ final class LoginViewController: UIViewController {
     }()
     
     private lazy var kakaoLoginButton: LoginButton = { LoginButton(snsType: .kakao) }()
-    private lazy var googleLoginButton: LoginButton = { LoginButton(snsType: .google) }()
-    private lazy var naverLoginButton: LoginButton = { LoginButton(snsType: .naver) }()
-    private lazy var appleLoginButton: LoginButton = { LoginButton(snsType: .appleIOS) }()
     
-    // MARK: Life cycle method.
+    private lazy var googleLoginButton: LoginButton = { LoginButton(snsType: .google) }()
+    
+    private lazy var naverLoginButton: LoginButton = { LoginButton(snsType: .naver) }()
+    
+    private lazy var appleLoginButton: LoginButton = { LoginButton(snsType: .apple) }()
+    
+    private lazy var speechBubble: LoginSpeechBubbleView = { LoginSpeechBubbleView() }()
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
+        self.bind(to: viewModel)
         self.setAttribute()
         self.addSubComponent()
         self.setConfiguration()
-        self.bind(to: viewModel)
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .darkContent
     }
     
     private func bind(to viewModel: LoginViewModel) {
@@ -101,55 +69,58 @@ final class LoginViewController: UIViewController {
                                          tapGoogleLoginButton: googleLoginButton.rx.tap,
                                          tapKakaoLoginButton: kakaoLoginButton.rx.tap,
                                          tapNaverLoginButton: naverLoginButton.rx.tap)
-
-
-
+        
         _ = viewModel.transfer(input: input)
     }
     
-    // MARK: Default ui settings method.
     private func setAttribute() {
-        view.backgroundColor = UIColor(named: LoginViewNameSpace.loginViewBackgroundColor)
+        view.backgroundColor = UIColor(named: CommonColorNameSpace.main500)
         navigationController?.navigationBar.isHidden = true
     }
     
     private func addSubComponent() {
-        addIntroVerticalStackViewSubViews()
-        addLoginButtonVerticalStackViewSubViews()
-        [introVerticalStackView, loginButtonVerticalStackView].forEach { view.addSubview($0) }
+        addViewSubComponents()
+        addLoginButtonStackViewComponents()
     }
     
     private func setConfiguration() {
-        makeFeelTalkImageViewConstraints()
-        makeIntroVerticalStackViewConstraints()
+        makeLogoViewConstraints()
+        makeBottomSheetConstraints()
+        makeLoginButtonStackViewConstraints()
         makeLoginButtonsConstraints()
-        makeLoginButtonVerticalStackViewConstraints()
+        makeSpeechBubbleConstraints()
     }
 }
 
-// MARK: UI settings method.
 extension LoginViewController {
-    private func addIntroVerticalStackViewSubViews() {
-        [feelTalkImageView, introLabel].forEach { introVerticalStackView.addArrangedSubview($0) }
+    private func addViewSubComponents() {
+        [logoView, bottomSheet, loginButtonStackView, speechBubble].forEach { view.addSubview($0) }
     }
     
-    private func makeFeelTalkImageViewConstraints() {
-        feelTalkImageView.snp.makeConstraints {
-            $0.width.equalTo(LoginViewNameSpace.feelTalkImageViewWidth)
-            $0.height.equalTo(feelTalkImageView.snp.width)
+    private func makeLogoViewConstraints() {
+        logoView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(LoginLogoViewNameSpace.topOffset)
+            $0.centerX.equalToSuperview()
         }
     }
     
-    private func makeIntroVerticalStackViewConstraints() {
-        introVerticalStackView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(LoginViewNameSpace.introductionVerticalSatckViewTopInset)
-            $0.leading.equalToSuperview().inset(LoginViewNameSpace.introductionVerticalStackViewLeadingInset)
-            $0.trailing.equalToSuperview().inset(LoginViewNameSpace.introductionVerticalStackViewTrailingInset)
+    private func makeBottomSheetConstraints() {
+        bottomSheet.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(CommonConstraintNameSpace.verticalRatioCalculator * 42.98) // 349
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     
-    private func addLoginButtonVerticalStackViewSubViews() {
-        [kakaoLoginButton, googleLoginButton, naverLoginButton, appleLoginButton].forEach { loginButtonVerticalStackView.addArrangedSubview($0) }
+    private func makeLoginButtonStackViewConstraints() {
+        loginButtonStackView.snp.makeConstraints {
+            $0.top.equalTo(logoView.snp.bottom).offset(LoginViewNameSpace.loginButtonStackViewTopOffset)
+            $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.leadingInset)
+            $0.trailing.equalToSuperview().inset(CommonConstraintNameSpace.trailingInset)
+        }
+    }
+    
+    private func addLoginButtonStackViewComponents() {
+        [kakaoLoginButton, googleLoginButton, naverLoginButton, appleLoginButton].forEach { loginButtonStackView.addArrangedSubview($0) }
     }
     
     private func makeLoginButtonsConstraints() {
@@ -158,10 +129,12 @@ extension LoginViewController {
         }
     }
     
-    private func makeLoginButtonVerticalStackViewConstraints() {
-        loginButtonVerticalStackView.snp.makeConstraints {
-            $0.top.equalTo(introVerticalStackView.snp.bottom).offset(LoginViewNameSpace.loginButtonVerticalStackViewTopOffset)
-            $0.leading.trailing.equalToSuperview().inset(LoginViewNameSpace.loginButtonVerticalStackViewLeadingInset)
+    private func makeSpeechBubbleConstraints() {
+        speechBubble.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(LoginSpeechBubbleViewNameSpace.leadingInset)
+            $0.bottom.equalTo(loginButtonStackView.snp.top).offset(LoginSpeechBubbleViewNameSpace.bottomOffset)
+            $0.width.equalTo(LoginSpeechBubbleViewNameSpace.width)
+            $0.height.equalTo(LoginSpeechBubbleViewNameSpace.height)
         }
     }
 }
@@ -175,12 +148,22 @@ struct LoginViewController_Previews: PreviewProvider {
         LoginViewController_Presentable()
             .edgesIgnoringSafeArea(.all)
     }
-
+    
     struct LoginViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            LoginViewController()
+            let vc = LoginViewController()
+            let vm = LoginViewModel(coordinator: DefaultLoginCoordinator(UINavigationController()),
+                                    loginUseCase: DefaultLoginUseCase(loginRepository: DefaultLoginRepository(),
+                                                                      appleRepository: DefaultAppleRepository(),
+                                                                      googleRepositroy: DefaultGoogleRepository(),
+                                                                      naverRepository: DefaultNaverLoginRepository(),
+                                                                      kakaoRepository: DefaultKakaoRepository(),
+                                                                      userRepository: DefaultUserRepository()))
+            vc.viewModel = vm
+            
+            return vc
         }
-
+        
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
     }
 }

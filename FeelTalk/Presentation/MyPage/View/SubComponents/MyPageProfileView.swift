@@ -165,7 +165,7 @@ extension MyPageProfileView {
     
     private func setUpSNSImageView(with myInfo: MyInfo) {
         switch myInfo.snsType {
-        case .appleIOS:
+        case .apple:
             snsImageView.rx.image.onNext(UIImage(named: MyPageProfileViewNameSpace.appleLogoImage))
         case .google:
             snsImageView.rx.image.onNext(UIImage(named: MyPageProfileViewNameSpace.googleImage))

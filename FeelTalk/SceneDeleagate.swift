@@ -31,18 +31,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Kakao
             if (AuthApi.isKakaoTalkLoginUrl(url)) {
                 _ = AuthController.handleOpenUrl(url: url)
-            } else {
+                return 
+            }
+            else {
                 // Google
                 GIDSignIn.sharedInstance.handle(url)
             }
+            
+            // Naver
+            NaverThirdPartyLoginConnection
+                .getSharedInstance()
+                .receiveAccessToken(URLContexts.first?.url)
         }
-        
-        // Naver
-        NaverThirdPartyLoginConnection
-            .getSharedInstance()
-            .receiveAccessToken(URLContexts.first?.url)
-        
-        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

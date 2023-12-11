@@ -9,7 +9,9 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-protocol SignUpUseCase {    
+protocol SignUpUseCase {
+    func getAuthNumber(_ entity: UserAuthInfo) -> Observable<Bool>
+    
     func signUp(snsType: SNSType,
                   nickname: String,
                   refreshToken: String?,
@@ -27,6 +29,36 @@ final class DefaultSignUpUseCase: SignUpUseCase {
     
     init(signUpRepository: SignUpRepository) {
         self.signUpRepository = signUpRepository
+    }
+    
+    func getAuthNumber(_ entity: UserAuthInfo) -> Observable<Bool> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self else { return Disposables.create() }
+            
+            signUpRepository.getAuthNumber(entity.convertAuthNumberRequestDTO())
+                .asObservable()
+                .filter { $0 == true }
+                .subscribe(onNext: { state in
+                    observer.onNext(state)
+                }).disposed(by: disposeBag)
+
+            return Disposables.create()
+        }
+    }
+    
+    func getReAuthNumber(_ entity: UserAuthInfo) -> Observable<Bool> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self else { return Disposables.create() }
+            
+            signUpRepository.getReAuthNumber(entity.convertReAuthNumberRequestDTO())
+                .asObservable()
+                .filter { $0 == true }
+                .subscribe(onNext: { state in
+                    observer.onNext(state)
+                }).disposed(by: disposeBag)
+            
+            return Disposables.create()
+        }
     }
     
     func signUp(snsType: SNSType,

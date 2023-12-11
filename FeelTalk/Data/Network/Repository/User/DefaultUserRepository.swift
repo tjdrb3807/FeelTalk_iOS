@@ -54,4 +54,24 @@ final class DefaultUserRepository: UserRepository {
             return Disposables.create()
         }
     }
+    
+    func getUserState(accessToken: String) ->Single<UserState> {
+        Single.create { observer -> Disposable in
+            AF.request(UserAPI.getUserState(accessToken: accessToken))
+                .responseDecodable(of: BaseResponseDTO<UserStateResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            guard let userStateResponseDTO = responseDTO.data! else { return }
+                            observer(.success(UserState(rawValue: userStateResponseDTO.state)!))
+                        }
+                    case .failure(let error):
+                        observer(.failure(error))
+                    }
+                }
+            
+            
+            return Disposables.create()
+        }
+    }
 }

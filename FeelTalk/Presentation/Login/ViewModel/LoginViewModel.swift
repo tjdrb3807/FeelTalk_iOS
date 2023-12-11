@@ -10,13 +10,11 @@ import RxSwift
 import RxCocoa
 
 class LoginViewModel {
-    // Dependencies
     private weak var coordinator: LoginCoordinator?
     private let loginUseCase: LoginUseCase
     private let disposeBag = DisposeBag()
     
-    // Stream
-    private let snsLogin = PublishRelay<SNSLogin>()
+    private let snsLogin = PublishRelay<SNSLogin01>()
 
     struct Input {
         let tapAppleLoginButton: ControlEvent<Void>
@@ -35,14 +33,14 @@ class LoginViewModel {
     func transfer(input: Input) -> Output {
         Observable
             .merge([
-                input.tapAppleLoginButton.map { SNSType.appleIOS },
+                input.tapAppleLoginButton.map { SNSType.apple },
                 input.tapGoogleLoginButton.map { SNSType.google },
                 input.tapKakaoLoginButton.map { SNSType.kakao },
                 input.tapNaverLoginButton.map { SNSType.naver }
             ]).withUnretained(self)
             .bind { vm, snsType in
                 switch snsType {
-                case .appleIOS:
+                case .apple:
                     vm.loginUseCase.appleLogin()
                         .bind(to: vm.snsLogin)
                         .disposed(by: vm.disposeBag)
@@ -64,27 +62,19 @@ class LoginViewModel {
             }.disposed(by: disposeBag)
         
         snsLogin
-            .asSignal()
             .withUnretained(self)
-            .emit { vm, snsLogin in
-                vm.loginUseCase.reLogin(snsType: snsLogin.snsType,
-                                        refreshToken: snsLogin.refreshToken,
-                                        authCode: snsLogin.authCode,
-                                        idToken: snsLogin.idToken,
-                                        state: snsLogin.state,
-                                        authorizationCode: snsLogin.authCode)
-                .asObservable()
-                .withUnretained(self)
-                .bind { vm, state in
-                    switch state {
-                    case .newbie:
-                        vm.coordinator?.showSignUpFlow(with: snsLogin)
-                    case .solo:
-                        vm.coordinator?.showInviteCodeFlow()
-                    case .couple:
-                        vm.coordinator?.finish()
-                    }
-                }.disposed(by: vm.disposeBag)
+            .bind { vm, data in
+                vm.loginUseCase.login(data)
+                    .bind(onNext: { state in
+                        switch state {
+                        case .couple:
+                            vm.coordinator?.finish()
+                        case .newbie:
+                            vm.coordinator?.showSignUpFlow()
+                        case .solo:
+                            vm.coordinator?.showInviteCodeFlow()
+                        }
+                    }).disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
         
         return Output()

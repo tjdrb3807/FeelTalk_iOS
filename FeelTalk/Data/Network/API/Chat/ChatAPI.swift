@@ -2,15 +2,15 @@
 //  ChatAPI.swift
 //  FeelTalk
 //
-//  Created by 전성규 on 2023/10/18.
+//  Created by 전성규 on 2023/11/14.
 //
 
 import Foundation
 import Alamofire
 
 enum ChatAPI {
-    case sendTextChat(accessToken: String, _ dto: SendTextChatRequestDTO)
-    case getLatestChatPageNo(accessToken: String)
+    case getLastPageNo(accessToken: String)
+    case getChatList(accessToken: String, pnageNo: Int)
 }
 
 extension ChatAPI: Router, URLRequestConvertible {
@@ -18,26 +18,26 @@ extension ChatAPI: Router, URLRequestConvertible {
     
     var path: String {
         switch self {
-        case .sendTextChat:
-            return "/api/v1/chatting-message/text"
-        case .getLatestChatPageNo:
-            return "/api/v1/chatting-message/last/page-no"
+        case .getLastPageNo:
+            return "api/v1/chatting-message/last/page-no"
+        case .getChatList:
+            return "api/v1/chatting-messages"
         }
     }
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .sendTextChat:
-            return .post
-        case .getLatestChatPageNo:
+        case .getLastPageNo:
+            return .get
+        case .getChatList:
             return .get
         }
     }
     
     var header: [String : String] {
         switch self {
-        case .sendTextChat(accessToken: let accessToken, _),
-                .getLatestChatPageNo(accessToken: let accessToken):
+        case .getLastPageNo(accessToken: let accessToken),
+            .getChatList(accessToken: let accessToken, pnageNo: _):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
                     "Authorization": "Bearer \(accessToken)"]
@@ -46,16 +46,17 @@ extension ChatAPI: Router, URLRequestConvertible {
     
     var parameters: [String : Any]? {
         switch self {
-        case .sendTextChat(accessToken: _, let dto):
-            return ["message": dto.message]
-        case .getLatestChatPageNo:
+        case .getLastPageNo:
             return nil
+        case .getChatList(accessToken: _, pnageNo: let pageNo):
+            return ["pageNo": pageNo]
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .sendTextChat, .getLatestChatPageNo:
+        case .getLastPageNo,
+                .getChatList:
             return JSONEncoding.default
         }
     }

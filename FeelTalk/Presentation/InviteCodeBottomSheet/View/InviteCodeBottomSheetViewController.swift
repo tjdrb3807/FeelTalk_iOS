@@ -157,7 +157,8 @@ final class InviteCodeBottomSheetViewController: UIViewController {
         
         UIView.animate(withDuration: InviteCodeBottomSheetNameSpace.animateDuration,
                        delay: InviteCodeBottomSheetNameSpace.animateDelay,
-                       options: .curveEaseIn, animations: {
+                       options: .curveEaseIn,
+                       animations: {
             self.dimmedView.alpha = InviteCodeBottomSheetNameSpace.dimmedViewBackgroundUpdateAlpha
             self.view.layoutIfNeeded()
         }, completion: nil)

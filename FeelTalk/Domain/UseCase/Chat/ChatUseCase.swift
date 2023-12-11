@@ -2,7 +2,7 @@
 //  ChatUseCase.swift
 //  FeelTalk
 //
-//  Created by 전성규 on 2023/10/18.
+//  Created by 전성규 on 2023/11/14.
 //
 
 import Foundation
@@ -10,9 +10,7 @@ import RxSwift
 import RxCocoa
 
 protocol ChatUseCase {
-    func sendTextChat(message: String) -> Observable<Bool>
-    
-    func getLatestChatPageNo() -> Observable<Int>
+    func getLastPageNo() -> Observable<Int>
 }
 
 final class DefaultChatUseCase: ChatUseCase {
@@ -23,28 +21,14 @@ final class DefaultChatUseCase: ChatUseCase {
         self.chatRepository = chatRepository
     }
     
-    func sendTextChat(message: String) -> Observable<Bool> {
+    func getLastPageNo() -> Observable<Int> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self,
                   let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            chatRepository.sendTextChat(accessToken: accessToken, message: message)
+            chatRepository.getLastPageNo(accessToken: accessToken)
                 .asObservable()
-                .bind(onNext: { result in
-                    observer.onNext(result)
-                }).disposed(by: disposeBag)
-            
-            return Disposables.create()
-        }
-    }
-    
-    func getLatestChatPageNo() -> Observable<Int> {
-        Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            chatRepository.getLatestChatPageNo(accessToken: accessToken)
-                .asObservable()
-                .bind(onNext: { pageNo in
-                    observer.onNext(pageNo)
+                .bind(onNext: { data in
+                    observer.onNext(data)
                 }).disposed(by: disposeBag)
             
             return Disposables.create()

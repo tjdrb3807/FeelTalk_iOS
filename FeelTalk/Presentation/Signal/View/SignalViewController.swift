@@ -86,14 +86,14 @@ final class SignalViewController: UIViewController {
     private func bind() {
         Observable
             .merge(
-                self.view.rx.tapGesture(configuration: { [weak self] gestureRecorgnizer, delegate in
+                self.view.rx.tapGesture(configuration: { [weak self] gestureRecognizer, delegate in
                     guard let self = self else { return }
-                    gestureRecorgnizer.delegate = self
+                    gestureRecognizer.delegate = self
                     delegate.simultaneousRecognitionPolicy = .never
                 }).asObservable(),
-                bottomSheetView.rx.tapGesture(configuration: { [weak self] gestureRecorgnizer, delegate in
+                bottomSheetView.rx.tapGesture(configuration: { [weak self] gestureRecognizer, delegate in
                     guard let self = self else { return }
-                    gestureRecorgnizer.delegate = self
+                    gestureRecognizer.delegate = self
                     delegate.simultaneousRecognitionPolicy = .never
                 }).asObservable()
             ).when(.recognized)

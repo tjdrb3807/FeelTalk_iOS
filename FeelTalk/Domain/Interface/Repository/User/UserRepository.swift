@@ -13,4 +13,6 @@ protocol UserRepository {
     func getMyInfo(accessToken: String) -> Single<MyInfo>
     
     func getPartnerInfo(accessToken: String) -> Single<PartnerInfo>
+    
+    func getUserState(accessToken: String) -> Single<UserState>
 }

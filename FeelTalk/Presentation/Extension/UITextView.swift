@@ -25,7 +25,7 @@ extension UITextView {
     func setLineAndLetterSpacing(_ text: String) {
         let style = NSMutableParagraphStyle()
         
-        style.lineSpacing = 1.25
+        style.lineSpacing = CommonConstraintNameSpace.verticalRatioCalculator * 0.15    // 1.25
         let attributedString = NSMutableAttributedString(string: text)
         
         attributedString.addAttribute(NSAttributedString.Key.kern, value: CGFloat(0), range: NSRange(location: 0, length: attributedString.length))

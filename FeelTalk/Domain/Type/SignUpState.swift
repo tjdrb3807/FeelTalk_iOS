@@ -12,3 +12,9 @@ enum SignUpState: String, Equatable {
     case newbie
     case solo
 }
+
+enum UserState: String, Equatable {
+    case couple = "COUPLE"
+    case newbie = "NEWBIE"
+    case solo = "SOLO"
+}

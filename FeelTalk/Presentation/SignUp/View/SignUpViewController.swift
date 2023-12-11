@@ -10,47 +10,33 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-/// Sscreen ID: L020
-///
-/// 회원가입 첫 화면
-///
-/// 성인 인증 화면 유도 화면
 final class SignUpViewController: UIViewController {
     var viewModel: SignUpViewModel!
     private let disposeBag = DisposeBag()
     
-    var snsLogin: SNSLogin?
-    
-    // MARK: SubComponents
-    private lazy var fullVerticalStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.distribution = .fill
-        stackView.backgroundColor = .clear
-        stackView.isUserInteractionEnabled = true
-        
-        return stackView
-    }()
-    
     private lazy var navigationBar: SignUpFlowNavigationBar = { SignUpFlowNavigationBar(viewType: .signUp) }()
+    
     private lazy var progressBar: CustomProgressBar = { CustomProgressBar(persentage: (1/3)) }()
-    private lazy var informationPhrase: InformationPhraseView = { return InformationPhraseView() }()
-    private lazy var spacing: UIView = { return UIView() }()
-    private lazy var adultCertificationView: AdultCertificationView = { return AdultCertificationView() }()
+    
+    private lazy var titleLabel: SignUpTitleView = { SignUpTitleView() }()
+    
+    private lazy var adultAuthenticationView: SignUpAdultAuthenticationView = { SignUpAdultAuthenticationView() }()
+    
+    private lazy var infoConsentView: SignUpInfoConsentView = { SignUpInfoConsentView() }()
     
     private lazy var nextButton: UIButton = {
         let button = UIButton()
-        button.setTitle(SignUpViewNameSpace.nextButtonTitle, for: .normal)
-        button.titleLabel?.textColor = .white
-        button.titleLabel?.font = UIFont(name: SignUpViewNameSpace.nextButtonTitleFont, size: SignUpViewNameSpace.nextButtonTitleSize)
-        button.backgroundColor = UIColor(named: SignUpViewNameSpace.nextButtonBackgroundColor)
-        button.layer.cornerRadius = SignUpViewNameSpace.nextButtonHeight / 2
-        button.isEnabled = false
+        button.setTitle("다음", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
+                                         size: CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.8) // 18.0
+        button.backgroundColor = UIColor(named: CommonColorNameSpace.main400)
+        button.layer.cornerRadius = (CommonConstraintNameSpace.verticalRatioCalculator * 7.26 ) / 2
+        button.clipsToBounds = true
         
         return button
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -60,91 +46,82 @@ final class SignUpViewController: UIViewController {
         self.setConstraints()
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle { .darkContent }
+    
     private func bind(to viewModel: SignUpViewModel) {
-        let input = SignUpViewModel.Input(
-            tapAuthButton: adultCertificationView.authButtton.rx.tap.map { _ in self.snsLogin }.asObservable(),
-                                          tapNextButton: nextButton.rx.tap,
-                                          tapTotalConsentButton: adultCertificationView.informationConsentView.totalConsentButton.rx.tap,
-                                          tapServiceConsentButton: adultCertificationView.informationConsentView.serviceConsentRow.checkButton.rx.tap,
-                                          tapPersonalInfoConsentButton: adultCertificationView.informationConsentView.personalInfoConsentRow.checkButton.rx.tap,
-                                          tapSensitiveInfoConsentButton: adultCertificationView.informationConsentView.sensitiveInfoConsentRow.checkButton.rx.tap,
-                                          tapMarketingInfoConsentButton: adultCertificationView.informationConsentView.marketingInfoConsentRow.checkButton.rx.tap,
-                                          tapNavigationBarLeftButton:
-                                              navigationBar.leftButton.rx.tap)
+        let input = SignUpViewModel.Input(tapAuthButton: adultAuthenticationView.authButton.rx.tap.asObservable(),
+                                          tapNextButton: nextButton.rx.tap.asObservable(),
+                                          tapFullSelectionButton: infoConsentView.fullInfoSelectionView.fullSelectionButton.rx.tap.asObservable(),
+                                          tapServiceConsentButton: infoConsentView.serviceConsentRow.checkButton.rx.tap.asObservable(),
+                                          tapPersonalInfoConsentButton: infoConsentView.personalInfoConsentRow.checkButton.rx.tap.asObservable(),
+                                          tapSensitiveInfoConsentButton: infoConsentView.sensitiveInfoConsentRow.checkButton.rx.tap.asObservable(),
+                                          tapMarketingInfoConsentButton: infoConsentView.marketingInfoConsentRow.checkButton.rx.tap.asObservable(),
+                                          tapPopButton: navigationBar.leftButton.rx.tap.asObservable())
         
         let output = viewModel.transfer(input: input)
         
-        output.setInfoConsentUI
+        output.adultAuthenticated
             .withUnretained(self)
-            .bind(onNext: { vc, _ in
-                vc.informationPhrase.informationLabel.rx.text.onNext(SignUpViewNameSpace.infomationLabelUpdateText)
-                vc.spacing.snp.updateConstraints { $0.height.equalTo(SignUpViewNameSpace.signUpSpacingViewUpdateHeight) }
-                vc.adultCertificationView.idCard.snp.updateConstraints { $0.height.equalTo(SignUpViewNameSpace.idCardUpdateHeight) }
-                vc.adultCertificationView.idCard.rx.contentMode.onNext(.scaleAspectFit)
-                vc.adultCertificationView.explanationLabel.rx.text.onNext(SignUpViewNameSpace.explanationLabelUpdateText)
-                vc.adultCertificationView.setAuthSuccessUI()
-                
-                vc.view.addSubview(vc.nextButton)
-                
-                vc.nextButton.snp.makeConstraints {
-                    $0.leading.trailing.equalToSuperview().inset(SignUpViewNameSpace.nextButtonUpdateHorizontalInset)
-                    $0.bottom.equalTo(vc.view.safeAreaLayoutGuide.snp.bottom)
-                    $0.height.equalTo(SignUpViewNameSpace.nextButtonUpdateHeight)
+            .bind { vc, status in
+                vc.titleLabel.adultAuthenticated.accept(status)
+                vc.adultAuthenticationView.adultAuthenticated.accept(status)
+                if status == .authenticated {
+                    vc.updateAuthenticationViewConstraints()
+                    vc.updateViewSubComponents()
+                    vc.makeInfoConsentviewConstraints()
+                    vc.makeNextButtonConstraints()
                 }
-            }).disposed(by: disposeBag)
+            }.disposed(by: disposeBag)
         
-        output.totalConsentIsSelected
-            .bind(to: adultCertificationView.informationConsentView.totalConsentButton.rx.isSelected)
+        output.isFullConsentSeleted
+            .bind(to: infoConsentView.fullInfoSelectionView.fullSelectionButton.rx.isSelected)
             .disposed(by: disposeBag)
         
-        output.serviceConsentIsSelected
-            .bind(to: adultCertificationView.informationConsentView.serviceConsentRow.checkButton.rx.isSelected)
+        output.isServiceConsentSeleted
+            .bind(to: infoConsentView.serviceConsentRow.checkButton.rx.isSelected)
             .disposed(by: disposeBag)
         
-        output.personalInfoConsentIsSelected
-            .bind(to: adultCertificationView.informationConsentView.personalInfoConsentRow.checkButton.rx.isSelected)
+        output.isPersonalInfoConsentSeleted
+            .bind(to: infoConsentView.personalInfoConsentRow.checkButton.rx.isSelected)
             .disposed(by: disposeBag)
         
-        output.sensitiveInfoConsentIsSelected
-            .bind(to: adultCertificationView.informationConsentView.sensitiveInfoConsentRow.checkButton.rx.isSelected)
+        output.isSensitiveInfoConsentSelected
+            .bind(to: infoConsentView.sensitiveInfoConsentRow.checkButton.rx.isSelected)
             .disposed(by: disposeBag)
         
-        output.marketingInfoConsentIsSelected
-            .bind(to: adultCertificationView.informationConsentView.marketingInfoConsentRow.checkButton.rx.isSelected)
+        output.isMarketingInfoConsentSelected
+            .bind(to: infoConsentView.marketingInfoConsentRow.checkButton.rx.isSelected)
             .disposed(by: disposeBag)
         
-        output.nextButtonIsEnable
+        output.isNextButtonEnabled
             .withUnretained(self)
-            .bind(onNext: { vc, state in
-                state ? vc.nextButton.rx.backgroundColor.onNext(UIColor(named: "main_500")) :
-                vc.nextButton.rx.backgroundColor.onNext(UIColor(named: "main_400"))
+            .bind { vc, state in
+                state ?
+                vc.nextButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main500)) :
+                vc.nextButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main400))
+                
                 vc.nextButton.rx.isEnabled.onNext(state)
-            })
-            .disposed(by: disposeBag)
+            }.disposed(by: disposeBag)
     }
     
-    private func setProperties() {
-        view.backgroundColor = .white
-    }
+    private func setProperties() { view.backgroundColor = .white }
     
-    private func addSubComponent() {
-        addFullVerticalStackViewSubComponents()
-        
-        [navigationBar, progressBar, fullVerticalStackView].forEach { view.addSubview($0) }
-    }
+    private func addSubComponent() { addViewSusbComponents() }
     
     private func setConstraints() {
         makeNavigationBarConstraints()
         makePrograssBarConstraints()
-        makeInformationPhraseConstraints()
-        makeSpacingConstraints()
-        makeIdCardConstraints()
-        makeFullVerticalStackViewConstraints()
+        makeTitleLabelConstraints()
+        makeAdutlAuthenticationViewConstraints()
     }
 }
 
 // MARK: UI setting method.
 extension SignUpViewController {
+    private func addViewSusbComponents() {
+        [navigationBar, progressBar, titleLabel, adultAuthenticationView].forEach { view.addSubview($0) }
+    }
+    
     private func makeNavigationBarConstraints() {
         navigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
@@ -161,35 +138,47 @@ extension SignUpViewController {
         }
     }
     
-    private func addFullVerticalStackViewSubComponents() {
-        [informationPhrase, spacing, adultCertificationView].forEach { fullVerticalStackView.addArrangedSubview($0) }
-    }
-    
-    private func makeInformationPhraseConstraints() {
-        informationPhrase.snp.makeConstraints {
+    private func makeTitleLabelConstraints() {
+        titleLabel.snp.makeConstraints {
+            $0.top.equalTo(progressBar.snp.bottom).offset(SignUpTitleViewNameSpace.topOffset)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(SignUpViewNameSpace.informationPhraseHeight)
+            $0.height.equalTo(SignUpTitleViewNameSpace.height)
         }
     }
     
-    private func makeSpacingConstraints() {
-        spacing.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(SignUpViewNameSpace.signUpSpacingViewHeight)
+    private func makeAdutlAuthenticationViewConstraints() {
+        adultAuthenticationView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(SignUpAdultAuthenticationViewNameSpace.nonAuthenticatedStatusTopOffset)
+            $0.centerX.equalToSuperview()
         }
     }
     
-    private func makeIdCardConstraints() {
-        adultCertificationView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(SignUpViewNameSpace.adutlCertificationViewHorizontalInset)
+    private func makeInfoConsentviewConstraints() {
+        infoConsentView.snp.makeConstraints {
+            $0.top.equalTo(adultAuthenticationView.snp.bottom).offset(SignUpInfoConsentViewNameSpace.topOffset)
+            $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.leadingInset)
+            $0.trailing.equalToSuperview().inset(CommonConstraintNameSpace.trailingInset)
+            $0.centerX.equalToSuperview()
         }
     }
     
-    private func makeFullVerticalStackViewConstraints() {
-        fullVerticalStackView.snp.makeConstraints {
-            $0.top.equalTo(progressBar.snp.bottom).offset(SignUpViewNameSpace.fullHorizontalStackViewTopOffset)
-            $0.leading.trailing.equalToSuperview()
+    private func makeNextButtonConstraints() {
+        nextButton.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.leadingInset)
+            $0.trailing.equalToSuperview().inset(CommonConstraintNameSpace.trailingInset)
+            $0.bottom.equalTo(view.safeAreaInsets)
+            $0.height.equalTo(CommonConstraintNameSpace.verticalRatioCalculator * 7.26)
         }
+    }
+}
+
+extension SignUpViewController {
+    private func updateAuthenticationViewConstraints() {
+        adultAuthenticationView.snp.updateConstraints { $0.top.equalTo(titleLabel.snp.bottom) }
+    }
+    
+    private func updateViewSubComponents() {
+        [infoConsentView, nextButton].forEach { view.addSubview($0) }
     }
 }
 
@@ -207,12 +196,7 @@ struct SignUpViewController_Previews: PreviewProvider {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = SignUpViewController()
             let vm = SignUpViewModel(coordinator: DefaultSignUpCoordinator(UINavigationController()),
-                                                 signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()),
-                                                 snsLogin: .init(snsType: .appleIOS,
-                                                                 refreshToken: nil,
-                                                                 authCode: nil,
-                                                                 idToken: nil,
-                                                                 authorizationCode: nil))
+                                     signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
             vc.viewModel = vm
             
             return vc

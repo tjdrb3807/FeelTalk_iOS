@@ -22,9 +22,7 @@ final class ChatViewController: UIViewController {
         
         view.layer.cornerRadius = ChatViweNameSpace.chatRoomViewCornerRadius
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        view.layer.masksToBounds = true
     
-        
         let path = CGMutablePath()
         
         path.move(to: CGPoint(x: ChatViweNameSpace.chatRoomViewTipStartX,
@@ -54,7 +52,6 @@ final class ChatViewController: UIViewController {
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
-        collectionView.register(TextChatCell.self, forCellWithReuseIdentifier: "TextChatCell")
         
         collectionView.rx.setDelegate(self)
             .disposed(by: disposeBag)
@@ -157,34 +154,34 @@ final class ChatViewController: UIViewController {
             .bind(to: navigationBar.partnerNickname)
             .disposed(by: disposeBag)
         
-        output.chatModelList
-            .asDriver(onErrorJustReturn: [])
-            .drive(collectionView.rx.items) { [weak self] cv, row, item in
-                guard let self = self else { return UICollectionViewCell() }
-                let index = IndexPath(row: row, section: 0)
-                
-                switch item.type {
-                case .challengeChatting:
-                    break
-                case .imageChatting:
-                    break
-                case .questionChatting:
-                    break
-                case .textChatting:
-                    guard let cell = cv.dequeueReusableCell(withReuseIdentifier: "TextChatCell",
-                                                            for: index) as? TextChatCell else { return UICollectionViewCell() }
-                    let model = item as! TextChatModel
-                    cell.model.accept(model)
-                
-                    return cell
-                case .voiceChatting:
-                    break
-                }
-                
-                
-                
-                return UICollectionViewCell()
-            }.disposed(by: disposeBag)
+//        output.chatModelList
+//            .asDriver(onErrorJustReturn: [])
+//            .drive(collectionView.rx.items) { [weak self] cv, row, item in
+//                guard let self = self else { return UICollectionViewCell() }
+//                let index = IndexPath(row: row, section: 0)
+//
+//                switch item.type {
+//                case .challengeChatting:
+//                    break
+//                case .imageChatting:
+//                    break
+//                case .questionChatting:
+//                    break
+//                case .textChatting:
+//                    guard let cell = cv.dequeueReusableCell(withReuseIdentifier: "TextChatCell",
+//                                                            for: index) as? TextChatCell else { return UICollectionViewCell() }
+//                    let model = item as! TextChatModel
+//                    cell.model.accept(model)
+//
+//                    return cell
+//                case .voiceChatting:
+//                    break
+//                }
+//
+//
+//
+//                return UICollectionViewCell()
+//            }.disposed(by: disposeBag)
     }
     
     private func setProperties() {

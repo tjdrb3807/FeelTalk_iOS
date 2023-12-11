@@ -87,7 +87,7 @@ enum SignUpViewNameSpace {
     static let totalConsentViewFullhorizontalStackViewVerticalInset: CGFloat = (UIScreen.main.bounds.height / 100) * 2.46
     static let totalConsetnViewFullhorizontalStackViewHorizontalInset: CGFloat = (UIScreen.main.bounds.width / 100) * 3.2
     
-    static let totalConsentButtonImage: String = "icon_total_check"
+    static let totalConsentButtonImage: String = "icon_full_selection"
     static let totalConsentButtonWidth: CGFloat = (UIScreen.main.bounds.width / 100) * 6.4
     
     static let totalConsentLabelText: String = "약관 및 개인, 민감정보 수집, 이용 동의"

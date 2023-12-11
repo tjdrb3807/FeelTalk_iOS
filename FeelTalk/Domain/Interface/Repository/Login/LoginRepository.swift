@@ -12,11 +12,6 @@ import RxCocoa
 protocol LoginRepository {
     func autoLogin(accessToken: String) -> Single<String>
     
-    func reLogin(snsType: SNSType,
-                 refreshToken: String?,
-                 authCode: String?,
-                 idToken: String?,
-                 state: String?,
-                 authorizationCode: String?) -> Single<Login>
+    func login(_ data: SNSLogin01) -> Single<Token01>
 }
 

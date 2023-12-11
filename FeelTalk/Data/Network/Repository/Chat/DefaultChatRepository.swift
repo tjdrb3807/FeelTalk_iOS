@@ -2,51 +2,41 @@
 //  DefaultChatRepository.swift
 //  FeelTalk
 //
-//  Created by 전성규 on 2023/10/18.
+//  Created by 전성규 on 2023/11/14.
 //
 
 import Foundation
 import Alamofire
 import RxSwift
-import RxSwift
+import RxCocoa
 
 final class DefaultChatRepository: ChatRepository {
-    func sendTextChat(accessToken: String, message: String) -> Single<Bool> {
+    func getLastPageNo(accessToken: String) -> Single<Int> {
         Single.create { observer -> Disposable in
-            AF.request(ChatAPI.sendTextChat(accessToken: accessToken,
-                                            SendTextChatRequestDTO(message: message)))
-            .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
-                switch response.result {
-                case .success(let responseDTO):
-                    if responseDTO.status == "success" {
-                        observer(.success(true))
+            AF.request(ChatAPI.getLastPageNo(accessToken: accessToken))
+                .responseDecodable(of: BaseResponseDTO<ChatPageNoResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            guard let lastPageNoResponseDTO = responseDTO.data! else { return }
+                            print(lastPageNoResponseDTO)
+                        } else {
+                            guard let message = responseDTO.message else { return }
+                            debugPrint("[ERROR] ChatRepository.getLastPageNo: \(message)")
+                        }
+                        
+                    case .failure(let error):
+                        observer(.failure(error))
                     }
-                case .failure(let error):
-                    observer(.failure(error))
                 }
-            }
             
             return Disposables.create()
         }
     }
     
-    func getLatestChatPageNo(accessToken: String) -> Single<Int> {
+    func getChatList(accessToken: String, pageNo: Int) -> Single<[Chat]> {
         Single.create { observer -> Disposable in
-            AF.request(ChatAPI.getLatestChatPageNo(accessToken: accessToken))
-                .responseDecodable(of: BaseResponseDTO<GetLatestChatPageNoResponseDTO?>.self) { response in
-                    switch response.result {
-                    case .success(let responseDTO):
-                        if responseDTO.status == "success" {
-                            guard let getLatestChatPageNoResponseDTO = responseDTO.data! else { return }
-                            observer(.success(getLatestChatPageNoResponseDTO.pageNo))
-                        } else {
-                            guard let message = responseDTO.message else { return }
-                            debugPrint(message)
-                        }
-                    case .failure(let error):
-                        observer(.failure(error))
-                    }
-                }
+            
             
             return Disposables.create()
         }

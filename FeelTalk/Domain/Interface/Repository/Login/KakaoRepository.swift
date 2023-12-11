@@ -10,5 +10,5 @@ import RxSwift
 import RxCocoa
 
 protocol KakaoRepository: AnyObject {
-    func login() -> Single<SNSLogin>
+    func login() -> Single<SNSLogin01>
 }

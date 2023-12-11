@@ -11,15 +11,10 @@ import Alamofire
 import RxSwift
 import RxCocoa
 
-enum NaverLoginError: Error {
-    case refreshToeknError
-}
-
 class DefaultNaverLoginRepository: NSObject, NaverRepository {
     private let disposeBag = DisposeBag()
-
-//    let refreshToken = PublishSubject<String>()
-    let snsLoginInfo = PublishSubject<SNSLogin>()
+    let snsLoginInfo = PublishSubject<SNSLogin01>()
+    let loginInstance = NaverThirdPartyLoginConnection.getSharedInstance()
     
     func login() {
         debugPrint("[CALL]: LoginRepository - naverLogin()")
@@ -35,45 +30,52 @@ class DefaultNaverLoginRepository: NSObject, NaverRepository {
 }
 
 extension DefaultNaverLoginRepository: NaverThirdPartyLoginConnectionDelegate {
-        func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
-            debugPrint("[SUCCESS]: Naver login")
+    func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
+        debugPrint("[SUCCESS]: Naver login")
         
-            getSNSLoginInfo()
-                .bind(to: snsLoginInfo)
-                .disposed(by: disposeBag)
-         }
-         
-         func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() { print("리프레시 토큰") }
-         func oauth20ConnectionDidFinishDeleteToken() { print("로그아웃") }
-         
-         // 모든 에러 처리
-         func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
-             print("---ERROR: \(error.localizedDescription)---")
-         }
+        getInfo()
+            .bind(to: snsLoginInfo)
+            .disposed(by: disposeBag)
+    }
+    
+    func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() { print("리프레시 토큰") }
+    
+    func oauth20ConnectionDidFinishDeleteToken() { print("[SUCCESS] Naver logout") }
+    
+    func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
+        print("---ERROR: \(error.localizedDescription)---")
+    }
 }
 
 extension DefaultNaverLoginRepository {
-    func getRefreshToken() -> Observable<String> {
-        return Observable.create { observer -> Disposable in
-            guard let naverInstance = NaverThirdPartyLoginConnection.getSharedInstance() else { return Disposables.create() }
-            guard let refreshToken = naverInstance.refreshToken else { return Disposables.create() }
+    func getInfo() -> Observable<SNSLogin01> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let isValidAccessToken = loginInstance?.isValidAccessTokenExpireTimeNow() else { return Disposables.create() }
             
-            observer.onNext(refreshToken)
+            if !isValidAccessToken { return Disposables.create() }
             
-            return Disposables.create()
-        }
-    }
-    
-    func getSNSLoginInfo() -> Observable<SNSLogin> {
-        return Observable.create { observer -> Disposable in
-            guard let naverInstance = NaverThirdPartyLoginConnection.getSharedInstance() else { return Disposables.create() }
-            guard let refreshToken = naverInstance.refreshToken else { return Disposables.create() }
+            guard let tokenType = loginInstance?.tokenType,
+                  let accessToken = loginInstance?.accessToken else { return Disposables.create() }
             
-            observer.onNext(.init(snsType: .naver,
-                                  refreshToken: refreshToken,
-                                  authCode: nil,
-                                  idToken: nil,
-                                  authorizationCode: nil))
+            let urlStr = "https://openapi.naver.com/v1/nid/me"
+            let url = URL(string: urlStr)!
+            let authorization = "\(tokenType) \(accessToken)"
+            
+            let request = AF.request(url,
+                                     method: .get,
+                                     parameters: nil,
+                                     encoding: JSONEncoding.default,
+                                     headers: ["Authorization": authorization])
+            
+            request.responseDecodable(of: NaverLoginResponseDTO.self) { response in
+                switch response.result {
+                case .success(let responseDTO):
+                    observer.onNext(responseDTO.toDomain())
+                case .failure(let error):
+                    observer.onError(error)
+                }
+            }
             
             return Disposables.create()
         }

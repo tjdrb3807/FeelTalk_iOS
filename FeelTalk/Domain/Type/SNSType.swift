@@ -8,8 +8,8 @@
 import Foundation
 
 enum SNSType: String, Equatable {
-    case appleIOS
-    case google
-    case kakao
-    case naver
+    case apple = "APPLE"
+    case google = "GOOGLE"
+    case kakao = "KAKAO"
+    case naver = "NAVER"
 }

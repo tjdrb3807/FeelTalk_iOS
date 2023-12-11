@@ -8,5 +8,7 @@
 import Foundation
 
 protocol SignUpCoordinator: Coordinator {
+    func showAdultAuthFlow()
+    
     func showNicknameFlow(with signUp: SignUp)
 }

@@ -11,6 +11,7 @@ import Alamofire
 enum UserAPI {
     case getMyInfo(accessToken: String)
     case getPartnerInfo(accessToken: String)
+    case getUserState(accessToken: String)
 }
 
 extension UserAPI: Router, URLRequestConvertible {
@@ -22,12 +23,14 @@ extension UserAPI: Router, URLRequestConvertible {
             return "/api/v1/member"
         case .getPartnerInfo:
             return "/api/v1/member/partner"
+        case .getUserState:
+            return "/api/v1/member/status"
         }
     }
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .getMyInfo, .getPartnerInfo:
+        case .getMyInfo, .getPartnerInfo, .getUserState:
             return .get
         }
     }
@@ -39,19 +42,23 @@ extension UserAPI: Router, URLRequestConvertible {
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
                     "Authorization": "Bearer \(accessToken)"]
+        case .getUserState(accessToken: let accessToken):
+            return ["Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": "\(accessToken)"]
         }
     }
     
     var parameters: [String : Any]? {
         switch self {
-        case .getMyInfo, .getPartnerInfo:
+        case .getMyInfo, .getPartnerInfo, .getUserState:
             return nil
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .getMyInfo, .getPartnerInfo:
+        case .getMyInfo, .getPartnerInfo, .getUserState:
             return JSONEncoding.default
         }
     }

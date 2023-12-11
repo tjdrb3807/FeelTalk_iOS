@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 protocol AppleRepository {
-    var loginCompleted: PublishRelay<SNSLogin> { get }
+    var appleLogin: PublishSubject<SNSLogin01> { get }
     
     func login()
 }

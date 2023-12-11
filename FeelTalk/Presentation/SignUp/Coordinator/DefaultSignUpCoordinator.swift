@@ -13,7 +13,6 @@ final class DefaultSignUpCoordinator: SignUpCoordinator {
     var signUpViewController: SignUpViewController
     var childCoordinators: [Coordinator] = []
     var type: CoordinatorType = .signUp
-    var snsLogin: SNSLogin?
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -21,12 +20,17 @@ final class DefaultSignUpCoordinator: SignUpCoordinator {
     }
     
     func start() {
-        guard let snsLogin = snsLogin else { return }
         self.signUpViewController.viewModel = SignUpViewModel(coordinator: self,
-                                                              signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()),
-                                                              snsLogin: snsLogin)
+                                                              signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
         
         self.navigationController.pushViewController(signUpViewController, animated: true)
+    }
+    
+    func showAdultAuthFlow() {
+        let adultAuthCoordinator = DefaultAdultAuthCoordiantor(self.navigationController)
+        adultAuthCoordinator.finishDelegate = self
+        self.childCoordinators.append(adultAuthCoordinator)
+        adultAuthCoordinator.start()
     }
     
     func showNicknameFlow(with data: SignUp) {

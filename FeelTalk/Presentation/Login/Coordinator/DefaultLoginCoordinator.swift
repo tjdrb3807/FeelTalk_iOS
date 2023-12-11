@@ -8,7 +8,10 @@
 import UIKit
 
 protocol LoginCoordinator: Coordinator {
-    func showSignUpFlow(with data: SNSLogin)
+//    func showSignUpFlow(with data: SNSLogin)
+    
+    func showSignUpFlow()
+    
     func showInviteCodeFlow()
 }
 
@@ -27,18 +30,26 @@ final class DefaultLoginCoordinator: LoginCoordinator {
     func start() {
         self.loginViewController.viewModel = LoginViewModel(coordinator: self,
                                                             loginUseCase: DefaultLoginUseCase(loginRepository: DefaultLoginRepository(),
-                                                                         appleRepository: DefaultAppleRepository(),
-                                                                         googleRepositroy: DefaultGoogleRepository(),
-                                                                         naverRepository: DefaultNaverLoginRepository(),
-                                                                         kakaoRepository: DefaultKakaoRepository()))
+                                                                                              appleRepository: DefaultAppleRepository(),
+                                                                                              googleRepositroy: DefaultGoogleRepository(),
+                                                                                              naverRepository: DefaultNaverLoginRepository(),
+                                                                                              kakaoRepository: DefaultKakaoRepository(),
+                                                                                              userRepository: DefaultUserRepository()))
         
         self.navigationController.viewControllers = [self.loginViewController]
     }
     
-    func showSignUpFlow(with data: SNSLogin) {
+//    func showSignUpFlow(with data: SNSLogin) {
+//        let signUpCoordinator = DefaultSignUpCoordinator(self.navigationController)
+//        signUpCoordinator.finishDelegate = self
+//        signUpCoordinator.snsLogin = data
+//        signUpCoordinator.start()
+//        self.childCoordinators.append(signUpCoordinator)
+//    }
+    
+    func showSignUpFlow() {
         let signUpCoordinator = DefaultSignUpCoordinator(self.navigationController)
         signUpCoordinator.finishDelegate = self
-        signUpCoordinator.snsLogin = data
         signUpCoordinator.start()
         self.childCoordinators.append(signUpCoordinator)
     }

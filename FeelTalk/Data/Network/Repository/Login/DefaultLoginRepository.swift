@@ -33,44 +33,27 @@ final class DefaultLoginRepository: NSObject, LoginRepository {
         }
     }
     
-    
-    func reLogin(snsType: SNSType,
-                 refreshToken: String?,
-                 authCode: String?,
-                 idToken: String?,
-                 state: String?,
-                 authorizationCode: String?) -> Single<Login> {
-        return Single.create { observer -> Disposable in
-            AF.request(LoginAPI.reLogin(request: .init(snsType: snsType.rawValue,
-                                                       refreshToken: refreshToken,
-                                                       authCode: authCode,
-                                                       idToken: idToken,
-                                                       state: state,
-                                                       authorizationCode: authorizationCode)))
-            .responseDecodable(of: BaseResponseDTO<ReLoginReseponseDTO?>.self) { response in
-                switch response.result {
-                case .success(let responseDTO):
-                    if responseDTO.status == "success" {
-                        guard let reLoginResponseDTO = responseDTO.data! else { return }
-                        observer(.success(reLoginResponseDTO.toDomain()))
-                    } else {
-                        guard let message = responseDTO.message else { return }
-                        // TODO: 에러처리 리팩토링 필요
-                        debugPrint("[ERROR]: LoginRepository - reLogin \n[ERROR MESSAGE]: \(message)")
+    func login(_ data: SNSLogin01) -> Single<Token01>{
+        Single.create { observer -> Disposable in
+            AF.request(LoginAPI.login(data.toDTO()))
+                .responseDecodable(of: BaseResponseDTO<LoginResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            guard let loginResponseDTO = responseDTO.data! else { return }
+                            observer(.success(loginResponseDTO.toDomain()))
+                        } else {
+                            guard let message = responseDTO.message else { return }
+                            debugPrint("[ERROR]: LoginRepository - reLogin \n[ERROR MESSAGE]: \(message)")
+                        }
+                    case .failure(let error):
+                        observer(.failure(error))
                     }
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    observer(.failure(error))
                 }
-            }
             
             return Disposables.create()
         }
     }
-}
-
-enum KakaoLoginError: Error {
-    case refreshTokenError
 }
 
 // MARK: Data bindding

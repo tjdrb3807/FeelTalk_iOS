@@ -11,8 +11,8 @@ import RxSwift
 import RxCocoa
 
 final class DefaultGoogleRepository: GoogleRepository {
-    func login() -> Single<SNSLogin> {
-        return Single.create { observer -> Disposable in
+    func login() -> Single<SNSLogin01> {
+        Single.create { observer -> Disposable in
             guard let viewController = UIApplication.getMostTopViewController() else { return Disposables.create() }
             
             GIDSignIn.sharedInstance.signIn(withPresenting: viewController) { signInResult, error in
@@ -21,17 +21,10 @@ final class DefaultGoogleRepository: GoogleRepository {
                 
                 signInResult.user.refreshTokensIfNeeded { user, error in
                     guard error == nil else { return }
-                    guard let user = user,
-                          let idToken = user.idToken?.tokenString,
-                          let authorizationCode = signInResult.serverAuthCode else {
-                        return
-                    }
+                    guard let authorizationCode = signInResult.serverAuthCode else { return }
                     
-                    observer(.success(.init(snsType: .google,
-                                            refreshToken: nil,
-                                            authCode: authorizationCode,
-                                            idToken: idToken,
-                                            authorizationCode: nil)))
+                    observer(.success(SNSLogin01(oauthId: authorizationCode,
+                                                 snsType: SNSType.google.rawValue)))
                 }
             }
             

@@ -12,3 +12,9 @@ struct Token {
     let refreshToken: String
     let expiresIn: Int
 }
+
+struct Token01 {
+    let accessToken: String
+    let refreshToken: String
+    let expiredTime: String
+}

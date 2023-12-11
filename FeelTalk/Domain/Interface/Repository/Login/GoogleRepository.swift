@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 
 protocol GoogleRepository {
-    func login() -> Single<SNSLogin>
+    func login() -> Single<SNSLogin01>
+    
     func logOut()
 }

@@ -7,6 +7,14 @@
 
 import UIKit
 
+public enum AdultAuthViewScrollDirection {
+    case nameInputView
+    case idCardNumberInputview
+    case phoneInfoInputView
+    case consentView
+    case authNumberInfoView
+}
+
 extension UIScrollView {
     func scrollToTop() {
         setContentOffset(.zero, animated: true)
@@ -24,4 +32,34 @@ extension UIScrollView {
         tap.cancelsTouchesInView = false
         self.addGestureRecognizer(tap)
     }
+}
+
+extension UIScrollView {
+    func scroll(to direction: AdultAuthViewScrollDirection) {
+        DispatchQueue.main.async {
+            switch direction {
+                
+            case .nameInputView:
+                self.scrollToTop()
+            case .idCardNumberInputview:
+                self.scrollToIDCardNumberInputView()
+            case .phoneInfoInputView:
+                break
+            case .consentView:
+                break
+            case .authNumberInfoView:
+                self.scrollToBottom()
+            }
+        }
+    }
+    
+    private func scrollToIDCardNumberInputView() {
+        let topOffset = CGPoint(x: .zero,
+                                y: contentSize.height - 68)
+        if topOffset.y > 0.0 {
+            setContentOffset(topOffset, animated: true)
+        }
+    }
+    
+    
 }

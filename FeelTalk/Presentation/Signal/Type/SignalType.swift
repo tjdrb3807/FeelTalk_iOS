@@ -7,10 +7,36 @@
 
 import Foundation
 
-enum SignalType: String {
-    case sexy       // 100 percent
-    case love       // 75 percent
-    case ambiguous  // 50 percent
-    case refuse     // 25 percent
-    case tired      // 0 percent
+enum SignalType: String, Equatable {
+    /// 100%
+    case sexy
+    /// 75%
+    case love
+    /// 50%
+    case ambiguous
+    /// 25%
+    case refuse
+    /// 0%
+    case tired
+}
+
+extension SignalType {
+    func mapping(_ rawValue: String) -> SignalType? {
+        if let type = SignalType(rawValue: rawValue) {
+            switch type {
+            case .sexy:
+                return .sexy
+            case .love:
+                return .love
+            case .ambiguous:
+                return .ambiguous
+            case .refuse:
+                return .refuse
+            case .tired:
+                return.tired
+            }
+        }
+        
+        return nil
+    }
 }

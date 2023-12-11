@@ -19,4 +19,8 @@ protocol SignUpRepository {
                 authorizationCode: String?,
                 fcmToken: String,
                 marketingConsent: Bool) -> Single<Token>
+    
+    func getAuthNumber(_ requestDTO: AuthNumberRequestDTO) -> Single<Bool>
+    
+    func getReAuthNumber(_ requestDTO: ReAuthNumberRequestDTO) -> Single<Bool>
 }

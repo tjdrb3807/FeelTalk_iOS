@@ -35,7 +35,7 @@ final class LoginButton: UIButton {
         imageView.backgroundColor = .clear
         
         switch snsType {
-        case .appleIOS:
+        case .apple:
             imageView.image = UIImage(named: LoginButtonNameSpace.appleIcon)
         case .google:
             imageView.image = UIImage(named: LoginButtonNameSpace.googleIcon)
@@ -55,7 +55,7 @@ final class LoginButton: UIButton {
         label.backgroundColor = .clear
         
         switch snsType {
-        case .appleIOS:
+        case .apple:
             label.text = LoginButtonNameSpace.appleText
         case .google:
             label.text = LoginButtonNameSpace.googleText

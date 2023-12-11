@@ -209,7 +209,7 @@ struct MyPageViewController_Previews: PreviewProvider {
             let viewModel = MyPageViewModel(coordinator: DefaultMyPageCoordinator(UINavigationController()),
                                             userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
     
-            viewController.profileView.userInfo.accept(MyInfo(nickname: "SeooongGyu", snsType: .appleIOS))
+            viewController.profileView.userInfo.accept(MyInfo(nickname: "SeooongGyu", snsType: .apple))
             viewController.profileView.partnerInfoButton.partnerInfo.accept(PartnerInfo(nickname: "Partner"))
         
             viewController.viewModel = viewModel

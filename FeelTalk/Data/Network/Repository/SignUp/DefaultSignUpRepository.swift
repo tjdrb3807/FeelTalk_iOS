@@ -49,4 +49,56 @@ final class DefaultSignUpRepository: SignUpRepository {
             return Disposables.create()
         }
     }
+    
+    func getAuthNumber(_ requestDTO: AuthNumberRequestDTO) -> Single<Bool> {
+        Single.create { observer -> Disposable in
+            AF.request(SignUpAPI.getAuthNumber(requestDTO))
+                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            observer(.success(true))
+                        } else {
+                            guard let message = responseDTO.message else { return }
+                        }
+                    case .failure(let error):
+                        observer(.failure(error))
+                    }
+                }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getReAuthNumber(_ requestDTO: ReAuthNumberRequestDTO) -> Single<Bool> {
+        Single.create { observer -> Disposable in
+            AF.request(SignUpAPI.getReAuthNumber(requestDTO))
+                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            observer(.success(true))
+                        } else {
+                            guard let message = responseDTO.message else { return }
+                            print(message)
+                        }
+                    case .failure(let error):
+                        observer(.failure(error))
+                    }
+                }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func verifyAnAdult(_ requestDTO: VerificationRequestDTO) -> Single<Bool> {
+        Single.create { observer -> Disposable in
+            AF.request(SignUpAPI.verification(requestDTO))
+                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                    
+                }
+            
+            return Disposables.create()
+        }
+    }
 }

@@ -21,8 +21,7 @@ final class ChatViewModel {
     private let inputMode = BehaviorRelay<ChatInputMode>(value: .basics)
     private let isFunctionActive = BehaviorRelay<Bool>(value: false)
     private let pageNo = PublishSubject<Int>()
-//    private let chatDataList:
-    private let chatModelList = PublishRelay<[ChatModel]>()
+
     private let chatCellHeightList = PublishSubject<[CGFloat]>()
     
     struct Input {
@@ -37,7 +36,6 @@ final class ChatViewModel {
         let inputMode: BehaviorRelay<ChatInputMode>
         let isFunctionActive: BehaviorRelay<Bool>
         let partnerNickname: PublishRelay<String>
-        let chatModelList: PublishRelay<[ChatModel]>
     }
     
     init(coordinator: ChatCoordinator, userUseCase: UserUseCase, chatUseCase: ChatUseCase) {
@@ -58,40 +56,11 @@ final class ChatViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .bind { vm, _ in
-                vm.userUseCase.getPartnerInfo()
-                    .map { $0.nickname }
-                    .bind(to: vm.partnerNickname)
-                    .disposed(by: vm.disposeBag)
-                vm.chatUseCase.getLatestChatPageNo()
-                    .bind(to: vm.pageNo)
-                    .disposed(by: vm.disposeBag)
-                
-                // MARK: TEST
-                vm.chatModelList.accept([TextChatModel(index: 0,
-                                                       type: .textChatting,
-                                                       isMine: true,
-                                                       isRead: true,
-                                                       isSend: true,
-                                                       createAt: "04:44",
-                                                       chatLocation: .first,
-                                                       message: "grapes vanilla carnival florence marshmallow cresent serendipity flutter like laptop way bijou lovable charming."),
-                                         TextChatModel(index: 1,
-                                                       type: .textChatting,
-                                                       isMine: true,
-                                                       isRead: true,
-                                                       isSend: true,
-                                                       createAt: "04:45",
-                                                       chatLocation: .middle,
-                                                       message: "안녕하세요"),
-                                         TextChatModel(index: 2,
-                                                       type: .textChatting,
-                                                       isMine: true,
-                                                       isRead: true,
-                                                       isSend: true,
-                                                       createAt: "04:45",
-                                                       chatLocation: .last,
-                                                       message: "제 이름은 전성규 입니다.")]
-            )}.disposed(by: disposeBag)
+                vm.chatUseCase.getLastPageNo()
+                    .bind(onNext: {
+                        print($0)
+                    }).disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
         
         input.tapInputButton
             .withLatestFrom(inputMode)
@@ -122,19 +91,6 @@ final class ChatViewModel {
             .bind(to: inputMode)
             .disposed(by: disposeBag)
         
-        input.tapInputButton
-            .withLatestFrom(inputMode)
-            .filter { $0 == .inputMessage }
-            .withLatestFrom(input.messageText)
-            .withUnretained(self)
-            .bind { vm, message in
-                vm.chatUseCase.sendTextChat(message: message)
-                    .bind(onNext: {
-                        print($0)
-                    }).disposed(by: vm.disposeBag)
-                vm.inputMode.accept(.basics)
-            }.disposed(by: disposeBag)
-        
         input.tapFunctionButton
             .withLatestFrom(isFunctionActive)
             .scan(false) { lastState, newState in !lastState }
@@ -144,7 +100,6 @@ final class ChatViewModel {
         return Output(keyboardHeight: self.keyboardHeight,
                       inputMode: self.inputMode,
                       isFunctionActive: self.isFunctionActive,
-                      partnerNickname: self.partnerNickname,
-                      chatModelList: self.chatModelList)
+                      partnerNickname: self.partnerNickname)
     }
 }
