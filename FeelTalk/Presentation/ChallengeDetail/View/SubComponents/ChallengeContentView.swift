@@ -86,12 +86,6 @@ extension ChallengeContentView {
     }
 }
 
-extension ChallengeContentView {
-    private func setContentInputViewProperties(with type: ChallengeDetailViewType) {
-        
-    }
-}
-
 #if DEBUG
 
 import SwiftUI
