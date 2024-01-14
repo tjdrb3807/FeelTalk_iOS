@@ -16,6 +16,9 @@ final class ChallengeButton: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        self.bind()
+        self.setProperties()
     }
     
     required init?(coder: NSCoder) {
@@ -26,18 +29,21 @@ final class ChallengeButton: UIButton {
         typeObserver
             .withUnretained(self)
             .bind { v, type in
-                v.setButtonTitle(with: type)
+                v.setTitle(with: type)
+                v.setBackgroundColor(with: type)
             }.disposed(by: disposeBag)
     }
     
     private func setProperties() {
+        titleLabel?.textColor = .white
+        
         layer.cornerRadius = 59 / 2
         clipsToBounds = true
     }
 }
 
 extension ChallengeButton {
-    private func setButtonTitle(with type: ChallengeDetailViewType) {
+    private func setTitle(with type: ChallengeDetailViewType) {
         switch type {
         case .completed:
             rx.title().onNext("이미 완료된 챌린지예요")
@@ -48,6 +54,32 @@ extension ChallengeButton {
         case .ongoing:
             rx.title().onNext("챌린지 완료")
         }
+    }
+    
+    private func setBackgroundColor(with type: ChallengeDetailViewType) {
+        switch type {
+        case .completed:
+            rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main400))
+        case .modify:
+            rx.backgroundColor.onNext(.black)
+        case .new:
+            rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main400))
+        case .ongoing:
+            rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main500))
+        }
+    }
+    
+    private func setEnable(with type: ChallengeDetailViewType) {
+//        switch type {
+//        case .completed:
+//            rx.isEnabled.onNext(false)
+//        case .modify:
+//            <#code#>
+//        case .new:
+//            <#code#>
+//        case .ongoing:
+//            <#code#>
+//        }
     }
 }
 

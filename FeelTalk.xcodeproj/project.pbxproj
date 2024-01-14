@@ -41,6 +41,7 @@
 		450EA9C02ACDCD9A00E87E41 /* PartnerInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450EA9BF2ACDCD9A00E87E41 /* PartnerInfoViewController.swift */; };
 		450EA9C22ACDD48500E87E41 /* PartnerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450EA9C12ACDD48500E87E41 /* PartnerInfoView.swift */; };
 		451073CA2B53BAB600B393D3 /* ChallengeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451073C92B53BAB600B393D3 /* ChallengeButton.swift */; };
+		451073CC2B53C2C500B393D3 /* CoordinatorFinishDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451073CB2B53C2C500B393D3 /* CoordinatorFinishDelegate.swift */; };
 		4513C81A2A9633D300B0AE38 /* UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4513C8192A9633D300B0AE38 /* UITextField.swift */; };
 		4513C81E2A963BC900B0AE38 /* ChallengeDetailDescriptionViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4513C81D2A963BC900B0AE38 /* ChallengeDetailDescriptionViewNameSpace.swift */; };
 		4513C99C2AE9294B00C91604 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4513C99B2AE9294B00C91604 /* MainTabBarController.swift */; };
@@ -232,7 +233,6 @@
 		456C13EF2AC02E3B00EEB433 /* InquiryContentInputViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456C13EE2AC02E3B00EEB433 /* InquiryContentInputViewNameSpace.swift */; };
 		456C13F12AC0310400EEB433 /* InquriyVIewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456C13F02AC0310400EEB433 /* InquriyVIewNameSpace.swift */; };
 		456C13F32AC0363A00EEB433 /* CustomTitleViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456C13F22AC0363A00EEB433 /* CustomTitleViewNameSpace.swift */; };
-		457016272A77606B0006CB1D /* CoordinatorFinishDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457016262A77606B0006CB1D /* CoordinatorFinishDelegate.swift */; };
 		457016292A7760A10006CB1D /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457016282A7760A10006CB1D /* Coordinator.swift */; };
 		4570162B2A77622A0006CB1D /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4570162A2A7762290006CB1D /* AppCoordinator.swift */; };
 		4570162D2A7762DC0006CB1D /* DefaultAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4570162C2A7762DC0006CB1D /* DefaultAppCoordinator.swift */; };
@@ -602,6 +602,7 @@
 		450EA9BF2ACDCD9A00E87E41 /* PartnerInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartnerInfoViewController.swift; sourceTree = "<group>"; };
 		450EA9C12ACDD48500E87E41 /* PartnerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartnerInfoView.swift; sourceTree = "<group>"; };
 		451073C92B53BAB600B393D3 /* ChallengeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeButton.swift; sourceTree = "<group>"; };
+		451073CB2B53C2C500B393D3 /* CoordinatorFinishDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorFinishDelegate.swift; sourceTree = "<group>"; };
 		4513C8192A9633D300B0AE38 /* UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextField.swift; sourceTree = "<group>"; };
 		4513C81D2A963BC900B0AE38 /* ChallengeDetailDescriptionViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailDescriptionViewNameSpace.swift; sourceTree = "<group>"; };
 		4513C99B2AE9294B00C91604 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
@@ -793,7 +794,6 @@
 		456C13EE2AC02E3B00EEB433 /* InquiryContentInputViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryContentInputViewNameSpace.swift; sourceTree = "<group>"; };
 		456C13F02AC0310400EEB433 /* InquriyVIewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquriyVIewNameSpace.swift; sourceTree = "<group>"; };
 		456C13F22AC0363A00EEB433 /* CustomTitleViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTitleViewNameSpace.swift; sourceTree = "<group>"; };
-		457016262A77606B0006CB1D /* CoordinatorFinishDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CoordinatorFinishDelegate.swift; path = ../../../../../../Documents/CoordinatorFinishDelegate.swift; sourceTree = "<group>"; };
 		457016282A7760A10006CB1D /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		4570162A2A7762290006CB1D /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		4570162C2A7762DC0006CB1D /* DefaultAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAppCoordinator.swift; sourceTree = "<group>"; };
@@ -2473,7 +2473,7 @@
 		457016242A77604B0006CB1D /* Delegate */ = {
 			isa = PBXGroup;
 			children = (
-				457016262A77606B0006CB1D /* CoordinatorFinishDelegate.swift */,
+				451073CB2B53C2C500B393D3 /* CoordinatorFinishDelegate.swift */,
 			);
 			path = Delegate;
 			sourceTree = "<group>";
@@ -5098,7 +5098,6 @@
 				45E85D542A5858A6004B558C /* LoginAPI.swift in Sources */,
 				45AFA4B82AD428CC00CBCF64 /* SettingListType.swift in Sources */,
 				45BC66342A89E8BE00EF9634 /* DefaultChallengeCoordinator.swift in Sources */,
-				457016272A77606B0006CB1D /* CoordinatorFinishDelegate.swift in Sources */,
 				450565162B1EC41400ED13BE /* AdultAuthConsentButton.swift in Sources */,
 				45C319532A7AC827007DAB84 /* PartnerGotAnswerView.swift in Sources */,
 				45C5F0032AD284CA00542F16 /* CustomTitleType.swift in Sources */,
@@ -5368,6 +5367,7 @@
 				45FCF2772AE55763001F3B16 /* SignalCoordinator.swift in Sources */,
 				45AE814B2A68B8F400DEC4E2 /* AutoLoginResponseDTO.swift in Sources */,
 				4535230C2B149A6900B80EDE /* AdultAuthPhoneInfoInputView.swift in Sources */,
+				451073CC2B53C2C500B393D3 /* CoordinatorFinishDelegate.swift in Sources */,
 				45D0E6802A555FB100A602D1 /* SignUpState.swift in Sources */,
 				4562473F2A4B8E170053B3F4 /* BaseResponseDTO.swift in Sources */,
 				455560BD2AA48D7D00EDFFFA /* ChallengeListResponseDTO.swift in Sources */,
