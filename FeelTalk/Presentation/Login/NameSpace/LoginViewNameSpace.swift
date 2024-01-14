@@ -15,4 +15,8 @@ enum LoginViewNameSpace {
     // LoginButtonStackView
     static let loginButtonStackViewSpacing: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 0.98      // 8.0
     static let loginButtonStackViewTopOffset: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 21.30   // 173.0
+    
+    // InquiryButton
+    /// 39.0
+    static let inquiryButtonTopOffset: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 4.80
 }

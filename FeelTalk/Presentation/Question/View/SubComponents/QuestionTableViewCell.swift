@@ -16,10 +16,9 @@ final class QuestionTableViewCell: UITableViewCell {
     
     private lazy var indexLabel: UILabel = {
         let label = UILabel()
-        label.text = QuestionTableViewCellNameSpace.indexLabelText
         label.textColor = .black
         label.textAlignment = .center
-        label.font = UIFont(name: QuestionTableViewCellNameSpace.indexLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.montserratBold,
                             size: QuestionTableViewCellNameSpace.indexLabelTextSize)
         label.backgroundColor = UIColor(named: QuestionTableViewCellNameSpace.indexLabelBackgroundColor)
         label.layer.cornerRadius = QuestionTableViewCellNameSpace.indexLabelCornerRadius
@@ -30,9 +29,8 @@ final class QuestionTableViewCell: UITableViewCell {
     
     private lazy var questionBodyLable: UILabel = {
         let label = UILabel()
-        label.text = QuestionTableViewCellNameSpace.questionBodyLabelText
         label.textColor = .black
-        label.font = UIFont(name: QuestionTableViewCellNameSpace.questionBodyLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
                             size: QuestionTableViewCellNameSpace.questionBodyLabelTextSize)
         label.backgroundColor = .clear
         
@@ -112,11 +110,26 @@ import SwiftUI
 struct QuestionTableViewCell_Previews: PreviewProvider {
     static var previews: some View {
         QuestionTableViewCell_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width,
+                   height: QuestionTableViewCellNameSpace.hegith + QuestionTableViewCellNameSpace.bottomEdegeInset,
+                   alignment: .center)
     }
     
     struct QuestionTableViewCell_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            QuestionTableViewCell()
+            let v = QuestionTableViewCell()
+            v.model.accept(.init(index: 0,
+                                 pageNo: 0,
+                                 title: "Test",
+                                 header: "난 이게 가장 좋더라!",
+                                 body: "당신이 가장 좋아하는 스킨십은?",
+                                 highlight: [0],
+                                 isMyAnswer: true,
+                                 isPartnerAnswer: true,
+                                 createAt: ""))
+            
+            return v
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

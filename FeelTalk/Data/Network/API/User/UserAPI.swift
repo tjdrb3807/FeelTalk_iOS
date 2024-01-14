@@ -9,6 +9,7 @@ import Foundation
 import Alamofire
 
 enum UserAPI {
+    case getInviteCode(accessToken: String)
     case getMyInfo(accessToken: String)
     case getPartnerInfo(accessToken: String)
     case getUserState(accessToken: String)
@@ -19,6 +20,8 @@ extension UserAPI: Router, URLRequestConvertible {
     
     var path: String {
         switch self {
+        case .getInviteCode:
+            return "/api/v1/member/invite-code"
         case .getMyInfo:
             return "/api/v1/member"
         case .getPartnerInfo:
@@ -30,35 +33,33 @@ extension UserAPI: Router, URLRequestConvertible {
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .getMyInfo, .getPartnerInfo, .getUserState:
+        case .getInviteCode, .getMyInfo, .getPartnerInfo, .getUserState:
             return .get
         }
     }
     
     var header: [String : String] {
         switch self {
-        case .getMyInfo(accessToken: let accessToken),
-                .getPartnerInfo(accessToken: let accessToken):
+        case .getInviteCode(accessToken: let accessToken),
+                .getMyInfo(accessToken: let accessToken),
+                .getPartnerInfo(accessToken: let accessToken),
+                .getUserState(accessToken: let accessToken):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
-                    "Authorization": "Bearer \(accessToken)"]
-        case .getUserState(accessToken: let accessToken):
-            return ["Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization": "\(accessToken)"]
+                    "Authorization": accessToken]
         }
     }
     
     var parameters: [String : Any]? {
         switch self {
-        case .getMyInfo, .getPartnerInfo, .getUserState:
+        case . getInviteCode, .getMyInfo, .getPartnerInfo, .getUserState:
             return nil
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .getMyInfo, .getPartnerInfo, .getUserState:
+        case .getInviteCode, .getMyInfo, .getPartnerInfo, .getUserState:
             return JSONEncoding.default
         }
     }

@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class AdultAuthIDCardNumberInputView: UIStackView {
-    private let isEditing = BehaviorRelay<Bool>(value: false)
+    let isEditing = BehaviorRelay<Bool>(value: false)
     private let disposeBag = DisposeBag()
     
     lazy var birthdayInputTextField: UITextField = {

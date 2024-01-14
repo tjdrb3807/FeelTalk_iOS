@@ -9,23 +9,29 @@ import UIKit
 
 enum PartnerNoAnswerViewNameSpace {
     // MARK: PartnerNoAnswerView
-    static let backgroundColor: String = "gray_200"
     static let cornerRadius: CGFloat = 12.0
+    /// 159.0
+    static let height: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 19.58
+    
+    // MARK: ContentStackView
+    /// 10.0
+    static let contentStackViewSpacing: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 1.23
     
     // MARK: TitleLabel
     static let titleLabelText: String = "연인이 아직 답변을 작성하지 않았어요 😢"
-    static let titleLabelTextColor: String = "gray_600"
-    static let titleLabelTextFont: String = "pretendard-regular"
-    static let titleLabelTextSize: CGFloat = (UIScreen.main.bounds.width / 100) * 4.26  // 16
-    static let titleLabelTopInset: CGFloat = (UIScreen.main.bounds.height / 100) * 5.04  // 41
-    static let titleLabelHeight: CGFloat = (UIScreen.main.bounds.height / 100) * 2.95  // 24
+    /// 16.0
+    static let titleLabelTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26
+    /// 24.0
+    static let titleLabelHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 2.95
     
     // MARK: AnswerChaseUpButton
     static let answerChaseUpButtonTitleText: String = "콕 찔러서 답변 요청하기"
-    static let answerChaseUpButtonTitleTextFont: String = "pretendard-medium"
-    static let answerChaseUpButtonTitleTextSize: CGFloat = (UIScreen.main.bounds.width / 100) * 4.8  // 18
-    static let answerChaseUpButtonBottomInset: CGFloat = (UIScreen.main.bounds.height / 100) * 5.04  // 41
-    static let answerChaseUpButtonWidth: CGFloat = (UIScreen.main.bounds.width / 100) * 53.0  // 199
-    static let answerChaseUpButotnHeight: CGFloat = (UIScreen.main.bounds.height / 100) * 6.28
+    /// 20.0
     static let answerCuaseUpButtonCornerRadius: CGFloat = answerChaseUpButotnHeight / 2
+    /// 16.0
+    static let answerChaseUpButtonTitleTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26
+    /// 173.0
+    static let answerChaseUpButtonWidth: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 46.13
+    /// 40.0
+    static let answerChaseUpButotnHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 6.28
 }

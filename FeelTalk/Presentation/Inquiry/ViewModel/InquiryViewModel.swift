@@ -59,6 +59,12 @@ final class InquiryViewModel {
                 print("tap submitButton")
             }.disposed(by: disposeBag)
         
+        input.tapDismissButton
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coodinator?.dismiss()
+            }.disposed(by: disposeBag)
+        
         return Output(keyboardHeight: self.keyboardHeight,
                       isDataSubmitEnabled: self.isDataSubmitEnabled)
     }

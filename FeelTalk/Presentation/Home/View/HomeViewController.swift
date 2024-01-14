@@ -14,13 +14,11 @@ final class HomeViewController: UIViewController {
     var viewModel: HomeViewModel!
     private let disposeBag = DisposeBag()
     
-    private lazy var navigationBar: HomeNavigationBar = { HomeNavigationBar() }()
+    private lazy var navigationBar: MainNavigationBar = { MainNavigationBar(type: .home) }()
     
     fileprivate lazy var todayQuestionView: HomeTodayQuestionView = { HomeTodayQuestionView() }()
     
     fileprivate lazy var todaySignalView: HomeTodaySignalView = { HomeTodaySignalView() }()
-    
-    fileprivate lazy var toastMessage: ToastMessage = { ToastMessage(type: .requestAnswer) }()
     
     fileprivate lazy var bottomSheet: HomeBottomSheetView = { HomeBottomSheetView() }()
     
@@ -33,35 +31,27 @@ final class HomeViewController: UIViewController {
         self.setConstraints()
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle { .darkContent }
+    
     private func bind(to viewModel: HomeViewModel) {
         let input = HomeViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
                                         tapAnswerButton: todayQuestionView.answerButton.rx.tap,
-                                        tapMySignalButton: todaySignalView.mySignalButton.rx.tap)
+                                        tapMySignalButton: todaySignalView.mySignalButton.rx.tap,
+                                        tapChatRoomButton: navigationBar.chatRoomButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
         
         output.todayQuestion
             .bind(to: todayQuestionView.todayQuestion)
             .disposed(by: disposeBag)
-        
-        output.partenrSignalModel
-            .bind(to: todaySignalView.partnerSignalButton.model)
-            .disposed(by: disposeBag)
-        
-        output.mySignalModel
+
+        output.mySignal
             .bind(to: todaySignalView.mySignalButton.model)
             .disposed(by: disposeBag)
-            
-        output.popUpToastMessage
-            .withUnretained(self)
-            .bind { vc, _ in
-                guard !vc.view.subviews.contains(where: { $0 is ToastMessage }) else { return }
-                let toastMessage = vc.toastMessage
-                vc.view.addSubview(toastMessage)
-                toastMessage.snp.makeConstraints { $0.edges.equalToSuperview() }
-                vc.view.layoutIfNeeded()
-                toastMessage.show()
-            }.disposed(by: disposeBag)
+        
+        output.partnerSignal
+            .bind(to: todaySignalView.partnerSignalButton.model)
+            .disposed(by: disposeBag)
         
         output.showBottomSheet
             .withUnretained(self)
@@ -91,7 +81,7 @@ final class HomeViewController: UIViewController {
     }
     
     private func setConstraints() {
-        makeNavigationBarConstraints()
+        navigationBar.makeMainNavigationBarConstraints()
         makeTodayQuestionViewConstraints()
         makeTodaySignalViewConstraints()
     }
@@ -100,14 +90,6 @@ final class HomeViewController: UIViewController {
 extension HomeViewController {
     private func addViewSubComponents() {
         [navigationBar, todayQuestionView, todaySignalView].forEach { view.addSubview($0) }
-    }
-    
-    private func makeNavigationBarConstraints() {
-        navigationBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(HomeNavigationBarNameSpace.height)
-        }
     }
     
     private func makeTodayQuestionViewConstraints() {
@@ -143,8 +125,9 @@ struct HomeViewController_Previews: PreviewProvider {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = HomeViewController()
             let vm = HomeViewModel(coordinator: DefaultHomeCoordinator(UINavigationController()),
-                                   qustionUseCase: DefaultQuestionUseCase(
-                                    questionRepository: DefaultQuestionRepository()))
+                                   qustionUseCase: DefaultQuestionUseCase(questionRepository: DefaultQuestionRepository(),
+                                                                          userRepository: DefaultUserRepository()),
+                                   signalUseCase: DefaultSignalUseCase(signalRepositroy: DefaultSignalRepository()))
             
             vc.todayQuestionView.todayQuestion.accept(.init(index: 999,
                                                             pageNo: 0,
@@ -155,6 +138,8 @@ struct HomeViewController_Previews: PreviewProvider {
                                                             isMyAnswer: true,
                                                             isPartnerAnswer: false,
                                                             createAt: "2023-02-33"))
+            vc.todaySignalView.mySignalButton.model.accept(.init(type: .ambiguous))
+            vc.todaySignalView.partnerSignalButton.model.accept(.init(type: .refuse))
             
             vc.viewModel = vm
             

@@ -16,8 +16,8 @@ enum ChatFunctionButtonNameSpace {
     static let contentStackViewSpacing: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 0.98      // 8.0
     
     // ContentImageView
-    static let contentImageViewCameraTypeImage: String = "icon_camera"
-    static let contentImageViewAlbumTypeImage: String = "icon_album"
+    static let contentImageViewCameraTypeImage: String = "icon_chat_camera"
+    static let contentImageViewAlbumTypeImage: String = "icon_chat_album"
     static let contentImageViewCornerRadius: CGFloat = contentImageViewHeight / 2
     static let contentImageViewHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 10.83      // 88.0
     

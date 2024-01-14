@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class ChallengeDetailStackView: UIStackView {
-    lazy var titleInputView: ChallengeDetailTitleInputView = { ChallengeDetailTitleInputView() }()
+    lazy var titleInputView: ChallengeTitleInputView = { ChallengeTitleInputView() }()
     lazy var deadlineInputView: ChallengeDetailDeadlineInputView = { ChallengeDetailDeadlineInputView() }()
     lazy var contentInputView: ChallengeDetailContentInputView = { ChallengeDetailContentInputView() }()
     
@@ -49,7 +49,7 @@ extension ChallengeDetailStackView {
     private func makeTitleInputViewConstratins() {
         titleInputView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(ChallengeDetailTitleInputViewNameSpace.height)
+//            $0.height.equalTo(ChallengeDetailTitleInputViewNameSpace.height)
         }
     }
     

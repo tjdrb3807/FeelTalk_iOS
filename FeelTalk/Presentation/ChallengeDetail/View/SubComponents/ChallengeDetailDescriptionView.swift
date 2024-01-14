@@ -11,39 +11,34 @@ import RxSwift
 import RxCocoa
 
 final class ChallengeDetailDescriptionView: UIStackView {
-    let viewMode = PublishRelay<ChallengeDetailViewMode>()
-    
+    let typeObserver = PublishRelay<ChallengeDetailViewType>()
     private let disposeBag = DisposeBag()
     
-    private lazy var leftSpacingView: UIView = { UIView() }()
+    private lazy var leftSpacing: UIView = { UIView() }()
     
-    private lazy var rightSpacingView: UIView = { UIView() }()
-    
-    private lazy var stackView: UIStackView = {
+    private lazy var contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .leading
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fillEqually
         
         return stackView
     }()
     
     private lazy var headerLabel: UILabel = {
         let label = UILabel()
-        label.text = ChallengeDetailDescriptionViewNameSpace.headerLabelNewOrModifyModeText
         label.textColor = .black
-        label.font = UIFont(name: ChallengeDetailDescriptionViewNameSpace.headerLabelTextFont,
-                            size: ChallengeDetailDescriptionViewNameSpace.headerLabelTextSize)
+        label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
+                            size: ChallengeDetailDescriptionViewNameSpace.labelTextSize)
         
         return label
     }()
     
     private lazy var bodyLabel: UILabel = {
         let label = UILabel()
-        label.text = ChallengeDetailDescriptionViewNameSpace.bodyLabelNewOrModifiyModeText
         label.textColor = .black
-        label.font = UIFont(name: ChallengeDetailDescriptionViewNameSpace.bodyLabelTextFont,
-                            size: ChallengeDetailDescriptionViewNameSpace.bodyLabelTextSize)
+        label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
+                            size: ChallengeDetailDescriptionViewNameSpace.labelTextSize)
         
         return label
     }()
@@ -61,10 +56,10 @@ final class ChallengeDetailDescriptionView: UIStackView {
     }
     
     private func bind() {
-        viewMode
+        typeObserver
             .withUnretained(self)
-            .bind { v, mode in
-                v.setTitle(with: mode)
+            .bind { v, event in
+                v.setLabelProperties(with: event)
             }.disposed(by: disposeBag)
     }
     
@@ -77,28 +72,30 @@ final class ChallengeDetailDescriptionView: UIStackView {
     
     private func addSubComponents() {
         addViewSubComponents()
-        addStackViewSubComponents()
+        addContentStackViewSubComponents()
     }
 }
 
 extension ChallengeDetailDescriptionView {
-    private func setTitle(with mode: ChallengeDetailViewMode) {
-        switch mode {
-        case .new, .modify:
-            headerLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.headerLabelNewOrModifyModeText)
-            bodyLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.bodyLabelNewOrModifiyModeText)
-        case .ongoing, .completed:
-            headerLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.headerLabelOngoingOrCompletedModeText)
-            bodyLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.bodyLabelOngoingOrCompletedModeText)
-        }
-    }
-    
     private func addViewSubComponents() {
-        [leftSpacingView, stackView, rightSpacingView].forEach { addArrangedSubview($0) }
+        [leftSpacing, contentStackView].forEach { addArrangedSubview($0) }
     }
     
-    private func addStackViewSubComponents() {
-        [headerLabel, bodyLabel].forEach { stackView.addArrangedSubview($0) }
+    private func addContentStackViewSubComponents() {
+        [headerLabel, bodyLabel].forEach { contentStackView.addArrangedSubview($0) }
+    }
+}
+
+extension ChallengeDetailDescriptionView {
+    private func setLabelProperties(with type: ChallengeDetailViewType) {
+        switch type {
+        case .completed, .ongoing:
+            headerLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.headerLabelType01Text)
+            bodyLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.bodyLabelType01Text)
+        case .modify, .new:
+            headerLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.headerLabelType02Text)
+            bodyLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.bodyLabelType02Text)
+        }
     }
 }
 
@@ -109,11 +106,18 @@ import SwiftUI
 struct ChallengeDetailDescriptionView_Previews: PreviewProvider {
     static var previews: some View {
         ChallengeDetailDescriptionView_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width,
+                   height: ChallengeDetailDescriptionViewNameSpace.height,
+                   alignment: .center)
     }
     
     struct ChallengeDetailDescriptionView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            ChallengeDetailDescriptionView()
+            let v = ChallengeDetailDescriptionView()
+            v.typeObserver.accept(.completed)
+            
+            return v
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

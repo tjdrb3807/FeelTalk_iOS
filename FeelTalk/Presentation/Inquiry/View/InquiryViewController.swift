@@ -72,6 +72,8 @@ final class InquiryViewController: UIViewController {
         self.bind(to: viewModel)
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle { .darkContent }
+    
     private func bind(to viewModel: InquiryViewModel) {
         let input = InquiryViewModel.Input(titleText: contentInputView.titleInputTextField.rx.text.orEmpty,
                                            contentText: contentInputView.contentInputTextView.textView.rx.text.orEmpty,

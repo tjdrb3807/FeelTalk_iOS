@@ -30,15 +30,15 @@ extension DefaultAppleRepository: ASAuthorizationControllerDelegate {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             let userIdentifier = appleIDCredential.user
-            let fullName = appleIDCredential.fullName
-            let email = appleIDCredential.email
+            let _ = appleIDCredential.fullName
+            let _ = appleIDCredential.email
             
             appleLogin.onNext(.init(oauthId: userIdentifier,
                                     snsType: SNSType.apple.rawValue))
             
         case let passwordCredential as ASPasswordCredential:
-            let username = passwordCredential.user
-            let password = passwordCredential.password
+            let _ = passwordCredential.user
+            let _ = passwordCredential.password
             
         default:
             break

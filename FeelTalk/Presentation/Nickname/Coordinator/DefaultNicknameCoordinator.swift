@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class DefaultNicknameCoordinator: NicknameCoordinator {
     weak var finishDelegate: CoordinatorFinishDelegate?
@@ -13,30 +15,37 @@ final class DefaultNicknameCoordinator: NicknameCoordinator {
     var nicknameViewController: NicknameViewController
     var childCoordinators: [Coordinator] = []
     var type: CoordinatorType = .nickname
-    var signUp: SignUp?
+    
+    var isMarketingConsented = PublishRelay<Bool>()
+    
+    private let disposeBag = DisposeBag()
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.nicknameViewController = NicknameViewController()
     }
     
-    func start() { }
-    
-    func pushNicknameViewController(with data: SignUp) {
-        self.nicknameViewController.viewModel = NicknameViewModel(coordinator: self,
-                                                                  signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()),
-                                                                  signUp: data)
-        self.navigationController.pushViewController(self.nicknameViewController, animated: true)
-    }
-    
-    func showInviteCodeFlow() {
-        print("[ACTION]: NicknameViewController - nextButton tapped.")
-        self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+    func start() {
+        let vm = NicknameViewModel(coordinator: self,
+                                   signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
+        
+        self.isMarketingConsented
+            .bind(to: vm.isMarketingConsented)
+            .disposed(by: disposeBag)
+        
+        self.nicknameViewController.viewModel = vm
+        self.navigationController.pushViewController(nicknameViewController, animated: true)
     }
     
     func popViewController() {
         self.childCoordinators.removeAll()
         self.navigationController.viewControllers.removeLast()
         self.navigationController.popViewController(animated: true)
+    }
+    
+    func finish() {
+        self.childCoordinators.removeAll()
+        self.navigationController.popViewController(animated: false)
+        self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
     }
 }

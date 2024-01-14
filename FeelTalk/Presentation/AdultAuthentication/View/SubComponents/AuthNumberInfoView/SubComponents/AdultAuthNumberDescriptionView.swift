@@ -11,11 +11,15 @@ import RxSwift
 import RxCocoa
 
 final class AdultAuthNumberDesciptionView: UIView {
+    let descriptionState = PublishRelay<AdultAuthNumberDescription>()
+    let expiradTime = PublishRelay<String>()
+    private let disposeBag = DisposeBag()
+    
     private lazy var contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .top
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fill
         stackView.spacing = AdultAuthNumberDescriptionViewNameSpace.contentStackViewSpacing
         stackView.backgroundColor = .clear
         
@@ -24,21 +28,20 @@ final class AdultAuthNumberDesciptionView: UIView {
     
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = AdultAuthNumberDescriptionViewNameSpace.descriptionLabelText
         label.textColor = UIColor(named: CommonColorNameSpace.gray500)
         label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                             size: AdultAuthNumberDescriptionViewNameSpace.descriptionLabelTextSize)
         label.numberOfLines = AdultAuthNumberDescriptionViewNameSpace.descriptionLabelNumberOfLines
         label.backgroundColor = .clear
-        label.setLineHeight(height: AdultAuthNumberDescriptionViewNameSpace.desctiptionLabelLineHeight)
         
         return label
     }()
     
-    private lazy var timerLabel: UILabel = {
-        let label = UILabel()
+    private lazy var timerView: AdultAuthTimerView = {
+        let view = AdultAuthTimerView()
+        view.isHidden = true
         
-        return label
+        return view
     }()
     
     override init(frame: CGRect) {
@@ -55,11 +58,33 @@ final class AdultAuthNumberDesciptionView: UIView {
     }
     
     private func bind() {
+        descriptionState
+            .map {
+                $0 == .base ?
+                (text: $0.rawValue, color: UIColor(named: CommonColorNameSpace.gray500)) :
+                (text: $0.rawValue, color: UIColor.red)
+            }.withUnretained(self)
+            .bind { v, event in
+                v.descriptionLabel.rx.text.onNext(event.text)
+                v.descriptionLabel.rx.textColor.onNext(event.color)
+                v.descriptionLabel.setLineHeight(height: AdultAuthNumberDescriptionViewNameSpace.desctiptionLabelLineHeight)
+            }.disposed(by: disposeBag)
+        
+        expiradTime
+            .bind(to: timerView.expiradTime)
+            .disposed(by: disposeBag)
+        
+        expiradTime
+            .take(1)
+            .withUnretained(self)
+            .bind { v, _ in
+                v.timerView.rx.isHidden.onNext(false)
+            }.disposed(by: disposeBag)
         
     }
     
     private func setProperties() {
-        
+        backgroundColor = .clear
     }
     
     private func addSubComponents() {
@@ -69,6 +94,7 @@ final class AdultAuthNumberDesciptionView: UIView {
     
     private func setConstraints() {
         makeContentStackViewConstraints()
+        makeTimerViewConstraints()
     }
 }
 
@@ -83,7 +109,16 @@ extension AdultAuthNumberDesciptionView {
         }
     }
     
-    private func addContentStackViewSubComponents() { contentStackView.addArrangedSubview(descriptionLabel) }
+    private func addContentStackViewSubComponents() {
+        [descriptionLabel, timerView].forEach { contentStackView.addArrangedSubview($0) }
+    }
+    
+    private func makeTimerViewConstraints() {
+        timerView.snp.makeConstraints {
+            $0.width.equalTo(AdultAuthTimerViewNameSpace.width)
+            $0.height.equalTo(AdultAuthTimerViewNameSpace.height)
+        }
+    }
 }
 
 #if DEBUG
@@ -95,7 +130,7 @@ struct AdultAuthNumberDesciptionView_Previews: PreviewProvider {
         AdultAuthNumberDesciptionView_Presentable()
             .edgesIgnoringSafeArea(.all)
             .frame(width: UIScreen.main.bounds.width - (CommonConstraintNameSpace.leadingInset + CommonConstraintNameSpace.trailingInset),
-                   height: 36.0,
+                   height: CommonConstraintNameSpace.verticalRatioCalculator * 4.43,
                    alignment: .center)
     }
     

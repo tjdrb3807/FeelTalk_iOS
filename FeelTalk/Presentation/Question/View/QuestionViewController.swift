@@ -11,39 +11,39 @@ import RxSwift
 import RxCocoa
 
 final class QuestionViewController: UIViewController {
-    // MARK: Dependencies
     var viewModel: QuestionViewModel!
     private let disposeBag = DisposeBag()
-
-    // MARK: SubComponents
-    private lazy var navigationBar: MainFlowNavigationBar = { MainFlowNavigationBar(navigationType: .question) }()
+    private var lastContentOffset: CGFloat = 0.0
+    
+    private lazy var navigationBar: MainNavigationBar = { MainNavigationBar(type: .question) }()
+    
     private lazy var questionTableView: QuestionTableView = { QuestionTableView() }()
     
-    // MARK: ViewController life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.bind(to: viewModel)
         self.setAttributes()
         self.addSubComponents()
         self.setConfigurations()
-        self.bind(to: viewModel)
     }
     
     private func bind(to viewModel: QuestionViewModel) {
-        let input = QuestionViewModel.Input(
-            viewWillAppear: self.rx.viewWillAppear,
-            tapQuestionAnswerButton: questionTableView.questionTableHeader.questionAnswerButton.rx.tap
-                .withLatestFrom(questionTableView.questionTableHeader.model),
-            questionSelected: questionTableView.rx.modelSelected(Question.self).asObservable(),
-            isPagination: questionTableView.rx.didScroll
-                .withUnretained(self)
-                .map { vm, _ in
-                    let contentOffsetY = vm.questionTableView.contentOffset.y
-                    let contentSizeHeight = vm.questionTableView.contentSize.height
-                    let paginationY = contentOffsetY * 0.2  // TODO: page 30개로 늘리면 변경
-                    
-                    return contentOffsetY > contentSizeHeight - paginationY ? true : false
-                }
+        let input = QuestionViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
+         tapQuestionAnswerButton: questionTableView
+            .questionTableHeader
+            .questionAnswerButton.rx.tap
+            .withLatestFrom(questionTableView.questionTableHeader.model),
+         questionSelected: questionTableView.rx.modelSelected(Question.self).asObservable(),
+         isPagination: questionTableView.rx.didScroll
+            .withUnretained(self)
+            .map { vm, _ in
+                let contentOffsetY = vm.questionTableView.contentOffset.y
+                let contentSizeHeight = vm.questionTableView.contentSize.height
+                let paginationY = contentOffsetY * 0.2  // TODO: page 30개로 늘리면 변경
+                
+                return contentOffsetY > contentSizeHeight - paginationY ? true : false
+            }
         )
         
         let output = viewModel.transfer(input: input)
@@ -65,16 +65,15 @@ final class QuestionViewController: UIViewController {
                 
                 cell.model.accept(model)
                 cell.selectionStyle = .none
-
+                
                 return cell
             }.disposed(by: disposeBag)
     }
     
-    // MARK: ViewController setting method
     private func setAttributes() {
         view.backgroundColor = UIColor(named: "gray_100")
         navigationController?.navigationBar.isHidden = true
-        self.updateNavigationBarHeight()
+        self.setupNavigationBarHidden()
     }
     
     private func addSubComponents() {
@@ -82,21 +81,12 @@ final class QuestionViewController: UIViewController {
     }
     
     private func setConfigurations() {
-        makeNavigationBarConstraints()
+        navigationBar.makeMainNavigationBarConstraints()
         makeQuestionTableViewConstraints()
     }
 }
 
-// MARK: UI setting method
 extension QuestionViewController {
-    private func makeNavigationBarConstraints() {
-        navigationBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(MainFlowNavigationBarNameSpace.baseHeight)
-        }
-    }
-    
     private func makeQuestionTableViewConstraints() {
         questionTableView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
@@ -107,26 +97,28 @@ extension QuestionViewController {
 }
 
 extension QuestionViewController {
-    private func updateNavigationBarHeight() {
-        questionTableView.rx.willEndDragging
+    private func setupNavigationBarHidden() {
+        questionTableView.rx.contentOffset
+            .map { $0.y }
             .withUnretained(self)
-            .bind { vc, event in
-                UIView.animate(withDuration: MainFlowNavigationBarNameSpace.animateDuration) {
-                    guard event.velocity.y != MainFlowNavigationBarNameSpace.scrollVelocityCriteria else { return }
-                    if event.velocity.y < MainFlowNavigationBarNameSpace.scrollVelocityCriteria {
-                        vc.navigationBar.snp.updateConstraints { $0.height.equalTo(MainFlowNavigationBarNameSpace.baseHeight) }
-                        vc.navigationBar.chatRoomButton.rx.isHidden.onNext(false)
-                        vc.navigationBar.titleLabel.rx.isHidden.onNext(false)
-                    } else {
-                        vc.navigationBar.snp.updateConstraints { $0.height.equalTo(MainFlowNavigationBarNameSpace.updateHeight) }
-                        vc.navigationBar.chatRoomButton.rx.isHidden.onNext(true)
-                        vc.navigationBar.titleLabel.rx.isHidden.onNext(true)
-                    }
-                    vc.view.layoutIfNeeded()
+            .bind { vc, offsetY in
+                if offsetY > vc.lastContentOffset && offsetY > 0.0 {
+                    UIView.animate(withDuration: 0.3,
+                                   animations: {
+                        vc.navigationBar.rx.isHidden.onNext(true)
+                    })
+                } else if offsetY < vc.lastContentOffset {
+                    UIView.animate(withDuration: 0.3,
+                                   animations: {
+                        vc.navigationBar.rx.isHidden.onNext(false)
+                    })
                 }
+                
+                vc.lastContentOffset = offsetY
             }.disposed(by: disposeBag)
     }
 }
+
 
 #if DEBUG
 
@@ -142,7 +134,8 @@ struct QuestionViewController_Previews: PreviewProvider {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = QuestionViewController()
             vc.viewModel = QuestionViewModel(coordiantor: DefaultQuestionCoordinator(UINavigationController()),
-                                                         questionUseCase: DefaultQuestionUseCase(questionRepository: DefaultQuestionRepository()))
+                                             questionUseCase: DefaultQuestionUseCase(questionRepository: DefaultQuestionRepository(),
+                                                                                     userRepository: DefaultUserRepository()))
             
             return vc
         }

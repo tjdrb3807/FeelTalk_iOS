@@ -8,9 +8,9 @@
 import UIKit
 
 protocol LoginCoordinator: Coordinator {
-//    func showSignUpFlow(with data: SNSLogin)
-    
     func showSignUpFlow()
+    
+    func showInquiryFlow()
     
     func showInviteCodeFlow()
 }
@@ -39,19 +39,18 @@ final class DefaultLoginCoordinator: LoginCoordinator {
         self.navigationController.viewControllers = [self.loginViewController]
     }
     
-//    func showSignUpFlow(with data: SNSLogin) {
-//        let signUpCoordinator = DefaultSignUpCoordinator(self.navigationController)
-//        signUpCoordinator.finishDelegate = self
-//        signUpCoordinator.snsLogin = data
-//        signUpCoordinator.start()
-//        self.childCoordinators.append(signUpCoordinator)
-//    }
-    
     func showSignUpFlow() {
         let signUpCoordinator = DefaultSignUpCoordinator(self.navigationController)
         signUpCoordinator.finishDelegate = self
         signUpCoordinator.start()
         self.childCoordinators.append(signUpCoordinator)
+    }
+    
+    func showInquiryFlow() {
+        let inquiryCoordinator = DefaultInquiryCoordinator(self.navigationController)
+        inquiryCoordinator.finishDelegate = self
+        inquiryCoordinator.start()
+        self.childCoordinators.append(inquiryCoordinator)
     }
     
     func showInviteCodeFlow() {

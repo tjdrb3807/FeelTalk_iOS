@@ -16,7 +16,6 @@ final class ChallengeCell: UICollectionViewCell {
     
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
-        label.text = "D-999"
         label.textColor = UIColor(named: CommonColorNameSpace.gray600)
         label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                             size: ChallengeCellNameSpace.dateLabelTextSize)
@@ -30,7 +29,6 @@ final class ChallengeCell: UICollectionViewCell {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "함께하고싶은챌린지를작성해주세요작성해주"
         label.textColor = .black
         label.numberOfLines = 0
         label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
@@ -43,7 +41,6 @@ final class ChallengeCell: UICollectionViewCell {
     
     private lazy var nicknameLabel: UILabel = {
         let label = UILabel()
-        label.text = "닉네임"
         label.textColor = UIColor(named: CommonColorNameSpace.gray600)
         label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                             size: ChallengeCellNameSpace.nicknameLabelTextSize)
@@ -74,6 +71,7 @@ final class ChallengeCell: UICollectionViewCell {
             .bind { v, model in
                 v.titleLabel.rx.text.onNext(model.title)
                 v.nicknameLabel.rx.text.onNext(model.creator)
+                v.dateLabel.rx.text.onNext(model.deadline)
             }.disposed(by: disposeBag)
     }
     
@@ -132,6 +130,22 @@ extension ChallengeCell {
         nicknameLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.leadingInset)
             $0.bottom.equalToSuperview().inset(ChallengeCellNameSpace.nicknameLabelBottomInset)
+        }
+    }
+}
+
+extension ChallengeCell {
+    private func setDateLabelProperties(isCompleted: Bool, deadLine: String) {
+        if isCompleted {
+            dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.gray600))
+            dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.gray200))
+        } else {
+            /// if 7일 보다 안남았을 경우 {
+            /// dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.main400)
+            /// dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main500)
+            /// } else {
+            /// dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.gray600))
+            /// dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.gray200)) }
         }
     }
 }

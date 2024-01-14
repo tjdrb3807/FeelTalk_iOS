@@ -10,32 +10,59 @@ import RxSwift
 import RxCocoa
 
 protocol QuestionUseCase {
+    func answerQuestion(entity: Answer) -> Observable<Bool>
+    
     func getLatestQuestionPageNo() -> Observable<QuestionPage>
-    func getTodayQuestion() -> Single<Question>
-    func getQuestionList(questionPage: QuestionPage) -> Observable<[Question]>
+    
     func getQuestion(index: Int) -> Observable<Question>
-    func answerQuestion(answer: QuestionAnswer) -> Observable<Bool>
-//    func preseForAnswer(index: Int) -> Observable<Bool>
+    
+    func getQuestionList(questionPage: QuestionPage) -> Observable<[Question]>
+    
+    func getTodayQuestion() -> Single<Question>
+    
+    func pressForAnswer(index: Int) -> Observable<String>
 }
 
 final class DefaultQuestionUseCase: QuestionUseCase {
     private let questionRepository: QuestionRepository
+    private let userRepository: UserRepository
     private let disposbag = DisposeBag()
     
-    init(questionRepository: QuestionRepository) {
+    init(questionRepository: QuestionRepository, userRepository: UserRepository) {
         self.questionRepository = questionRepository
+        self.userRepository = userRepository
     }
     
-    func getQuestionList(questionPage: QuestionPage) -> Observable<[Question]> {
-        print("CALL getQuestList")
-        return Observable.create { [weak self] observer -> Disposable in
-            guard let self = self else { return Disposables.create() }
-            guard let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            questionRepository.getQuestionList(accessToken: accessToken, questionPage: questionPage)
+    func answerQuestion(entity: Answer) -> Observable<Bool> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            
+            questionRepository.answerQuestion(accessToken: accessToken, requestDTO: entity.toDTO())
                 .asObservable()
-                .bind(onNext: { questions in
-                    observer.onNext(questions)
+                .subscribe(onNext: { result in
+                    observer.onNext(result)
                 }).disposed(by: disposbag)
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getLatestQuestionPageNo() -> Observable<QuestionPage> {
+        return Observable.create { [weak self] observer in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            
+            questionRepository.getLatestQuestionPageNo(accessToken: accessToken)
+                .subscribe(
+                    onSuccess: { questionPage in
+                        observer.onNext(questionPage)
+                    },
+                    onFailure: { error in
+                        print(error.localizedDescription)
+                    },
+                    onDisposed: nil)
+                .disposed(by: disposbag)
             
             return Disposables.create()
         }
@@ -55,22 +82,15 @@ final class DefaultQuestionUseCase: QuestionUseCase {
         }
     }
     
-    func getLatestQuestionPageNo() -> Observable<QuestionPage> {
-        print("[CALL]: QuestionUseCase - getLatestQuestionPageNo() ")
-        return Observable.create { [weak self] observer in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            
-            questionRepository.getLatestQuestionPageNo(accessToken: accessToken)
-                .subscribe(
-                    onSuccess: { questionPage in
-                        observer.onNext(questionPage)
-                    },
-                    onFailure: { error in
-                        print(error.localizedDescription)
-                    },
-                    onDisposed: nil)
-                .disposed(by: disposbag)
+    func getQuestionList(questionPage: QuestionPage) -> Observable<[Question]> {
+        return Observable.create { [weak self] observer -> Disposable in
+            guard let self = self else { return Disposables.create() }
+            guard let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            questionRepository.getQuestionList(accessToken: accessToken, questionPage: questionPage)
+                .asObservable()
+                .bind(onNext: { questions in
+                    observer.onNext(questions)
+                }).disposed(by: disposbag)
             
             return Disposables.create()
         }
@@ -91,25 +111,23 @@ final class DefaultQuestionUseCase: QuestionUseCase {
         }
     }
     
-    func answerQuestion(answer: QuestionAnswer) -> Observable<Bool> {
-        return Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
+    func pressForAnswer(index: Int) -> Observable<String> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self,
                   let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            questionRepository.answerQuestion(accessToken: accessToken, answer: answer)
-                .subscribe(
-                    onSuccess: { state in
-                        observer.onNext(state)
-                    },
-                    onFailure: { error in
-                        print(error.localizedDescription)
-                    },
-                    onDisposed: nil)
-                .disposed(by: disposbag)
+            
+            questionRepository.pressForAnswer(accessToken, PressForAnswerRequestDTO(index: index))
+                .asObservable()
+                .subscribe(onNext: { event in
+                    print(event)
+                    self.userRepository.getPartnerInfo(accessToken: accessToken)
+                        .asObservable()
+                        .bind(onNext: {
+                            observer.onNext($0.nickname)
+                        }).disposed(by: self.disposbag)
+                }).disposed(by: disposbag)
             
             return Disposables.create()
         }
     }
-    
-    
-        
 }

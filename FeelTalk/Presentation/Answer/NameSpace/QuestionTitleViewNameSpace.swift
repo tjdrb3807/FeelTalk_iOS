@@ -8,12 +8,17 @@
 import UIKit
 
 enum QuestionTitleViewNameSpace {
-    static let labelTextFont: String = "pretendard-regular"
-    static let labelTextSize: CGFloat = (UIScreen.main.bounds.width / 100) * 6.4  //24
-    static let height: CGFloat = (UIScreen.main.bounds.height / 100) * 8.86  //72
+    // MARK: QuestionTitleView
+    /// 88.0
+    static let height: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 10.83
     
-    static let headerLabelText: String = "난 이게 가장 좋더라!"
+    // MARK: TopSpacing
+    /// 16.0
+    static let topSpacing: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 1.97
     
-    static let bodyLabelText: String = "당신이 가장 좋아하는 스킨십은?"
+    // MARK: Label
+    /// 24.0
+    static let labelTextSize: CGFloat = 24.0
+
     static let bodyLabelHighlightColor: String = "main_500"
 }

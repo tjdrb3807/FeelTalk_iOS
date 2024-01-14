@@ -16,7 +16,6 @@ final class DefaultSignalCoordinator: SignalCoordinator {
     var signalViewController: SignalViewController
     var type: CoordinatorType = .signal
     
-    var signalModel = PublishRelay<Signal>()
     private let disposeBag = DisposeBag()
     
     init(_ navigationController: UINavigationController) {
@@ -25,12 +24,9 @@ final class DefaultSignalCoordinator: SignalCoordinator {
     }
     
     func start() {
-        let viewModel = SignalViewModel(coordinator: self)
-        
-        self.signalModel
-            .bind(to: viewModel.model)
-            .disposed(by: disposeBag)
-            
+        let viewModel = SignalViewModel(coordinator: self,
+                                        signalUseCase: DefaultSignalUseCase(signalRepositroy: DefaultSignalRepository()))
+
         self.signalViewController.viewModel = viewModel
         self.navigationController.navigationBar.isHidden = true
         self.navigationController.tabBarController?.tabBar.isHidden = true

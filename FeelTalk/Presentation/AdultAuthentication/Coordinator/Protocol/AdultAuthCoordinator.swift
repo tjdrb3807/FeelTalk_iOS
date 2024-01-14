@@ -17,4 +17,6 @@ protocol AdultAuthCoordinator: Coordinator {
     func showAuthConsentFlow()
     
     func dismiss()
+    
+    func finish()
 }

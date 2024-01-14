@@ -12,8 +12,6 @@ import RxCocoa
 protocol SignalCoordinator: Coordinator {
     var signalViewController: SignalViewController { get set }
     
-    var signalModel: PublishRelay<Signal> { get set }
-    
     func finish()
     
     func dismiss()

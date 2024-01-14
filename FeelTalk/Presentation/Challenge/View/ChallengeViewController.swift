@@ -39,7 +39,7 @@ final class ChallengeViewController: UIViewController {
     
     private lazy var spacingView: UIView = { UIView() }()
     
-    fileprivate lazy var tabBar: ChallengeTabBarView = { ChallengeTabBarView() }()
+    fileprivate lazy var tabBar: ChallengeTabBar = { ChallengeTabBar() }()
     
     fileprivate lazy var collectionView: ChallengeCollectionView = { ChallengeCollectionView() }()
     
@@ -54,7 +54,6 @@ final class ChallengeViewController: UIViewController {
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
-        
     }
     
     private func bind(to viewModel: ChallengeViewModel) {
@@ -64,12 +63,15 @@ final class ChallengeViewController: UIViewController {
         let output = viewModel.transfer(input: input)
         
         output.totalCount
-            .map { $0.totalCount }
             .bind(to: countingView.model)
             .disposed(by: disposeBag)
         
         output.tabBarModelList
             .bind(to: tabBar.modelList)
+            .disposed(by: disposeBag)
+        
+        output.selectedTabBarItem
+            .bind(to: tabBar.selectedItem)
             .disposed(by: disposeBag)
         
         output.challengeModelList
@@ -105,7 +107,7 @@ final class ChallengeViewController: UIViewController {
     }
     
     private func setConstraints() {
-        navigationBar.makeNavigationBarConstraints()
+        navigationBar.makeMainNavigationBarConstraints()
         makeOuterScrollViewConstraints()
         makeAddButtonConstraints()
         makeContentStackViewConstraints()
@@ -285,9 +287,10 @@ struct ChallengeViewController_Previews: PreviewProvider {
             let vm = ChallengeViewModel(coordinator: DefaultChallengeCoordinator(UINavigationController()),
                                         challengeUseCase: DefaultChallengeUseCase(challengeRepository: DefaultChallengeRepository()))
             vc.viewModel = vm
-            vc.countingView.model.accept(99)
-            vc.tabBar.modelList.accept([ChallengeTabBarModel(type: .onGoing, count: 99),
-                                        ChallengeTabBarModel(type: .completed, count: 00)])
+            vc.countingView.model.accept(101)
+            vc.tabBar.modelList.accept([ChallengeTabBarModel(type: .ongoing, count: 99),
+                                        ChallengeTabBarModel(type: .completed, count: 2)])
+            vc.tabBar.selectedItem.accept(.ongoing)
             
             return vc
         }

@@ -6,9 +6,13 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 protocol SignUpCoordinator: Coordinator {
+    var isMarketingConsented: PublishRelay<Bool> { get }
+    
     func showAdultAuthFlow()
     
-    func showNicknameFlow(with signUp: SignUp)
+    func showNicknameFlow()
 }

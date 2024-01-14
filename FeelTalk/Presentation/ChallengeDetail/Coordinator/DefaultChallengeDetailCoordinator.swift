@@ -15,7 +15,9 @@ final class DefaultChallengeDetailCoordinator: ChallengeDetailCoordinator {
     var navigationController: UINavigationController
     var childCoordinators: [Coordinator] = []
     var type: CoordinatorType = .challengeDetail
+    
     var challengeModel = PublishRelay<Challenge>()
+    var typeObserver = PublishRelay<ChallengeDetailViewType>()
     private let disposeBag = DisposeBag()
     
     init(_ navigationController: UINavigationController) {
@@ -24,17 +26,20 @@ final class DefaultChallengeDetailCoordinator: ChallengeDetailCoordinator {
     }
     
     func start() {
-        let viewModel = ChallengeDetailViewModel(coordinator: self,
-                                                 challengeUseCase: DefaultChallengeUseCase(challengeRepository: DefaultChallengeRepository()))
+        let vm = ChallengeDetailViewModel(coordinator: self,
+                                          challengeUseCase: DefaultChallengeUseCase(challengeRepository: DefaultChallengeRepository()))
         
-        self.challengeModel
-            .bind { model in
-                viewModel.model.accept(model)
-            }.disposed(by: disposeBag)
+        typeObserver
+            .bind(to: vm.typeObserver)
+            .disposed(by: disposeBag)
         
-        self.challengeDetailViewController.viewModel = viewModel
-        self.navigationController.pushViewController(challengeDetailViewController, animated: true)
-        self.navigationController.tabBarController?.tabBar.isHidden = true
+        challengeModel
+            .bind(to: vm.modelObserver)
+            .disposed(by: disposeBag)
+        
+        challengeDetailViewController.viewModel = vm
+        navigationController.pushViewController(challengeDetailViewController, animated: true)
+        navigationController.tabBarController?.tabBar.isHidden = true
     }
 }
 

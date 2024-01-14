@@ -1,0 +1,73 @@
+//
+//  SignalUseCase.swift
+//  FeelTalk
+//
+//  Created by 전성규 on 2024/01/03.
+//
+
+import Foundation
+import RxSwift
+import RxCocoa
+
+protocol SignalUseCase {
+    func getMySignal() -> Observable<Signal>
+    
+    func getPartnerSignal() -> Observable<Signal>
+    
+    func changeMySignal(_ model: Signal) -> Observable<Bool>
+}
+
+final class DefaultSignalUseCase: SignalUseCase {
+    private let signalRepositroy: SignalRepository
+    
+    private let disposeBag = DisposeBag()
+    
+    init(signalRepositroy: SignalRepository) {
+        self.signalRepositroy = signalRepositroy
+    }
+    
+    func getMySignal() -> Observable<Signal> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+                
+            signalRepositroy.getMySignal(accessToken: accessToken)
+                .asObservable()
+                .subscribe(onNext: { signal in
+                    observer.onNext(signal)
+                }).disposed(by: disposeBag)
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getPartnerSignal() -> Observable<Signal> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            
+            signalRepositroy.getPartnerSignal(accessToken: accessToken)
+                .asObservable()
+                .subscribe(onNext: { signal in
+                    observer.onNext(signal)
+                }).disposed(by: disposeBag)
+            
+            return Disposables.create()
+        }
+    }
+    
+    func changeMySignal(_ model: Signal) -> Observable<Bool> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            
+            signalRepositroy.changeMySignal(accessToken: accessToken, requestDTO: model.toDTO())
+                .asObservable()
+                .subscribe(onNext: { event in
+                    observer.onNext(event)
+                }).disposed(by: disposeBag)
+            
+            return Disposables.create()
+        }
+    }
+}

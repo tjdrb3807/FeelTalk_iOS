@@ -12,7 +12,7 @@ import RxCocoa
 
 final class AdultAuthNumberInputView: UIView {
     private let isEditing = BehaviorRelay<Bool>(value: false)
-    private let isRequested = BehaviorRelay<Bool>(value: false)
+    let isRequested = PublishRelay<AdultAuthNumberRequestState>()
     private let disposeBag = DisposeBag()
     
     lazy var authNumberInputView: UITextField = {
@@ -23,6 +23,8 @@ final class AdultAuthNumberInputView: UIView {
         textField.backgroundColor = .clear
         textField.tintColor = UIColor(named: CommonColorNameSpace.main500)
         textField.keyboardType = .numberPad
+        
+        textField.setPlaceholder(text: "인증번호를 입력해주세요", color: UIColor(named: CommonColorNameSpace.gray400)!)
         
         textField.inputAccessoryView = authNumberInputAccessoryView
         
@@ -73,7 +75,6 @@ final class AdultAuthNumberInputView: UIView {
             .withUnretained(self)
             .bind { v, state in
                 v.updateAuthButtonProperties(with: state)
-                v.updateAuthNumberInputViewPlaceholder(with: state)
             }.disposed(by: disposeBag)
     }
     
@@ -128,21 +129,18 @@ extension AdultAuthNumberInputView {
         layer.rx.borderColor.onNext(UIColor.clear.cgColor)
     }
     
-    private func updateAuthNumberInputViewPlaceholder(with steta: Bool) {
-        steta ?
-        authNumberInputView.setPlaceholder(text: "인증번호를 입력해주세요", color: UIColor(named: CommonColorNameSpace.gray400)!) :
-        authNumberInputView.setPlaceholder(text: "인증번호를 입력해주세요", color: UIColor(named: CommonColorNameSpace.gray400)!)
-    }
-    
-    private func updateAuthButtonProperties(with state: Bool) {
-        if state {
-            authButton.rx.title().onNext("재요청")
-            authButton.rx.backgroundColor.onNext(.white)
-            authButton.layer.rx.borderColor.onNext(UIColor.black.cgColor)
-        } else {
+    private func updateAuthButtonProperties(with state: AdultAuthNumberRequestState) {
+        switch state {
+        case .none:
             authButton.rx.title().onNext("인증요청")
+            authButton.setTitleColor(.white, for: .normal)
             authButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main500))
             authButton.layer.rx.borderColor.onNext(UIColor.clear.cgColor)
+        case .requested:
+            authButton.rx.title().onNext("재요청")
+            authButton.setTitleColor(.black, for: .normal)
+            authButton.rx.backgroundColor.onNext(.white)
+            authButton.layer.rx.borderColor.onNext(UIColor.black.cgColor)
         }
     }
 }
@@ -162,7 +160,10 @@ struct AdultAuthNumberInputView_Previews: PreviewProvider {
     
     struct AdultAuthNumberInputView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            AdultAuthNumberInputView()
+            let v = AdultAuthNumberInputView()
+            v.isRequested.accept(.none)
+            
+            return v
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

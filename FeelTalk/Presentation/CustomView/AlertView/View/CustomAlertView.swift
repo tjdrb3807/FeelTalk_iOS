@@ -10,15 +10,8 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-enum CustomAlertViewType {
-    case inquiry
-    case suggestion
-    case breakUp
-    case challengeAddCancel
-}
-
 final class CustomAlertView: UIView {
-    var type: CustomAlertViewType
+    var type: CustomAlertType
     private let disposeBag = DisposeBag()
     
     private lazy var contentView: UIView = {
@@ -45,7 +38,7 @@ final class CustomAlertView: UIView {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fill
         stackView.spacing = CustomAlertViewNameSpace.labelStackViewSpacing
         stackView.backgroundColor = .clear
         
@@ -64,6 +57,10 @@ final class CustomAlertView: UIView {
             label.text = CustomAlertViewNameSpace.titleLableBreakUpTypeText
         case .challengeAddCancel:
             label.text = CustomAlertViewNameSpace.titleLabelChallengeAddCancelTypeText
+        case .popAnswer:
+            label.text = CustomAlertViewNameSpace.titleLabelPopAnswerTypeText
+        case .sendAnswer:
+            label.text = CustomAlertViewNameSpace.titleLabelSendAnswerTypeText
         }
         
         label.textColor = .black
@@ -81,21 +78,22 @@ final class CustomAlertView: UIView {
         let label = UILabel()
         
         switch type {
-        case .inquiry, .suggestion, .challengeAddCancel:
+        case .inquiry, .suggestion, .challengeAddCancel, .popAnswer:
             label.text = CustomAlertViewNameSpace.descriptionLabelDeleteGuideText
         case .breakUp:
             label.text = CustomAlertViewNameSpace.descriptionLabelBreakUpTypeText
-            
+        case .sendAnswer:
+            label.text = CustomAlertViewNameSpace.descriptionLabelSendAnswerTypeText
         }
         
         label.textColor = .black
-        label.textAlignment = .center
         label.numberOfLines = CustomAlertViewNameSpace.descriptionLabelNumberOfLines
         label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                             size: CustomAlertViewNameSpace.descriptionLabelTextSize)
         
         label.backgroundColor = .clear
         label.setLineHeight(height: CustomAlertViewNameSpace.descriptionLabelLineHeight)
+        label.textAlignment = .center
         
         return label
     }()
@@ -121,6 +119,8 @@ final class CustomAlertView: UIView {
         case .breakUp:
             button.setTitle(CustomAlertViewNameSpace.leftButtonBreakUpTypeTitleText,
                             for: .normal)
+        case .popAnswer, .sendAnswer:
+            button.setTitle("취소", for: .normal)
         }
         
         button.setTitleColor(.black, for: .normal)
@@ -144,6 +144,10 @@ final class CustomAlertView: UIView {
         case .challengeAddCancel:
             button.setTitle(CustomAlertViewNameSpace.rightButtonChallengeAddCancelTypeText,
                             for: .normal)
+        case .popAnswer:
+            button.setTitle("나가기", for: .normal)
+        case .sendAnswer:
+            button.setTitle("보내기", for: .normal)
         }
         
         button.setTitleColor(.white, for: .normal)
@@ -154,7 +158,7 @@ final class CustomAlertView: UIView {
         return button
     }()
     
-    init(type: CustomAlertViewType) {
+    init(type: CustomAlertType) {
         self.type = type
         super.init(frame: .zero)
         
@@ -168,9 +172,8 @@ final class CustomAlertView: UIView {
     }
     
     private func bind() {
-        Observable
-            .merge(leftButton.rx.tap.asObservable(),
-                   rightButton.rx.tap.asObservable())
+        leftButton.rx.tap
+            .asObservable()
             .withUnretained(self)
             .bind { v, _ in
                 v.hide()
@@ -280,7 +283,7 @@ struct CustomAlertView_Previews: PreviewProvider {
     
     struct CustomAlertView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            let view = CustomAlertView(type: .challengeAddCancel)
+            let view = CustomAlertView(type: .sendAnswer)
             view.show()
             
             return view

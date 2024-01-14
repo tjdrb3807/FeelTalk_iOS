@@ -8,13 +8,20 @@
 import UIKit
 
 enum ChallengeDetailNavigationBarNameSpace {
-    // MARK: ChallengeDetailNavigationBarNameSpace
-    static let height: CGFloat = (UIScreen.main.bounds.height / 100) * 7.38                 // 60.0
+    // MARK: ChallengeDetailNavigationBar
+    /// 60.0
+    static let height: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 7.38
     
     // MARK: Button
-    static let buttonTopInset: CGFloat = (UIScreen.main.bounds.height / 100) * 0.73         // 6.0
-    static let buttonBottomInset: CGFloat = (UIScreen.main.bounds.height / 100) * 0.73      // 6.0
-    static let buttomWidth: CGFloat = (UIScreen.main.bounds.width / 100) * 12.8             // 48.0
+    /// 48.0
+    static let buttonWidth: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 12.8
+    /// 48.0
+    static let buttonHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 5.91
+    
+    // MARK: ModifiyButton
+    /// 48.0
+    static let modifiyButtonTrailingInset: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 12.8
+                
     
     // MARK: PopButton
     static let popButtonImage: String = "icon_x_mark_black"

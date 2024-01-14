@@ -6,7 +6,13 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 protocol AnswerCoordinator: Coordinator {
+    var model: PublishRelay<Question> { get set }
+    
     var answerViewController: AnswerViewController { get set}
+    
+    func dismiss()
 }

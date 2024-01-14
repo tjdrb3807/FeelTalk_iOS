@@ -11,99 +11,78 @@ import RxSwift
 import RxCocoa
 import RxGesture
 
-final class ChallengeTabBarView: UIView {
+final class ChallengeTabBar: UIView {
     let modelList = PublishRelay<[ChallengeTabBarModel]>()
-    var didTab: ((Int) -> Void)?
-    private let diseposeBag = DisposeBag()
+    let selectedItem = PublishRelay<ChallengeTabBarItemType>()
+    private let disposeBag = DisposeBag()
     
     private lazy var contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-    
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+        
         return stackView
-    }()
-    
-    private lazy var tabScrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        
-        return scrollView
-    }()
-    
-    lazy var highlightIndicator: UIView = {
-        let view = UIView()
-        view.backgroundColor = .gray
-        
-        return view
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         self.bind()
-        self.addSubComponents()
-        self.setConstraints()
+        self.setProperties()
+        self.addSubcomponents()
+        self.setConstratins()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func bind() {        
+    private func bind() {
         modelList
             .withUnretained(self)
-            .bind { v, items in
-                items.enumerated()
-                    .forEach { offset, item in
-                        let tabBarItem = ChallengeTabBarItem()
-                        tabBarItem.model.accept(item)
-                        tabBarItem.titleLabel.rx.text.onNext(item.type.rawValue)
-                        tabBarItem.countLabel.rx.text.onNext(String(item.count))
-                        tabBarItem.snp.makeConstraints { $0.width.equalTo(UIScreen.main.bounds.width / CGFloat(items.count)) }
-                        tabBarItem.tag = offset
-                        tabBarItem.rx.tapGesture()
-                            .when(.recognized)
-                            .compactMap { $0.view?.tag }
-                            .bind { tag in
-                                v.didTab?(tag)
-                            }.disposed(by: v.diseposeBag)
-                    }
-            }.disposed(by: diseposeBag)
+            .bind { v, modelList in
+                v.setItems(modelList)
+            }.disposed(by: disposeBag)
+        
+        selectedItem
+            .withUnretained(self)
+            .bind { v, type in
+                v.selectItem(type)
+            }.disposed(by: disposeBag)
     }
     
-    private func addSubComponents() {
-        addViewSubComponents()
-        addTabScrollViewSubComponents()
-    }
+    private func setProperties() { backgroundColor = .clear }
     
-    private func setConstraints() {
-        makeTabScrollViewConstraints()
-        makeContentStackViewConstraints()
-        makeHighlightIndicatorConstraints()
+    private func addSubcomponents() { addSubview(contentStackView) }
+    
+    private func setConstratins() {
+        contentStackView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
 }
 
-extension ChallengeTabBarView {
-    private func addViewSubComponents() { addSubview(tabScrollView) }
-    
-    private func makeTabScrollViewConstraints() {
-        tabScrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
+extension ChallengeTabBar {
+    private func setItems(_ modelList: [ChallengeTabBarModel]) {
+        modelList.forEach { model in
+            let item = ChallengeTabBarItem(type: model.type)
+            
+            self.contentStackView.addArrangedSubview(item)
+            
+            item.countObserver.accept(model.count)
+            
+            item.rx.tapGesture()
+                .when(.recognized)
+                .map { _ in item.type }
+                .bind(to: selectedItem)
+                .disposed(by: disposeBag)
+        }
     }
     
-    private func addTabScrollViewSubComponents() {
-        [contentStackView, highlightIndicator].forEach { tabScrollView.addSubview($0) }
-    }
-    
-    private func makeContentStackViewConstraints() {
-        contentStackView.snp.makeConstraints { $0.edges.height.equalToSuperview() }
-    }
-    
-    private func makeHighlightIndicatorConstraints() {
-        highlightIndicator.snp.makeConstraints {
-            $0.width.equalTo(UIScreen.main.bounds.width / 2)
-            $0.height.equalTo(1)
-            $0.leading.equalToSuperview()
-            $0.bottom.equalToSuperview()
+    private func selectItem(_ type: ChallengeTabBarItemType) {
+        self.contentStackView.arrangedSubviews.forEach {
+            guard let item = $0 as? ChallengeTabBarItem else { return }
+            
+            item.type == type ? item.isSelected.accept(true) : item.isSelected.accept(false)
         }
     }
 }
@@ -123,9 +102,10 @@ struct ChallengeTabBarView_Previews: PreviewProvider {
     
     struct ChallengeTabBarView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            let v = ChallengeTabBarView()
-            v.modelList.accept([ChallengeTabBarModel(type: .onGoing, count: 99),
-                                ChallengeTabBarModel(type: .completed, count: 0)])
+            let v = ChallengeTabBar()
+            v.modelList.accept([ChallengeTabBarModel(type: .ongoing, count: 100),
+                                ChallengeTabBarModel(type: .completed, count: 5)])
+            v.selectedItem.accept(.ongoing)
             
             return v
         }

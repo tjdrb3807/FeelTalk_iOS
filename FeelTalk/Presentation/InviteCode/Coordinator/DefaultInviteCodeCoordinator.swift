@@ -21,8 +21,8 @@ final class DefaultInviteCodeCoordinator: InviteCodeCoordinator {
     
     func start() {
         self.inviteCodeViewController.viewModel = InviteCodeViewModel(coordinator: self,
-                                                                      coupleUseCase: DefaultCoupleUaseCase(coupleRepository: DefaultCoupleRepository()))
-        self.navigationController.viewControllers = [self.inviteCodeViewController]
+                                                                      userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
+        self.navigationController.pushViewController(inviteCodeViewController, animated: true)
     }
     
     func showInviteCodeBottomSheetCoordinator() {

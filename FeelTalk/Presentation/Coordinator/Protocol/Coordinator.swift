@@ -8,7 +8,9 @@
 import UIKit
 
 enum CoordinatorType {
-    case app, login, tab
+    case app
+    case splash, onboarding
+    case login, tab
     case home, question, challenge, myPage
     case signUp, adultAuth, newsAgency, authConsent, nickname, inviteCode, inviteCodeBottomSheet
     case answer

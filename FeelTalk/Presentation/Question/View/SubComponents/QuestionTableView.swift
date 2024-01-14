@@ -11,7 +11,6 @@ import RxSwift
 import RxCocoa
 
 final class QuestionTableView: UITableView {
-    
     lazy var questionTableHeader: QuestionTableHeaderView = {
         QuestionTableHeaderView(frame: CGRect(x: QuestionTableHeaderViewNameSpace.x,
                                               y: QuestionTableHeaderViewNameSpace.y,

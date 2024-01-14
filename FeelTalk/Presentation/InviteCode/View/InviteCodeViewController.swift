@@ -134,7 +134,13 @@ struct InviteCodeViewConroller_Previews: PreviewProvider {
     
     struct InviteCodeViewConroller_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            InviteCodeViewController()
+            let vc = InviteCodeViewController()
+            let vm = InviteCodeViewModel(coordinator: DefaultInviteCodeCoordinator(UINavigationController()),
+                                         userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
+            
+            vc.viewModel = vm
+            
+            return vc
         }
         
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

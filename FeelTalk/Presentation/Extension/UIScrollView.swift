@@ -44,22 +44,39 @@ extension UIScrollView {
             case .idCardNumberInputview:
                 self.scrollToIDCardNumberInputView()
             case .phoneInfoInputView:
-                break
+                self.scrollToPhoneNumberInputView()
             case .consentView:
                 break
             case .authNumberInfoView:
-                self.scrollToBottom()
+                self.secrollToAuthNumberInputView()
             }
         }
     }
     
     private func scrollToIDCardNumberInputView() {
         let topOffset = CGPoint(x: .zero,
-                                y: contentSize.height - 68)
+                                y: CommonConstraintNameSpace.verticalRatioCalculator * 8.37) // 68.0
         if topOffset.y > 0.0 {
             setContentOffset(topOffset, animated: true)
         }
     }
     
+    private func scrollToPhoneNumberInputView() {
+        let topOffset = CGPoint(x: .zero,
+                                y: CommonConstraintNameSpace.verticalRatioCalculator * 16.74)   // 136
+        
+        if topOffset.y > 0.0 {
+            setContentOffset(topOffset, animated: true)
+        }
+    }
+    
+    private func secrollToAuthNumberInputView() {
+        let topOffset = CGPoint(x: .zero,
+                                y: CommonConstraintNameSpace.verticalRatioCalculator * 34.48)   // 280.0
+        
+        if topOffset.y > 0.0 {
+            setContentOffset(topOffset, animated: true)
+        }
+    }
     
 }

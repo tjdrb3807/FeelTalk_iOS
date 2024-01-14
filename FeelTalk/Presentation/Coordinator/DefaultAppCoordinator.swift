@@ -19,7 +19,24 @@ final class DefaultAppCoordinator: AppCoordinator {
     }
     
     func start() {
-        self.showLoginFlow()
+//        DefaultAppCoordinator.isFirstRun() ? showOnboardingFlow() : showSplashFlow()
+        
+        showOnboardingFlow()
+//        showSplashFlow()
+    }
+    
+    func showSplashFlow() {
+        let splashCoordinator = DefaultSplashCoordinator(self.navigationController)
+        splashCoordinator.finishDelegate = self
+        splashCoordinator.start()
+        childCoordinators.append(splashCoordinator)
+    }
+    
+    func showOnboardingFlow() {
+        let onboardingCoordinator = DefaultOnboardingCoordinator(self.navigationController)
+        onboardingCoordinator.finishDelegate = self
+        onboardingCoordinator.start()
+        childCoordinators.append(onboardingCoordinator)
     }
     
     func showLoginFlow() {
@@ -37,6 +54,19 @@ final class DefaultAppCoordinator: AppCoordinator {
     }
 }
 
+extension DefaultAppCoordinator {
+    static private func isFirstRun() -> Bool {
+        let defaults = UserDefaults.standard
+        
+        if defaults.object(forKey: "isFirstRun") == nil {
+            defaults.set("No", forKey: "isFirstRun")
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
 extension DefaultAppCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
         self.childCoordinators = self.childCoordinators.filter({ $0.type != childCoordinator.type })
@@ -45,6 +75,8 @@ extension DefaultAppCoordinator: CoordinatorFinishDelegate {
         self.navigationController.viewControllers.removeAll()
         
         switch childCoordinator.type {
+        case .onboarding:
+            self.showLoginFlow()
         case .tab:
             self.showLoginFlow()
         case .login:

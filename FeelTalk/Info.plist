@@ -69,6 +69,7 @@
 		<string>Montserrat-Bold.ttf</string>
 		<string>pretendard-semiBold.ttf</string>
 		<string>paybooc Medium.ttf</string>
+		<string>paybooc Bold.ttf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

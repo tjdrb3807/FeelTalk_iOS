@@ -32,4 +32,10 @@ final class DefaultChatCooridnator: ChatCoordinator {
         
         self.navigationController.present(chatViewController, animated: false)
     }
+    
+    func finish() {
+        self.childCoordinators.removeAll()
+        self.navigationController.dismiss(animated: false)
+        self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+    }
 }

@@ -10,16 +10,17 @@ import RxSwift
 import RxCocoa
 
 protocol ChallengeUseCase {
-    func addChallenge(challenge: Challenge) -> Observable<Int>
-    func modifiyChallenge(challenge: Challenge) -> Observable<Bool>
-    func removeChallenge(index: Int) -> Observable<Bool>
-    func getChallenge(index: Int) -> Observable<Challenge>
     func completeChallenge(index: Int) -> Observable<Bool>
+    
+    func getChallenge(index: Int) -> Observable<Challenge>
+    
     func getChallengeCount() -> Observable<ChallengeCount>
-    func getOngoingChallengeList(pageNo: ChallengePage) -> Observable<[Challenge]>
-    func getLatestOngoingChallengePageNo() -> Observable<ChallengePage>
-    func getCompletedChallengeList(pageNo: ChallengePage) -> Observable<[Challenge]>
-    func getLatestCompletedChallengePageNo() -> Observable<ChallengePage>
+    
+    func getChallengeLatestPageNo(type: ChallengeState) -> Observable<Int>
+    
+    func getChallengeList(type: ChallengeState, pageNo: Int) -> Observable<[Challenge]>
+    
+    func removeChallenge(index: Int) -> Observable<Bool>
 }
 
 final class DefaultChallengeUseCase: ChallengeUseCase {
@@ -30,39 +31,11 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         self.challengeRepository = challengeRepository
     }
     
-    func addChallenge(challenge: Challenge) -> Observable<Int> {
+    func completeChallenge(index: Int) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self,
                   let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.addChallenge(accessToken: accessToken, challenge: challenge)
-                .asObservable()
-                .bind(onNext: { index in
-                    observer.onNext(index)
-                }).disposed(by: disposeBag)
-            
-            return Disposables.create()
-        }
-    }
-    
-    func modifiyChallenge(challenge: Challenge) -> Observable<Bool> {
-        Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.modifiyChallenge(accessToken: accessToken, challenge: challenge)
-                .asObservable()
-                .bind(onNext: { isSuccess in
-                    observer.onNext(isSuccess)
-                }).disposed(by: disposeBag)
-            
-            return Disposables.create()
-        }
-    }
-    
-    func removeChallenge(index: Int) -> Observable<Bool> {
-        Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.removeChallenge(accessToken: accessToken, index: index)
+            challengeRepository.completeChallenge(accessToken: accessToken, index: index)
                 .asObservable()
                 .bind(onNext: { isSuccess in
                     observer.onNext(isSuccess)
@@ -86,15 +59,34 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         }
     }
     
-    func completeChallenge(index: Int) -> Observable<Bool> {
+    func getChallengeLatestPageNo(type: ChallengeState) -> Observable<Int> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self,
                   let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.completeChallenge(accessToken: accessToken, index: index)
+            
+            challengeRepository.getChallengeLatestPageNo(accessToken: accessToken, type: type)
                 .asObservable()
-                .bind(onNext: { isSuccess in
-                    observer.onNext(isSuccess)
+                .map { $0.pageNo }
+                .bind(onNext: {
+                    observer.onNext($0)
                 }).disposed(by: disposeBag)
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getChallengeList(type: ChallengeState, pageNo: Int) -> Observable<[Challenge]> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            
+            challengeRepository.getChallengeList(accessToken: accessToken,
+                                                 type: type,
+                                                 requestDTO: ChallengeListRequestDTO(pageNo: pageNo))
+            .asObservable()
+            .bind(onNext: {
+                observer.onNext($0)
+            }).disposed(by: disposeBag)
             
             return Disposables.create()
         }
@@ -114,56 +106,14 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         }
     }
     
-    func getOngoingChallengeList(pageNo: ChallengePage) -> Observable<[Challenge]> {
+    func removeChallenge(index: Int) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self,
                   let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.getOngoingChallengeList(accessToken: accessToken, pageNo: pageNo)
+            challengeRepository.removeChallenge(accessToken: accessToken, index: index)
                 .asObservable()
-                .bind(onNext: { list in
-                    observer.onNext(list)
-                }).disposed(by: disposeBag)
-            
-            return Disposables.create()
-        }
-    }
-    
-    func getLatestOngoingChallengePageNo() -> Observable<ChallengePage> {
-        Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.getLatestOngoingChallengePageNo(accessToken: accessToken)
-                .asObservable()
-                .bind(onNext: { pageNo in
-                    observer.onNext(pageNo)
-                }).disposed(by: disposeBag)
-            
-            return Disposables.create()
-        }
-    }
-    
-    func getCompletedChallengeList(pageNo: ChallengePage) -> Observable<[Challenge]> {
-        Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.getCompletedChallengeList(accessToken: accessToken, pageNo: pageNo)
-                .asObservable()
-                .bind(onNext: { list in
-                    observer.onNext(list)
-                }).disposed(by: disposeBag)
-            
-            return Disposables.create()
-        }
-    }
-    
-    func getLatestCompletedChallengePageNo() -> Observable<ChallengePage> {
-        Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.getLatestCompletedChallengePageNo(accessToken: accessToken)
-                .asObservable()
-                .bind(onNext: { pageNo in
-                    observer.onNext(pageNo)
+                .bind(onNext: { isSuccess in
+                    observer.onNext(isSuccess)
                 }).disposed(by: disposeBag)
             
             return Disposables.create()

@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 
 protocol UserUseCase {
+    func getInviteCode() -> Observable<String>
+    
     func getMyInfo() -> Observable<MyInfo>
     
     func getPartnerInfo() -> Observable<PartnerInfo>
@@ -21,6 +23,21 @@ final class DefaultUserUseCase: UserUseCase {
     
     init(userRepository: UserRepository) {
         self.userRepository = userRepository
+    }
+    
+    func getInviteCode() -> Observable<String> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            
+            userRepository.getInviteCode(accessToken: accessToken)
+                .asObservable()
+                .subscribe(onNext: { code in
+                    observer.onNext(code)
+                }).disposed(by: disposeBag)
+
+            return Disposables.create()
+        }
     }
     
     func getMyInfo() -> Observable<MyInfo> {

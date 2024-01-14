@@ -28,7 +28,7 @@ final class NewsAgencyViewModel {
     
     func transfer(input: Input) -> Output {
         input.tapNewsAgnecyButton
-            .delay(.milliseconds(300), scheduler: MainScheduler.asyncInstance)
+            .delay(.milliseconds(500), scheduler: MainScheduler.asyncInstance) // BottomSheetVC hide animate duration(500ms)
             .bind(to: coordinator!.selectedNewsAgency)
             .disposed(by: disposeBag)
         

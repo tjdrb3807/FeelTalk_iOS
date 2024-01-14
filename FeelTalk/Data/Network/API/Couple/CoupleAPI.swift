@@ -9,7 +9,6 @@ import Foundation
 import Alamofire
 
 enum CoupleAPI {
-    case getInviteCode(accessToken: String)
     case registerInviteCode(accessToken: String, inviteCode: String)
 }
     
@@ -18,8 +17,6 @@ extension CoupleAPI: Router, URLRequestConvertible {
         
     var path: String {
         switch self {
-        case .getInviteCode:
-            return "/api/v1/member/invite-code"
         case .registerInviteCode:
             return "/api/v1/couple"
         }
@@ -27,8 +24,6 @@ extension CoupleAPI: Router, URLRequestConvertible {
         
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .getInviteCode:
-            return .get
         case .registerInviteCode:
             return .post
         }
@@ -36,21 +31,15 @@ extension CoupleAPI: Router, URLRequestConvertible {
         
     var header: [String : String] {
         switch self {
-        case .getInviteCode(accessToken: let accessToken):
-            return ["Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization": "Bearer \(accessToken)"]
         case .registerInviteCode(accessToken: let accessToken, inviteCode: _):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
-                    "Authorization": "Bearer \(accessToken)"]
+                    "Authorization": accessToken]
         }
     }
         
     var parameters: [String : Any]? {
         switch self {
-        case .getInviteCode:
-            return nil
         case .registerInviteCode(accessToken: _, inviteCode: let inviteCode):
             return ["inviteCode": inviteCode]
         }
@@ -58,7 +47,7 @@ extension CoupleAPI: Router, URLRequestConvertible {
         
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .getInviteCode, .registerInviteCode:
+        case .registerInviteCode:
             return JSONEncoding.default
         }
     }

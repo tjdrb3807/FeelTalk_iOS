@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class DefaultQuestionCoordinator: QuestionCoordinator {
     var finishDelegate: CoordinatorFinishDelegate?
@@ -14,6 +16,9 @@ final class DefaultQuestionCoordinator: QuestionCoordinator {
     var questionViewController: QuestionViewController
     var type: CoordinatorType = .question
     
+    var model = PublishRelay<Question>()
+    private let disposeBag = DisposeBag()
+    
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.questionViewController = QuestionViewController()
@@ -21,21 +26,39 @@ final class DefaultQuestionCoordinator: QuestionCoordinator {
     
     func start() {
         self.questionViewController.viewModel = QuestionViewModel(coordiantor: self,
-                                                                  questionUseCase: DefaultQuestionUseCase(questionRepository: DefaultQuestionRepository()))
+                                                                  questionUseCase: DefaultQuestionUseCase(questionRepository: DefaultQuestionRepository(),
+                                                                                                          userRepository: DefaultUserRepository()))
         self.navigationController.pushViewController(questionViewController, animated: true)
     }
     
-    func showAnswerFlow(with question: Question) {
+    func showAnswerFlow() {
         let answerCoordinator = DefaultAnswerCoordinator(self.navigationController)
+        
+        model
+            .bind(to: answerCoordinator.model)
+            .disposed(by: disposeBag)
+        
+        childCoordinators.append(answerCoordinator)
         answerCoordinator.finishDelegate = self
-        self.childCoordinators.append(answerCoordinator)
-        answerCoordinator.question = question
         answerCoordinator.start()
+    }
+    
+    func showChatFlow() {
+        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
+        
+        childCoordinators.append(chatCoordinator)
+        chatCoordinator.finishDelegate = self
+        chatCoordinator.start()
     }
 }
 
 extension DefaultQuestionCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
-        
+        switch childCoordinator.type {
+        case .answer:
+            showChatFlow()
+        default:
+            break
+        }
     }
 }

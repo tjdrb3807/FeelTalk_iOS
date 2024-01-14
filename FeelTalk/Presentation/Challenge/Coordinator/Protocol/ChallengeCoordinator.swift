@@ -14,5 +14,7 @@ protocol ChallengeCoordinator: Coordinator {
     
     var challengeModel: PublishRelay<Challenge> { get set }
     
+    var typeObserver: PublishRelay<ChallengeDetailViewType> { get set }
+    
     func showChallengeDetailFlow()
 }

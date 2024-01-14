@@ -12,9 +12,11 @@ import RxCocoa
 protocol HomeCoordinator: Coordinator {
     var homeViewController: HomeViewController { get set }
     
-    var signalModel: PublishRelay<Signal> { get set }
-    
-    var reloadData: PublishSubject<Void> { get set }
+    var model: PublishRelay<Question> { get set }
     
     func showSignalFlow()
+    
+    func showChatFlow()
+    
+    func showAnswerFlow()
 }

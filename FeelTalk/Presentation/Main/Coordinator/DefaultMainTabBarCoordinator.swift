@@ -97,10 +97,6 @@ final class DefaultMainTabBarCoordinator: MainTabBarCoordinator {
     }
     
     private func configureTabBarItem(of page: TabBarPage) -> UITabBarItem {
-//        return UITabBarItem(title: page.toTitle(),
-//                            image: UIImage(named: page.toIconName()),
-//                            tag: page.pageOfNumber())
-        
         UITabBarItem(title: page.toTitle(),
                      image: UIImage(named: page.toIconName())?.withRenderingMode(.alwaysOriginal),
                      selectedImage: UIImage(named: page.toSelectedIconName())?.withRenderingMode(.alwaysOriginal))
@@ -148,6 +144,7 @@ extension DefaultMainTabBarCoordinator: CoordinatorFinishDelegate {
         self.childCoordinators = childCoordinators.filter { $0.type != childCoordinator.type }
         if childCoordinator.type == .home {
             // TODO: logic
+            selectPage(.question)
         }
     }
 }

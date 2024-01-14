@@ -16,103 +16,106 @@ final class FCMHandler {
     static let shared = FCMHandler()
     let userNotificationCenter = UNUserNotificationCenter.current()
     
+    let partnerSignalObservable = PublishRelay<Signal>()
+    let partnerChatRoomStatusObserver = PublishRelay<Bool>()
+    
     func handle(userInfo: [AnyHashable: Any]) {
-        print("FCM Handeler")
-        print(userInfo)
-        
         guard let type: String = userInfo["type"] as? String else {
             debugPrint("fcm으로 온 데이터에 type이 적혀있지 않습니다.")
             return
         }
         
         switch type {
-        case "createCouple":
-            handleCoupleRegistration(userInfo)
-        case "todayQuestion":
-            handleTodayQusetion(userInfo)
-        case "pressForAnswer":
-            handlePressForAnswer(userInfo)
-        case "answerQuestion":
-            handleAnswerQuestion(userInfo)
-        case "addChallenge":
-            handleAddChallenge(userInfo)
-        case "modifyChallenge":
-            handelModifyChallenge(userInfo)
-        case "deleteChallenge":
-            handelDeleteChallenge(userInfo)
-        case "completeChallenge":
-            handelCompleteChallenge(userInfo)
+        case "signalChatting":
+            handleSignalChatting(userInfo)
         case "chatRoomStatusChange":
-            print("앱 상태")
+            print(userInfo)
+        case "pressForAnswerChatting":
+            handlePressForAnswerChatting(userInfo)
             
         default:
             print("fcm 타입에 매칭되는 타입이 존재하지 않습니다.")
         }
     }
-    
-    func handleCoupleRegistration(_ data: [AnyHashable: Any]) {
-//        print(data["message"])
-//        print(data["title"])
+}
+
+// MARK: Chat
+extension FCMHandler {
+    func handlePartnerChatRoomStatus(_ data: [AnyHashable: Any]) {
+        guard let status = data["isInChat"] as? Bool else { return }
+        
+        partnerChatRoomStatusObserver.accept(status)
     }
+}
+
+// MARK: Couple
+extension FCMHandler {
     
-    func handleTodayQusetion(_ data: [AnyHashable: Any]) {
-        guard let title = data["title"] as? String,
-              let message = data["message"] as? String,
-              let index = data["index"] as? Int,
-              let identifier = data["gcm.message_id"] as? String else { return }
-                
-        showNotification(identifier: identifier,
-                         title: title,
-                         body: message,
-                         userInfo: ["destination": "answer",
-                                    "index": index]
-        )
-    }
-    
-    func handlePressForAnswer(_ data: [AnyHashable: Any]) {
-//        print(data["index"])
-    }
-    
-    func handleAnswerQuestion(_ data: [AnyHashable: Any]) {
-        guard let title = data["title"] as? String,
-              let message = data["message"] as? String,
-              let index = data["index"] as? Int,
-              let identifier = data["gcm.message_id"] as? String else { return }
+}
+
+// MARK: Question
+extension FCMHandler {
+    func handlePressForAnswerChatting(_ data: [AnyHashable: Any]) {
+        guard let chatIndexStr = data["index"] as? String,
+              let chatPageIndexStr = data["pageIndex"] as? String,
+              let chatIsReadStr = data["isRead"] as? String,
+              let questionIndexStr = data["coupleQuestion"] as? String,
+        let identifier = data["gcm.message_id"] as? String else { return }
+        
+        print(chatIndexStr)
+        print(chatPageIndexStr)
+        print(chatIsReadStr)
+        print(questionIndexStr)
         
         showNotification(identifier: identifier,
-                         title: title,
-                         body: message,
-                         userInfo: ["destination": "answer",
-                                    "index": index]
-        )
+                         title: "쿡쿡👉👉답장해줘!😑",
+                         body: "오늘의 질문에 답변을 남겨주세요!")
+        
+    }
+}
+
+// MARK: Signal
+extension FCMHandler {
+    func handleSignalChatting(_ data: [AnyHashable: Any]) {
+        guard let signalTypeStr = data["signal"] as? String,
+              let pageIndexStr = data["pageIndex"] as? String,
+              let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let signalType = mappingSignalType(signalTypeStr),
+              let pageIndex = Int(pageIndexStr),
+              let index = Int(indexStr) else { return }
+        
+        print(isReadStr)
+        print(createAtStr)
+        print(pageIndex)
+        print(index)
+        
+        partnerSignalObservable.accept(Signal(type: signalType))
+        
+        showNotification(identifier: identifier,
+                         title: "오늘 내 시그널은 말야!💋",
+                         body: "OOO님이 은밀한 시그널을 보냈어요!")
     }
     
-    func handleAddChallenge(_ data: [AnyHashable: Any]) {
-        guard let index = data["index"] as? Int,
-              let identifier = data["gcm.message_id"] as? String else { return }
+    func mappingSignalType(_ str: String) -> SignalType? {
+        switch str {
+        case "100":
+            return SignalType.sexy
+        case "75":
+            return SignalType.love
+        case "50":
+            return SignalType.ambiguous
+        case "25":
+            return SignalType.refuse
+        case "0":
+            return SignalType.tired
+        default:
+            break
+        }
         
-        print("FMC 상대방 질문 추가: \(index)")
-    }
-    
-    func handelModifyChallenge(_ data: [AnyHashable: Any]) {
-        guard let index = data["index"] as? Int,
-              let identifier = data["gcm.message_id"] as? String else { return }
-        
-        print("FMC 상대방 질문 수정: \(index)")
-    }
-    
-    func handelDeleteChallenge(_ data: [AnyHashable: Any]) {
-        guard let index = data["index"] as? Int,
-              let identifier = data["gcm.message_id"] as? String else { return }
-        
-        print("FMC 상대방 질문 삭제: \(index)")
-    }
-    
-    func handelCompleteChallenge(_ data: [AnyHashable: Any]) {
-        guard let index = data["index"] as? Int,
-              let identifier = data["gcm.message_id"] as? String else { return }
-        
-        print("FMC 상대방 질문 완료: \(index)")
+        return nil
     }
 }
 

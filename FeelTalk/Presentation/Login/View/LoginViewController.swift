@@ -50,6 +50,8 @@ final class LoginViewController: UIViewController {
     
     private lazy var speechBubble: LoginSpeechBubbleView = { LoginSpeechBubbleView() }()
     
+    private lazy var inquiryButton: InquiryButton = { InquiryButton() }()
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -68,7 +70,8 @@ final class LoginViewController: UIViewController {
         let input = LoginViewModel.Input(tapAppleLoginButton: appleLoginButton.rx.tap,
                                          tapGoogleLoginButton: googleLoginButton.rx.tap,
                                          tapKakaoLoginButton: kakaoLoginButton.rx.tap,
-                                         tapNaverLoginButton: naverLoginButton.rx.tap)
+                                         tapNaverLoginButton: naverLoginButton.rx.tap,
+                                         tapInquiryButton: inquiryButton.rx.tap)
         
         _ = viewModel.transfer(input: input)
     }
@@ -89,12 +92,13 @@ final class LoginViewController: UIViewController {
         makeLoginButtonStackViewConstraints()
         makeLoginButtonsConstraints()
         makeSpeechBubbleConstraints()
+        makeInquiryButtonConstraints()
     }
 }
 
 extension LoginViewController {
     private func addViewSubComponents() {
-        [logoView, bottomSheet, loginButtonStackView, speechBubble].forEach { view.addSubview($0) }
+        [logoView, bottomSheet, loginButtonStackView, speechBubble, inquiryButton].forEach { view.addSubview($0) }
     }
     
     private func makeLogoViewConstraints() {
@@ -135,6 +139,13 @@ extension LoginViewController {
             $0.bottom.equalTo(loginButtonStackView.snp.top).offset(LoginSpeechBubbleViewNameSpace.bottomOffset)
             $0.width.equalTo(LoginSpeechBubbleViewNameSpace.width)
             $0.height.equalTo(LoginSpeechBubbleViewNameSpace.height)
+        }
+    }
+    
+    private func makeInquiryButtonConstraints() {
+        inquiryButton.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(loginButtonStackView.snp.bottom).offset(LoginViewNameSpace.inquiryButtonTopOffset)
         }
     }
 }

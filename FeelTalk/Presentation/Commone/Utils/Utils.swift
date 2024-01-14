@@ -38,3 +38,39 @@ class Utils {
         }
     }
 }
+
+// MARK: Date
+extension Utils {
+    static func convertDateToStr(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        return formatter.string(from: date)
+    }
+    
+    static func calculateTimeInterval(time01: Date, time02: Date) -> Int {
+        let interval = Int(time01.timeIntervalSince(time02))
+        
+        return interval
+    }
+    
+    static func formatChallengeDeadline(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 M월 d일까지"
+        
+        return formatter.string(from: date)
+    }
+    
+    static func calculateDday(_ date: Date) -> String {
+        let interval = date.timeIntervalSince(Date()) / 86400
+        
+        if interval < 0 {
+            return "D-day"
+        } else if interval > 999 {
+            return "D+999"
+        } else {
+            return "D-\(Int(interval) + 1)"
+        }
+    }
+}

@@ -9,23 +9,33 @@ import UIKit
 import SnapKit
 
 final class PartnerNoAnswerView: UIView {
+    private lazy var contentStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.distribution = .fillProportionally
+        stackView.spacing = PartnerNoAnswerViewNameSpace.contentStackViewSpacing
+        
+        return stackView
+    }()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = PartnerNoAnswerViewNameSpace.titleLabelText
-        label.textColor = UIColor(named: PartnerNoAnswerViewNameSpace.titleLabelTextColor)
+        label.textColor = UIColor(named: CommonColorNameSpace.gray600)
         label.textAlignment = .center
-        label.font = UIFont(name: PartnerNoAnswerViewNameSpace.titleLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                             size: PartnerNoAnswerViewNameSpace.titleLabelTextSize)
         
         return label
     }()
     
-    lazy var answerChaseUpButton: UIButton = {
+    lazy var pressForAnswerButton: UIButton = {
         let button = UIButton()
         button.setTitle(PartnerNoAnswerViewNameSpace.answerChaseUpButtonTitleText,
                         for: .normal)
         button.titleLabel?.textColor = .white
-        button.titleLabel?.font = UIFont(name: PartnerNoAnswerViewNameSpace.answerChaseUpButtonTitleTextFont,
+        button.titleLabel?.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
                                          size: PartnerNoAnswerViewNameSpace.answerChaseUpButtonTitleTextSize)
         button.backgroundColor = .black
         button.layer.cornerRadius = PartnerNoAnswerViewNameSpace.answerCuaseUpButtonCornerRadius
@@ -36,7 +46,7 @@ final class PartnerNoAnswerView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
     
-        self.setAttributes()
+        self.setProperties()
         self.addSubComponents()
         self.setConfigurations()
     }
@@ -45,34 +55,41 @@ final class PartnerNoAnswerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setAttributes() {
-        self.backgroundColor = UIColor(named: PartnerNoAnswerViewNameSpace.backgroundColor)
+    private func setProperties() {
+        self.backgroundColor = UIColor(named: CommonColorNameSpace.gray200)
         self.layer.cornerRadius = PartnerNoAnswerViewNameSpace.cornerRadius
     }
     
     private func addSubComponents() {
-        [titleLabel, answerChaseUpButton].forEach { addSubview($0) }
+        addViewSubComponents()
+        addContentStakcViewSubComponents()
     }
     
     private func setConfigurations() {
+        makeContentStackViewConstraints()
         makeTitleLabelConstraints()
-        makeAnswerChaseUpButtonConstraints()
+        makePressForAnswerButtonConstraints()
     }
 }
 
 extension PartnerNoAnswerView {
+    private func addViewSubComponents() { addSubview(contentStackView) }
+    
+    private func makeContentStackViewConstraints() {
+        contentStackView.snp.makeConstraints { $0.center.equalToSuperview() }
+    }
+    
+    private func addContentStakcViewSubComponents() {
+        [titleLabel, pressForAnswerButton].forEach { contentStackView.addArrangedSubview($0) }
+    }
     private func makeTitleLabelConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(PartnerNoAnswerViewNameSpace.titleLabelTopInset)
-            $0.centerX.equalToSuperview()
             $0.height.equalTo(PartnerNoAnswerViewNameSpace.titleLabelHeight)
         }
     }
     
-    private func makeAnswerChaseUpButtonConstraints() {
-        answerChaseUpButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(PartnerNoAnswerViewNameSpace.answerChaseUpButtonBottomInset)
-            $0.centerX.equalToSuperview()
+    private func makePressForAnswerButtonConstraints() {
+        pressForAnswerButton.snp.makeConstraints {
             $0.width.equalTo(PartnerNoAnswerViewNameSpace.answerChaseUpButtonWidth)
             $0.height.equalTo(PartnerNoAnswerViewNameSpace.answerChaseUpButotnHeight)
         }
@@ -86,6 +103,10 @@ import SwiftUI
 struct PartnerNoAnswerView_Previews: PreviewProvider {
     static var previews: some View {
         PartnerNoAnswerView_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width - (CommonConstraintNameSpace.leadingInset + CommonConstraintNameSpace.trailingInset),
+                   height: PartnerNoAnswerViewNameSpace.height,
+                   alignment: .center)
     }
     
     struct PartnerNoAnswerView_Presentable: UIViewRepresentable {

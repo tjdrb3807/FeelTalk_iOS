@@ -40,7 +40,7 @@ extension ChatAPI: Router, URLRequestConvertible {
             .getChatList(accessToken: let accessToken, pnageNo: _):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
-                    "Authorization": "Bearer \(accessToken)"]
+                    "Authorization": accessToken]
         }
     }
     

@@ -14,33 +14,35 @@ class NicknameViewModel {
     // MARK: Dependencies
     private weak var coodinator: NicknameCoordinator?
     private let signUpUseCase: SignUpUseCase
-    private let disposeBag = DisposeBag()
-    private var signUp: SignUp
     
-    init(coordinator: NicknameCoordinator,
-         signUpUseCase: SignUpUseCase,
-         signUp: SignUp) {
+    let isMarketingConsented = ReplayRelay<Bool>.create(bufferSize: 1)
+    let nicknameTextError = BehaviorRelay<NicknameError>(value: .none)
+    
+    private let disposeBag = DisposeBag()
+    
+    init(coordinator: NicknameCoordinator, signUpUseCase: SignUpUseCase) {
         self.coodinator  = coordinator
         self.signUpUseCase = signUpUseCase
-        self.signUp = signUp
     }
     
-    // MARK: ViewModel input stream.
     struct Input {
-        let inputNickname: ControlProperty<String>
+        let nicknameText: Observable<String>
         let tapNextButton: ControlEvent<Void>
         let tapNavigationBarLeftButton: ControlEvent<Void>
     }
     
-    // MARK: ViewModel output stream.
     struct Output {
         let activateNextButton: BehaviorRelay<Bool> = BehaviorRelay<Bool>(value: false)
         let keyboardHeight: BehaviorRelay<CGFloat> = BehaviorRelay<CGFloat>(value: 0.0)
-        let preventSpacing: PublishRelay<String> = PublishRelay<String>()
+        let nicknameTextError = PublishRelay<NicknameError>()
     }
     
     func transform(input: Input) -> Output {
         let output = Output()
+        
+        nicknameTextError
+            .bind(to: output.nicknameTextError)
+            .disposed(by: disposeBag)
         
         // 키보드 높이
         RxKeyboard.instance.visibleHeight
@@ -51,42 +53,42 @@ class NicknameViewModel {
                 output.keyboardHeight.accept(keyboardHeight)
             }.disposed(by: disposeBag)
         
-        // 띄어쓰기 방지
-        input.inputNickname
-            .asObservable()
-            .scan("") { lastValue, newValue in
-                let removedSpaceString = newValue.replacingOccurrences(of: " ", with: "")
-                return removedSpaceString.count == newValue.count ? newValue : lastValue
-            }.bind(to: output.preventSpacing)
+        input.nicknameText
+            .map { $0.count }
+            .filter { $0 > 10 }
+            .map { _ in NicknameError.moreNumberOfChar }
+            .bind(to: output.nicknameTextError)
             .disposed(by: disposeBag)
         
+        // 특수문자, 띄어쓰기 방지 정규식
+        input.nicknameText
+            .map { text in
+                let pattern = "^[0-9a-zㅏ-ㅣA-Zㄱ-ㅎ가-핳]*$"
+                
+                guard let _ = text.range(of: pattern, options: .regularExpression) else { return NicknameError.ignoreRegularExpression }
+                
+                return NicknameError.none
+            }.distinctUntilChanged()
+            .bind(to: nicknameTextError)
+            .disposed(by: disposeBag)
+            
         // next버튼 활성화
-        input.inputNickname
+        input.nicknameText
             .map { $0.count > 0 ? true : false }
+            .withLatestFrom(nicknameTextError) { $1 != .none ? false : $0 }
             .bind(to: output.activateNextButton)
             .disposed(by: disposeBag)
         
-        // 회원가입
         input.tapNextButton
+            .withLatestFrom(isMarketingConsented)
+            .withLatestFrom(input.nicknameText) { SignUpInfo(nickname: $1, marketingConsent: $0) }
             .withUnretained(self)
-            .withLatestFrom(input.inputNickname) { vm, nickname -> SignUp in
-                vm.0.signUp.nickname = nickname
-
-                return vm.0.signUp
-            }.withUnretained(self)
-            .map { vm, signUp -> Void in
-                vm.signUpUseCase.signUp(snsType: vm.signUp.snsType,
-                                        nickname: vm.signUp.nickname,
-                                        refreshToken: vm.signUp.refreshToken,
-                                        authCode: vm.signUp.authCode,
-                                        idToken: vm.signUp.idToken,
-                                        state: vm.signUp.state,
-                                        authorizationCode: vm.signUp.authorizationCode,
-                                        marketingConsent: vm.signUp.marketingConsent)
-            }.withUnretained(self)
-            .delay(.seconds(1), scheduler: MainScheduler.asyncInstance)
-            .bind { vm, _ in
-                vm.coodinator?.showInviteCodeFlow()
+            .bind { vm, model in
+                vm.signUpUseCase.signUp(model)
+                    .filter { $0 }
+                    .bind { _ in
+                        vm.coodinator?.finish()                        
+                    }.disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
         
         input.tapNavigationBarLeftButton

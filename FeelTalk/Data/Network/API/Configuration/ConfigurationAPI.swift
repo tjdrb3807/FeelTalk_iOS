@@ -43,7 +43,7 @@ extension ConfigurationAPI: Router, URLRequestConvertible {
                 .getServiceDataTotalCount(accessToken: let accessToken):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
-                    "Authorization": "Bearer \(accessToken)"]
+                    "Authorization": accessToken]
         }
     }
     

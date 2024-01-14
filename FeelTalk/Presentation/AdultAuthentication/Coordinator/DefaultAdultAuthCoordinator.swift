@@ -54,6 +54,12 @@ final class DefaultAdultAuthCoordiantor: AdultAuthCoordinator {
         self.navigationController.viewControllers.removeLast()
         self.navigationController.dismiss(animated: false)
     }
+    
+    func finish() {
+        self.childCoordinators.removeAll()
+        self.navigationController.popViewController(animated: false)
+        self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+    }
 }
 
 extension DefaultAdultAuthCoordiantor: CoordinatorFinishDelegate {

@@ -15,13 +15,14 @@ final class DefaultChallengeCoordinator: ChallengeCoordinator {
     var childCoordinators: [Coordinator] = []
     var challengeViewController: ChallengeViewController
     var type: CoordinatorType = .challenge
+    
     var challengeModel = PublishRelay<Challenge>()
+    var typeObserver = PublishRelay<ChallengeDetailViewType>()
     private let disposeBag = DisposeBag()
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.challengeViewController = ChallengeViewController()
-    
     }
     
     func start() {
@@ -32,10 +33,14 @@ final class DefaultChallengeCoordinator: ChallengeCoordinator {
     func showChallengeDetailFlow() {
         let challengeDetailCoordinator = DefaultChallengeDetailCoordinator(self.navigationController)
         
+        typeObserver
+            .bind(to: challengeDetailCoordinator.typeObserver)
+            .disposed(by: disposeBag)
+        
         challengeModel
-            .bind { model in
-                challengeDetailCoordinator.challengeModel.accept(model)
-            }.disposed(by: disposeBag)
+            .bind(to: challengeDetailCoordinator.challengeModel)
+            .disposed(by: disposeBag)
+        
         childCoordinators.append(challengeDetailCoordinator)
         challengeDetailCoordinator.finishDelegate = self
         challengeDetailCoordinator.start()

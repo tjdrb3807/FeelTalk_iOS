@@ -12,8 +12,8 @@ final class PartnerGotAnswerView: UIView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = PartnerGotAnswerViewNameSpace.titleLabelText
-        label.textColor = UIColor(named: PartnerGotAnswerViewNameSpace.titleLabelTextColor)
-        label.font = UIFont(name: PartnerGotAnswerViewNameSpace.titleLabelTextFont,
+        label.textColor = UIColor(named: CommonColorNameSpace.main500)
+        label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                             size: PartnerGotAnswerViewNameSpace.titleLabelTextSize)
         
         return label
@@ -32,7 +32,7 @@ final class PartnerGotAnswerView: UIView {
     }
     
     private func setAttributes() {
-        self.backgroundColor = UIColor(named: PartnerGotAnswerViewNameSpace.backgroundColor)
+        self.backgroundColor = UIColor(named: CommonColorNameSpace.gray200)
         self.layer.cornerRadius = PartnerGotAnswerViewNameSpace.cornerRadius
     }
     
@@ -54,6 +54,10 @@ import SwiftUI
 struct PartnerGotAnswerView_Previews: PreviewProvider {
     static var previews: some View {
         PartnerGotAnswerView_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width - (CommonConstraintNameSpace.leadingInset + CommonConstraintNameSpace.trailingInset),
+                   height: PartnerGotAnswerViewNameSpace.height,
+                   alignment: .center)
     }
     
     struct PartnerGotAnswerView_Presentable: UIViewRepresentable {

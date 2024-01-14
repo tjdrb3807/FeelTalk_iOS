@@ -9,16 +9,21 @@ import Foundation
 import Alamofire
 
 enum ChallengeAPI {
-    case addChallenge(accessToken: String, challenge: Challenge) // 챌린지 추가하기
-    case modifiyChallenge(accessToken: String, challenge: Challenge)
-    case removeChallenge(accessToken: String, index: Int)
-    case getChallenge(accessToken: String, index: Int)
     case completeChallenge(accessToken: String, index: Int)
+    
+    case getChallenge(accessToken: String, index: Int)
+    
     case getChallengeCount(accessToken: String)
-    case getOngoingChallengeList(accessToken: String, pageNo: ChallengePage)
-    case getLatestOngingChallengePageNo(accessToken: String)
-    case getCompletedChallengeList(accessToken: String, pageNo: ChallengePage)
-    case getLatestCompletedChallengePageNo(accessToken: String)
+    
+    case getCompletedChallengeLatestPageNo(accessToken: String)
+    
+    case getCompletedChallengeList(accessToken: String, requestDTO: ChallengeListRequestDTO)
+    
+    case getOngoingChallengeLatestPageNo(accessToken: String)
+    
+    case getOngoingChallengeList(accessToken: String, requestDTO: ChallengeListRequestDTO)
+    
+    case removeChallenge(accessToken: String, index: Int)
 }
 
 extension ChallengeAPI: Router, URLRequestConvertible {
@@ -26,33 +31,38 @@ extension ChallengeAPI: Router, URLRequestConvertible {
     
     var path: String {
         switch self {
-        case .addChallenge, .modifiyChallenge, .removeChallenge:
-            return "/api/v1/challenge"
+        case .completeChallenge:
+            return "/api/v1/challnege/complete"
         case .getChallenge(accessToken: _, index: let index):
             return "/api/v1/challenge/\(index)"
         case .getChallengeCount:
             return "/api/v1/challenge/count"
-        case .completeChallenge:
-            return "/api/v1/challnege/complete"
-        case .getOngoingChallengeList:
-            return "/api/v1/challenges/in-progress"
-        case .getLatestOngingChallengePageNo:
-            return "/api/v1/challenge/in-progress/last/page-no"
+        case .getCompletedChallengeLatestPageNo:
+            return "/api/v1/challenge/done/last/page-no"
         case .getCompletedChallengeList:
             return "/api/v1/challenges/done"
-        case .getLatestCompletedChallengePageNo:
-            return "/api/v1/challenge/done/last/page-no"
+        case .getOngoingChallengeLatestPageNo:
+            return "/api/v1/challenge/in-progress/last/page-no"
+        case .getOngoingChallengeList:
+            return "/api/v1/challenges/in-progress"
+        case.removeChallenge:
+            return "/api/v1/challenge"
+        
         }
     }
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .addChallenge, .getOngoingChallengeList, .getCompletedChallengeList:
-            return .post
-        case .getChallenge, .getChallengeCount, .getLatestOngingChallengePageNo, .getLatestCompletedChallengePageNo:
-            return .get
-        case .modifiyChallenge, .completeChallenge:
+        case .completeChallenge:
             return .put
+        case .getChallenge,
+                .getChallengeCount,
+                .getCompletedChallengeLatestPageNo,
+                .getOngoingChallengeLatestPageNo:
+            return .get
+        case .getCompletedChallengeList,
+                .getOngoingChallengeList:
+            return .post
         case .removeChallenge:
             return .delete
         }
@@ -60,49 +70,46 @@ extension ChallengeAPI: Router, URLRequestConvertible {
     
     var header: [String : String] {
         switch self {
-        case .addChallenge(let accessToken, challenge: _),
+        case .completeChallenge(accessToken: let accessToken, index: _),
                 .getChallenge(accessToken: let accessToken, index: _),
-                .modifiyChallenge(accessToken: let accessToken, challenge: _),
-                .removeChallenge(accessToken: let accessToken, index: _),
-                .completeChallenge(accessToken: let accessToken, index: _),
                 .getChallengeCount(accessToken: let accessToken),
-                .getOngoingChallengeList(accessToken: let accessToken, pageNo: _),
-                .getLatestOngingChallengePageNo(accessToken: let accessToken),
-                .getCompletedChallengeList(accessToken: let accessToken, pageNo: _),
-                .getLatestCompletedChallengePageNo(accessToken: let accessToken):
+                .getCompletedChallengeLatestPageNo(accessToken: let accessToken),
+                .getCompletedChallengeList(accessToken: let accessToken, requestDTO: _),
+                .getOngoingChallengeLatestPageNo(accessToken: let accessToken),
+                .getOngoingChallengeList(accessToken: let accessToken, requestDTO: _),
+                .removeChallenge(accessToken: let accessToken, index: _):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
-                    "Authorization": "Bearer \(accessToken)"]
+                    "Authorization": accessToken]
         }
     }
     
     var parameters: [String : Any]? {
         switch self {
-        case .addChallenge(accessToken: _, challenge: let challenge):
-            return ["title": challenge.title,
-                    "deadline": challenge.deadline,
-                    "content": challenge.content]
-        case .modifiyChallenge(accessToken: _, challenge: let challenge):
-            return ["index": challenge.index!,
-                    "title": challenge.title,
-                    "deadline": challenge.deadline,
-                    "content": challenge.content]
-        case .removeChallenge(accessToken: _, index: let index),
-                .completeChallenge(accessToken: _, index: let index):
+        case .completeChallenge(accessToken: _, index: let index),
+                .removeChallenge(accessToken: _, index: let index):
             return ["index": index]
-        case .getOngoingChallengeList(accessToken: _, pageNo: let pageNo),
-                .getCompletedChallengeList(accessToken: _, pageNo: let pageNo):
-            return ["pageNo": pageNo.pageNo]
-        case .getChallenge, .getChallengeCount, .getLatestOngingChallengePageNo, .getLatestCompletedChallengePageNo:
+        case .getCompletedChallengeList(accessToken: _, requestDTO: let dto),
+                .getOngoingChallengeList(accessToken: _, requestDTO: let dto):
+            return ["pageNo": dto.pageNo]
+        case .getChallenge,
+                .getChallengeCount,
+                .getCompletedChallengeLatestPageNo,
+                .getOngoingChallengeLatestPageNo:
             return nil
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .addChallenge, .modifiyChallenge,  .removeChallenge, .getChallenge, .completeChallenge,
-                .getChallengeCount, .getOngoingChallengeList, .getLatestOngingChallengePageNo,
-                .getCompletedChallengeList, .getLatestCompletedChallengePageNo:
+        case .completeChallenge,
+                .getChallenge,
+                .getChallengeCount,
+                .getCompletedChallengeLatestPageNo,
+                .getCompletedChallengeList,
+                .getOngoingChallengeLatestPageNo,
+                .getOngoingChallengeList,
+                .removeChallenge:
             return JSONEncoding.default
         }
     }

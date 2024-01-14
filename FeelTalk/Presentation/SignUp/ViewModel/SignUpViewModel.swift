@@ -22,7 +22,7 @@ final class SignUpViewModel {
     private let signUpUseCase: SignUpUseCase
     private let dispoasBag = DisposeBag()
 
-    private let adultAuthenticated = BehaviorRelay<AdultAuthStatus>(value: .nonAuthenticated)
+    let adultAuthenticated = BehaviorRelay<AdultAuthStatus>(value: .nonAuthenticated)
     private let consentButtonTapped = PublishRelay<ConsentButtonType>()
     private let toggleFullConsent = BehaviorRelay<Bool>(value: false)
     private let toggleServiceConsent = BehaviorRelay<Bool>(value: false)
@@ -148,21 +148,22 @@ final class SignUpViewModel {
                                  toggleSensitiveInfoConsent) { $0 && $1 && $2 }
             .bind(to: output.isNextButtonEnabled)
             .disposed(by: dispoasBag)
-        //
-        //        input.tapNextButton
-        //            .withUnretained(self)
-        //            .withLatestFrom(toggleMarketingInfoConsent) { vm, state -> SignUp in
-        //                return SignUp(snsType: vm.0.snsLogin.snsType,
-        //                              nickname: "",
-        //                              refreshToken: vm.0.snsLogin.refreshToken,
-        //                              authCode: vm.0.snsLogin.authCode,
-        //                              idToken: vm.0.snsLogin.idToken,
-        //                              authorizationCode: vm.0.snsLogin.authCode,
-        //                              marketingConsent: state)
-        //            }.withUnretained(self)
-        //            .bind { vm, signUp in
-        //                vm.coordinator?.showNicknameFlow(with: signUp)
-        //            }.disposed(by: dispoasBag)
+        
+        input.tapNextButton
+            .withLatestFrom(toggleMarketingInfoConsent)
+            .withUnretained(self)
+            .bind { vm, state in
+                vm.coordinator?.showNicknameFlow()
+                vm.coordinator?.isMarketingConsented.accept(state)
+            }.disposed(by: dispoasBag)
+        
+        input.tapNextButton
+            .withLatestFrom(toggleMarketingInfoConsent)
+            .withUnretained(self)
+            .bind { vm, state in
+                
+            }.disposed(by: dispoasBag)
+            
         
         input.tapPopButton
             .asObservable()

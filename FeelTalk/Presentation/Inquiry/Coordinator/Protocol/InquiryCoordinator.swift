@@ -9,4 +9,6 @@ import Foundation
 
 protocol InquiryCoordinator: Coordinator {
     var inquiryViewController: InquiryViewController { get set }
+    
+    func dismiss()
 }

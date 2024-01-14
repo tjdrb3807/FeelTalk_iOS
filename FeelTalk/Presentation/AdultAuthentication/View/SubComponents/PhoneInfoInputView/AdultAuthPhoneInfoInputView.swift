@@ -33,6 +33,7 @@ final class AdultAuthPhoneInfoInputView: UIStackView {
         self.bind()
         self.setProperties()
         self.addSubComponents()
+        self.setConsetraints()
     }
     
     required init(coder: NSCoder) {
@@ -43,8 +44,14 @@ final class AdultAuthPhoneInfoInputView: UIStackView {
         selectedNewsAgency
             .withUnretained(self)
             .bind { v, type in
-                v.updateNewsAgencyButtonsConstraints(with: type)
                 v.newsAgencyButton.selectedNewsAgency.accept(type)
+            }.disposed(by: disposeBag)
+        
+        selectedNewsAgency
+            .skip(1)
+            .withUnretained(self)
+            .bind { v, type in
+                v.updateNewsAgencyButtonsConstraints(with: type)
             }.disposed(by: disposeBag)
     }
     
@@ -57,14 +64,30 @@ final class AdultAuthPhoneInfoInputView: UIStackView {
     }
     
     private func addSubComponents() {
+        addViewSubComponents()
+    }
+    
+    private func setConsetraints() {
+        makeNewsAgencyButtonConstraints()
+    }
+}
+
+extension AdultAuthPhoneInfoInputView {
+    private func addViewSubComponents() {
         [newsAgencyButton, phoneNumberInputView].forEach { addArrangedSubview($0) }
+    }
+    
+    private func makeNewsAgencyButtonConstraints() {
+        newsAgencyButton.snp.makeConstraints {
+            $0.width.equalTo(AdultAuthNewsAgencyButtonNameSpace.defaultWidth)
+        }
     }
 }
 
 extension AdultAuthPhoneInfoInputView {
     private func updateNewsAgencyButtonsConstraints(with type: NewsAgencyType) {
-        UIView.animate(withDuration: 1.3,
-                       delay: 1.0,
+        UIView.animate(withDuration: 0.5,
+                       delay: 0.0,
                        options: .curveEaseInOut,
                        animations: {
             switch type {
@@ -77,6 +100,7 @@ extension AdultAuthPhoneInfoInputView {
                     $0.width.equalTo(AdultAuthNewsAgencyButtonNameSpace.thriftyTypeWidht)
                 }
             }
+            self.layoutIfNeeded()
         })
     }
 }

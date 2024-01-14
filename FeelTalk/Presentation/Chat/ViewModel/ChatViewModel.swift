@@ -29,6 +29,8 @@ final class ChatViewModel {
         let messageText: Observable<String>
         let tapFunctionButton: Observable<Void>
         let viewWillAppear: ControlEvent<Bool>
+        let tapDimmiedView: Observable<Void>
+        let tapChatRoomButton: Observable<Void>
     }
     
     struct Output {
@@ -53,14 +55,14 @@ final class ChatViewModel {
                 vm.keyboardHeight.accept(keyboardHeight)
             }.disposed(by: disposeBag)
         
-        input.viewWillAppear
-            .withUnretained(self)
-            .bind { vm, _ in
-                vm.chatUseCase.getLastPageNo()
-                    .bind(onNext: {
-                        print($0)
-                    }).disposed(by: vm.disposeBag)
-            }.disposed(by: disposeBag)
+//        input.viewWillAppear
+//            .withUnretained(self)
+//            .bind { vm, _ in
+//                vm.chatUseCase.getLastPageNo()
+//                    .bind(onNext: {
+//                        print($0)
+//                    }).disposed(by: vm.disposeBag)
+//            }.disposed(by: disposeBag)
         
         input.tapInputButton
             .withLatestFrom(inputMode)
@@ -96,6 +98,14 @@ final class ChatViewModel {
             .scan(false) { lastState, newState in !lastState }
             .bind(to: isFunctionActive)
             .disposed(by: disposeBag)
+        
+        Observable
+            .merge(input.tapDimmiedView,
+                   input.tapChatRoomButton)
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.finish()
+            }.disposed(by: disposeBag)
             
         return Output(keyboardHeight: self.keyboardHeight,
                       inputMode: self.inputMode,

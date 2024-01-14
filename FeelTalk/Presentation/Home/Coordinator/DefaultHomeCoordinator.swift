@@ -16,8 +16,7 @@ final class DefaultHomeCoordinator: HomeCoordinator {
     var homeViewController: HomeViewController
     var type: CoordinatorType = .home
     
-    var signalModel = PublishRelay<Signal>()
-    var reloadData = PublishSubject<Void>()
+    var model = PublishRelay<Question>()
     private let disposeBag = DisposeBag()
     
     init(_ navigationController: UINavigationController) {
@@ -27,30 +26,53 @@ final class DefaultHomeCoordinator: HomeCoordinator {
     
     func start() {
         homeViewController.viewModel = HomeViewModel(coordinator: self,
-                                                          qustionUseCase: DefaultQuestionUseCase(
-                                                            questionRepository: DefaultQuestionRepository()))
+                                                     qustionUseCase: DefaultQuestionUseCase(questionRepository: DefaultQuestionRepository(),
+                                                                                            userRepository: DefaultUserRepository()),
+                                                     signalUseCase: DefaultSignalUseCase(signalRepositroy: DefaultSignalRepository()))
         navigationController.navigationBar.isHidden = true
         navigationController.pushViewController(self.homeViewController, animated: true)
     }
     
+    func showAnswerFlow() {
+        let answerCoordinator = DefaultAnswerCoordinator(self.navigationController)
+        
+        model
+            .bind(to: answerCoordinator.model)
+            .disposed(by: disposeBag)
+        
+        childCoordinators.append(answerCoordinator)
+        answerCoordinator.finishDelegate = self
+        answerCoordinator.start()
+    }
+    
     func showSignalFlow() {
         let signalCoordinator = DefaultSignalCoordinator(self.navigationController)
-        signalModel
-            .bind(to: signalCoordinator.signalModel)
-            .disposed(by: disposeBag)
         
         childCoordinators.append(signalCoordinator)
         signalCoordinator.finishDelegate = self
         signalCoordinator.start()
     }
+    
+    func showChatFlow() {
+        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
+        
+        childCoordinators.append(chatCoordinator)
+        chatCoordinator.finishDelegate = self
+        chatCoordinator.start()
+    }
 }
 
 extension DefaultHomeCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
+        self.navigationController.tabBarController?.tabBar.isHidden = false
         switch childCoordinator.type {
         case .signal:
-            homeViewController.viewModel.showBottomSheet.accept(())
-        default: break
+            homeViewController.viewModel.reloadObservable.accept(.signal)
+        case .answer:
+            homeViewController.viewModel.reloadObservable.accept(.todayQuestion)
+            showChatFlow()
+        default:
+            break
         }
     }
 }

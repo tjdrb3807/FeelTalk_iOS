@@ -28,10 +28,12 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
     private lazy var questionIndexLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.textColor = UIColor(named: QuestionTableHeaderViewNameSpace.questionIndexLabelTextColor)
-        label.font = UIFont(name: QuestionTableHeaderViewNameSpace.questionIndexLabelTextFont,
+        label.textColor = UIColor(named: CommonColorNameSpace.main300)
+        label.font = UIFont(name: CommonFontNameSpace.montserratBold,
                             size: QuestionTableHeaderViewNameSpace.questionIndexLabelTextSize)
-        label.backgroundColor = UIColor(named: QuestionTableHeaderViewNameSpace.questionIndexLabelBackgroundColor)
+        label.backgroundColor = UIColor(named: CommonColorNameSpace.main500)
+        label.layer.borderWidth = 1.0
+        label.layer.borderColor = UIColor(named: CommonColorNameSpace.main300)?.cgColor
         label.layer.cornerRadius = QuestionTableHeaderViewNameSpace.questionIndexLabelCornerRadius
         label.clipsToBounds = true
         
@@ -42,7 +44,7 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
         let label = UILabel()
         label.text = QuestionTableHeaderViewNameSpace.newSignalLabelText
         label.textColor = .white
-        label.font = UIFont(name: QuestionTableHeaderViewNameSpace.newSignalLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.montserratBold,
                             size: QuestionTableHeaderViewNameSpace.newSignalLabelTextSize)
         label.backgroundColor = .clear
         
@@ -53,7 +55,7 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
         let label = UILabel()
         label.textColor = .white
         label.textAlignment = .left
-        label.font = UIFont(name: QuestionTableHeaderViewNameSpace.questionLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
                             size: QuestionTableHeaderViewNameSpace.questionLabelTextSize)
         label.backgroundColor = .clear
         
@@ -64,7 +66,7 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
         let label = UILabel()
         label.textColor = .white
         label.textAlignment = .left
-        label.font = UIFont(name: QuestionTableHeaderViewNameSpace.questionLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
                             size: QuestionTableHeaderViewNameSpace.questionLabelTextSize)
         label.backgroundColor = .clear
         
@@ -76,7 +78,7 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
         button.setTitle(QuestionTableHeaderViewNameSpace.questionAnswerButtonBaseTitleText,
                         for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont(name: QuestionTableHeaderViewNameSpace.questionAnswerButtonTitleTextFont,
+        button.titleLabel?.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                                          size: QuestionTableHeaderViewNameSpace.questionAnswerButtonTitleTextSize)
         button.backgroundColor = .black
         button.layer.cornerRadius = QuestionTableHeaderViewNameSpace.qusetionAnswerButtonCornerRadius
@@ -98,7 +100,7 @@ final class QuestionTableHeaderView: UITableViewHeaderFooterView {
         label.text = QuestionTableHeaderViewNameSpace.sectionHeaderLabelText
         label.textColor = .black
         label.textAlignment = .left
-        label.font = UIFont(name: QuestionTableHeaderViewNameSpace.sectionHeaderLabelTextFont,
+        label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
                             size: QuestionTableHeaderViewNameSpace.sectionHeaderLabelTextSize)
         label.backgroundColor = .clear
         
@@ -212,8 +214,11 @@ extension QuestionTableHeaderView {
     
     private func makeBackgroundImageViewConstraints() {
         backgroundImageView.snp.makeConstraints {
-            $0.top.equalTo(questionHeaderLabel.snp.top).offset(QuestionTableHeaderViewNameSpace.backgroundImageViewTopOffset)
-            $0.leading.equalToSuperview().inset(QuestionTableHeaderViewNameSpace.backgroundImageViewLeadingInset)
+//            $0.top.equalTo(questionHeaderLabel.snp.top).offset(QuestionTableHeaderViewNameSpace.backgroundImageViewTopOffset)
+//            $0.leading.equalToSuperview().inset(QuestionTableHeaderViewNameSpace.backgroundImageViewLeadingInset)
+            $0.top.equalToSuperview().inset(CommonConstraintNameSpace.verticalRatioCalculator * 11.82)  // 96.0
+            $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.horizontalRatioCalculaotr * 61.1) // 231.0
+            
             $0.trailing.equalTo(todayQuestionView.snp.trailing)
             $0.bottom.equalTo(todayQuestionView.snp.bottom)
         }
@@ -262,7 +267,20 @@ struct QuestionTableHeaderView_Previews: PreviewProvider {
     
     struct QuestionTableHeaderView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            QuestionTableHeaderView()
+            let v = QuestionTableHeaderView()
+            v.model.accept(.init(index: 100,
+                                 pageNo: 0,
+                                 title: "안녕하세요",
+                                 header: "난 이게 가장 좋더라!",
+                                 body: "당신이 가장 좋아하는 스킨십은?",
+                                 highlight: [0, 1, 2],
+                                 myAnser: "안녕",
+                                 partnerAnser: "하이",
+                                 isMyAnswer: true,
+                                 isPartnerAnswer: true,
+                                 createAt: "010109"))
+            
+            return v
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

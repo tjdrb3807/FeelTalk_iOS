@@ -87,3 +87,16 @@ final class KeychainRepository {
         return false
     }
 }
+
+extension KeychainRepository {
+    static func setExpiredTime() -> String {
+        let expiredTime = Date(timeIntervalSinceNow: 3600)
+        let formatter = DateFormatter()
+        
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        let expiredTimeStr = formatter.string(from: expiredTime)
+        
+        return expiredTimeStr
+    }
+}

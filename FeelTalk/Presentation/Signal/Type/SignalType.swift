@@ -21,6 +21,25 @@ enum SignalType: String, Equatable {
 }
 
 extension SignalType {
+    func mapping(percentStr: String) -> SignalType? {
+        switch percentStr {
+        case "100":
+            return .sexy
+        case "75":
+            return .love
+        case "50":
+            return .ambiguous
+        case "25":
+            return .refuse
+        case "0":
+            return .tired
+        default:
+            break
+        }
+        
+        return nil
+    }
+    
     func mapping(_ rawValue: String) -> SignalType? {
         if let type = SignalType(rawValue: rawValue) {
             switch type {

@@ -70,8 +70,8 @@ final class SignalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.bind()
         self.bind(to: viewModel)
+        self.bind()
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
@@ -326,7 +326,9 @@ struct SignalViewController_Previews: PreviewProvider {
     struct SignalViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = SignalViewController()
-            let vm = SignalViewModel(coordinator: DefaultSignalCoordinator(UINavigationController()))
+            let vm = SignalViewModel(coordinator: DefaultSignalCoordinator(UINavigationController()),
+                                     signalUseCase: DefaultSignalUseCase(signalRepositroy: DefaultSignalRepository()))
+            
             vc.viewModel = vm
             vc.percentageView.model.accept(Signal(type: .ambiguous))
             vc.dialView.model.accept(Signal(type: .refuse))

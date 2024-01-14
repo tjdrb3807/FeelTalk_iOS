@@ -149,10 +149,12 @@ final class AuthConsentViewModel {
             .withUnretained(self)
             .bind { vm, state in
                 vm.toggleFullConsent.accept(state)
+                output.isFullConsentButtonSelected.accept(state)
                 output.isNextButtonEnable.accept(state)
             }.disposed(by: disposeBag)
         
         input.tapNextButton
+            .delay(.milliseconds(500), scheduler: MainScheduler.asyncInstance) // ButtomSheetVC hide animate duration(500ms)
             .withUnretained(self)
             .bind { vm, _ in
                 vm.coordinator?.finish()

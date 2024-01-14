@@ -10,7 +10,7 @@ import SnapKit
 
 enum ChatFunctionType: String {
     case camera = "카메라"
-    case album = "앨범"
+    case album = "갤러리"
 }
 final class ChatFunctionButton: UIButton {
     let type: ChatFunctionType
@@ -37,8 +37,7 @@ final class ChatFunctionButton: UIButton {
             imageView.backgroundColor = .black
             imageView.image = UIImage(named: ChatFunctionButtonNameSpace.contentImageViewAlbumTypeImage)
         }
-        
-        imageView.contentMode = .center
+    
         imageView.layer.cornerRadius = ChatFunctionButtonNameSpace.contentImageViewCornerRadius
         imageView.clipsToBounds = true
         

@@ -8,6 +8,6 @@
 import Foundation
 
 enum ChallengeTabBarItemType: String {
-    case onGoing = "진행중"
+    case ongoing = "진행중"
     case completed = "완료"
 }

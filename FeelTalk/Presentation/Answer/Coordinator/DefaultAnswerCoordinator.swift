@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class DefaultAnswerCoordinator: AnswerCoordinator {
     var finishDelegate: CoordinatorFinishDelegate?
@@ -13,7 +15,9 @@ final class DefaultAnswerCoordinator: AnswerCoordinator {
     var childCoordinators: [Coordinator] = []
     var answerViewController: AnswerViewController
     var type: CoordinatorType = .answer
-    var question: Question?
+    
+    var model = PublishRelay<Question>()
+    private let disposeBag = DisposeBag()
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -22,16 +26,26 @@ final class DefaultAnswerCoordinator: AnswerCoordinator {
     
     func start() {
         let viewModel = AnswerViewModel(coordinator: self,
-                                        questionUseCase: DefaultQuestionUseCase(questionRepository: DefaultQuestionRepository()))
-        guard let question = question else { return }
-        viewModel.model = question
+                                        questionUseCase: DefaultQuestionUseCase(questionRepository: DefaultQuestionRepository(), userRepository: DefaultUserRepository()),
+                                        userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
+
+        self.model
+            .bind(to: viewModel.model)
+            .disposed(by: disposeBag)
         
         self.answerViewController.viewModel = viewModel
         self.answerViewController.modalPresentationStyle = .overFullScreen
         self.navigationController.present(self.answerViewController, animated: false)
     }
     
-    func finish() {
+    func dismiss() {
+        self.childCoordinators.removeAll()
         self.navigationController.dismiss(animated: false)
+    }
+    
+    func finish() {
+        self.childCoordinators.removeAll()
+        self.navigationController.dismiss(animated: false)
+        self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
     }
 }

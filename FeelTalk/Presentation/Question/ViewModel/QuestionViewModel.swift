@@ -90,10 +90,12 @@ final class QuestionViewModel {
             .disposed(by: disposeBag)
 
         Observable
-            .merge(input.tapQuestionAnswerButton, input.questionSelected)
+            .merge(input.tapQuestionAnswerButton,
+                   input.questionSelected)
             .withUnretained(self)
             .bind { vm, quesiton in
-                vm.coordinator?.showAnswerFlow(with: quesiton)
+                vm.coordinator?.showAnswerFlow()
+                vm.coordinator?.model.accept(quesiton)
             }.disposed(by: disposeBag)
     
         return Output(todayQuestion: self.todayQuestion,

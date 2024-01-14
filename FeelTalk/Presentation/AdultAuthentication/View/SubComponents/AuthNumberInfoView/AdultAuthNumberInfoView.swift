@@ -11,6 +11,10 @@ import RxSwift
 import RxCocoa
 
 final class AdultAuthNumberInfoView: UIStackView {
+    let descriptionState = PublishRelay<AdultAuthNumberDescription>()
+    let expiradTime = PublishRelay<String>()
+    private let disposeBag = DisposeBag()
+    
     lazy var numberInputView: AdultAuthNumberInputView = { AdultAuthNumberInputView() }()
     
     private lazy var descriptionView: AdultAuthNumberDesciptionView = { AdultAuthNumberDesciptionView() }()
@@ -29,7 +33,13 @@ final class AdultAuthNumberInfoView: UIStackView {
     }
     
     private func bind() {
+        descriptionState
+            .bind(to: descriptionView.descriptionState)
+            .disposed(by: disposeBag)
         
+        expiradTime
+            .bind(to: descriptionView.expiradTime)
+            .disposed(by: disposeBag)
     }
     
     private func setProperties() {

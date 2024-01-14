@@ -28,4 +28,13 @@ final class DefaultInquiryCoordinator: InquiryCoordinator {
         self.navigationController.present(inquiryViewController, animated: true)
         self.navigationController.tabBarController?.tabBar.isHidden = true
     }
+    
+    func dismiss() {
+        self.childCoordinators.removeAll()
+        self.navigationController.dismiss(animated: true)
+    }
+    
+    func finish() {
+        
+    }
 }

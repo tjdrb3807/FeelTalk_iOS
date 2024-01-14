@@ -12,7 +12,7 @@ import RxCocoa
 
 final class CustomTextView: UIView {
     var placeholder: String
-    var maxTextCout: Int
+    var maxTextCount: Int
     private let disposeBag = DisposeBag()
     
     lazy var textView: UITextView = {
@@ -34,15 +34,16 @@ final class CustomTextView: UIView {
                                                    bottom: CustomTextViewNameSpace.textViewTextContainerBottomInset,
                                                    right: CustomTextViewNameSpace.textViewTextContainerRightInset)
         textView.isScrollEnabled = true
+        textView.delegate = self
         
         return textView
     }()
     
-    lazy var countingView: TextCountingView = { TextCountingView(denominator: maxTextCout) }()
+    lazy var countingView: TextCountingView = { TextCountingView(denominator: maxTextCount) }()
     
     init(placeholder: String, maxTextCout: Int) {
         self.placeholder = placeholder
-        self.maxTextCout = maxTextCout
+        self.maxTextCount = maxTextCout
         super.init(frame: .zero)
         
         self.bind()
@@ -119,6 +120,17 @@ extension CustomTextView {
         countingView.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(CustomTextViewNameSpace.countingViewTrailingInset)
             $0.bottom.equalToSuperview().inset(CustomTextViewNameSpace.countingViewBottomInset)
+        }
+    }
+}
+
+extension CustomTextView: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        guard let text = textView.text else { return }
+
+        // 글자수 제한
+        if text.count > self.maxTextCount {
+            textView.text = String(text.prefix(maxTextCount))
         }
     }
 }

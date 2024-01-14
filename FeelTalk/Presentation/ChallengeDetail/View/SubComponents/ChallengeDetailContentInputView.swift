@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class ChallengeDetailContentInputView: UIStackView {
-    let viewMode = PublishRelay<ChallengeDetailViewMode>()
+    let viewMode = PublishRelay<ChallengeDetailViewType>()
     let isPlaceholder = BehaviorRelay<Bool>(value: true)
     let maxContentText = PublishRelay<String>()
     
@@ -172,8 +172,8 @@ extension ChallengeDetailContentInputView {
 
 // MARK: Update UI setting method.
 extension ChallengeDetailContentInputView {
-    private func isContentTextViewSelectable(with mode: ChallengeDetailViewMode) {
-        switch mode {
+    private func isContentTextViewSelectable(with type: ChallengeDetailViewType) {
+        switch type {
         case .new, .modify:
             contentTextView.rx.isSelectable.onNext(true)
         case .ongoing, .completed:

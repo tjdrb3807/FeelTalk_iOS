@@ -129,7 +129,7 @@ final class MyPageViewController: UIViewController {
     }
     
     private func setConfigurations() {
-        navigationBar.makeNavigationBarConstraints()
+        navigationBar.makeMainNavigationBarConstraints()
         makeScrollViewConstraints()
         makeContentStackViewConstraints()
         makeTopSpacingViewConstraints()

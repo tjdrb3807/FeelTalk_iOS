@@ -21,6 +21,7 @@ class LoginViewModel {
         let tapGoogleLoginButton: ControlEvent<Void>
         let tapKakaoLoginButton: ControlEvent<Void>
         let tapNaverLoginButton: ControlEvent<Void>
+        let tapInquiryButton: ControlEvent<Void>
     }
     
     struct Output { }
@@ -75,6 +76,13 @@ class LoginViewModel {
                             vm.coordinator?.showInviteCodeFlow()
                         }
                     }).disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
+        
+        input.tapInquiryButton
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.showInquiryFlow()
             }.disposed(by: disposeBag)
         
         return Output()

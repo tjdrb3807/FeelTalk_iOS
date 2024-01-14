@@ -13,26 +13,21 @@ import RxKeyboard
 
 final class AdultAuthViewController: UIViewController {
     var viewModel: AdultAuthViewModel!
-    private let isConsentBottomSheetHidden = BehaviorRelay<Bool>(value: true)
-    private let isNewsAgencyBottomSheetHidden = BehaviorRelay<Bool>(value: true)
     private let disposeBag = DisposeBag()
     
     private lazy var navigationBar: SignUpFlowNavigationBar = { SignUpFlowNavigationBar(viewType: .signUp) }()
     
-    private lazy var progressBar: CustomProgressBar = { CustomProgressBar(persentage: (1/3)) }()
+    private lazy var progressBar: CustomProgressBar = { CustomProgressBar(persentage: AdultAuthViewControllerNameSpace.ProgressBarPersentage) }()
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = """
-                     서비스 이용을 위해
-                     인증 정보를 입력해 주세요.
-                     """
+        label.text = AdultAuthViewControllerNameSpace.titleLabelText
         label.textColor = .black
-        label.numberOfLines = 0
+        label.numberOfLines = AdultAuthViewControllerNameSpace.titleLabelNumberOfLines
         label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
-                            size: 24.0)
-        label.setLineHeight(height: CommonConstraintNameSpace.verticalRatioCalculator * 4.43) // 36.0
+                            size: AdultAuthViewControllerNameSpace.titleLabelTextSize)
         label.backgroundColor = .clear
+        label.setLineHeight(height: AdultAuthViewControllerNameSpace.titleLabelLineHeight)
         
         return label
     }()
@@ -42,7 +37,6 @@ final class AdultAuthViewController: UIViewController {
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = true
         scrollView.indicatorStyle = .black
-        scrollView.setTapGesture()
         scrollView.backgroundColor = .clear
         
         return scrollView
@@ -53,14 +47,14 @@ final class AdultAuthViewController: UIViewController {
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.distribution = .fillProportionally
-        stackView.spacing = CommonConstraintNameSpace.verticalRatioCalculator * 1.47    // 12.0
+        stackView.spacing = AdultAuthViewControllerNameSpace.contentStackViewSpacing
         stackView.backgroundColor = .clear
         
         return stackView
     }()
     
     private lazy var nameInputView: CustomTextField = {
-        let view = CustomTextField(placeholder: "이름")
+        let view = CustomTextField(placeholder: AdultAuthViewControllerNameSpace.nameInputViewPlaceholer)
         view.inputAccessoryView = nameInputViewAccessoryView
         
         return view
@@ -74,21 +68,27 @@ final class AdultAuthViewController: UIViewController {
     
     private lazy var consentView: AdultAuthConsentView = { AdultAuthConsentView() }()
     
-    private lazy var authNumberInfoview: AdultAuthNumberInfoView = { AdultAuthNumberInfoView() }()
+    private lazy var authNumberInfoView: AdultAuthNumberInfoView = { AdultAuthNumberInfoView() }()
     
-    private lazy var spacingView: UIView = { UIView() }()
+    private lazy var firstSpacingView: UIView = { UIView() }()
     
     private lazy var completeButton: UIButton = {
         let button = UIButton()
-        button.setTitle("인증완료", for: .normal)
+        button.setTitle(AdultAuthViewControllerNameSpace.completeButtonTitleText, for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
-                                         size: 18.0)
-        button.backgroundColor = UIColor(named: CommonColorNameSpace.main500)
-        button.layer.cornerRadius = (CommonConstraintNameSpace.verticalRatioCalculator * 7.26) / 2
+                                         size: AdultAuthViewControllerNameSpace.completeButtonTitleTextSize)
+        button.layer.cornerRadius = AdultAuthViewControllerNameSpace.completeButtonCornerRadius
         button.clipsToBounds = true
         
         return button
+    }()
+    
+    private lazy var secondSpacingView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        
+        return view
     }()
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -103,6 +103,10 @@ final class AdultAuthViewController: UIViewController {
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        addKeyboardListener()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .darkContent }
@@ -126,11 +130,51 @@ final class AdultAuthViewController: UIViewController {
                     .genderNumberInputTextField.becomeFirstResponder()
             }.disposed(by: disposeBag)
         
-        phoneInfoInputView.newsAgencyButton.selectedNewsAgency
+        idCardNumberInputView
+            .genderNumberInputView
+            .genderNumberTextFiledInputAccessoryView
+            .rightButton.rx.tap
+            .withUnretained(self)
+            .bind { vc, _ in
+                vc.phoneInfoInputView.newsAgencyButton.isEditing.accept(true)
+            }.disposed(by: disposeBag)
+        
+        phoneInfoInputView
+            .newsAgencyButton
+            .selectedNewsAgency
             .skip(1)
             .withUnretained(self)
             .bind { vc, _ in
                 vc.phoneInfoInputView.phoneNumberInputView.becomeFirstResponder()
+            }.disposed(by: disposeBag)
+        
+        authNumberInfoView
+            .numberInputView
+            .authNumberInputAccessoryView
+            .rightButton.rx.tap
+            .withUnretained(self)
+            .bind { vc, _ in
+                vc.dismissKeyboard()
+            }.disposed(by: disposeBag)
+        
+        Observable<AdultAuthViewScrollDirection>
+            .merge(nameInputView.rx.controlEvent(.editingDidBegin).map { .nameInputView },
+                   idCardNumberInputView.isEditing.filter { $0 == true }.map { _ in .idCardNumberInputview },
+                   phoneInfoInputView.phoneNumberInputView.rx.controlEvent(.editingDidBegin).map { .phoneInfoInputView },
+                   authNumberInfoView.numberInputView.authNumberInputView.rx.controlEvent(.editingDidBegin).map { .authNumberInfoView })
+            .withUnretained(self)
+            .bind { vc, type in
+                vc.scrollView.scroll(to: type)
+            }.disposed(by: disposeBag)
+        
+        authNumberInfoView
+            .numberInputView
+            .authNumberInputView.rx.text.orEmpty
+            .map { !$0.isEmpty }
+            .withUnretained(self)
+            .bind { vc, state in
+                vc.completeButton.rx.isEnabled.onNext(state)
+                vc.updateCompleteButtonBackgroundColor(with: state)
             }.disposed(by: disposeBag)
     }
     
@@ -147,7 +191,7 @@ final class AdultAuthViewController: UIViewController {
             .merge(showNewsAgnecyBottomSheet,
                    showAuthConsentBottomSheet)
             .withLatestFrom(RxKeyboard.instance.isHidden)
-            .filter { !$0 }
+            .filter { $0 == false }
             .withUnretained(self)
             .bind { vc, state in
                 vc.view.endEditing(state)
@@ -160,8 +204,8 @@ final class AdultAuthViewController: UIViewController {
             tapNewsAgencyButton: showNewsAgnecyBottomSheet,
             inputPhoneNumber: phoneInfoInputView.phoneNumberInputView.rx.text.orEmpty.asObservable(),
             tapConsentButton: showAuthConsentBottomSheet,
-            inputAuthNumber: authNumberInfoview.numberInputView.authNumberInputView.rx.text.orEmpty.asObservable(),
-            tapAuthButton: authNumberInfoview.numberInputView.authButton.rx.tap.asObservable(),
+            inputAuthNumber: authNumberInfoView.numberInputView.authNumberInputView.rx.text.orEmpty.asObservable(),
+            tapAuthButton: authNumberInfoView.numberInputView.authButton.rx.tap.asObservable(),
             tapCompleteButton: completeButton.rx.tap.asObservable(),
             tapDismissButton: navigationBar.leftButton.rx.tap.asObservable())
         
@@ -172,10 +216,6 @@ final class AdultAuthViewController: UIViewController {
             .skip(1)
             .withUnretained(self)
             .bind { vc, height in
-                height > 0.0 ?
-                vc.spacingView.rx.isHidden.onNext(true) :
-                vc.spacingView.rx.isHidden.onNext(false)
-                        
                 let height = height > 0.0 ? -height + vc.view.safeAreaInsets.bottom : 0.0
                 vc.updateKeyboardHeight(height)
             }.disposed(by: disposeBag)
@@ -192,11 +232,62 @@ final class AdultAuthViewController: UIViewController {
         
         output
             .isWarningViewHidden
-            .bind(to: consentView.isWarningViewHidden)
+            .withUnretained(self)
+            .bind { vc, state in
+                vc.consentView.isWarningViewHidden.accept(state)
+            }.disposed(by: disposeBag)
+        
+        output.isRequested
+            .bind(to: authNumberInfoView.numberInputView.isRequested)
             .disposed(by: disposeBag)
+        
+        output.authDescriptionState
+            .bind(to: authNumberInfoView.descriptionState)
+            .disposed(by: disposeBag)
+            
+        output.expiradTime
+            .bind(to: authNumberInfoView.expiradTime)
+            .disposed(by: disposeBag)
+        
+        output.focusedInputView
+            .withUnretained(self)
+            .bind { vc, type in
+                switch type {
+                case .name:
+                    vc.nameInputView.becomeFirstResponder()
+                case .birthday:
+                    vc.idCardNumberInputView.birthdayInputTextField.becomeFirstResponder()
+                case .genderNumber:
+                    vc.idCardNumberInputView.genderNumberInputView.genderNumberInputTextField.becomeFirstResponder()
+                case .phoneNumber:
+                    vc.phoneInfoInputView.phoneNumberInputView.becomeFirstResponder()
+                }
+            }.disposed(by: disposeBag)
+        
+        output.isAuthNumberInputViewEnable
+            .bind(to: authNumberInfoView.numberInputView.authNumberInputView.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        output.popAlert
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard !vc.view.subviews.contains(where: {
+                    $0 is AdultAuthAlertView
+                }) else { return }
+                
+                let alertView = AdultAuthAlertView()
+                vc.view.addSubview(alertView)
+                
+                alertView.snp.makeConstraints { $0.edges.equalToSuperview() }
+                vc.view.layoutIfNeeded()
+                alertView.show()
+            }.disposed(by: disposeBag)
     }
     
-    private func setProperties() { view.backgroundColor = .white }
+    private func setProperties() {
+        view.backgroundColor = .white
+        self.scrollView.setTapGesture()
+    }
     
     private func addSubComponents() {
         addViewSubComponents()
@@ -215,8 +306,9 @@ final class AdultAuthViewController: UIViewController {
         makePhoneInfoInputViewConstraints()
         makeConsentViewConstraints()
         makeAuthNumberInfoViewConstraints()
-        makeSpacingViewConstraints()
+        makeFristSpacingViewConstraints()
         makeCompleteButtonConstrains()
+        makeSecondSpacingViewConstraints()
     }
 }
 
@@ -243,14 +335,14 @@ extension AdultAuthViewController {
     
     private func makeTitleLabelConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(progressBar.snp.bottom).offset(CommonConstraintNameSpace.verticalRatioCalculator * 3.44) // 28.0
+            $0.top.equalTo(progressBar.snp.bottom).offset(AdultAuthViewControllerNameSpace.titleLabelTopOffset)
             $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.leadingInset)
         }
     }
     
     private func makeScrollViewConstraints() {
         scrollView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(CommonConstraintNameSpace.verticalRatioCalculator * 1.97) // 16.0
+            $0.top.equalTo(titleLabel.snp.bottom).offset(AdultAuthViewControllerNameSpace.scrollViewTopOffset)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
@@ -267,15 +359,15 @@ extension AdultAuthViewController {
     
     private func addContentStackViewSubComponents() {
         [nameInputView, idCardNumberInputView, phoneInfoInputView,
-         consentView, authNumberInfoview,
-         spacingView, completeButton].forEach { contentStackView.addArrangedSubview($0) }
+         consentView, authNumberInfoView,
+         firstSpacingView, completeButton, secondSpacingView].forEach { contentStackView.addArrangedSubview($0) }
     }
     
     private func makeNameInputViewConstraints() {
         nameInputView.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.leadingInset)
             $0.trailing.equalToSuperview().inset(CommonConstraintNameSpace.trailingInset)
-            $0.height.equalTo(CommonConstraintNameSpace.verticalRatioCalculator * 6.89)
+            $0.height.equalTo(AdultAuthViewControllerNameSpace.nameInputViewHeight)
         }
     }
     
@@ -303,25 +395,40 @@ extension AdultAuthViewController {
     }
     
     private func makeAuthNumberInfoViewConstraints() {
-        authNumberInfoview.snp.makeConstraints {
+        authNumberInfoView.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.leadingInset)
             $0.trailing.equalToSuperview().inset(CommonConstraintNameSpace.trailingInset)
             $0.height.equalTo(AdultAuthNumberInfoViewNameSpace.height)
         }
     }
     
-    private func makeSpacingViewConstraints() {
-        spacingView.snp.makeConstraints {
+    private func makeFristSpacingViewConstraints() {
+        firstSpacingView.snp.makeConstraints {
             $0.width.equalToSuperview()
-            $0.height.equalTo(CommonConstraintNameSpace.verticalRatioCalculator * 10.46)
+            $0.height.equalTo(AdultAuthViewControllerNameSpace.firstSpacingViewHeight)
         }
     }
     
     private func makeCompleteButtonConstrains() {
         completeButton.snp.makeConstraints {
             $0.width.equalTo(UIScreen.main.bounds.width - (CommonConstraintNameSpace.leadingInset + CommonConstraintNameSpace.trailingInset))
-            $0.height.equalTo(CommonConstraintNameSpace.verticalRatioCalculator * 7.26)
+            $0.height.equalTo(AdultAuthViewControllerNameSpace.completeButtonHeight)
         }
+    }
+    
+    private func makeSecondSpacingViewConstraints() {
+        secondSpacingView.snp.makeConstraints {
+            $0.width.equalToSuperview()
+            $0.height.equalTo(AdultAuthViewControllerNameSpace.secondSpacingViewHeight)
+        }
+    }
+}
+
+extension AdultAuthViewController {
+    private func updateCompleteButtonBackgroundColor(with state: Bool) {
+        state ?
+        completeButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main500)) :
+        completeButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main400))
     }
 }
 
@@ -329,6 +436,28 @@ extension AdultAuthViewController {
     fileprivate func updateKeyboardHeight(_ keyboardHeight: CGFloat) {
         scrollView.snp.updateConstraints { $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(keyboardHeight) }
         view.layoutIfNeeded()
+    }
+    
+    private func addKeyboardListener() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.keyboardWillShow(_:)),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.keyboardWillHide(_:)),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        firstSpacingView.rx.isHidden.onNext(true)
+        secondSpacingView.rx.isHidden.onNext(false)
+    }
+    
+    @objc func keyboardWillHide(_ nofification: Notification) {
+        firstSpacingView.rx.isHidden.onNext(false)
+        secondSpacingView.rx.isHidden.onNext(true)
     }
 }
 

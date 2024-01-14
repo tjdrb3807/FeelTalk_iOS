@@ -57,7 +57,7 @@ final class PartnerInfoViewController: UIViewController {
                                                tapPopButton: navigationBar.leftButton.rx.tap,
                                                tapBreakUpButton: breakUpButton.rx.tap)
         
-        let output = viewModel.transfer(input: input)
+        let _ = viewModel.transfer(input: input)
     }
     
     private func setConfigurations() {

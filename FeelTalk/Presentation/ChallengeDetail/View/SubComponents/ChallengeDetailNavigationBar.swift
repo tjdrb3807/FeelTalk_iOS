@@ -11,8 +11,9 @@ import RxSwift
 import RxCocoa
 
 final class ChallengeDetailNavigationBar: UIView {
+    let typeObserver = PublishRelay<ChallengeDetailViewType>()
+    let tapButtonObserver = PublishRelay<ChallengeDetailNavigationBarButtonType>()
     private let disposeBag = DisposeBag()
-    let mode = PublishRelay<ChallengeDetailViewMode>()
     
     lazy var popButton: UIButton = {
         let button = UIButton()
@@ -50,13 +51,19 @@ final class ChallengeDetailNavigationBar: UIView {
     }
     
     private func bind() {
-        mode
+        typeObserver
             .withUnretained(self)
-            .bind { v, mode in
-                v.updateNavigationItems(mode)
+            .bind { v, type in
+                v.updateItems(with: type)
             }.disposed(by: disposeBag)
+        
+        Observable<ChallengeDetailNavigationBarButtonType>
+            .merge(popButton.rx.tap.map { .pop }.asObservable(),
+                   modifyButton.rx.tap.map { .modify }.asObservable(),
+                   removeButton.rx.tap.map { .remove }.asObservable())
+            .bind(to: tapButtonObserver)
+            .disposed(by: disposeBag)
     }
-    
     
     private func setAttribute() { backgroundColor = .clear }
     
@@ -74,41 +81,44 @@ final class ChallengeDetailNavigationBar: UIView {
 extension ChallengeDetailNavigationBar {
     private func makePopButtonConstraints() {
         popButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(ChallengeDetailNavigationBarNameSpace.buttonTopInset)
+            $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview()
-            $0.trailing.equalTo(popButton.snp.leading).offset(ChallengeDetailNavigationBarNameSpace.buttomWidth)
-            $0.bottom.equalToSuperview().inset(ChallengeDetailNavigationBarNameSpace.buttonBottomInset)
+            $0.width.equalTo(ChallengeDetailNavigationBarNameSpace.buttonWidth)
+            $0.height.equalTo(ChallengeDetailNavigationBarNameSpace.buttonHeight)
         }
     }
     
     private func makeModifyButtonConstraints() {
         modifyButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(ChallengeDetailNavigationBarNameSpace.buttonTopInset)
-            $0.leading.equalTo(modifyButton.snp.trailing).offset(-ChallengeDetailNavigationBarNameSpace.buttomWidth)
-            $0.trailing.equalTo(removeButton.snp.leading)
-            $0.bottom.equalToSuperview().inset(ChallengeDetailNavigationBarNameSpace.buttonBottomInset)
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(ChallengeDetailNavigationBarNameSpace.modifiyButtonTrailingInset)
+            $0.width.equalTo(ChallengeDetailNavigationBarNameSpace.buttonWidth)
+            $0.height.equalTo(ChallengeDetailNavigationBarNameSpace.buttonWidth)
         }
     }
     
     private func makeRemoveButtonConstraints() {
         removeButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(ChallengeDetailNavigationBarNameSpace.buttonTopInset)
-            $0.leading.equalTo(removeButton.snp.trailing).offset(-ChallengeDetailNavigationBarNameSpace.buttomWidth)
+            $0.centerY.equalToSuperview()
             $0.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(ChallengeDetailNavigationBarNameSpace.buttonBottomInset)
+            $0.width.equalTo(ChallengeDetailNavigationBarNameSpace.buttonWidth)
+            $0.height.equalTo(ChallengeDetailNavigationBarNameSpace.buttonHeight)
         }
     }
 }
 
 extension ChallengeDetailNavigationBar {
-    func updateNavigationItems(_ mode: ChallengeDetailViewMode) {
-        switch mode {
-        case .new:
+    private func updateItems(with type: ChallengeDetailViewType) {
+        switch type {
+        case .completed:
+            modifyButton.rx.isHidden.onNext(true)
+            removeButton.rx.isHidden.onNext(false)
+        case .modify, .new:
             modifyButton.rx.isHidden.onNext(true)
             removeButton.rx.isHidden.onNext(true)
-        case .ongoing, .completed, .modify:
+        case .ongoing:
             modifyButton.rx.isHidden.onNext(false)
-            removeButton.rx.isHidden.onNext(false)
+            removeButton.rx.isEnabled.onNext(false)
         }
     }
 }
@@ -129,8 +139,7 @@ struct ChallengeDetailNavigationBar_Previews: PreviewProvider {
     struct ChallengeDetailNavigationBar_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let v = ChallengeDetailNavigationBar()
-            v.mode.accept(.ongoing)
-            
+            v.typeObserver.accept(.ongoing)
             
             return v
         }

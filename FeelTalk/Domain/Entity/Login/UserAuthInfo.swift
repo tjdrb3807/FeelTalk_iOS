@@ -10,31 +10,43 @@ import Foundation
 /// 성인인증시 필요한 회원 정보
 ///
 /// UserAuthInfo(Domain) -> AuthNumberRequestDTO(Data)
-struct UserAuthInfo {
-    let name: String
-    let birthday: String
-    let genderNumber: String
-    let newsAgency: NewsAgencyType
-    let phoneNumber: String
+struct UserAuthInfo: Equatable {
+    var name: String?
+    var birthday: String?
+    var genderNumber: String?
+    var newsAgency: NewsAgencyType?
+    var phoneNumber: String?
 }
 
 extension UserAuthInfo {
-    func convertAuthNumberRequestDTO() -> AuthNumberRequestDTO {
-        .init(providerId: newsAgency.rawValue,
-              userName: name,
-              userPhone: phoneNumber,
-              userBirthday: convertBirthday(birthday, with: genderNumber),
-              userGender: convertGenderType(with: genderNumber),
-              userNation: convertUserNationType(with: genderNumber))
+    func convertAuthNumberRequestDTO() -> AuthNumberRequestDTO? {
+        guard let name,
+              let birthday,
+              let genderNumber,
+              let newsAgency,
+              let phoneNumber else { return nil }
+        
+        return .init(providerId: newsAgency.rawValue,
+                     userName: name,
+                     userPhone: phoneNumber,
+                     userBirthday: convertBirthday(birthday, with: genderNumber),
+                     userGender: convertGenderType(with: genderNumber),
+                     userNation: convertUserNationType(with: genderNumber))
     }
     
-    func convertReAuthNumberRequestDTO() -> ReAuthNumberRequestDTO {
-        .init(providerId: newsAgency.rawValue,
-              userName: name,
-              userPhone: phoneNumber,
-              userBirthday: convertBirthday(birthday, with: genderNumber),
-              userGender: convertGenderType(with: genderNumber),
-              userNation: convertUserNationType(with: genderNumber))
+    func convertReAuthNumberRequestDTO() -> ReAuthNumberRequestDTO? {
+        guard let name,
+              let birthday,
+              let genderNumber,
+              let newsAgency,
+              let phoneNumber else { return nil }
+        
+        return .init(providerId: newsAgency.rawValue,
+                     userName: name,
+                     userPhone: phoneNumber,
+                     userBirthday: convertBirthday(birthday, with: genderNumber),
+                     userGender: convertGenderType(with: genderNumber),
+                     userNation: convertUserNationType(with: genderNumber))
     }
 }
 

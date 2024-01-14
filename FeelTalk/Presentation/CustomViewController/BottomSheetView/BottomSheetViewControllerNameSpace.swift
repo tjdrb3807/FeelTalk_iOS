@@ -15,8 +15,8 @@ enum BottomSheetViewControllerNameSpace {
     // BottomSheetView
     /// 20.0
     static let bottomSheetViewCornerRadius: CGFloat = 20.0
-    /// 0.3
-    static let bottomSheetViewAnimateDuration: CGFloat = 0.3
+    /// 0.5
+    static let bottomSheetViewAnimateDuration: CGFloat = 0.5
     /// 0.0
     static let bottomSheetViewAnimateDelay: CGFloat = 0.0
     

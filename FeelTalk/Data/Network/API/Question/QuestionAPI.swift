@@ -9,12 +9,12 @@ import Foundation
 import Alamofire
 
 enum QuestionAPI {
+    case answerQuestion(accessToken: String, requestDTO: AnswerQuestionRequestDTO)
     case getLatestQuestionPageNo(accessToken: String)
-    case getTodayQuestion(accessToken: String)
-    case getQuestionList(accessToken: String, questionPage: QuestionPage)
     case getQuestion(accessToken: String, index: Int)
-    case answerQuestion(accessToken: String, answer: QuestionAnswer)
-    case preseForAnswer(accessToken: String, index: Int)
+    case getQuestionList(accessToken: String, questionPage: QuestionPage)
+    case getTodayQuestion(accessToken: String)
+    case pressForAnswer(accessToken: String, requestDTO: PressForAnswerRequestDTO)
 }
 
 extension QuestionAPI: Router, URLRequestConvertible {
@@ -22,63 +22,68 @@ extension QuestionAPI: Router, URLRequestConvertible {
     
     var path: String {
         switch self {
-        case .getLatestQuestionPageNo:
-            return "/api/v1/couple-question/last/page-no"
-        case .getTodayQuestion:
-            return "/api/v1/couple-question/today"
-        case .getQuestionList:
-            return "/api/v1/couple-questions"
-        case .getQuestion(accessToken: _, index: let index):
-            return "/api/v1/couple-question/\(index)"
         case .answerQuestion:
             return "/api/v1/couple-question"
-        case .preseForAnswer:
+        case .getLatestQuestionPageNo:
+            return "/api/v1/couple-question/last/page-no"
+        case .getQuestion(accessToken: _, index: let index):
+            return "/api/v1/couple-question/\(index)"
+        case .getQuestionList:
+            return "/api/v1/couple-questions"
+        case .getTodayQuestion:
+            return "/api/v1/couple-question/today"
+        case .pressForAnswer:
             return "/api/v1/couple-question/chase-up"
         }
     }
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .getLatestQuestionPageNo, .getTodayQuestion, .getQuestion:
-            return .get
-        case .getQuestionList, .preseForAnswer:
-            return .post
         case .answerQuestion:
             return .put
+        case .getLatestQuestionPageNo, .getQuestion, .getTodayQuestion:
+            return .get
+        case .getQuestionList, .pressForAnswer:
+            return .post
         }
     }
     
     var header: [String : String] {
         switch self {
-        case .getLatestQuestionPageNo(accessToken: let accessToken),
-                .getTodayQuestion(accessToken: let accessToken),
-                .getQuestionList(accessToken: let accessToken, questionPage: _),
+        case .answerQuestion(accessToken: let accessToken, requestDTO: _),
+                .getLatestQuestionPageNo(accessToken: let accessToken),
                 .getQuestion(accessToken: let accessToken, index: _),
-                .answerQuestion(accessToken: let accessToken, answer: _),
-                .preseForAnswer(accessToken: let accessToken, index: _):
+                .getQuestionList(accessToken: let accessToken, questionPage: _),
+                .getTodayQuestion(accessToken: let accessToken),
+                .pressForAnswer(accessToken: let accessToken, requestDTO: _):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
-                    "Authorization": "Bearer \(accessToken)"]
+                    "Authorization": accessToken]
         }
     }
     
     var parameters: [String : Any]? {
         switch self {
-        case .getLatestQuestionPageNo, .getTodayQuestion, .getQuestion:
+        case .answerQuestion(accessToken: _, requestDTO: let requestDTO):
+            return ["index": requestDTO.index,
+                    "myAnswer": requestDTO.myAnswer]
+        case .getLatestQuestionPageNo, .getQuestion, .getTodayQuestion:
             return nil
         case .getQuestionList(accessToken: _, questionPage: let questionPage):
             return ["pageNo": questionPage.pageNo]
-        case .answerQuestion(accessToken: _, answer: let answer):
-            return ["index": answer.index,
-                    "myAnswer": answer.myAnswer]
-        case .preseForAnswer(accessToken: _, index: let index):
-            return ["index": index]
+        case .pressForAnswer(accessToken: _, requestDTO: let requestDTO):
+            return ["index": requestDTO.index]
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .getLatestQuestionPageNo, .getTodayQuestion, .getQuestionList, .getQuestion, .answerQuestion, .preseForAnswer:
+        case .answerQuestion,
+                .getLatestQuestionPageNo,
+                .getQuestion,
+                .getQuestionList,
+                .getTodayQuestion,
+                .pressForAnswer:
             return JSONEncoding.default
         }
     }

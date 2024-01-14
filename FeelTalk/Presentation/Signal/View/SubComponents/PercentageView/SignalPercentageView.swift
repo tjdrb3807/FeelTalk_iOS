@@ -65,7 +65,7 @@ final class SignalPercentageView: UIStackView {
     private func setProperties() {
         axis = .vertical
         alignment = .center
-        distribution = .fillProportionally
+        distribution = .fill
         spacing = SignalPercentageViewNameSpace.spacing
         backgroundColor = .clear
         isUserInteractionEnabled = false
@@ -134,7 +134,6 @@ extension SignalPercentageView {
     private func makeDescriptionLabelConstraints() {
         descriptionLabel.snp.makeConstraints {
             $0.width.equalToSuperview()
-            $0.height.equalTo(SignalPercentageViewNameSpace.descriptionLabelHeight)
         }
     }
 }

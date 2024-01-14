@@ -20,4 +20,5 @@ enum CommonFontNameSpace {
     
     // MARK: Paybooc
     static let payboocMedium: String = "paybooc Medium"
+    static let payboocBold: String = "paybooc Bold"
 }

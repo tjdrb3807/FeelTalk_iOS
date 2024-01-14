@@ -8,19 +8,21 @@
 import UIKit
 
 enum ChallengeDetailDescriptionViewNameSpace {
-    // MARK: ChalleneDetailDescriptionView
-    static let spacing: CGFloat = (UIScreen.main.bounds.width / 100) * 5.33                 // 20.0
-    static let height: CGFloat = (UIScreen.main.bounds.height / 100) * 8.86                 // 72.0
+    // MARK: ChallengeDetailDescriptionView
+    /// 20.0
+    static let spacing: CGFloat = CommonConstraintNameSpace.leadingInset
+    /// 72.0
+    static let height: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 8.86
+    
+    // MARK: Label
+    /// 24.0
+    static let labelTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 6.4
     
     // MARK: HeaderLabel
-    static let headerLabelNewOrModifyModeText: String = "자기야 💕"
-    static let headerLabelOngoingOrCompletedModeText: String = "자기랑"
-    static let headerLabelTextFont: String = "pretendard-regular"
-    static let headerLabelTextSize: CGFloat = (UIScreen.main.bounds.width / 100) * 6.4      // 24.0
+    static let headerLabelType01Text: String = "자기랑"
+    static let headerLabelType02Text: String = "자기야 💕"
     
-    // MARK: BodyLabel
-    static let bodyLabelNewOrModifiyModeText: String = "우리 어떤 걸 해볼까?"
-    static let bodyLabelOngoingOrCompletedModeText: String = "꼭 해보고 싶어🔥"
-    static let bodyLabelTextFont: String = "pretendard-medium"
-    static let bodyLabelTextSize: CGFloat = (UIScreen.main.bounds.width / 100) * 6.4        // 24.0
+    // MARK: bodyLabel
+    static let bodyLabelType01Text: String = "꼭 해보고 싶어🔥"
+    static let bodyLabelType02Text: String = "우리 어떤 걸 해볼까?"
 }

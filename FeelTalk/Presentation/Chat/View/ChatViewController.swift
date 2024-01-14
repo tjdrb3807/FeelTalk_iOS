@@ -9,10 +9,18 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import RxGesture
 
 final class ChatViewController: UIViewController {
     var viewModel: ChatViewModel!
     private let disposeBag = DisposeBag()
+    
+    private lazy var dimmedView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        
+        return view
+    }()
     
     private lazy var chatRoomButton: CustomChatRoomButton = { CustomChatRoomButton() }()
     
@@ -22,7 +30,7 @@ final class ChatViewController: UIViewController {
         
         view.layer.cornerRadius = ChatViweNameSpace.chatRoomViewCornerRadius
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-    
+        
         let path = CGMutablePath()
         
         path.move(to: CGPoint(x: ChatViweNameSpace.chatRoomViewTipStartX,
@@ -40,7 +48,7 @@ final class ChatViewController: UIViewController {
         
         view.layer.insertSublayer(shape, at: ChatViweNameSpace.chatRoomViewTipInsertAt)
         view.layer.masksToBounds = false
-    
+        
         return view
     }()
     
@@ -58,7 +66,7 @@ final class ChatViewController: UIViewController {
         
         return collectionView
     }()
-
+    
     fileprivate lazy var chatInputView: ChatInputView = { ChatInputView() }()
     
     private lazy var chatFucntionView: ChatFunctionView = { ChatFunctionView() }()
@@ -92,9 +100,10 @@ final class ChatViewController: UIViewController {
             tapInputButton: chatInputView.inputButton.rx.tap.asObservable(),
             messageText: chatInputView.messageInputView.messageInputTextView.rx.text.orEmpty.asObservable(),
             tapFunctionButton: chatInputView.functionButton.rx.tap.asObservable(),
-            viewWillAppear: self.rx.viewWillAppear
-        )
-            
+            viewWillAppear: self.rx.viewWillAppear,
+            tapDimmiedView: dimmedView.rx.tapGesture().when(.recognized).map { _ in () }.asObservable(),
+            tapChatRoomButton: chatRoomButton.rx.tap.asObservable())
+        
         let output = viewModel.transfer(input: input)
         
         output.keyboardHeight
@@ -149,43 +158,44 @@ final class ChatViewController: UIViewController {
             .map { $0.isFucntionActive }
             .bind(to: chatInputView.isFunctionActive)
             .disposed(by: disposeBag)
-            
+        
         output.partnerNickname
             .bind(to: navigationBar.partnerNickname)
             .disposed(by: disposeBag)
         
-//        output.chatModelList
-//            .asDriver(onErrorJustReturn: [])
-//            .drive(collectionView.rx.items) { [weak self] cv, row, item in
-//                guard let self = self else { return UICollectionViewCell() }
-//                let index = IndexPath(row: row, section: 0)
-//
-//                switch item.type {
-//                case .challengeChatting:
-//                    break
-//                case .imageChatting:
-//                    break
-//                case .questionChatting:
-//                    break
-//                case .textChatting:
-//                    guard let cell = cv.dequeueReusableCell(withReuseIdentifier: "TextChatCell",
-//                                                            for: index) as? TextChatCell else { return UICollectionViewCell() }
-//                    let model = item as! TextChatModel
-//                    cell.model.accept(model)
-//
-//                    return cell
-//                case .voiceChatting:
-//                    break
-//                }
-//
-//
-//
-//                return UICollectionViewCell()
-//            }.disposed(by: disposeBag)
+        //        output.chatModelList
+        //            .asDriver(onErrorJustReturn: [])
+        //            .drive(collectionView.rx.items) { [weak self] cv, row, item in
+        //                guard let self = self else { return UICollectionViewCell() }
+        //                let index = IndexPath(row: row, section: 0)
+        //
+        //                switch item.type {
+        //                case .challengeChatting:
+        //                    break
+        //                case .imageChatting:
+        //                    break
+        //                case .questionChatting:
+        //                    break
+        //                case .textChatting:
+        //                    guard let cell = cv.dequeueReusableCell(withReuseIdentifier: "TextChatCell",
+        //                                                            for: index) as? TextChatCell else { return UICollectionViewCell() }
+        //                    let model = item as! TextChatModel
+        //                    cell.model.accept(model)
+        //
+        //                    return cell
+        //                case .voiceChatting:
+        //                    break
+        //                }
+        //
+        //
+        //
+        //                return UICollectionViewCell()
+        //            }.disposed(by: disposeBag)
     }
     
     private func setProperties() {
-        view.backgroundColor = .black.withAlphaComponent(ChatViweNameSpace.backgroundColorAlpha)
+        //        view.backgroundColor = .black.withAlphaComponent(ChatViweNameSpace.backgroundColorAlpha)
+        view.backgroundColor = .clear
     }
     
     private func addSubComponents() {
@@ -194,6 +204,7 @@ final class ChatViewController: UIViewController {
     }
     
     private func setConstraints() {
+        makeDimmedViewConstraints()
         makeChatRoomButtonConstraints()
         makeChatRoomViewConstraints()
         makeNavigationBarConstraints()
@@ -204,7 +215,11 @@ final class ChatViewController: UIViewController {
 
 extension ChatViewController {
     private func addChatViewSubComponents() {
-        [chatRoomButton, chatRoomView].forEach { view.addSubview($0) }
+        [dimmedView, chatRoomButton, chatRoomView].forEach { view.addSubview($0) }
+    }
+    
+    private func makeDimmedViewConstraints() {
+        dimmedView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
     
     private func makeChatRoomButtonConstraints() {
@@ -254,7 +269,7 @@ extension ChatViewController {
 extension ChatViewController {
     private func updateKeyboardHeight(_ keyboardHeight: CGFloat) {
         chatRoomView.snp.updateConstraints { $0.bottom.equalToSuperview().offset(keyboardHeight) }
-    
+        
         view.layoutIfNeeded()
     }
     

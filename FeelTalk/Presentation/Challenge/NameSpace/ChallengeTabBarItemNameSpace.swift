@@ -8,12 +8,15 @@
 import Foundation
 
 enum ChallengeTabBarItemNameSpace {
-    // ContentStackView
-    static let contentStackViewSpacing: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 1.06    // 4.0
+    // MARK: ContentStackView
+    /// 4.0
+    static let contentStackViewSpacing: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 1.06
     
-    // TitleLabel
-    static let titleLabelFontSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26 // 16.0
+    //MARK: TitleLabel
+    /// 16.0
+    static let titleLableTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26
     
-    // CountLabel
-    static let countLabelFontSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26 // 16.0
+    // MARK: CountLabel
+    /// 16.0
+    static let countLabelTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26
 }

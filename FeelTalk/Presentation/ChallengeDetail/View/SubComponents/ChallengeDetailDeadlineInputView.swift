@@ -11,13 +11,12 @@ import RxSwift
 import RxCocoa
 
 final class ChallengeDetailDeadlineInputView: UIStackView {
-    
-    let viewMode = PublishRelay<ChallengeDetailViewMode>()
+    let viewMode = PublishRelay<ChallengeDetailViewType>()
     private let disposeBag = DisposeBag()
     
-    private lazy var leftSpacingView: UIView = { UIView() }()
+    private lazy var leadingSpacing: UIView = { UIView() }()
     
-    private lazy var rightSpacingView: UIView = { UIView() }()
+    private lazy var trailingSpacing: UIView = { UIView() }()
     
     private lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView()
@@ -183,7 +182,7 @@ final class ChallengeDetailDeadlineInputView: UIStackView {
 
 extension ChallengeDetailDeadlineInputView {
     private func addViewSubComponents() {
-        [leftSpacingView, verticalStackView, rightSpacingView].forEach { addArrangedSubview($0) }
+        [leadingSpacing, verticalStackView, trailingSpacing].forEach { addArrangedSubview($0) }
     }
     
     private func addVerticalStackViewSubComponents() {
@@ -217,7 +216,7 @@ extension ChallengeDetailDeadlineInputView {
 }
 
 extension ChallengeDetailDeadlineInputView {
-    private func isDeadlineTextFieldEnable(with mode: ChallengeDetailViewMode) {
+    private func isDeadlineTextFieldEnable(with mode: ChallengeDetailViewType) {
         switch mode {
         case .new, .modify:
             deadlineTextField.rx.isEnabled.onNext(true)

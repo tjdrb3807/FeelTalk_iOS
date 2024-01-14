@@ -68,8 +68,11 @@ final class AdultAuthNewsAgencyButton: UIButton {
                 case .lgThrifty:
                     return "LG 알뜰폰"
                 }
-            }.bind(to: newsAgencyLabel.rx.text)
-            .disposed(by: disposeBag)
+            }.withUnretained(self)
+            .bind { v, text in
+                v.newsAgencyLabel.rx.text.onNext(text)
+                v.isEditing.accept(false)
+            }.disposed(by: disposeBag)
         
         rx.tap
             .withUnretained(self)

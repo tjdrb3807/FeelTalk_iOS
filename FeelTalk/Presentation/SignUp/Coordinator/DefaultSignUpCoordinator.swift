@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class DefaultSignUpCoordinator: SignUpCoordinator {
     weak var finishDelegate: CoordinatorFinishDelegate?
@@ -13,6 +15,10 @@ final class DefaultSignUpCoordinator: SignUpCoordinator {
     var signUpViewController: SignUpViewController
     var childCoordinators: [Coordinator] = []
     var type: CoordinatorType = .signUp
+    
+    var isMarketingConsented = PublishRelay<Bool>()
+    
+    private let disposeBag = DisposeBag()
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -33,11 +39,16 @@ final class DefaultSignUpCoordinator: SignUpCoordinator {
         adultAuthCoordinator.start()
     }
     
-    func showNicknameFlow(with data: SignUp) {
+    func showNicknameFlow() {
         let nicknameCoordinator = DefaultNicknameCoordinator(self.navigationController)
+        
+        isMarketingConsented
+            .bind(to: nicknameCoordinator.isMarketingConsented)
+            .disposed(by: disposeBag)
+            
         nicknameCoordinator.finishDelegate = self
         self.childCoordinators.append(nicknameCoordinator)
-        nicknameCoordinator.pushNicknameViewController(with: data)
+        nicknameCoordinator.start()
     }
     
     func finish() {
@@ -49,8 +60,13 @@ final class DefaultSignUpCoordinator: SignUpCoordinator {
 
 extension DefaultSignUpCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
-        self.childCoordinators.removeAll()
-        self.navigationController.viewControllers.removeLast()
-        self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        switch childCoordinator.type {
+        case .adultAuth:
+            self.signUpViewController.viewModel.adultAuthenticated.accept(.authenticated)
+        case .nickname:
+            self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        default:
+            break
+        }
     }
 }

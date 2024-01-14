@@ -10,10 +10,15 @@ import RxSwift
 import RxCocoa
 
 protocol QuestionRepository {
-    func getLatestQuestionPageNo(accessToken: String) -> Single<QuestionPage>
-    func getTodayQuestion(accessToken: String) -> Single<Question>
-    func getQuestionList(accessToken: String, questionPage: QuestionPage) -> Single<[Question]>
+    func answerQuestion(accessToken: String, requestDTO: AnswerQuestionRequestDTO) -> Single<Bool>
+    
     func getQuestion(accessToken: String, index: Int) ->Single<Question>
-    func answerQuestion(accessToken: String, answer: QuestionAnswer) -> Single<Bool>
-    func preseForAnswer(accessToken: String, index: Int) -> Single<Bool>
+    
+    func getQuestionList(accessToken: String, questionPage: QuestionPage) -> Single<[Question]>
+    
+    func getLatestQuestionPageNo(accessToken: String) -> Single<QuestionPage>
+    
+    func getTodayQuestion(accessToken: String) -> Single<Question>
+    
+    func pressForAnswer(_ accessToken: String, _ requestDTO: PressForAnswerRequestDTO) -> Single<Chat>
 }

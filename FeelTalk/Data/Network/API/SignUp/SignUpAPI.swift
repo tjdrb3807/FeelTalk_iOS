@@ -9,10 +9,10 @@ import Foundation
 import Alamofire
 
 enum SignUpAPI {
-    case signUp(request: SignUpRequestDTO)
     case getAuthNumber(_ dto: AuthNumberRequestDTO)
     case getReAuthNumber(_ dto: ReAuthNumberRequestDTO)
     case verification(_ dto: VerificationRequestDTO)
+    case signUp(_ dto: SignUpRequestDTO)
 }
 
 extension SignUpAPI: Router, URLRequestConvertible {
@@ -20,51 +20,38 @@ extension SignUpAPI: Router, URLRequestConvertible {
     
     var path: String {
         switch self {
-        case .signUp:
-            return "/api/v1/sign-up"
         case .getAuthNumber:
             return "/api/v1/adult/authentication"
         case .getReAuthNumber:
             return "/api/v1/adult/re-authentication"
         case .verification:
             return "/api/v1/adult/authentication/verification"
+        case .signUp:
+            return "/api/v1/signup"
         }
     }
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .signUp:
-            return .post
-        case .getAuthNumber:
-            return .post
-        case .getReAuthNumber:
-            return .post
-        case .verification:
+        case .getAuthNumber, .getReAuthNumber, .verification, .signUp:
             return .post
         }
     }
     
     var header: [String : String] {
         switch self {
-        case .signUp, .getAuthNumber, .getReAuthNumber, .verification:
+        case .getAuthNumber, .getReAuthNumber, .verification:
             return ["Content-Type": "application/json",
                     "Accept": "application/json"]
+        case .signUp(let requestDTO):
+            return ["Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization" : requestDTO.accessToken]
         }
     }
     
     var parameters: [String : Any]? {
         switch self {
-        case .signUp(request: let signUpReqeust):
-            return ["snsType": signUpReqeust.snsType,
-//                    "nickname": signUpReqeust.nickname,
-//                    "refreshToken": signUpReqeust.refreshToken,
-//                    "authCode": signUpReqeust.authCode,
-//                    "idToken": signUpReqeust.idToken,
-//                    "state": signUpReqeust.state,
-//                    "authorizationCode": signUpReqeust.authorizationCode,
-                    "fcmToken": signUpReqeust.fcmToken,
-                    "marketingConsent": signUpReqeust.marketingConsent]
-            
         case .getAuthNumber(let requestDTO):
             return ["providerId": requestDTO.providerId,
                     "reqAuthType": requestDTO.reqAuthType,
@@ -86,12 +73,17 @@ extension SignUpAPI: Router, URLRequestConvertible {
             
         case .verification(let requestDTO):
             return ["authNumber": requestDTO.authNumber]
+        case .signUp(let requestDTO):
+            return ["state": requestDTO.state as Any,
+                    "nickname": requestDTO.nickname,
+                    "marketingConsent": requestDTO.marketingConsent,
+                    "fcmToken": requestDTO.fcmToken]
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .signUp, .getAuthNumber, .getReAuthNumber, .verification:
+        case .getAuthNumber, .getReAuthNumber, .verification, .signUp:
             return JSONEncoding.default
         }
     }

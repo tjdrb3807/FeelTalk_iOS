@@ -11,7 +11,7 @@ import RxCocoa
 
 final class InviteCodeViewModel {
     private weak var coordinator: InviteCodeCoordinator?
-    private let coupleUseCase: CoupleUseCase
+    private let userUseCase: UserUseCase
     private let disposBag = DisposeBag()
     
     struct Input {
@@ -23,9 +23,9 @@ final class InviteCodeViewModel {
         let inviteCode: PublishRelay<String> = PublishRelay<String>()
     }
     
-    init(coordinator: InviteCodeCoordinator, coupleUseCase: CoupleUseCase) {
+    init(coordinator: InviteCodeCoordinator, userUseCase: UserUseCase) {
         self.coordinator = coordinator
-        self.coupleUseCase = coupleUseCase
+        self.userUseCase = userUseCase
     }
     
     func transfer(input: Input) -> Output {
@@ -34,7 +34,7 @@ final class InviteCodeViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .bind { vm, _ in
-                vm.coupleUseCase.getInviteCode()
+                vm.userUseCase.getInviteCode()
                     .bind(to: output.inviteCode)
                     .disposed(by: vm.disposBag)
             }.disposed(by: disposBag)

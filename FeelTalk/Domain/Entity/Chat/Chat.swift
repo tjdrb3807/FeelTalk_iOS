@@ -15,6 +15,16 @@ protocol Chat {
     var createAt: String { get set }
 }
 
+struct PressForAnswerOpenGraphChat: Chat {
+    var index: Int
+    var pageIndex: Int
+    var type: ChatType
+    var isRead: Bool
+    var isMine: Bool
+    var questionIndex: Int
+    var createAt: String
+}
+
 /// 메세지 채팅 Entity
 struct TextChat: Chat {
     var index: Int

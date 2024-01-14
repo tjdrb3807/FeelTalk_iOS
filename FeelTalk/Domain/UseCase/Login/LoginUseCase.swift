@@ -47,7 +47,7 @@ final class DefaultLoginUseCase: LoginUseCase {
                 .filter {
                     KeychainRepository.addItem(value: $0.accessToken, key: "accessToken") &&
                     KeychainRepository.addItem(value: $0.refreshToken, key: "refreshToken") &&
-                    KeychainRepository.addItem(value: $0.expiredTime, key: "expiredTime")
+                    KeychainRepository.addItem(value: KeychainRepository.setExpiredTime(), key: "expiredTime")
                 }.compactMap { _ in KeychainRepository.getItem(key: "accessToken") as? String }
                 .subscribe(onNext: { accessToken in
                     self.getUserState(accessToken)
@@ -83,13 +83,13 @@ extension DefaultLoginUseCase {
     }
     
     func kakaoLogin() -> Single<SNSLogin01> {
-        debugPrint("[CALL]: LoginUseCAse - kakaoLogin")
+        debugPrint("[CALL]: LoginUseCase - kakaoLogin")
         return kakaoRepository.login()
     }
 }
 
 extension DefaultLoginUseCase {
-    private func getUserState(_ accessToken: String) -> Observable<UserState> {
+    func getUserState(_ accessToken: String) -> Observable<UserState> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             

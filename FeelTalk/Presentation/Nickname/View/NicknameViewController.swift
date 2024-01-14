@@ -14,10 +14,9 @@ final class NicknameViewController: UIViewController {
     var viewModel: NicknameViewModel!
     private let disposeBag = DisposeBag()
     
-    var signUpInfo: SignUp?
-    
     // MARK: SubComponents
     private lazy var navigationBar: SignUpFlowNavigationBar = { SignUpFlowNavigationBar(viewType: .signUp) }()
+    
     private lazy var progressBar: CustomProgressBar = { CustomProgressBar(persentage: 2/3) }()
     
     private lazy var titleLabel: UILabel = {
@@ -54,22 +53,9 @@ final class NicknameViewController: UIViewController {
         return label
     }()
     
-    private lazy var nicknameTextField: UITextField = {
-        let textField = UITextField()
-        textField.attributedPlaceholder = NSAttributedString(string: NicknameNameSpace.nicknameTextFieldPlaceholder,
-                                                             attributes: [NSAttributedString.Key.foregroundColor: UIColor(named: NicknameNameSpace.nicknameTextFieldPlaceholderColor)!])
-        textField.textColor = .black
-        textField.backgroundColor = UIColor(named: NicknameNameSpace.nicknameTextFieldBackgroundColor)
-        textField.layer.cornerRadius = NicknameNameSpace.nicknameTextFieldCornerRadius
-        
-        let paddingView = UIView(frame: CGRect(origin: .zero,
-                                               size: CGSize(width: NicknameNameSpace.nicknameTextFieldLeftPadding,
-                                                            height: NicknameNameSpace.nicknameTextFieldHeight)))
-        textField.leftView = paddingView
-        textField.leftViewMode = .always
-        
-        return textField
-    }()
+    private lazy var nicknameTextField: CustomTextField01 = { CustomTextField01(placeholder: "연인에게 보여줄 닉네임을 적어주세요",
+                                                                                useClearButton: true,
+                                                                                textLimit: 10) }()
     
     private lazy var nextButton: UIButton = {
         let button = UIButton()
@@ -84,45 +70,66 @@ final class NicknameViewController: UIViewController {
         return button
     }()
     
+    private lazy var warningLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .red
+        label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
+                            size: 12.0)
+        label.backgroundColor = .clear
+        label.isHidden = true
+        
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.bind(to: viewModel)
         self.setAttribute()
         self.addSubComponents()
         self.setConfiguration()
-        self.bind(to: viewModel)
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+
     private func bind(to viewModel: NicknameViewModel) {
-        let input = NicknameViewModel.Input(inputNickname: nicknameTextField.rx.text.orEmpty,
+        let input = NicknameViewModel.Input(nicknameText: nicknameTextField.rx.text.orEmpty.asObservable(),
                                             tapNextButton: nextButton.rx.tap,
                                             tapNavigationBarLeftButton: navigationBar.leftButton.rx.tap)
         
         let output = viewModel.transform(input: input)
         
-        output.activateNextButton
-            .withUnretained(self)
-            .bind(onNext: { vc, state in
-                vc.toggleNextButton(state)
-            }).disposed(by: disposeBag)
-        
         output.keyboardHeight
+            .skip(1)
             .withUnretained(self)
             .bind(onNext: { vc, keyboardHeight in
                 let height = keyboardHeight > 0 ? -keyboardHeight + vc.view.safeAreaInsets.bottom : 0
                 vc.updateKeyboardHeght(height)
             }).disposed(by: disposeBag)
         
-        output.preventSpacing
-            .bind(to: nicknameTextField.rx.text)
-            .disposed(by: disposeBag)
+        output.nicknameTextError
+            .withUnretained(self)
+            .bind { vc, error in
+                if error == .none {
+                    vc.warningLabel.rx.isHidden.onNext(true)
+                } else {
+                    vc.warningLabel.rx.text.onNext(error.rawValue)
+                    vc.warningLabel.rx.isHidden.onNext(false)
+                }
+            }.disposed(by: disposeBag)
+        
+        output.activateNextButton
+            .withUnretained(self)
+            .bind(onNext: { vc, state in
+                vc.toggleNextButton(state)
+            }).disposed(by: disposeBag)
     }
     
     private func setAttribute()  { view.backgroundColor = .white }
     
-    private func addSubComponents() {
-        [navigationBar, progressBar, titleLabel, descriptionLabel, nicknameLabel, nicknameTextField, nextButton].forEach { view.addSubview($0) }
-    }
+    private func addSubComponents() { addViewSubComponents() }
     
     private func setConfiguration() {
         navigationBar.snp.makeConstraints {
@@ -162,12 +169,26 @@ final class NicknameViewController: UIViewController {
             $0.height.equalTo(NicknameNameSpace.nicknameTextFieldHeight)
         }
         
+        warningLabel.snp.makeConstraints {
+            $0.top.equalTo(nicknameTextField.snp.bottom).offset(4.0)
+            $0.leading.equalTo(nicknameTextField.snp.leading).offset(6)
+        }
+        
         nextButton.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(NicknameNameSpace.baseLeadingInset)
             $0.trailing.equalToSuperview().inset(NicknameNameSpace.baseTrailingInset)
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             $0.height.equalTo(NicknameNameSpace.nextButtonHeight)
         }
+    }
+}
+
+extension NicknameViewController {
+    private func addViewSubComponents() {
+        [navigationBar, progressBar,
+         titleLabel, descriptionLabel,
+         nicknameLabel, nicknameTextField, warningLabel,
+         nextButton].forEach { view.addSubview($0) }
     }
 }
 
@@ -212,19 +233,13 @@ struct NicknameViewController_Previews: PreviewProvider {
 
     struct NicknameViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            let viewController = NicknameViewController()
-            let viewModel = NicknameViewModel(coordinator: DefaultNicknameCoordinator(UINavigationController()),
-                                              signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()),
-                                              signUp: .init(snsType: .naver,
-                                                            nickname: "nickname",
-                                                            refreshToken: nil,
-                                                            authCode: nil,
-                                                            idToken: nil,
-                                                            authorizationCode: nil,
-                                                            marketingConsent: true))
-            viewController.viewModel = viewModel
+            let vc = NicknameViewController()
+            let vm = NicknameViewModel(coordinator: DefaultNicknameCoordinator(UINavigationController()),
+                                       signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
             
-            return viewController
+            vc.viewModel = vm
+            
+            return vc
         }
 
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

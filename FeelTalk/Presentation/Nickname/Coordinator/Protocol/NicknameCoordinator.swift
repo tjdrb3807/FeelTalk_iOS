@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 protocol NicknameCoordinator: Coordinator {
-    func pushNicknameViewController(with data: SignUp)
-    func showInviteCodeFlow()
+    var isMarketingConsented: PublishRelay<Bool> { get }
+    
     func popViewController()
 }

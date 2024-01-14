@@ -19,15 +19,12 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-//        print(KeychainRepository.getItem(key: "accessToken"))
-//        print(KeychainRepository.getItem(key: "refreshToken"))
-//        _ = KeychainRepository.deleteItem(key: "accessToken")
-//        _ = KeychainRepository.deleteItem(key: "refreshToken")
+        
         // SNS setting
         setKakaoNativeAppKey()
         setNaverInstance()
         
-        // Firebase settinf
+        // Firebase setting
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         
@@ -120,35 +117,80 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
         
-        print("willPresent")
-        print(userInfo)
-        
-        debugPrint("willPresent: userInfo = \(userInfo)")
-        
         completionHandler([.banner, .sound, .badge])
     }
     
     /// Background / Kill or terminated
+    /// https://eunjin3786.tistory.com/379
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
-        
-        print("didReceive")
-        print(userInfo)
-        
-        debugPrint("didReceive: userInfo = \(userInfo)")
-    }
+        let identifier = response.notification.request.identifier
     
+        completionHandler()
+    }
+
     /// Silent Push Notifications
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         guard let aps = userInfo["aps"] as? [AnyHashable: Any] else { return }
-        
+
+        print("")
+        print("=============================================")
+        print("[AppDelegate >> didReceiveRemoteNotification]")
+        print("---------------------------------------------")
+        print("설명 :: 리모트 푸시 알림 확인")
+        print("---------------------------------------------")
+        print("applicationState :: \(String(describing: UIApplication.shared.applicationState))")
+        print("=============================================")
+
+        switch UIApplication.shared.applicationState {
+        case .active:
+            print("")
+            print("=============================================")
+            print("[AppDelegate >> didReceiveRemoteNotification]")
+            print("---------------------------------------------")
+            print("설명 :: 포그라운드 상태에서 푸시알림 전달받음")
+            print("---------------------------------------------")
+            print("userInfo :: \(userInfo.description)")
+            print("=============================================")
+            print("")
+        case .inactive:
+            print("")
+            print("=============================================")
+            print("[AppDelegate >> didReceiveRemoteNotification]")
+            print("---------------------------------------------")
+            print("설명 :: 푸시 클릭 접속 확인")
+            print("---------------------------------------------")
+            print("userInfo :: \(userInfo.description)")
+            print("=============================================")
+            print("")
+        case .background:
+            print("")
+            print("=============================================")
+            print("[AppDelegate >> didReceiveRemoteNotification]")
+            print("---------------------------------------------")
+            print("설명 :: 백그라운드 상태에서 푸시알림 전달받음")
+            print("---------------------------------------------")
+            print("userInfo :: \(userInfo.description)")
+            print("=============================================")
+            print("")
+        @unknown default:
+            print("")
+            print("=============================================")
+            print("[AppDelegate >> didReceiveRemoteNotification]")
+            print("---------------------------------------------")
+            print("설명 :: default")
+            print("=============================================")
+            print("")
+            break
+        }
+
         if aps["content-available"] as? Int == 1 {
             FCMHandler.shared.handle(userInfo: userInfo)
 
             completionHandler(UIBackgroundFetchResult.newData)
         }
 
-        completionHandler(UIBackgroundFetchResult.noData)
+//        completionHandler(UIBackgroundFetchResult.noData)
     }
 }
 

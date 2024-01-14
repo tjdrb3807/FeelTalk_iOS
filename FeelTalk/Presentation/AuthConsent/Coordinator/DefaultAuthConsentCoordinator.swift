@@ -46,5 +46,4 @@ final class DefaultAuthConsentCoordinator: AuthConsentCoordinator {
         self.navigationController.dismiss(animated: false)
         self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
     }
-
 }

@@ -8,9 +8,9 @@
 import Foundation
 
 struct ChallengeListResponseDTO: Decodable {
-    let challenges: [ChallengeBaseResponseDTO]
+    let challengeList: [ChallengeBaseResponseDTO]
     
     enum CodingKeys: String, CodingKey {
-        case challenges
+        case challengeList
     }
 }
