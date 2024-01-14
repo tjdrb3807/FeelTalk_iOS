@@ -53,6 +53,10 @@ final class ChallengeDeadlineView: UIStackView {
         
         inputView.rightView = calenderIcon
         inputView.rightViewMode = .always
+        
+        let toolBar = CustomToolbar(type: .ongoing)
+        
+        inputView.inputAccessoryView = toolBar
     
         return inputView
     }()

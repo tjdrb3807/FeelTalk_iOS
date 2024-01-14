@@ -1,5 +1,5 @@
 //
-//  ChallengeTitleInputView.swift
+//  ChallengeTitleView.swift
 //  FeelTalk
 //
 //  Created by 전성규 on 2023/08/21.
@@ -10,11 +10,13 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class ChallengeTitleInputView: UIStackView {
+final class ChallengeTitleView: UIStackView {
 //    let viewMode = PublishRelay<ChallengeDetailViewType>()
 //    let titleTextCount = BehaviorRelay<Int>(value: 0)
 //    let textClearButtonState = BehaviorRelay<Bool>(value: false)
 
+    let typeObserver = PublishRelay<ChallengeDetailViewType>()
+    lazy var tapToolBarTabObserver = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
     
     private lazy var leadingSpacing: UIView = { UIView() }()
@@ -46,7 +48,13 @@ final class ChallengeTitleInputView: UIStackView {
     
     private lazy var inputViewTitle: CustomInputViewTitle = { CustomInputViewTitle(type: .challengeTitle, isRequiredInput: false) }()
     
-    lazy var titleInputView: CustomTextField01 = { CustomTextField01(placeholder: ChallengeTitleInputViewNameSpace.titleInputViewPlaceholder, useClearButton: true, textLimit: ChallengeTitleInputViewNameSpace.titleInputViewTextLimit) }()
+    lazy var titleInputView: CustomTextField01 = {
+        let inputView = CustomTextField01(placeholder: ChallengeTitleInputViewNameSpace.titleInputViewPlaceholder,
+                                          useClearButton: true,
+                                          textLimit: ChallengeTitleInputViewNameSpace.titleInputViewTextLimit)
+        
+        return inputView
+    }()
     
 //    lazy var titleTextField: UITextField = {
 //        let textField = UITextField()
@@ -118,6 +126,19 @@ final class ChallengeTitleInputView: UIStackView {
     }
 
     private func bind() {
+        typeObserver
+            .withUnretained(self)
+            .bind { v, type in
+                v.setTitleInputviewProperties(with: type)
+            }.disposed(by: disposeBag)
+        
+        typeObserver
+            .filter { $0 == .new && $0 == .modify }
+            .withUnretained(self)
+            .bind { v, _ in
+                v.setUpInputViewToolBar()
+            }.disposed(by: disposeBag)
+        
 //        viewMode
 //            .withUnretained(self)
 //            .bind { v, mode in
@@ -178,7 +199,7 @@ final class ChallengeTitleInputView: UIStackView {
 }
 
 // Defautl setting method.
-extension ChallengeTitleInputView {
+extension ChallengeTitleView {
 //    private func addViewSubComponents() {
 //        [leftSpacingView, stackView, rightSpacingView].forEach { addArrangedSubview($0) }
 //    }
@@ -223,53 +244,46 @@ extension ChallengeTitleInputView {
     }
 }
 
-//MARK: Update UI setting method.
-extension ChallengeTitleInputView {
-//    private func isTiteTextFieldEnable(with mode: ChallengeDetailViewType) {
-//        switch mode {
-//        case .new, .modify:
-//            titleTextField.rx.isEnabled.onNext(true)
-//        case .ongoing, .completed:
-//            titleTextField.rx.isEnabled.onNext(false)
-//        }
-//    }
-//
-//    private func textFieldValueInit() {
-//        titleTextField.rx.text.onNext(ChallengeDetailTitleInputViewNameSpace.textFieldDefaultText)
-//        textCountingView.molecularLabel.rx.text.onNext("0")
-//        textCountingView.molecularLabel.rx.textColor.onNext(UIColor(named: "gray_600"))
-//    }
-//
-//    private func isTextClearButon(_ state: Bool) {
-//        if state {
-//            textFieldRightView.insertArrangedSubview(secondSpacingView, at: 2)
-//            textFieldRightView.insertArrangedSubview(textClearButton, at: 3)
-//        } else {
-//            textFieldRightView.removeArrangedSubview(secondSpacingView)
-//            secondSpacingView.removeFromSuperview()
-//
-//            textFieldRightView.removeArrangedSubview(textClearButton)
-//            textClearButton.removeFromSuperview()
-//        }
-//    }
+extension ChallengeTitleView {
+    private func setTitleInputviewProperties(with type: ChallengeDetailViewType) {
+        switch type {
+        case .completed, .ongoing:
+            titleInputView.rx.isEnabled.onNext(false)
+        case .modify, .new:
+            titleInputView.rx.isEnabled.onNext(true)
+        }
+    }
+    
+    private func setUpInputViewToolBar() {
+        let toolBar = ChallengeDetailToolbar(type: .title)
+        
+        toolBar.nextButton.rx.tap
+            .bind(to: tapToolBarTabObserver)
+            .disposed(by: disposeBag)
+        
+        titleInputView.inputAccessoryView = toolBar
+    }
 }
 
 #if DEBUG
 
 import SwiftUI
 
-struct ChallengeTitleInputView_Previews: PreviewProvider {
+struct ChallengeTitleView_Previews: PreviewProvider {
     static var previews: some View {
-        ChallengeTitleInputView_Presentable()
+        ChallengeTitleView_Presentable()
             .edgesIgnoringSafeArea(.all)
             .frame(width: UIScreen.main.bounds.width,
                    height: ChallengeTitleInputViewNameSpace.height,
                    alignment: .center)
     }
     
-    struct ChallengeTitleInputView_Presentable: UIViewRepresentable {
+    struct ChallengeTitleView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            ChallengeTitleInputView()
+            let v = ChallengeTitleView()
+            v.typeObserver.accept(.new)
+            
+            return v
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

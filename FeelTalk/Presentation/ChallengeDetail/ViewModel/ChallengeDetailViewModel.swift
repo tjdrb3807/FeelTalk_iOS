@@ -74,17 +74,8 @@ final class ChallengeDetailViewModel {
         RxKeyboard.instance.visibleHeight
             .asObservable()
             .filter { 0 <= $0 }
-            .withUnretained(self)
-            .bind { vm, keyboardHeight in
-                vm.keyboardHeight.accept(keyboardHeight)
-            }.disposed(by: disposeBag)
-        
-//        input.viewWillAppear
-//            .withLatestFrom(model)
-//            .withUnretained(self)
-//            .bind { vm, model in
-//                vm.viewMode.accept(vm.setViewMode(with: model))
-//            }.disposed(by: disposeBag)
+            .bind(to: output.keyboardHeight)
+            .disposed(by: disposeBag)
         
         input.viewWillAppear
             .asObservable()

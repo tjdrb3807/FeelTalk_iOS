@@ -31,13 +31,14 @@ final class ChallengeButton: UIButton {
             .bind { v, type in
                 v.setTitle(with: type)
                 v.setBackgroundColor(with: type)
+                v.setEnable(with: type)
             }.disposed(by: disposeBag)
     }
     
     private func setProperties() {
         titleLabel?.textColor = .white
         
-        layer.cornerRadius = 59 / 2
+        layer.cornerRadius = ChallengeButtonNameSpace.cornerRadius
         clipsToBounds = true
     }
 }
@@ -46,13 +47,13 @@ extension ChallengeButton {
     private func setTitle(with type: ChallengeDetailViewType) {
         switch type {
         case .completed:
-            rx.title().onNext("이미 완료된 챌린지예요")
+            rx.title().onNext(ChallengeButtonNameSpace.completedTypeTitleText)
         case .modify:
-            rx.title().onNext("챌린지 수정")
+            rx.title().onNext(ChallengeButtonNameSpace.modifyTypeTitleText)
         case .new:
-            rx.title().onNext("챌린지 만들기")
+            rx.title().onNext(ChallengeButtonNameSpace.newTypeTitleText)
         case .ongoing:
-            rx.title().onNext("챌린지 완료")
+            rx.title().onNext(ChallengeButtonNameSpace.ongoingTypeText)
         }
     }
     
@@ -70,16 +71,16 @@ extension ChallengeButton {
     }
     
     private func setEnable(with type: ChallengeDetailViewType) {
-//        switch type {
-//        case .completed:
-//            rx.isEnabled.onNext(false)
-//        case .modify:
-//            <#code#>
-//        case .new:
-//            <#code#>
-//        case .ongoing:
-//            <#code#>
-//        }
+        switch type {
+        case .completed:
+            rx.isEnabled.onNext(false)
+        case .modify:
+            rx.isEnabled.onNext(true)
+        case .new:
+            rx.isEnabled.onNext(false)
+        case .ongoing:
+            rx.isEnabled.onNext(true)
+        }
     }
 }
 
@@ -92,7 +93,7 @@ struct ChallengeButton_Previews: PreviewProvider {
         ChallengeButton_Presentable()
             .edgesIgnoringSafeArea(.all)
             .frame(width: UIScreen.main.bounds.width - (CommonConstraintNameSpace.leadingInset + CommonConstraintNameSpace.trailingInset),
-                   height: 59,
+                   height: ChallengeButtonNameSpace.height,
                    alignment: .center)
     }
     

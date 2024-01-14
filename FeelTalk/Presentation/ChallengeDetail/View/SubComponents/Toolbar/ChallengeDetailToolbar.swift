@@ -91,6 +91,7 @@ final class ChallengeDetailToolbar: UIToolbar {
     }()
     
     init(type: ChallengeToolbarType) {
+        print("toolBar ini")
         self.toolbarType = type
         super.init(frame: CGRect(origin: .zero, size: CGSize(width: UIScreen.main.bounds.width,
                                                              height: ChallengeDetailToolbarNameSpace.height)))

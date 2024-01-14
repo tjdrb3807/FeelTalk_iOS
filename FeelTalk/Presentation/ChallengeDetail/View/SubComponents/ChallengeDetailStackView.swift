@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class ChallengeDetailStackView: UIStackView {
-    lazy var titleInputView: ChallengeTitleInputView = { ChallengeTitleInputView() }()
+    lazy var titleInputView: ChallengeTitleView = { ChallengeTitleView() }()
     lazy var deadlineInputView: ChallengeDetailDeadlineInputView = { ChallengeDetailDeadlineInputView() }()
     lazy var contentInputView: ChallengeDetailContentInputView = { ChallengeDetailContentInputView() }()
     

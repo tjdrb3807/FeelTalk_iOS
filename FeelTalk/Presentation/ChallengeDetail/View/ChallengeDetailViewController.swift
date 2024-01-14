@@ -37,24 +37,26 @@ final class ChallengeDetailViewController: UIViewController {
     
     private lazy var descriptionView: ChallengeDetailDescriptionView = { ChallengeDetailDescriptionView() }()
     
-    private lazy var titleInputView: ChallengeTitleInputView = { ChallengeTitleInputView() }()
+    private lazy var titleInputView: ChallengeTitleView = { ChallengeTitleView() }()
     
     private lazy var deadlineInputView: ChallengeDeadlineView = { ChallengeDeadlineView() }()
     
     private lazy var contentInputView: ChallengeContentView = { ChallengeContentView() }()
     
+    private lazy var challengeButton: ChallengeButton = { ChallengeButton() }()
+    
 //    private lazy var contentView: ChallengeDetailStackView = { ChallengeDetailStackView() }()
     
-    private lazy var challengeButton: UIButton = {
-        let button = UIButton()
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont(name: ChallengeDetailViewNameSpace.challengeButtonTitleFont,
-                                         size: ChallengeDetailViewNameSpace.challengeButtonTitleSize)
-        button.layer.cornerRadius = ChallengeDetailViewNameSpace.challengeButtonCornerRadius
-        button.clipsToBounds = true
-        
-        return button
-    }()
+//    private lazy var challengeButton: UIButton = {
+//        let button = UIButton()
+//        button.setTitleColor(.white, for: .normal)
+//        button.titleLabel?.font = UIFont(name: ChallengeDetailViewNameSpace.challengeButtonTitleFont,
+//                                         size: ChallengeDetailViewNameSpace.challengeButtonTitleSize)
+//        button.layer.cornerRadius = ChallengeDetailViewNameSpace.challengeButtonCornerRadius
+//        button.clipsToBounds = true
+//
+//        return button
+//    }()
     
     private lazy var alertView: CustomAlertView = { CustomAlertView(type: .challengeAddCancel) }()
     
@@ -92,7 +94,8 @@ final class ChallengeDetailViewController: UIViewController {
             .skip(1)
             .withUnretained(self)
             .bind { vc, keyboardHeight in
-                let height = keyboardHeight > 0 ? -keyboardHeight + vc.view.safeAreaInsets.bottom : 0
+//                let height = keyboardHeight > 0 ? -keyboardHeight + vc.view.safeAreaInsets.bottom : 0
+                let height = keyboardHeight > 0 ? keyboardHeight : 0
                 vc.updateKeyboardHeight(height)
             }.disposed(by: disposeBag)
         
@@ -101,6 +104,8 @@ final class ChallengeDetailViewController: UIViewController {
             .bind { vc, event in
                 vc.navigationBar.typeObserver.accept(event)
                 vc.descriptionView.typeObserver.accept(event)
+                vc.contentInputView.typeObserver.accept(event)
+                vc.challengeButton.typeObserver.accept(event)
             }.disposed(by: disposeBag)
         
 //        /// mode에 따른 SubComponents 초기 설정
@@ -197,12 +202,13 @@ final class ChallengeDetailViewController: UIViewController {
     private func setConfigurations() {
         makeNavigationBarConstraints()
         makeScrollViewConstraints()
-        makeChallengeRegisterButtonConstraints()
+//        makeChallengeRegisterButtonConstraints()
         makeStackViewSubComponents()
         makeDescriptionViewConstraints()
         makeTitleInputViewConstraints()
         makeDeadlineInputViewConstraints()
         makeContentInputViewConstraints()
+        makeChallengeButtonConstraints()
 //        makeContentViewConstraints()
     }
 }
@@ -225,17 +231,19 @@ extension ChallengeDetailViewController {
         scrollView.snp.makeConstraints {
             $0.top.equalTo(navigationBar.snp.bottom)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview()
         }
+        
+        scrollView.backgroundColor = .yellow.withAlphaComponent(0.4)
     }
     
-    private func makeChallengeRegisterButtonConstraints() {
-        challengeButton.snp.makeConstraints {
-            $0.top.equalTo(challengeButton.snp.bottom).offset(-ChallengeDetailViewNameSpace.challengeButtonHeight)
-            $0.leading.trailing.equalToSuperview().inset(ChallengeDetailViewNameSpace.challengeButtonSideInset)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-        }
-    }
+//    private func makeChallengeRegisterButtonConstraints() {
+//        challengeButton.snp.makeConstraints {
+//            $0.top.equalTo(challengeButton.snp.bottom).offset(-ChallengeDetailViewNameSpace.challengeButtonHeight)
+//            $0.leading.trailing.equalToSuperview().inset(ChallengeDetailViewNameSpace.challengeButtonSideInset)
+//            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+//        }
+//    }
     
     private func addScrollViewSubComponents() { scrollView.addSubview(verticalStackView) }
     
@@ -263,6 +271,15 @@ extension ChallengeDetailViewController {
     private func makeContentInputViewConstraints() {
         contentInputView.snp.makeConstraints { $0.width.equalToSuperview() }
     }
+    
+    private func makeChallengeButtonConstraints() {
+        challengeButton.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.leadingInset)
+            $0.trailing.equalToSuperview().inset(CommonConstraintNameSpace.trailingInset)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+            $0.height.equalTo(ChallengeButtonNameSpace.height)
+        }
+    }
 //
 //    private func makeContentViewConstraints() {
 //        contentView.snp.makeConstraints { $0.leading.trailing.equalToSuperview() }
@@ -272,38 +289,41 @@ extension ChallengeDetailViewController {
 // MARK: Update ChaellegeDetailView UI setting method.
 extension ChallengeDetailViewController {
     private func updateKeyboardHeight(_ keyboardHeight: CGFloat) {
-        scrollView.snp.updateConstraints { $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(keyboardHeight) }
+        scrollView.snp.updateConstraints {
+//            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(keyboardHeight)
+            $0.bottom.equalToSuperview().inset(keyboardHeight)
+        }
         
         view.layoutIfNeeded()
     }
     
-    private func setChallengeButton(with mode: ChallengeDetailViewType) {
-        switch mode {
-        case .new:
-            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonNewModeTitle)
-            challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewModeDisableStateBackgroundColor))
-            challengeButton.rx.isEnabled.onNext(false)
-        case .ongoing:
-            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonOngoingModeTitle)
-            challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewOrOngoingModeEnableStateBackgroundColor))
-            challengeButton.rx.isEnabled.onNext(true)
-        case .completed:
-            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonCompletedModeTitle)
-            challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonCompletedModeBackgroundColor))
-            challengeButton.rx.isEnabled.onNext(false)
-        case .modify:
-            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonModifyModeTitle)
-            challengeButton.rx.isEnabled.onNext(true)  // TODO: 아무런 수정없이 눌리게 해도 되는가???
-            challengeButton.rx.backgroundColor.onNext(.black)
-        }
-    }
-    
-    private func updateNewModeChallengeButton(state: Bool) {
-        challengeButton.rx.isEnabled.onNext(state)
-        
-        state ? challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewOrOngoingModeEnableStateBackgroundColor)) :
-        challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewModeDisableStateBackgroundColor))
-    }
+//    private func setChallengeButton(with mode: ChallengeDetailViewType) {
+//        switch mode {
+//        case .new:
+//            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonNewModeTitle)
+//            challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewModeDisableStateBackgroundColor))
+//            challengeButton.rx.isEnabled.onNext(false)
+//        case .ongoing:
+//            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonOngoingModeTitle)
+//            challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewOrOngoingModeEnableStateBackgroundColor))
+//            challengeButton.rx.isEnabled.onNext(true)
+//        case .completed:
+//            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonCompletedModeTitle)
+//            challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonCompletedModeBackgroundColor))
+//            challengeButton.rx.isEnabled.onNext(false)
+//        case .modify:
+//            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonModifyModeTitle)
+//            challengeButton.rx.isEnabled.onNext(true)  // TODO: 아무런 수정없이 눌리게 해도 되는가???
+//            challengeButton.rx.backgroundColor.onNext(.black)
+//        }
+//    }
+//
+//    private func updateNewModeChallengeButton(state: Bool) {
+//        challengeButton.rx.isEnabled.onNext(state)
+//
+//        state ? challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewOrOngoingModeEnableStateBackgroundColor)) :
+//        challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewModeDisableStateBackgroundColor))
+//    }
 }
 
 #if DEBUG
@@ -313,6 +333,7 @@ import SwiftUI
 struct ChallengeDetailViewController_Previews: PreviewProvider {
     static var previews: some View {
         ChallengeDetailViewController_Presentable()
+            .edgesIgnoringSafeArea(.all)
     }
     
     struct ChallengeDetailViewController_Presentable: UIViewControllerRepresentable {
