@@ -36,6 +36,7 @@ final class ChallengeContentView: UIStackView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        self.bind()
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
@@ -43,6 +44,14 @@ final class ChallengeContentView: UIStackView {
     
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func bind() {
+        typeObserver
+            .withUnretained(self)
+            .bind { v, type in
+                v.setContentInputViewProperties(with: type)
+            }.disposed(by: disposeBag)
     }
     
     private func setProperties() {
@@ -86,6 +95,17 @@ extension ChallengeContentView {
     }
 }
 
+extension ChallengeContentView {
+    private func setContentInputViewProperties(with type: ChallengeDetailViewType) {
+        switch type {
+        case .completed, .ongoing:
+            contentInputView.textView.rx.isEditable.onNext(false)
+        case .modify, .new:
+            contentInputView.textView.rx.isEditable.onNext(true)
+        }
+    }
+}
+
 #if DEBUG
 
 import SwiftUI
@@ -101,7 +121,10 @@ struct ChallengeContentView_Previews: PreviewProvider {
     
     struct ChallengeContentView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            ChallengeContentView()
+            let v = ChallengeContentView()
+            v.typeObserver.accept(.modify)
+            
+            return v
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}
