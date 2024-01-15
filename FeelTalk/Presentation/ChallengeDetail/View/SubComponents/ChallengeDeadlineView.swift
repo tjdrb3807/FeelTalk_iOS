@@ -12,7 +12,8 @@ import RxCocoa
 
 final class ChallengeDeadlineView: UIStackView {
     let typeObserver = PublishRelay<ChallengeDetailViewType>()
-    let deadlineObserver = PublishRelay<Date>()
+    let deadlineObserver = BehaviorRelay<Date>(value: Date())
+    let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewInputType>()
     private let disposeBag = DisposeBag()
     
     private lazy var leadingSpacing: UIView = { UIView() }()
@@ -53,10 +54,6 @@ final class ChallengeDeadlineView: UIStackView {
         
         inputView.rightView = calenderIcon
         inputView.rightViewMode = .always
-        
-        let toolBar = CustomToolbar(type: .ongoing)
-        
-        inputView.inputAccessoryView = toolBar
     
         return inputView
     }()
@@ -93,6 +90,13 @@ final class ChallengeDeadlineView: UIStackView {
             .withUnretained(self)
             .bind { v, type in
                 v.setDeadlineInputViewProperties(with: type)
+            }.disposed(by: disposeBag)
+        
+        typeObserver
+            .filter { $0 == .new || $0 == .modify }
+            .withUnretained(self)
+            .bind { v, _ in
+                v.setUpToolBar()
             }.disposed(by: disposeBag)
         
         deadlineObserver
@@ -155,6 +159,15 @@ extension ChallengeDeadlineView {
 }
 
 extension ChallengeDeadlineView {
+    private func setDeadlineInputViewProperties(with type: ChallengeDetailViewType) {
+        switch type {
+        case .completed, .ongoing:
+            deadlineInputView.rx.isEnabled.onNext(false)
+        case .modify, .new:
+            deadlineInputView.rx.isEnabled.onNext(true)
+        }
+    }
+    
     private func setUpDatePicker() {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
@@ -177,13 +190,15 @@ extension ChallengeDeadlineView {
         deadlineInputView.inputView = datePicker
     }
     
-    private func setDeadlineInputViewProperties(with type: ChallengeDetailViewType) {
-        switch type {
-        case .completed, .ongoing:
-            deadlineInputView.rx.isEnabled.onNext(false)
-        case .modify, .new:
-            deadlineInputView.rx.isEnabled.onNext(true)
-        }
+    private func setUpToolBar() {
+        let toolBar = CustomToolbar(type: .ongoing)
+        
+        toolBar.rightButton.rx.tap
+            .map { ChallengeDetailViewInputType.deadline }
+            .bind(to: toolBarButtonTapObserver)
+            .disposed(by: disposeBag)
+        
+        deadlineInputView.inputAccessoryView = toolBar
     }
 }
 

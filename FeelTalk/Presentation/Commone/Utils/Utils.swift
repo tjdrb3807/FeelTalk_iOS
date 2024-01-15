@@ -44,7 +44,7 @@ extension Utils {
     static func convertDateToStr(_ date: Date) -> String {
         let formatter = DateFormatter()
         
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         
         return formatter.string(from: date)
     }

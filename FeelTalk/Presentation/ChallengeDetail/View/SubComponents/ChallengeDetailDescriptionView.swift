@@ -16,11 +16,15 @@ final class ChallengeDetailDescriptionView: UIStackView {
     
     private lazy var leftSpacing: UIView = { UIView() }()
     
+    private lazy var topSpacing: UIView = { UIView() }()
+    
+    private lazy var bottomSpacing: UIView = { UIView() }()
+    
     private lazy var contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .leading
-        stackView.distribution = .fillEqually
+        stackView.distribution = .fillProportionally
         
         return stackView
     }()
@@ -49,6 +53,7 @@ final class ChallengeDetailDescriptionView: UIStackView {
         self.bind()
         self.setAttributes()
         self.addSubComponents()
+        self.setConstraints()
     }
     
     required init(coder: NSCoder) {
@@ -74,6 +79,11 @@ final class ChallengeDetailDescriptionView: UIStackView {
         addViewSubComponents()
         addContentStackViewSubComponents()
     }
+    
+    private func setConstraints() {
+        makeTopSpacingConstraints()
+        makeBottomSpacingConstraints()
+    }
 }
 
 extension ChallengeDetailDescriptionView {
@@ -82,7 +92,21 @@ extension ChallengeDetailDescriptionView {
     }
     
     private func addContentStackViewSubComponents() {
-        [headerLabel, bodyLabel].forEach { contentStackView.addArrangedSubview($0) }
+        [topSpacing, headerLabel, bodyLabel, bottomSpacing].forEach { contentStackView.addArrangedSubview($0) }
+    }
+    
+    private func makeTopSpacingConstraints() {
+        topSpacing.snp.makeConstraints {
+            $0.width.equalToSuperview()
+            $0.height.equalTo(ChallengeDetailDescriptionViewNameSpace.topSpacingHeight)
+        }
+    }
+    
+    private func makeBottomSpacingConstraints() {
+        bottomSpacing.snp.makeConstraints {
+            $0.width.equalToSuperview()
+            $0.height.equalTo(ChallengeDetailDescriptionViewNameSpace.bottomSpacingHeight)
+        }
     }
 }
 
@@ -95,6 +119,10 @@ extension ChallengeDetailDescriptionView {
         case .modify, .new:
             headerLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.headerLabelType02Text)
             bodyLabel.rx.text.onNext(ChallengeDetailDescriptionViewNameSpace.bodyLabelType02Text)
+        }
+        
+        [headerLabel, bodyLabel].forEach {
+            $0.setLineHeight(height: ChallengeDetailDescriptionViewNameSpace.labelLineHeight)
         }
     }
 }

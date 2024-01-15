@@ -38,8 +38,15 @@ final class DefaultChallengeDetailCoordinator: ChallengeDetailCoordinator {
             .disposed(by: disposeBag)
         
         challengeDetailViewController.viewModel = vm
+        navigationController.interactivePopGestureRecognizer?.isEnabled = false
         navigationController.pushViewController(challengeDetailViewController, animated: true)
         navigationController.tabBarController?.tabBar.isHidden = true
+    }
+    
+    func pop() {
+        self.childCoordinators.removeAll()
+        self.navigationController.popViewController(animated: true)
+        self.navigationController.tabBarController?.tabBar.isHidden = false
     }
 }
 

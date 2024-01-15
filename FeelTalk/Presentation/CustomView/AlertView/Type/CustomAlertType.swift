@@ -14,4 +14,5 @@ enum CustomAlertType {
     case challengeAddCancel
     case popAnswer
     case sendAnswer
+    case deregisterChallenge
 }

@@ -9,10 +9,10 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import RxKeyboard
 
 final class ChallengeDetailViewController: UIViewController {
     var viewModel: ChallengeDetailViewModel!
-
     private let disposeBag = DisposeBag()
     
     private lazy var navigationBar: ChallengeDetailNavigationBar = { ChallengeDetailNavigationBar() }()
@@ -20,17 +20,19 @@ final class ChallengeDetailViewController: UIViewController {
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = true
+        scrollView.showsHorizontalScrollIndicator = false
         scrollView.indicatorStyle = .black
+        scrollView.setTapGesture()
         
         return scrollView
     }()
     
-    private lazy var verticalStackView: UIStackView = {
+    private lazy var contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fillProportionally
-        stackView.spacing = ChallengeDetailViewNameSpace.verticalStackViewSpacing
+        stackView.spacing = ChallengeDetailViewNameSpace.contentStackViewSpacing
         
         return stackView
     }()
@@ -45,58 +47,45 @@ final class ChallengeDetailViewController: UIViewController {
     
     private lazy var challengeButton: ChallengeButton = { ChallengeButton() }()
     
-//    private lazy var contentView: ChallengeDetailStackView = { ChallengeDetailStackView() }()
-    
-//    private lazy var challengeButton: UIButton = {
-//        let button = UIButton()
-//        button.setTitleColor(.white, for: .normal)
-//        button.titleLabel?.font = UIFont(name: ChallengeDetailViewNameSpace.challengeButtonTitleFont,
-//                                         size: ChallengeDetailViewNameSpace.challengeButtonTitleSize)
-//        button.layer.cornerRadius = ChallengeDetailViewNameSpace.challengeButtonCornerRadius
-//        button.clipsToBounds = true
-//
-//        return button
-//    }()
-    
     private lazy var alertView: CustomAlertView = { CustomAlertView(type: .challengeAddCancel) }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
     
+        self.bind()
         self.bind(to: viewModel)
         self.setAttributes()
         self.addSubComponents()
         self.setConfigurations()
     }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
     
+    private func bind() {
+        
+    }
+    
     private func bind(to viewModel: ChallengeDetailViewModel) {
-//        let input = ChallengeDetailViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
-//                                                   tapModifyButton: navigationBar.modifyButton.rx.tap,
-//                                                   tapRemoveButton: navigationBar.removeButton.rx.tap,
-//                                                   titleText: contentView.titleInputView.titleTextField.rx.text.orEmpty,
-//                                                   datePickerValueChanged: contentView.deadlineInputView.datePicker.rx.controlEvent(.valueChanged),
-//                                                   datePickerValue: contentView.deadlineInputView.datePicker.rx.value,
-//                                                   contentTextViewBeginEditing: contentView.contentInputView.contentTextView.rx.didBeginEditing,
-//                                                   contentTextViewEndEditing: contentView.contentInputView.contentTextView.rx.didEndEditing,
-//                                                   contentText: contentView.contentInputView.contentTextView.rx.text.orEmpty,
-//                                                   tapChallengeButton: challengeButton.rx.tap)
+        let alertRightButtonTapObserver = PublishRelay<CustomAlertType>()
         
         let input = ChallengeDetailViewModel.Input(viewWillAppear: rx.viewWillAppear,
-                                                   tapNavigationButton: navigationBar.tapButtonObserver.asObservable())
+                                                   tapNavigationButton: navigationBar.tapButtonObserver.asObservable(),
+                                                   titleObserver: titleInputView.titleInputView.rx.text.orEmpty,
+                                                   deadlineObserver: deadlineInputView.deadlineObserver,
+                                                   contentObserver: contentInputView.contentInputView.textView.rx.text.orEmpty,
+                                                   alertRightButtonTapObserver: alertRightButtonTapObserver.asObservable(),
+                                                   challengeButtonTapObserver: challengeButton.rx.tap.asObservable())
         
         let output = viewModel.transfer(input: input)
         
         output.keyboardHeight
             .skip(1)
             .withUnretained(self)
-            .bind { vc, keyboardHeight in
-//                let height = keyboardHeight > 0 ? -keyboardHeight + vc.view.safeAreaInsets.bottom : 0
-                let height = keyboardHeight > 0 ? keyboardHeight : 0
-                vc.updateKeyboardHeight(height)
+            .bind { vc, event in
+                let height = event > 0.0 ? -event + vc.view.safeAreaInsets.bottom : 0
+                vc.updateScrollViewConstraints(with: height)
             }.disposed(by: disposeBag)
         
         output.type
@@ -104,89 +93,75 @@ final class ChallengeDetailViewController: UIViewController {
             .bind { vc, event in
                 vc.navigationBar.typeObserver.accept(event)
                 vc.descriptionView.typeObserver.accept(event)
+                vc.titleInputView.typeObserver.accept(event)
+                vc.deadlineInputView.typeObserver.accept(event)
                 vc.contentInputView.typeObserver.accept(event)
                 vc.challengeButton.typeObserver.accept(event)
             }.disposed(by: disposeBag)
         
-//        /// mode에 따른 SubComponents 초기 설정
-//        output.viewMode
-//            .withUnretained(self)
-//            .bind { vc, mode in
-//                vc.navigationBar.type.accept(mode)
-//                vc.descriptionView.viewMode.accept(mode)
-//                vc.contentView.titleInputView.viewMode.accept(mode)
-//                vc.contentView.deadlineInputView.viewMode.accept(mode)
-//                vc.contentView.contentInputView.viewMode.accept(mode)
-//                vc.setChallengeButton(with: mode)
-//            }.disposed(by: disposeBag)
-//
-//        output.maxTitleText
-//            .withUnretained(self)
-//            .bind { vc, text in
-//                vc.contentView.titleInputView.titleTextField.rx.text.onNext(text)
-//            }.disposed(by: disposeBag)
-//
-//        output.titleTextCount
-//            .withUnretained(self)
-//            .bind { vc, count in
-//                vc.contentView.titleInputView.textCountingView.molecularCount.accept(count)
-//                vc.contentView.titleInputView.titleTextCount.accept(count)
-//            }.disposed(by: disposeBag)
-//
-//        output.deadline
-//            .withUnretained(self)
-//            .bind { vc, deadline in
-//                vc.contentView.deadlineInputView.deadlineTextField.rx.text.onNext(deadline)
-//            }.disposed(by: disposeBag)
-//
-//        output.dDay
-//            .withUnretained(self)
-//            .bind { vc, dDay in
-//                vc.contentView.deadlineInputView.dDayLabel.rx.text.onNext(dDay)
-//            }.disposed(by: disposeBag)
-//
-//        output.isContentPlaceholder
-//            .withUnretained(self)
-//            .bind { vc, state in
-//                vc.contentView.contentInputView.isPlaceholder.accept(state)
-//            }.disposed(by: disposeBag)
-//
-//
-//        /// contentViewView 글자 수
-//        output.contentTextCount
-//            .withUnretained(self)
-//            .bind { vc, count in
-//                vc.contentView.contentInputView.contentTextCountingView.molecularCount.accept(count)
-//            }.disposed(by: disposeBag)
-//
-//        output.maxContentText
-//            .withUnretained(self)
-//            .bind { vc, text in
-//                vc.contentView.contentInputView.maxContentText.accept(text)
-//            }.disposed(by: disposeBag)
-//
-//        /// challengeButton 활성화
-//        output.isChallengeButtonEnable
-//            .withUnretained(self)
-//            .bind { vc, state in
-//                vc.updateNewModeChallengeButton(state: state)
-//            }.disposed(by: disposeBag)
-//
-//        contentView.titleInputView.toolbar.nextButton.rx.tap
-//            .withUnretained(self)
-//            .bind { vc, _ in
-//                DispatchQueue.main.async {
-//                    vc.contentView.deadlineInputView.deadlineTextField.becomeFirstResponder()
-//                }
-//            }.disposed(by: disposeBag)
-//
-//        contentView.deadlineInputView.toolbar.nextButton.rx.tap
-//            .withUnretained(self)
-//            .bind { vc, _ in
-//                DispatchQueue.main.async {
-//                    vc.contentView.contentInputView.contentTextView.becomeFirstResponder()
-//                }
-//            }.disposed(by: disposeBag)
+        output.popUpAlerObserver
+            .withUnretained(self)
+            .bind { vc, type in
+                guard !vc.view.subviews.contains(where: { $0 is CustomAlertView }) else { return }
+                let alertView = CustomAlertView(type: type)
+                
+                alertView.rightButton.rx.tap
+                    .map { type }
+                    .bind { type in
+                        alertRightButtonTapObserver.accept(type)
+                        alertView.hide()
+                    }.disposed(by: vc.disposeBag)
+                
+                vc.view.addSubview(alertView)
+                alertView.snp.makeConstraints { $0.edges.equalToSuperview() }
+                vc.view.layoutIfNeeded()
+                
+                alertView.show()
+            }.disposed(by: disposeBag)
+        
+        output.isNewTypeChallengeButtonEnabled
+            .withUnretained(self)
+            .bind { vc, state in
+                vc.challengeButton.rx.isEnabled.onNext(state)
+                
+                state ?
+                vc.challengeButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main500)) :
+                vc.challengeButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main400))
+            }.disposed(by: disposeBag)
+
+        Observable
+            .merge(titleInputView.toolBarButtonTapObserver.asObservable(),
+                   deadlineInputView.toolBarButtonTapObserver.asObservable(),
+                   contentInputView.toolBarButtonTapObserver.asObservable())
+            .withUnretained(self)
+            .bind { vc, type in
+                DispatchQueue.main.async {
+                    switch type {
+                    case .title:
+                        vc.deadlineInputView.deadlineInputView.becomeFirstResponder()
+                    case .deadline:
+                        vc.contentInputView.contentInputView.textView.becomeFirstResponder()
+                    case .content:
+                        break
+                    }
+                }
+            }.disposed(by: disposeBag)
+
+        Observable<ChallengeDetailViewInputType>
+            .merge(titleInputView.titleInputView.rx.controlEvent(.editingDidBegin).map { .title },
+                   deadlineInputView.deadlineInputView.rx.controlEvent(.editingDidBegin).map { .deadline },
+                   contentInputView.contentInputView.textView.rx.didBeginEditing .map { .content })
+            .withUnretained(self)
+            .bind { vc, type in
+                switch type {
+                case .title:
+                    vc.scrollView.scrollToTop()
+                case .deadline:
+                    print(type)
+                case .content:
+                    vc.scrollView.scrollToBottom()
+                }
+            }.disposed(by: disposeBag)
     }
     
     private func setAttributes() {
@@ -196,24 +171,21 @@ final class ChallengeDetailViewController: UIViewController {
     private func addSubComponents() {
         addViewSubComponents()
         addScrollViewSubComponents()
-        addStackViewSubComponents()
+        addContentStackViewSubComponents()
     }
     
     private func setConfigurations() {
         makeNavigationBarConstraints()
         makeScrollViewConstraints()
-//        makeChallengeRegisterButtonConstraints()
-        makeStackViewSubComponents()
+        makeContentStackViewSubComponents()
         makeDescriptionViewConstraints()
         makeTitleInputViewConstraints()
         makeDeadlineInputViewConstraints()
         makeContentInputViewConstraints()
         makeChallengeButtonConstraints()
-//        makeContentViewConstraints()
     }
 }
 
-// MARK: Default ChallengeDetailView UI setting method.
 extension ChallengeDetailViewController {
     private func addViewSubComponents() {
         [navigationBar, scrollView, challengeButton].forEach { view.addSubview($0) }
@@ -231,29 +203,22 @@ extension ChallengeDetailViewController {
         scrollView.snp.makeConstraints {
             $0.top.equalTo(navigationBar.snp.bottom)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
-        scrollView.backgroundColor = .yellow.withAlphaComponent(0.4)
+        scrollView.backgroundColor = .blue.withAlphaComponent(0.4)
     }
     
-//    private func makeChallengeRegisterButtonConstraints() {
-//        challengeButton.snp.makeConstraints {
-//            $0.top.equalTo(challengeButton.snp.bottom).offset(-ChallengeDetailViewNameSpace.challengeButtonHeight)
-//            $0.leading.trailing.equalToSuperview().inset(ChallengeDetailViewNameSpace.challengeButtonSideInset)
-//            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-//        }
-//    }
-    
-    private func addScrollViewSubComponents() { scrollView.addSubview(verticalStackView) }
-    
-    private func makeStackViewSubComponents() {
-        verticalStackView.snp.makeConstraints { $0.edges.width.equalToSuperview() }
+    private func addScrollViewSubComponents() {
+        scrollView.addSubview(contentStackView)
     }
     
-    private func addStackViewSubComponents() {
-//        [descriptionView, contentView].forEach { verticalStackView.addArrangedSubview($0) }
-        [descriptionView, titleInputView, deadlineInputView, contentInputView].forEach { verticalStackView.addArrangedSubview($0) }
+    private func makeContentStackViewSubComponents() {
+        contentStackView.snp.makeConstraints { $0.edges.width.equalToSuperview() }
+    }
+    
+    private func addContentStackViewSubComponents() {
+        [descriptionView, titleInputView, deadlineInputView, contentInputView].forEach { contentStackView.addArrangedSubview($0) }
     }
     
     private func makeDescriptionViewConstraints() {
@@ -271,6 +236,14 @@ extension ChallengeDetailViewController {
     private func makeContentInputViewConstraints() {
         contentInputView.snp.makeConstraints { $0.width.equalToSuperview() }
     }
+
+    private func setStackViewSubComponentsConstraints() {
+        [titleInputView, deadlineInputView, contentInputView].forEach {
+            $0.snp.makeConstraints {
+                $0.width.equalToSuperview()
+            }
+        }
+    }
     
     private func makeChallengeButtonConstraints() {
         challengeButton.snp.makeConstraints {
@@ -280,50 +253,14 @@ extension ChallengeDetailViewController {
             $0.height.equalTo(ChallengeButtonNameSpace.height)
         }
     }
-//
-//    private func makeContentViewConstraints() {
-//        contentView.snp.makeConstraints { $0.leading.trailing.equalToSuperview() }
-//    }
 }
 
-// MARK: Update ChaellegeDetailView UI setting method.
 extension ChallengeDetailViewController {
-    private func updateKeyboardHeight(_ keyboardHeight: CGFloat) {
-        scrollView.snp.updateConstraints {
-//            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(keyboardHeight)
-            $0.bottom.equalToSuperview().inset(keyboardHeight)
-        }
+    private func updateScrollViewConstraints(with keyboardHeight: CGFloat) {
+        scrollView.snp.updateConstraints { $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(keyboardHeight) }
         
         view.layoutIfNeeded()
     }
-    
-//    private func setChallengeButton(with mode: ChallengeDetailViewType) {
-//        switch mode {
-//        case .new:
-//            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonNewModeTitle)
-//            challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewModeDisableStateBackgroundColor))
-//            challengeButton.rx.isEnabled.onNext(false)
-//        case .ongoing:
-//            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonOngoingModeTitle)
-//            challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewOrOngoingModeEnableStateBackgroundColor))
-//            challengeButton.rx.isEnabled.onNext(true)
-//        case .completed:
-//            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonCompletedModeTitle)
-//            challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonCompletedModeBackgroundColor))
-//            challengeButton.rx.isEnabled.onNext(false)
-//        case .modify:
-//            challengeButton.rx.title().onNext(ChallengeDetailViewNameSpace.challengeButtonModifyModeTitle)
-//            challengeButton.rx.isEnabled.onNext(true)  // TODO: 아무런 수정없이 눌리게 해도 되는가???
-//            challengeButton.rx.backgroundColor.onNext(.black)
-//        }
-//    }
-//
-//    private func updateNewModeChallengeButton(state: Bool) {
-//        challengeButton.rx.isEnabled.onNext(state)
-//
-//        state ? challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewOrOngoingModeEnableStateBackgroundColor)) :
-//        challengeButton.rx.backgroundColor.onNext(UIColor(named: ChallengeDetailViewNameSpace.challengeButtonNewModeDisableStateBackgroundColor))
-//    }
 }
 
 #if DEBUG

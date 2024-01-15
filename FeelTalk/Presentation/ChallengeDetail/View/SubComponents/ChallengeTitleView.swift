@@ -11,12 +11,8 @@ import RxSwift
 import RxCocoa
 
 final class ChallengeTitleView: UIStackView {
-//    let viewMode = PublishRelay<ChallengeDetailViewType>()
-//    let titleTextCount = BehaviorRelay<Int>(value: 0)
-//    let textClearButtonState = BehaviorRelay<Bool>(value: false)
-
     let typeObserver = PublishRelay<ChallengeDetailViewType>()
-    lazy var tapToolBarTabObserver = PublishRelay<Void>()
+    let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewInputType>()
     private let disposeBag = DisposeBag()
     
     private lazy var leadingSpacing: UIView = { UIView() }()
@@ -32,20 +28,7 @@ final class ChallengeTitleView: UIStackView {
         
         return stackView
     }()
-    
-//    private lazy var descriptionLable: UILabel = {
-//        let label = UILabel()
-//        label.text = ChallengeDetailTitleInputViewNameSpace.descriptionLabelText
-//        label.textColor = UIColor(named: ChallengeDetailTitleInputViewNameSpace.desctiptionLabelTextColor)
-//        label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
-//                            size: ChallengeDetailTitleInputViewNameSpace.descriptionLabelTextSize)
-//        label.setLineHeight(height: ChallengeDetailTitleInputViewNameSpace.descriptionLabelLineHeight)
-//        label.backgroundColor = .clear
-//        label.sizeToFit()
-//
-//        return label
-//    }()
-    
+
     private lazy var inputViewTitle: CustomInputViewTitle = { CustomInputViewTitle(type: .challengeTitle, isRequiredInput: false) }()
     
     lazy var titleInputView: CustomTextField01 = {
@@ -55,61 +38,7 @@ final class ChallengeTitleView: UIStackView {
         
         return inputView
     }()
-    
-//    lazy var titleTextField: UITextField = {
-//        let textField = UITextField()
-//        textField.font = UIFont(name: ChallengeDetailTitleInputViewNameSpace.textFieldTextFont,
-//                                size: ChallengeDetailTitleInputViewNameSpace.textFieldTextSize)
-//        textField.textColor = .black
-//        textField.setPlaceholder(text: ChallengeDetailTitleInputViewNameSpace.textFieldPlaceholder,
-//                                 color: UIColor(named: ChallengeDetailTitleInputViewNameSpace.textFieldPlaceholderColor)!)
-//        textField.backgroundColor = UIColor(named: ChallengeDetailTitleInputViewNameSpace.textFieldDefaultBackgroundColor)
-//        textField.layer.borderWidth = ChallengeDetailTitleInputViewNameSpace.textFieldBorderWidth
-//        textField.layer.borderColor = UIColor.clear.cgColor
-//        textField.layer.cornerRadius = ChallengeDetailTitleInputViewNameSpace.textFieldCornerRadius
-//        textField.clipsToBounds = true
-//        textField.tintColor = UIColor(named: ChallengeDetailTitleInputViewNameSpace.textFieldTintColor)
-//
-//        let leftPaddingView = UIView(frame: CGRect(origin: .zero,
-//                                                   size: CGSize(width: ChallengeDetailTitleInputViewNameSpace.textFieldLeftPaddingWidth,
-//                                                            height: textField.frame.height)))
-//        textField.leftView = leftPaddingView
-//        textField.leftViewMode = .always
-//
-//        textField.rightView = textFieldRightView
-//        textField.rightViewMode = .always
-//        textField.inputAccessoryView = toolbar
-//
-//        return textField
-//    }()
-//
-//    private lazy var textFieldRightView: UIStackView = {
-//        let stackView = UIStackView()
-//        stackView.axis = .horizontal
-//        stackView.alignment = .fill
-//        stackView.distribution = .fillProportionally
-//        stackView.backgroundColor = .clear
-//
-//        return stackView
-//    }()
-//
-//    private lazy var firstSpacingView: UIView = { UIView() }()
-//
-//    lazy var textCountingView: TextCountingView = { TextCountingView(denominator: ChallengeDetailTitleInputViewNameSpace.textCountingViewDenominator) }()
-//
-//    private lazy var secondSpacingView: UIView = { UIView() }()
-//
-//    lazy var textClearButton: UIButton = {
-//        let button = UIButton()
-//        button.setImage(UIImage(named: ChallengeDetailTitleInputViewNameSpace.textClearButtonImage),
-//                        for: .normal)
-//        button.backgroundColor = .clear
-//
-//        return button
-//    }()
-//
-//    private lazy var thirdSpacingView: UIView = { UIView() }()
-    
+
     lazy var toolbar: ChallengeDetailToolbar = { ChallengeDetailToolbar(type: .title) }()
     
     override init(frame: CGRect) {
@@ -133,44 +62,11 @@ final class ChallengeTitleView: UIStackView {
             }.disposed(by: disposeBag)
         
         typeObserver
-            .filter { $0 == .new && $0 == .modify }
+            .filter { $0 == .new || $0 == .modify }
             .withUnretained(self)
             .bind { v, _ in
-                v.setUpInputViewToolBar()
+                v.setUpToolBar()
             }.disposed(by: disposeBag)
-        
-//        viewMode
-//            .withUnretained(self)
-//            .bind { v, mode in
-////                v.isTiteTextFieldEnable(with: mode)
-//            }.disposed(by: disposeBag)
-//
-//        Observable
-//            .merge(titleTextField.rx.controlEvent(.editingDidBegin).map { true },
-//                   titleTextField.rx.controlEvent(.editingDidEnd).map { false })
-//            .withUnretained(self)
-//            .bind { v, state in
-//                v.titleTextField.updateBorderColor(isEditingBegin: state)
-//                v.titleTextField.updateBackgourndColor(isEditingBegin: state)
-//                if !state {
-//                    v.textCountingView.molecularLabel.rx.textColor.onNext(UIColor(named: "gray_400"))
-//                    v.textClearButtonState.accept(state)
-//                }
-//            }.disposed(by: disposeBag)
-//
-//        titleTextCount
-//            .withUnretained(self)
-//            .bind { v, count in
-//                count > 0 ? v.textClearButtonState.accept(true) : v.textClearButtonState.accept(false)
-//                v.textCountingView.updateMolecularLabelText(count: count)
-//            }.disposed(by: disposeBag)
-//
-//        textClearButton.rx.tap
-//            .withUnretained(self)
-//            .bind { v, _ in
-//                v.textFieldValueInit()
-//                v.textClearButtonState.accept(false)
-//            }.disposed(by: disposeBag)
     }
     
     private func setAttributes(){
@@ -181,47 +77,17 @@ final class ChallengeTitleView: UIStackView {
     }
     
     private func addSubComponents() {
-//        addViewSubComponents()
-//        addStackViewComponents()
-//        addTextFieldRightViewSubComponents()
-        
         addViewSubComponents()
         addContentStackViewSubComponents()
     }
     
     private func setConfigurations() {
-//        makeDescriptionLabelConstraints()
-//        makeSpacingViewsConstraints()
-        
         makeInputViewTitleConstraints()
         makeTitleInputViewConstraints()
     }
 }
 
-// Defautl setting method.
 extension ChallengeTitleView {
-//    private func addViewSubComponents() {
-//        [leftSpacingView, stackView, rightSpacingView].forEach { addArrangedSubview($0) }
-//    }
-//
-//    private func addStackViewComponents() {
-//        [inputViewTitle, titleTextField].forEach { stackView.addArrangedSubview($0) }
-//    }
-//
-//    private func addTextFieldRightViewSubComponents() {
-//        [firstSpacingView, textCountingView, thirdSpacingView].forEach { textFieldRightView.addArrangedSubview($0) }
-//    }
-//
-//    private func makeDescriptionLabelConstraints() {
-//        descriptionLable.snp.makeConstraints { $0.height.equalTo(descriptionLable.intrinsicContentSize) }
-//    }
-//
-//    private func makeSpacingViewsConstraints() {
-//        firstSpacingView.snp.makeConstraints { $0.width.equalTo(ChallengeDetailTitleInputViewNameSpace.firstSpacingViewWidth) }
-//        secondSpacingView.snp.makeConstraints { $0.width.equalTo(ChallengeDetailTitleInputViewNameSpace.secondSpacingViewWidth) }
-//        thirdSpacingView.snp.makeConstraints { $0.width.equalTo(ChallengeDetailTitleInputViewNameSpace.thridSpacingViewWidth) }
-//    }
-    
     private func addViewSubComponents() {
         [leadingSpacing, contentStackView, trailingSpacing].forEach { addArrangedSubview($0) }
     }
@@ -254,11 +120,12 @@ extension ChallengeTitleView {
         }
     }
     
-    private func setUpInputViewToolBar() {
+    private func setUpToolBar() {
         let toolBar = ChallengeDetailToolbar(type: .title)
         
         toolBar.nextButton.rx.tap
-            .bind(to: tapToolBarTabObserver)
+            .map { ChallengeDetailViewInputType.title }
+            .bind(to: toolBarButtonTapObserver)
             .disposed(by: disposeBag)
         
         titleInputView.inputAccessoryView = toolBar

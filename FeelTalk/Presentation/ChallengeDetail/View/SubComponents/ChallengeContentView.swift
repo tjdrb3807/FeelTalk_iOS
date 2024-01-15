@@ -12,6 +12,7 @@ import RxCocoa
 
 final class ChallengeContentView: UIStackView {
     let typeObserver = PublishRelay<ChallengeDetailViewType>()
+    let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewInputType>()
     private let disposeBag = DisposeBag()
     
     private lazy var leadingSpacing: UIView = { UIView() }()
@@ -30,7 +31,7 @@ final class ChallengeContentView: UIStackView {
     
     private lazy var inputViewTitle: CustomInputViewTitle = { CustomInputViewTitle(type: .challnegeContent, isRequiredInput: false) }()
     
-    private lazy var contentInputView: CustomTextView = { CustomTextView(placeholder: ChallengeContentViewNameSpace.contentInputViewPlaceholder,
+    lazy var contentInputView: CustomTextView = { CustomTextView(placeholder: ChallengeContentViewNameSpace.contentInputViewPlaceholder,
                                                                          maxTextCout: ChallengeContentViewNameSpace.contentInputViewMaxTextCount) }()
     
     override init(frame: CGRect) {
@@ -51,6 +52,13 @@ final class ChallengeContentView: UIStackView {
             .withUnretained(self)
             .bind { v, type in
                 v.setContentInputViewProperties(with: type)
+            }.disposed(by: disposeBag)
+        
+        typeObserver
+            .filter { $0 == .new || $0 == .modify }
+            .withUnretained(self)
+            .bind { v, _ in
+                v.setUpToolBar()
             }.disposed(by: disposeBag)
     }
     
@@ -103,6 +111,17 @@ extension ChallengeContentView {
         case .modify, .new:
             contentInputView.textView.rx.isEditable.onNext(true)
         }
+    }
+    
+    private func setUpToolBar() {
+        let toolBar = CustomToolbar(type: .completion)
+        
+        toolBar.rightButton.rx.tap
+            .map { ChallengeDetailViewInputType.content }
+            .bind(to: toolBarButtonTapObserver)
+            .disposed(by: disposeBag)
+        
+        contentInputView.textView.inputAccessoryView = toolBar
     }
 }
 

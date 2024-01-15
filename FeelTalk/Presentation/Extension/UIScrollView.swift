@@ -21,7 +21,7 @@ extension UIScrollView {
     }
     
     func scrollToBottom() {
-        let bottomOffset = CGPoint(x: 0.0, y: contentSize.height - bounds.size.height + contentInset.bottom)
+        let bottomOffset = CGPoint(x: 0.0, y: contentSize.height - bounds.height)
         if bottomOffset.y > 0 {
             setContentOffset(bottomOffset, animated: true)
         }
@@ -34,6 +34,7 @@ extension UIScrollView {
     }
 }
 
+// MARK: AdultAuthView Scroll
 extension UIScrollView {
     func scroll(to direction: AdultAuthViewScrollDirection) {
         DispatchQueue.main.async {
@@ -78,5 +79,19 @@ extension UIScrollView {
             setContentOffset(topOffset, animated: true)
         }
     }
-    
+}
+
+// MARK: ChallengeDetailView Scroll
+extension UIScrollView {
+    func scroll(to direction: ChallengeDetailViewInputType) {
+        switch direction {
+        case .title:
+            scrollToTop()
+        case .deadline:
+            break
+        case .content:
+            scrollToBottom()
+        }
+    }
+
 }

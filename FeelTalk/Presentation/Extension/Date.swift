@@ -7,6 +7,13 @@
 
 import Foundation
 
+enum DateCompare {
+    case future
+    case past
+    case same
+    case error
+}
+
 extension Date {
     static func parse<K: CodingKey>(_ values: KeyedDecodingContainer<K>, key: K) -> Date? {
         guard let dateString = try? values.decode(String?.self, forKey: key),
@@ -24,5 +31,25 @@ extension Date {
         if let date = dateFormetter.date(from: dateString) { return date }
         
         return nil
+    }
+    
+    static func compareDate(target: Date, from: Date) -> DateCompare? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        let targetDateStr = formatter.string(from: target)
+        let fromDateStr = formatter.string(from: from)
+        
+        guard let targetDate = formatter.date(from: targetDateStr),
+              let fromDate = formatter.date(from: fromDateStr) else { return nil }
+        
+        switch targetDate.compare(fromDate) {
+        case .orderedAscending:
+            return .past
+        case .orderedSame:
+            return .same
+        case .orderedDescending:
+            return .future
+        }
     }
 } 

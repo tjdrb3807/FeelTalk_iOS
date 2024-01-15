@@ -173,6 +173,8 @@
 		454CCA812AB2E64400405F8B /* MyPageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454CCA802AB2E64400405F8B /* MyPageTableViewCell.swift */; };
 		454CCA832AB2F50300405F8B /* MyPageViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454CCA822AB2F50300405F8B /* MyPageViewNameSpace.swift */; };
 		454CCA862AB2F6AE00405F8B /* MyPageTableViewCellNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454CCA852AB2F6AE00405F8B /* MyPageTableViewCellNameSpace.swift */; };
+		454EB8122B550A5900E501AE /* ChallengeDetailViewInputType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454EB8112B550A5900E501AE /* ChallengeDetailViewInputType.swift */; };
+		454EB8142B551FA800E501AE /* ChallengeDetailViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454EB8132B551FA800E501AE /* ChallengeDetailViewNameSpace.swift */; };
 		454EE3E12B30766C0040249A /* SingUpInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454EE3E02B30766C0040249A /* SingUpInfo.swift */; };
 		454EE3E32B307DE40040249A /* SignUpRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454EE3E22B307DE40040249A /* SignUpRequestDTO.swift */; };
 		454EE3E52B3083600040249A /* SignUpResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454EE3E42B3083600040249A /* SignUpResponseDTO.swift */; };
@@ -333,7 +335,6 @@
 		458DD8502AC0A47400BEF7E5 /* CustomToolbarNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458DD84F2AC0A47400BEF7E5 /* CustomToolbarNameSpace.swift */; };
 		458DD8522AC0A55700BEF7E5 /* CustomToolbarType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458DD8512AC0A55700BEF7E5 /* CustomToolbarType.swift */; };
 		458DD8542AC0A89400BEF7E5 /* InquiryEmailInputViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458DD8532AC0A89400BEF7E5 /* InquiryEmailInputViewNameSpace.swift */; };
-		458F89DA2A95E6D400513D3A /* ChallengeDetailDeadlineInputViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458F89D92A95E6D400513D3A /* ChallengeDetailDeadlineInputViewNameSpace.swift */; };
 		4591AD282A3750B90029D3D8 /* AnswerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591AD272A3750B90029D3D8 /* AnswerViewController.swift */; };
 		459794D22A447E090043166C /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459794D12A447E090043166C /* String.swift */; };
 		459BD9B22A47469300CB4738 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459BD9B12A47469300CB4738 /* BaseView.swift */; };
@@ -435,10 +436,7 @@
 		45C5F00F2AD287BD00542F16 /* WithdrawalReasonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C5F00E2AD287BD00542F16 /* WithdrawalReasonType.swift */; };
 		45C5F0122AD28FBE00542F16 /* WithdrawalDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C5F0112AD28FBE00542F16 /* WithdrawalDetailViewModel.swift */; };
 		45C714502A76223700B6FBB5 /* QuestionTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C7144F2A76223700B6FBB5 /* QuestionTableHeaderView.swift */; };
-		45C7BA792A97781E004F1DA1 /* ChallengeDetailContentInputViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C7BA782A97781E004F1DA1 /* ChallengeDetailContentInputViewNameSpace.swift */; };
 		45C7BA7B2A978681004F1DA1 /* ChallengeDetailNavigationBarNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C7BA7A2A978681004F1DA1 /* ChallengeDetailNavigationBarNameSpace.swift */; };
-		45C7BA7D2A9787EA004F1DA1 /* ChallengeDetailStackViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C7BA7C2A9787EA004F1DA1 /* ChallengeDetailStackViewNameSpace.swift */; };
-		45C7BA7F2A978855004F1DA1 /* ChallengeDetailViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C7BA7E2A978855004F1DA1 /* ChallengeDetailViewNameSpace.swift */; };
 		45C7BA832A979C20004F1DA1 /* ChallengeDetailToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C7BA822A979C20004F1DA1 /* ChallengeDetailToolbar.swift */; };
 		45C7BA852A97AF14004F1DA1 /* ChallengeDetailToolbarBannerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C7BA842A97AF14004F1DA1 /* ChallengeDetailToolbarBannerCell.swift */; };
 		45CA179F2A7A9FC600C2F8BA /* QuestionTitleViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CA179E2A7A9FC600C2F8BA /* QuestionTitleViewNameSpace.swift */; };
@@ -449,9 +447,6 @@
 		45CB06652A90A50E0081BE88 /* ChallengeDetailNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CB06642A90A50E0081BE88 /* ChallengeDetailNavigationBar.swift */; };
 		45CB06672A90AE5F0081BE88 /* ChallengeDetailDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CB06662A90AE5F0081BE88 /* ChallengeDetailDescriptionView.swift */; };
 		45CB066F2A9304A80081BE88 /* ChallengeTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CB066E2A9304A80081BE88 /* ChallengeTitleView.swift */; };
-		45CB06712A9304D20081BE88 /* ChallengeDetailDeadlineInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CB06702A9304D20081BE88 /* ChallengeDetailDeadlineInputView.swift */; };
-		45CB06732A9304EA0081BE88 /* ChallengeDetailContentInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CB06722A9304EA0081BE88 /* ChallengeDetailContentInputView.swift */; };
-		45CB067C2A93335B0081BE88 /* ChallengeDetailStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CB067B2A93335B0081BE88 /* ChallengeDetailStackView.swift */; };
 		45CB06842A933DBE0081BE88 /* ChallengeDetailCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CB06832A933DBE0081BE88 /* ChallengeDetailCoordinator.swift */; };
 		45CB06862A933E130081BE88 /* DefaultChallengeDetailCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CB06852A933E130081BE88 /* DefaultChallengeDetailCoordinator.swift */; };
 		45CB06892A933ED30081BE88 /* ChallengeDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CB06882A933ED30081BE88 /* ChallengeDetailViewModel.swift */; };
@@ -735,6 +730,8 @@
 		454CCA802AB2E64400405F8B /* MyPageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableViewCell.swift; sourceTree = "<group>"; };
 		454CCA822AB2F50300405F8B /* MyPageViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewNameSpace.swift; sourceTree = "<group>"; };
 		454CCA852AB2F6AE00405F8B /* MyPageTableViewCellNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableViewCellNameSpace.swift; sourceTree = "<group>"; };
+		454EB8112B550A5900E501AE /* ChallengeDetailViewInputType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailViewInputType.swift; sourceTree = "<group>"; };
+		454EB8132B551FA800E501AE /* ChallengeDetailViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailViewNameSpace.swift; sourceTree = "<group>"; };
 		454EE3E02B30766C0040249A /* SingUpInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingUpInfo.swift; sourceTree = "<group>"; };
 		454EE3E22B307DE40040249A /* SignUpRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpRequestDTO.swift; sourceTree = "<group>"; };
 		454EE3E42B3083600040249A /* SignUpResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpResponseDTO.swift; sourceTree = "<group>"; };
@@ -897,7 +894,6 @@
 		458DD84F2AC0A47400BEF7E5 /* CustomToolbarNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToolbarNameSpace.swift; sourceTree = "<group>"; };
 		458DD8512AC0A55700BEF7E5 /* CustomToolbarType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToolbarType.swift; sourceTree = "<group>"; };
 		458DD8532AC0A89400BEF7E5 /* InquiryEmailInputViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryEmailInputViewNameSpace.swift; sourceTree = "<group>"; };
-		458F89D92A95E6D400513D3A /* ChallengeDetailDeadlineInputViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailDeadlineInputViewNameSpace.swift; sourceTree = "<group>"; };
 		4591AD272A3750B90029D3D8 /* AnswerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerViewController.swift; sourceTree = "<group>"; };
 		459794D12A447E090043166C /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		459BD9B12A47469300CB4738 /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
@@ -999,10 +995,7 @@
 		45C5F00E2AD287BD00542F16 /* WithdrawalReasonType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawalReasonType.swift; sourceTree = "<group>"; };
 		45C5F0112AD28FBE00542F16 /* WithdrawalDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawalDetailViewModel.swift; sourceTree = "<group>"; };
 		45C7144F2A76223700B6FBB5 /* QuestionTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTableHeaderView.swift; sourceTree = "<group>"; };
-		45C7BA782A97781E004F1DA1 /* ChallengeDetailContentInputViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailContentInputViewNameSpace.swift; sourceTree = "<group>"; };
 		45C7BA7A2A978681004F1DA1 /* ChallengeDetailNavigationBarNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailNavigationBarNameSpace.swift; sourceTree = "<group>"; };
-		45C7BA7C2A9787EA004F1DA1 /* ChallengeDetailStackViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailStackViewNameSpace.swift; sourceTree = "<group>"; };
-		45C7BA7E2A978855004F1DA1 /* ChallengeDetailViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailViewNameSpace.swift; sourceTree = "<group>"; };
 		45C7BA822A979C20004F1DA1 /* ChallengeDetailToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailToolbar.swift; sourceTree = "<group>"; };
 		45C7BA842A97AF14004F1DA1 /* ChallengeDetailToolbarBannerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailToolbarBannerCell.swift; sourceTree = "<group>"; };
 		45CA179E2A7A9FC600C2F8BA /* QuestionTitleViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionTitleViewNameSpace.swift; sourceTree = "<group>"; };
@@ -1013,9 +1006,6 @@
 		45CB06642A90A50E0081BE88 /* ChallengeDetailNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailNavigationBar.swift; sourceTree = "<group>"; };
 		45CB06662A90AE5F0081BE88 /* ChallengeDetailDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailDescriptionView.swift; sourceTree = "<group>"; };
 		45CB066E2A9304A80081BE88 /* ChallengeTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeTitleView.swift; sourceTree = "<group>"; };
-		45CB06702A9304D20081BE88 /* ChallengeDetailDeadlineInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailDeadlineInputView.swift; sourceTree = "<group>"; };
-		45CB06722A9304EA0081BE88 /* ChallengeDetailContentInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailContentInputView.swift; sourceTree = "<group>"; };
-		45CB067B2A93335B0081BE88 /* ChallengeDetailStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailStackView.swift; sourceTree = "<group>"; };
 		45CB06832A933DBE0081BE88 /* ChallengeDetailCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailCoordinator.swift; sourceTree = "<group>"; };
 		45CB06852A933E130081BE88 /* DefaultChallengeDetailCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultChallengeDetailCoordinator.swift; sourceTree = "<group>"; };
 		45CB06882A933ED30081BE88 /* ChallengeDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailViewModel.swift; sourceTree = "<group>"; };
@@ -3417,8 +3407,9 @@
 		45B17C0A2B51432D002A3239 /* Type */ = {
 			isa = PBXGroup;
 			children = (
-				45B17C0B2B51433D002A3239 /* ChallengeDetailViewType.swift */,
 				45B17C0D2B514814002A3239 /* ChallengeDetailNavigationBarButtonType.swift */,
+				454EB8112B550A5900E501AE /* ChallengeDetailViewInputType.swift */,
+				45B17C0B2B51433D002A3239 /* ChallengeDetailViewType.swift */,
 			);
 			path = Type;
 			sourceTree = "<group>";
@@ -3832,15 +3823,12 @@
 		45CB06742A9304F40081BE88 /* SubComponents */ = {
 			isa = PBXGroup;
 			children = (
-				45CB06722A9304EA0081BE88 /* ChallengeDetailContentInputView.swift */,
-				45CB06702A9304D20081BE88 /* ChallengeDetailDeadlineInputView.swift */,
-				45BAF1502B52755100C3BD30 /* ChallengeDeadlineView.swift */,
+				451073C92B53BAB600B393D3 /* ChallengeButton.swift */,
 				45BAF1542B52954000C3BD30 /* ChallengeContentView.swift */,
+				45BAF1502B52755100C3BD30 /* ChallengeDeadlineView.swift */,
 				45CB06662A90AE5F0081BE88 /* ChallengeDetailDescriptionView.swift */,
 				45CB06642A90A50E0081BE88 /* ChallengeDetailNavigationBar.swift */,
-				45CB067B2A93335B0081BE88 /* ChallengeDetailStackView.swift */,
 				45CB066E2A9304A80081BE88 /* ChallengeTitleView.swift */,
-				451073C92B53BAB600B393D3 /* ChallengeButton.swift */,
 				45445A612A98739F00FD039D /* Toolbar */,
 			);
 			path = SubComponents;
@@ -4079,18 +4067,15 @@
 		45D7115E2A94FDBD0093B700 /* NameSpace */ = {
 			isa = PBXGroup;
 			children = (
+				451073CD2B53C77100B393D3 /* ChallengeButtonNameSpace.swift */,
+				45BAF1562B52DF0900C3BD30 /* ChallengeContentViewNameSpace.swift */,
 				45BAF1522B527BF800C3BD30 /* ChallengeDeadlineViewNameSpace.swift */,
-				45C7BA782A97781E004F1DA1 /* ChallengeDetailContentInputViewNameSpace.swift */,
-				458F89D92A95E6D400513D3A /* ChallengeDetailDeadlineInputViewNameSpace.swift */,
 				4513C81D2A963BC900B0AE38 /* ChallengeDetailDescriptionViewNameSpace.swift */,
 				45C7BA7A2A978681004F1DA1 /* ChallengeDetailNavigationBarNameSpace.swift */,
-				45C7BA7C2A9787EA004F1DA1 /* ChallengeDetailStackViewNameSpace.swift */,
 				45445A5F2A9872E700FD039D /* ChallengeDetailToolbarBannerCellNameSpace.swift */,
 				45445A5D2A986D4100FD039D /* ChallengeDetailToolbarNameSpace.swift */,
-				45C7BA7E2A978855004F1DA1 /* ChallengeDetailViewNameSpace.swift */,
+				454EB8132B551FA800E501AE /* ChallengeDetailViewNameSpace.swift */,
 				45B17C0F2B518021002A3239 /* ChallengeTitleInputViewNameSpace.swift */,
-				45BAF1562B52DF0900C3BD30 /* ChallengeContentViewNameSpace.swift */,
-				451073CD2B53C77100B393D3 /* ChallengeButtonNameSpace.swift */,
 			);
 			path = NameSpace;
 			sourceTree = "<group>";
@@ -4986,8 +4971,8 @@
 				454EE3E32B307DE40040249A /* SignUpRequestDTO.swift in Sources */,
 				457CFEF02ABB2914006979BA /* LockingPasswordKeypadCellNameSpace.swift in Sources */,
 				453E49C72B454B73004B1860 /* SignalOpenGraph01.swift in Sources */,
+				454EB8122B550A5900E501AE /* ChallengeDetailViewInputType.swift in Sources */,
 				45AE813F2A68AD4000DEC4E2 /* TokenAPI.swift in Sources */,
-				45C7BA7F2A978855004F1DA1 /* ChallengeDetailViewNameSpace.swift in Sources */,
 				45BE3ABA2B24FE7B00C19F11 /* NewsAgencyViewControllerNameSpace.swift in Sources */,
 				45004D402B1D945100E154DD /* AdultAuthIDCardNumberInputViewNameSpace.swift in Sources */,
 				4555A2182AE2F9700048D2AB /* CALayer.swift in Sources */,
@@ -5081,7 +5066,6 @@
 				456C13E12AC00CA600EEB433 /* InquiryContentInputView.swift in Sources */,
 				45A73A5F2AE67415000EB045 /* SignalDialView.swift in Sources */,
 				4573B8C32A7A47DA003C2E75 /* PartnerAnswerView.swift in Sources */,
-				45C7BA7D2A9787EA004F1DA1 /* ChallengeDetailStackViewNameSpace.swift in Sources */,
 				45EBCE912ACEA38000918FB3 /* DefaultPartnerInfoCoordinator.swift in Sources */,
 				455560BB2AA4828400EDFFFA /* ChallengeCount.swift in Sources */,
 				45FAEBA92AC16692007DF1C5 /* CustomTextViewNameSpace.swift in Sources */,
@@ -5229,7 +5213,6 @@
 				4591AD282A3750B90029D3D8 /* AnswerViewController.swift in Sources */,
 				457D0D7F2ABD58EA0006A3EF /* ServiceTerminationStatementView.swift in Sources */,
 				454CCA752AB2CA9400405F8B /* UserRepository.swift in Sources */,
-				45C7BA792A97781E004F1DA1 /* ChallengeDetailContentInputViewNameSpace.swift in Sources */,
 				4537EEB12A4441C100A9DEB8 /* CustomCollectionViewCell.swift in Sources */,
 				454EE3E12B30766C0040249A /* SingUpInfo.swift in Sources */,
 				45E85D5A2A585B55004B558C /* DefaultLoginRepository.swift in Sources */,
@@ -5266,7 +5249,6 @@
 				45AFA4AF2AD4193600CBCF64 /* SettingListCoordinator.swift in Sources */,
 				45AFA4C32AD435EC00CBCF64 /* SettingListSectionHeaderView.swift in Sources */,
 				452D32742A67D593001DBB24 /* DefaultCoupleRepository.swift in Sources */,
-				45CB067C2A93335B0081BE88 /* ChallengeDetailStackView.swift in Sources */,
 				45EBA43A2AEA35F300A6856E /* ChallengeCell.swift in Sources */,
 				453522F82B136F5400B80EDE /* AdultAuthViewController.swift in Sources */,
 				45C5F00F2AD287BD00542F16 /* WithdrawalReasonType.swift in Sources */,
@@ -5306,7 +5288,6 @@
 				452D32792A67EAB1001DBB24 /* InviteCodeInfoPhraseVIew.swift in Sources */,
 				45151A452A654C6C0024A10D /* SNSLogin.swift in Sources */,
 				45E85D292A580E8B004B558C /* LoginViewController.swift in Sources */,
-				45CB06732A9304EA0081BE88 /* ChallengeDetailContentInputView.swift in Sources */,
 				45EBCE8F2ACEA37400918FB3 /* PartnerInfoCoordinator.swift in Sources */,
 				4570164A2A77FB220006CB1D /* InviteCodeBottomSheetCoordinator.swift in Sources */,
 				45FAEBA72AC161A8007DF1C5 /* CustomTextView.swift in Sources */,
@@ -5320,6 +5301,7 @@
 				45D8813A2AE50D0300C9AEF1 /* DefaultSignUpCoordinator.swift in Sources */,
 				457AB0D82AE645BC00873CD3 /* SignalPercentageView.swift in Sources */,
 				455560BF2AA48F5B00EDFFFA /* ChallengeLatestPageNoResponseDTO.swift in Sources */,
+				454EB8142B551FA800E501AE /* ChallengeDetailViewNameSpace.swift in Sources */,
 				452AC7112B27278B00F35146 /* AuthNumberRequestDTO.swift in Sources */,
 				4578184F2AE90B7F001A0410 /* HomeBottomSheetViewNameSpace.swift in Sources */,
 				455560B72AA4746600EDFFFA /* ChallengeUseCase.swift in Sources */,
@@ -5364,7 +5346,6 @@
 				454CCA782AB2CB0E00405F8B /* UserUseCase.swift in Sources */,
 				458636162A71638D00047ECF /* DefaultQuestionRepository.swift in Sources */,
 				455322952B30359500E40FE4 /* NicknameError.swift in Sources */,
-				45CB06712A9304D20081BE88 /* ChallengeDetailDeadlineInputView.swift in Sources */,
 				45E149EA2B0BF6BF00DFB83A /* LoginSpeechBubbleViewNameSpace.swift in Sources */,
 				45D52D932AD6F04900AA0537 /* ChatFunctionButton.swift in Sources */,
 				45FCF2772AE55763001F3B16 /* SignalCoordinator.swift in Sources */,
@@ -5450,7 +5431,6 @@
 				4555A8B52B163A3000A84E56 /* NewsAgencyButtonNameSpace.swift in Sources */,
 				451E12B12ABC8FD2006D8132 /* WithdrawalViewController.swift in Sources */,
 				45D3125A2A6AFF0B001E4D25 /* InviteCodeBottomSheetViewController.swift in Sources */,
-				458F89DA2A95E6D400513D3A /* ChallengeDetailDeadlineInputViewNameSpace.swift in Sources */,
 				451993932AB1935A00CABCC9 /* LockingSettingsViewController.swift in Sources */,
 				45B93B452B4A8BE500ACAB83 /* MainNavigationBarType.swift in Sources */,
 				45CA17A12A7AA1B000C2F8BA /* MyAnswerViewNameSpace.swift in Sources */,

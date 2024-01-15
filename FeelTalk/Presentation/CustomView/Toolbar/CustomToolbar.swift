@@ -79,6 +79,10 @@ import SwiftUI
 struct CustomToolbar_Previews: PreviewProvider {
     static var previews: some View {
         CustomToolbar_Presentable()
+            .edgesIgnoringSafeArea(.all)
+            .frame(width: UIScreen.main.bounds.width,
+                   height: 55,
+                   alignment: .center)
     }
     
     struct CustomToolbar_Presentable: UIViewRepresentable {

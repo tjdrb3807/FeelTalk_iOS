@@ -61,6 +61,8 @@ final class CustomAlertView: UIView {
             label.text = CustomAlertViewNameSpace.titleLabelPopAnswerTypeText
         case .sendAnswer:
             label.text = CustomAlertViewNameSpace.titleLabelSendAnswerTypeText
+        case .deregisterChallenge:
+            label.text = "챌린지 등록을 그만두시겠어요?"
         }
         
         label.textColor = .black
@@ -78,7 +80,7 @@ final class CustomAlertView: UIView {
         let label = UILabel()
         
         switch type {
-        case .inquiry, .suggestion, .challengeAddCancel, .popAnswer:
+        case .inquiry, .suggestion, .challengeAddCancel, .popAnswer, .deregisterChallenge:
             label.text = CustomAlertViewNameSpace.descriptionLabelDeleteGuideText
         case .breakUp:
             label.text = CustomAlertViewNameSpace.descriptionLabelBreakUpTypeText
@@ -113,7 +115,7 @@ final class CustomAlertView: UIView {
         let button = UIButton()
         
         switch type {
-        case .inquiry, .suggestion, .challengeAddCancel:
+        case .inquiry, .suggestion, .challengeAddCancel, .deregisterChallenge:
             button.setTitle(CustomAlertViewNameSpace.leftButtonContinuingTitleText,
                             for: .normal)
         case .breakUp:
@@ -148,6 +150,8 @@ final class CustomAlertView: UIView {
             button.setTitle("나가기", for: .normal)
         case .sendAnswer:
             button.setTitle("보내기", for: .normal)
+        case .deregisterChallenge:
+            button.setTitle("삭제하기", for: .normal)
         }
         
         button.setTitleColor(.white, for: .normal)
@@ -283,7 +287,7 @@ struct CustomAlertView_Previews: PreviewProvider {
     
     struct CustomAlertView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            let view = CustomAlertView(type: .sendAnswer)
+            let view = CustomAlertView(type: .deregisterChallenge)
             view.show()
             
             return view
