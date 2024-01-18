@@ -32,7 +32,8 @@ final class ChallengeCollectionView: UICollectionView {
     private func bind() {
         model
             .asDriver(onErrorJustReturn: [])
-            .drive(rx.items) { cv, row, item in
+            .drive(rx.items) { [weak self] cv, row, item in
+                guard let self = self else { return UICollectionViewCell() }
                 
                 let index = IndexPath(row: row, section: 0)
                 guard let cell = cv.dequeueReusableCell(withReuseIdentifier: ChallengeCollectionViewCellNameSpace.identifier,

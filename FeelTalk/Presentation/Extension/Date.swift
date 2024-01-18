@@ -26,11 +26,19 @@ extension Date {
         let dateFormetter = DateFormatter()
         
         dateFormetter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
-        dateFormetter.locale = Locale(identifier: "kr_KR")
+        dateFormetter.locale = Locale(identifier: "ko-KR")
         
         if let date = dateFormetter.date(from: dateString) { return date }
         
         return nil
+    }
+    
+    static func dateToStr(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko-KR")
+        formatter.dateFormat = "yyyy-MM-ddTHH:mm:ss"
+        
+        return formatter.string(from: date)
     }
     
     static func compareDate(target: Date, from: Date) -> DateCompare? {

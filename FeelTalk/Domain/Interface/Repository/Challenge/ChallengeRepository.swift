@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 
 protocol ChallengeRepository {
+    func addChallenge(accessToken: String, requestDTO: AddChallengeRequestDTO) -> Single<ChallengeChat>
+    
     func completeChallenge(accessToken: String, index: Int) -> Single<Bool>
     
     func getChallenge(accessToken: String, index: Int) -> Single<Challenge>

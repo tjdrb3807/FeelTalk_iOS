@@ -8,10 +8,31 @@
 import Foundation
 
 struct AddChallengeResponseDTO: Decodable {
-    let index: Int
+    let challenge: ChallengeChatResponseDTO
+    let chatIndex: Int
+    let chatPageIndex: Int
+    let isChatRead: Bool
+    let createAt: String
     
     enum CodingKeys: String, CodingKey {
-        case index
+        case challenge = "coupleChallenge"
+        case chatIndex = "index"
+        case chatPageIndex = "pageIndex"
+        case isChatRead = "isRead"
+        case createAt
+    }
+}
+
+extension AddChallengeResponseDTO {
+    func toDomain() -> ChallengeChat {
+        .init(index: chatIndex,
+              type: .addChallengeChatting,
+              isRead: isChatRead,
+              isMine: true,
+              createAt: createAt,
+              challengeIndex: challenge.index,
+              challengeTitle: challenge.title,
+              challengeDeadline: challenge.deadline)
     }
 }
 

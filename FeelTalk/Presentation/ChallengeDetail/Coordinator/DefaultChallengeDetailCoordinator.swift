@@ -16,7 +16,7 @@ final class DefaultChallengeDetailCoordinator: ChallengeDetailCoordinator {
     var childCoordinators: [Coordinator] = []
     var type: CoordinatorType = .challengeDetail
     
-    var challengeModel = PublishRelay<Challenge>()
+    var challengeModel = PublishRelay<Challenge?>()
     var typeObserver = PublishRelay<ChallengeDetailViewType>()
     private let disposeBag = DisposeBag()
     

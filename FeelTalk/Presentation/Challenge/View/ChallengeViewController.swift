@@ -57,11 +57,14 @@ final class ChallengeViewController: UIViewController {
     }
     
     private func bind(to viewModel: ChallengeViewModel) {
+        let tapChallengeCellObserver = PublishRelay<Challenge>()
+        
         let input = ChallengeViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
-                                             tapAddButton: addButton.rx.tap)
+                                             tapAddButton: addButton.rx.tap,
+                                             tapChallengeCell: tapChallengeCellObserver.asObservable())
         
         let output = viewModel.transfer(input: input)
-        
+
         output.totalCount
             .bind(to: countingView.model)
             .disposed(by: disposeBag)
@@ -92,6 +95,10 @@ final class ChallengeViewController: UIViewController {
                 cv.numberOfItems(inSection: 0) < 6 ?
                 self.outerScrollView.rx.isScrollEnabled.onNext(false) :
                 self.outerScrollView.rx.isScrollEnabled.onNext(true)
+                
+                cv.rx.modelSelected(Challenge.self)
+                    .bind(to: tapChallengeCellObserver)
+                    .disposed(by: disposeBag)
             }).disposed(by: disposeBag)
     }
     

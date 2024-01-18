@@ -86,6 +86,7 @@ final class CustomTextField01: UITextField {
         layer.borderWidth = CustomTextFiledNameSpace01.borderWidth
         layer.borderColor = UIColor.clear.cgColor
         layer.cornerRadius = CustomTextFiledNameSpace01.cornerRadius
+        autocorrectionType = .no
         clipsToBounds = true
         
         leftView = leftPaddingView

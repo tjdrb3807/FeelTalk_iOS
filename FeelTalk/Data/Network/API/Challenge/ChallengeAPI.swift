@@ -9,6 +9,8 @@ import Foundation
 import Alamofire
 
 enum ChallengeAPI {
+    case addChallenge(accessToken: String, requestDTO: AddChallengeRequestDTO)
+    
     case completeChallenge(accessToken: String, index: Int)
     
     case getChallenge(accessToken: String, index: Int)
@@ -31,6 +33,8 @@ extension ChallengeAPI: Router, URLRequestConvertible {
     
     var path: String {
         switch self {
+        case .addChallenge:
+            return "/api/v1/challenge"
         case .completeChallenge:
             return "/api/v1/challnege/complete"
         case .getChallenge(accessToken: _, index: let index):
@@ -53,6 +57,8 @@ extension ChallengeAPI: Router, URLRequestConvertible {
     
     var method: Alamofire.HTTPMethod {
         switch self {
+        case .addChallenge:
+            return .post
         case .completeChallenge:
             return .put
         case .getChallenge,
@@ -70,7 +76,8 @@ extension ChallengeAPI: Router, URLRequestConvertible {
     
     var header: [String : String] {
         switch self {
-        case .completeChallenge(accessToken: let accessToken, index: _),
+        case .addChallenge(accessToken: let accessToken, requestDTO: _),
+                .completeChallenge(accessToken: let accessToken, index: _),
                 .getChallenge(accessToken: let accessToken, index: _),
                 .getChallengeCount(accessToken: let accessToken),
                 .getCompletedChallengeLatestPageNo(accessToken: let accessToken),
@@ -86,6 +93,10 @@ extension ChallengeAPI: Router, URLRequestConvertible {
     
     var parameters: [String : Any]? {
         switch self {
+        case .addChallenge(accessToken: _, requestDTO: let dto):
+            return ["title": dto.title,
+                    "deadline": dto.deadline,
+                    "content": dto.content]
         case .completeChallenge(accessToken: _, index: let index),
                 .removeChallenge(accessToken: _, index: let index):
             return ["index": index]
@@ -102,7 +113,8 @@ extension ChallengeAPI: Router, URLRequestConvertible {
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .completeChallenge,
+        case .addChallenge,
+                .completeChallenge,
                 .getChallenge,
                 .getChallengeCount,
                 .getCompletedChallengeLatestPageNo,

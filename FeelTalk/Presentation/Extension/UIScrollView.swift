@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import RxKeyboard
 
 public enum AdultAuthViewScrollDirection {
     case nameInputView
@@ -22,6 +25,7 @@ extension UIScrollView {
     
     func scrollToBottom() {
         let bottomOffset = CGPoint(x: 0.0, y: contentSize.height - bounds.height)
+        
         if bottomOffset.y > 0 {
             setContentOffset(bottomOffset, animated: true)
         }
@@ -49,7 +53,7 @@ extension UIScrollView {
             case .consentView:
                 break
             case .authNumberInfoView:
-                self.secrollToAuthNumberInputView()
+                self.scrollToAuthNumberInputView()
             }
         }
     }
@@ -71,7 +75,7 @@ extension UIScrollView {
         }
     }
     
-    private func secrollToAuthNumberInputView() {
+    private func scrollToAuthNumberInputView() {
         let topOffset = CGPoint(x: .zero,
                                 y: CommonConstraintNameSpace.verticalRatioCalculator * 34.48)   // 280.0
         
@@ -83,15 +87,20 @@ extension UIScrollView {
 
 // MARK: ChallengeDetailView Scroll
 extension UIScrollView {
-    func scroll(to direction: ChallengeDetailViewInputType) {
-        switch direction {
-        case .title:
-            scrollToTop()
-        case .deadline:
-            break
-        case .content:
-            scrollToBottom()
+    func scroll(to direction : ChallengeDetailViewScrollDirection) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            switch direction {
+            case .title:
+                scrollToTop()
+            case .deadline:
+                break
+            case .content:
+                scrollToBottom()
+            case .none:
+                break
+            }
         }
     }
-
 }

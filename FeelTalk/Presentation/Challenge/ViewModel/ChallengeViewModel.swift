@@ -14,22 +14,14 @@ final class ChallengeViewModel {
     private let challengeUseCase: ChallengeUseCase
     private let disposeBag = DisposeBag()
     
-//    private let totalCount = PublishRelay<ChallengeCount>()
-//    private let tabBarModelList = PublishRelay<[ChallengeTabBarModel]>()
-    
     private let onGoingChallengeModelList = PublishRelay<[Challenge]>()
     private let completedChallengeModelList = PublishRelay<[Challenge]>()
     
     struct Input {
         let viewWillAppear: ControlEvent<Bool>
         let tapAddButton: ControlEvent<Void>
+        let tapChallengeCell: Observable<Challenge>
     }
-    
-//    struct Output {
-//        let totalCount: PublishRelay<ChallengeCount>
-//        let tabBarModelList: PublishRelay<[ChallengeTabBarModel]>
-//        let challengeModelList: BehaviorRelay<[ChallengeListModel]>
-//    }
     
     struct Output {
         let totalCount = PublishRelay<Int>()
@@ -45,18 +37,7 @@ final class ChallengeViewModel {
     
     func transfer(input: Input) -> Output {
         let output = Output()
-        
-//        input.viewWillAppear
-//            .withUnretained(self)
-//            .bind { vm, _ in
-//                vm.challengeUseCase.getChallengeCount()
-//                    .bind { count in
-//                        vm.totalCount.accept(count)
-//                        vm.tabBarModelList.accept([ChallengeTabBarModel(type: .onGoing, count: count.ongoingCount),
-//                                                   ChallengeTabBarModel(type: .completed, count: count.completedCount)])
-//                    }.disposed(by: vm.disposeBag)
-//            }.disposed(by: disposeBag)
-        
+
         input.viewWillAppear
             .take(1)
             .asObservable()
@@ -97,14 +78,21 @@ final class ChallengeViewModel {
             .withUnretained(self)
             .bind { vm, _ in
                 vm.coordinator?.showChallengeDetailFlow()
-                vm.coordinator?.challengeModel.accept(Challenge())
+                vm.coordinator?.challengeModel.accept(nil)
                 vm.coordinator?.typeObserver.accept(.new)
             }.disposed(by: disposeBag)
         
-        return output
+        input.tapChallengeCell
+            .withUnretained(self)
+            .bind(onNext: { vm, model in
+                guard let isCompleted = model.isCompleted else { return }
+                
+                vm.coordinator?.showChallengeDetailFlow()
+                isCompleted ? vm.coordinator?.typeObserver.accept(.completed) : vm.coordinator?.typeObserver.accept(.ongoing)
+                vm.coordinator?.challengeModel.accept(model)
+                
+            }).disposed(by: disposeBag)
         
-//        return Output(totalCount: self.totalCount,
-//                      tabBarModelList: self.tabBarModelList,
-//                      challengeModelList: self.challengeModelList)
+        return output
     }
 }

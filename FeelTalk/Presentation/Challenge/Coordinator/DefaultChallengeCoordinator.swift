@@ -16,7 +16,7 @@ final class DefaultChallengeCoordinator: ChallengeCoordinator {
     var challengeViewController: ChallengeViewController
     var type: CoordinatorType = .challenge
     
-    var challengeModel = PublishRelay<Challenge>()
+    var challengeModel = PublishRelay<Challenge?>()
     var typeObserver = PublishRelay<ChallengeDetailViewType>()
     private let disposeBag = DisposeBag()
     
@@ -36,7 +36,7 @@ final class DefaultChallengeCoordinator: ChallengeCoordinator {
         typeObserver
             .bind(to: challengeDetailCoordinator.typeObserver)
             .disposed(by: disposeBag)
-        
+    
         challengeModel
             .bind(to: challengeDetailCoordinator.challengeModel)
             .disposed(by: disposeBag)

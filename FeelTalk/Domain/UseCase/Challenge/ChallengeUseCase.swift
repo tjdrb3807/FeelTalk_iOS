@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 
 protocol ChallengeUseCase {
+    func addChallenge(model: (title: String, deadline: String, content: String)) -> Observable<ChallengeChat>
+    
     func completeChallenge(index: Int) -> Observable<Bool>
     
     func getChallenge(index: Int) -> Observable<Challenge>
@@ -29,6 +31,24 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
     
     init(challengeRepository: ChallengeRepository) {
         self.challengeRepository = challengeRepository
+    }
+    
+    func addChallenge(model: (title: String, deadline: String, content: String)) -> Observable<ChallengeChat> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            
+            challengeRepository.addChallenge(accessToken: accessToken,
+                                             requestDTO: AddChallengeRequestDTO(title: model.title,
+                                                                                deadline: model.deadline,
+                                                                                content: model.content))
+            .asObservable()
+            .bind(onNext: { event in
+                observer.onNext(event)
+            }).disposed(by: disposeBag)
+            
+            return Disposables.create()
+        }
     }
     
     func completeChallenge(index: Int) -> Observable<Bool> {

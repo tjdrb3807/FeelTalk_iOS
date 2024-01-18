@@ -13,7 +13,7 @@ import RxCocoa
 final class ChallengeDeadlineView: UIStackView {
     let typeObserver = PublishRelay<ChallengeDetailViewType>()
     let deadlineObserver = BehaviorRelay<Date>(value: Date())
-    let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewInputType>()
+    let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewToolBarType>()
     private let disposeBag = DisposeBag()
     
     private lazy var leadingSpacing: UIView = { UIView() }()
@@ -170,6 +170,7 @@ extension ChallengeDeadlineView {
     
     private func setUpDatePicker() {
         let datePicker = UIDatePicker()
+
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.locale = Locale(identifier: "ko-KR")
@@ -194,7 +195,7 @@ extension ChallengeDeadlineView {
         let toolBar = CustomToolbar(type: .ongoing)
         
         toolBar.rightButton.rx.tap
-            .map { ChallengeDetailViewInputType.deadline }
+            .map { .deadline }
             .bind(to: toolBarButtonTapObserver)
             .disposed(by: disposeBag)
         

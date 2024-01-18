@@ -34,6 +34,7 @@ final class CustomTextView: UIView {
                                                    bottom: CustomTextViewNameSpace.textViewTextContainerBottomInset,
                                                    right: CustomTextViewNameSpace.textViewTextContainerRightInset)
         textView.isScrollEnabled = true
+        textView.autocorrectionType = .no
         textView.delegate = self
         
         return textView

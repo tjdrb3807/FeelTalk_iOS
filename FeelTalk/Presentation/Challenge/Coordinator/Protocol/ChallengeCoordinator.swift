@@ -12,7 +12,7 @@ import RxCocoa
 protocol ChallengeCoordinator: Coordinator {
     var challengeViewController: ChallengeViewController { get set }
     
-    var challengeModel: PublishRelay<Challenge> { get set }
+    var challengeModel: PublishRelay<Challenge?> { get set }
     
     var typeObserver: PublishRelay<ChallengeDetailViewType> { get set }
     

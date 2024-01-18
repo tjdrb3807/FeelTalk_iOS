@@ -52,9 +52,8 @@ final class ChallengeDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        self.bind()
         self.bind(to: viewModel)
-        self.setAttributes()
+        self.setProperties()
         self.addSubComponents()
         self.setConfigurations()
     }
@@ -63,12 +62,14 @@ final class ChallengeDetailViewController: UIViewController {
         view.endEditing(true)
     }
     
-    private func bind() {
-        
-    }
-    
     private func bind(to viewModel: ChallengeDetailViewModel) {
         let alertRightButtonTapObserver = PublishRelay<CustomAlertType>()
+        
+        let toolBarButtonTapObserver = Observable<ChallengeDetailViewToolBarType>
+            .merge(titleInputView.toolBarButtonTapObserver.asObservable(),
+                   deadlineInputView.toolBarButtonTapObserver.asObservable(),
+                   contentInputView.toolBarButtonTapObserver.asObservable())
+        
         
         let input = ChallengeDetailViewModel.Input(viewWillAppear: rx.viewWillAppear,
                                                    tapNavigationButton: navigationBar.tapButtonObserver.asObservable(),
@@ -76,18 +77,20 @@ final class ChallengeDetailViewController: UIViewController {
                                                    deadlineObserver: deadlineInputView.deadlineObserver,
                                                    contentObserver: contentInputView.contentInputView.textView.rx.text.orEmpty,
                                                    alertRightButtonTapObserver: alertRightButtonTapObserver.asObservable(),
-                                                   challengeButtonTapObserver: challengeButton.rx.tap.asObservable())
+                                                   challengeButtonTapObserver: challengeButton.rx.tap.asObservable(),
+                                                   tapToolbarButton: toolBarButtonTapObserver)
         
         let output = viewModel.transfer(input: input)
-        
+
         output.keyboardHeight
             .skip(1)
             .withUnretained(self)
             .bind { vc, event in
-                let height = event > 0.0 ? -event + vc.view.safeAreaInsets.bottom : 0
-                vc.updateScrollViewConstraints(with: height)
+                let keyboardHeight = event > 0.0 ? -event + vc.view.safeAreaInsets.bottom : 0.0
+                
+                vc.updateScrollViewConstraints(with: keyboardHeight)
             }.disposed(by: disposeBag)
-        
+            
         output.type
             .withUnretained(self)
             .bind { vc, event in
@@ -97,6 +100,13 @@ final class ChallengeDetailViewController: UIViewController {
                 vc.deadlineInputView.typeObserver.accept(event)
                 vc.contentInputView.typeObserver.accept(event)
                 vc.challengeButton.typeObserver.accept(event)
+            }.disposed(by: disposeBag)
+        
+        output.type
+            .filter { $0 == .new || $0 == .modify }
+            .withUnretained(self)
+            .bind { vc, _ in
+                vc.setScrollViewPosition()
             }.disposed(by: disposeBag)
         
         output.popUpAlerObserver
@@ -128,43 +138,24 @@ final class ChallengeDetailViewController: UIViewController {
                 vc.challengeButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main500)) :
                 vc.challengeButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main400))
             }.disposed(by: disposeBag)
-
-        Observable
-            .merge(titleInputView.toolBarButtonTapObserver.asObservable(),
-                   deadlineInputView.toolBarButtonTapObserver.asObservable(),
-                   contentInputView.toolBarButtonTapObserver.asObservable())
+        
+        output.focusedInputView
             .withUnretained(self)
-            .bind { vc, type in
-                DispatchQueue.main.async {
-                    switch type {
-                    case .title:
-                        vc.deadlineInputView.deadlineInputView.becomeFirstResponder()
-                    case .deadline:
-                        vc.contentInputView.contentInputView.textView.becomeFirstResponder()
-                    case .content:
-                        break
-                    }
-                }
-            }.disposed(by: disposeBag)
-
-        Observable<ChallengeDetailViewInputType>
-            .merge(titleInputView.titleInputView.rx.controlEvent(.editingDidBegin).map { .title },
-                   deadlineInputView.deadlineInputView.rx.controlEvent(.editingDidBegin).map { .deadline },
-                   contentInputView.contentInputView.textView.rx.didBeginEditing .map { .content })
-            .withUnretained(self)
-            .bind { vc, type in
-                switch type {
+            .bind { vc, event in
+                switch event {
                 case .title:
-                    vc.scrollView.scrollToTop()
+                    vc.titleInputView.titleInputView.becomeFirstResponder()
                 case .deadline:
-                    print(type)
+                    vc.deadlineInputView.deadlineInputView.becomeFirstResponder()
                 case .content:
-                    vc.scrollView.scrollToBottom()
+                    vc.contentInputView.contentInputView.textView.becomeFirstResponder()
+                case .none:
+                    vc.dismissKeyboard()
                 }
             }.disposed(by: disposeBag)
     }
     
-    private func setAttributes() {
+    private func setProperties() {
         view.backgroundColor = .white
     }
     
@@ -205,8 +196,6 @@ extension ChallengeDetailViewController {
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
-        
-        scrollView.backgroundColor = .blue.withAlphaComponent(0.4)
     }
     
     private func addScrollViewSubComponents() {
@@ -263,6 +252,24 @@ extension ChallengeDetailViewController {
     }
 }
 
+extension ChallengeDetailViewController {
+    private func setScrollViewPosition() {
+        let focsedInputViewObserver = PublishRelay<ChallengeDetailViewScrollDirection>
+            .merge(titleInputView.titleInputView.rx.controlEvent(.editingDidBegin).map { .title },
+                   deadlineInputView.deadlineInputView.rx.controlEvent(.editingDidBegin).map { .deadline },
+                   contentInputView.contentInputView.textView.rx.didBeginEditing.map { .content })
+        
+        Observable
+            .combineLatest(focsedInputViewObserver.asObservable(),
+                           RxKeyboard.instance.visibleHeight.asObservable()
+            ).map { event -> ChallengeDetailViewScrollDirection in event.0 }
+            .withUnretained(self)
+            .bind { vc, direction in
+                vc.scrollView.scroll(to: direction)
+            }.disposed(by: disposeBag)
+    }
+}
+
 #if DEBUG
 
 import SwiftUI
@@ -271,6 +278,7 @@ struct ChallengeDetailViewController_Previews: PreviewProvider {
     static var previews: some View {
         ChallengeDetailViewController_Presentable()
             .edgesIgnoringSafeArea(.all)
+            .keyboardType(.default)
     }
     
     struct ChallengeDetailViewController_Presentable: UIViewControllerRepresentable {

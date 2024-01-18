@@ -12,7 +12,7 @@ import RxCocoa
 
 final class ChallengeContentView: UIStackView {
     let typeObserver = PublishRelay<ChallengeDetailViewType>()
-    let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewInputType>()
+    let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewToolBarType>()
     private let disposeBag = DisposeBag()
     
     private lazy var leadingSpacing: UIView = { UIView() }()
@@ -117,7 +117,7 @@ extension ChallengeContentView {
         let toolBar = CustomToolbar(type: .completion)
         
         toolBar.rightButton.rx.tap
-            .map { ChallengeDetailViewInputType.content }
+            .map { .content }
             .bind(to: toolBarButtonTapObserver)
             .disposed(by: disposeBag)
         

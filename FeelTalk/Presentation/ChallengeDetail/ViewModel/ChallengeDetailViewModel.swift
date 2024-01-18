@@ -15,7 +15,7 @@ final class ChallengeDetailViewModel {
     private let challengeUseCase: ChallengeUseCase
     private let disposeBag = DisposeBag()
     
-    let modelObserver = ReplayRelay<Challenge>.create(bufferSize: 1)
+    let modelObserver = ReplayRelay<Challenge?>.create(bufferSize: 1)
     let typeObserver = ReplayRelay<ChallengeDetailViewType>.create(bufferSize: 1)
     
     struct Input {
@@ -26,6 +26,7 @@ final class ChallengeDetailViewModel {
         let contentObserver: ControlProperty<String>
         let alertRightButtonTapObserver: Observable<CustomAlertType>
         let challengeButtonTapObserver: Observable<Void>
+        let tapToolbarButton: Observable<ChallengeDetailViewToolBarType>
     }
     
     struct Output {
@@ -33,6 +34,10 @@ final class ChallengeDetailViewModel {
         let type = PublishRelay<ChallengeDetailViewType>()
         let popUpAlerObserver = PublishRelay<CustomAlertType>()
         let isNewTypeChallengeButtonEnabled = PublishRelay<Bool>()
+        let focusedInputView = PublishRelay<ChallengeDetailViewScrollDirection>()
+        let title = PublishRelay<String>()
+        let deadline = PublishRelay<String>()
+        let content = PublishRelay<String>()
     }
     
     init(coordinator: ChallengeDetailCoordinator, challengeUseCase: ChallengeUseCase) {
@@ -50,7 +55,7 @@ final class ChallengeDetailViewModel {
         
         RxKeyboard.instance.visibleHeight
             .asObservable()
-            .filter { 0 <= $0 }
+            .filter { 0.0 <= $0 }
             .bind(to: output.keyboardHeight)
             .disposed(by: disposeBag)
         
@@ -77,7 +82,7 @@ final class ChallengeDetailViewModel {
             .withLatestFrom(input.deadlineObserver)
             .compactMap { Date.compareDate(target: $0, from: Date()) }
             .withLatestFrom(inputInfoObserver) { (title: $1.title, dateCompare: $0, content: $1.content) }
-            .map { event in
+            .map { event -> Bool in
                 !event.title.isEmpty ? true :
                 event.dateCompare != .same ? true :
                 event.content == ChallengeContentViewNameSpace.contentInputViewPlaceholder ? false :
@@ -107,26 +112,48 @@ final class ChallengeDetailViewModel {
         
         // 챌린지 추가 페이지에서 Challenge 버튼 상태 처리
         inputInfoObserver
-            .withLatestFrom(typeObserver) { (info: $0, type: $1) }
+            .withLatestFrom(typeObserver) { (inputInfo: $0, type: $1) }
             .filter { $0.type == .new }
-            .map {
-                !$0.info.title.isEmpty &&
-                $0.info.content != ChallengeContentViewNameSpace.contentInputViewPlaceholder &&
-                $0.info.content.count > 0 ? true : false
+            .map { $0.inputInfo }
+            .map { event -> Bool in
+                !event.title.isEmpty &&
+                event.content != ChallengeContentViewNameSpace.contentInputViewPlaceholder &&
+                event.content.count > 0 ? true: false
             }.distinctUntilChanged()
             .bind(to: output.isNewTypeChallengeButtonEnabled)
             .disposed(by: disposeBag)
-        
+            
         // 챌린지 추가
         input.challengeButtonTapObserver
             .withLatestFrom(typeObserver)
             .filter { $0 == .new }
             .withLatestFrom(inputInfoObserver)
+            .map { (title: $0.title, deadline: Date.dateToStr($0.deadline), content: $0.content) }
             .withUnretained(self)
             .bind { vm, model in
-                print(model)
+                vm.challengeUseCase.addChallenge(model: model)
+                    .bind { challengeChat in
+                        print(challengeChat)
+                        print("채팅방으로 이동")
+                    }.disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
         
+        input.tapToolbarButton
+            .filter { $0 == .title || $0 == .deadline }
+            .map { event -> ChallengeDetailViewScrollDirection in
+                event == .title ? .deadline : .content
+            }.bind(to: output.focusedInputView)
+            .disposed(by: disposeBag)
+        
+        input.tapToolbarButton
+            .filter { $0 == .content }
+            .withLatestFrom(inputInfoObserver)
+            .map { event -> String in event.title }
+            .map { event -> ChallengeDetailViewScrollDirection in
+                event.isEmpty ? .title : .none
+            }.bind(to: output.focusedInputView)
+            .disposed(by: disposeBag)
+
         return output
     }
 }
