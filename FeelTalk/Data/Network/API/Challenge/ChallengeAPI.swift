@@ -25,7 +25,9 @@ enum ChallengeAPI {
     
     case getOngoingChallengeList(accessToken: String, requestDTO: ChallengeListRequestDTO)
     
-    case removeChallenge(accessToken: String, index: Int)
+    case modifyChallenge(accessToken: String, requestDTO: ModifyChallengeRequestDTO)
+    
+    case removeChallenge(accessToken: String, requestDTO: RemoveChallengeRequestDTO)
 }
 
 extension ChallengeAPI: Router, URLRequestConvertible {
@@ -49,6 +51,8 @@ extension ChallengeAPI: Router, URLRequestConvertible {
             return "/api/v1/challenge/in-progress/last/page-no"
         case .getOngoingChallengeList:
             return "/api/v1/challenges/in-progress"
+        case .modifyChallenge:
+            return "/api/v1/challenge"
         case.removeChallenge:
             return "/api/v1/challenge"
         
@@ -59,7 +63,8 @@ extension ChallengeAPI: Router, URLRequestConvertible {
         switch self {
         case .addChallenge:
             return .post
-        case .completeChallenge:
+        case .completeChallenge,
+                .modifyChallenge:
             return .put
         case .getChallenge,
                 .getChallengeCount,
@@ -84,7 +89,8 @@ extension ChallengeAPI: Router, URLRequestConvertible {
                 .getCompletedChallengeList(accessToken: let accessToken, requestDTO: _),
                 .getOngoingChallengeLatestPageNo(accessToken: let accessToken),
                 .getOngoingChallengeList(accessToken: let accessToken, requestDTO: _),
-                .removeChallenge(accessToken: let accessToken, index: _):
+                .modifyChallenge(accessToken: let accessToken, requestDTO: _),
+                .removeChallenge(accessToken: let accessToken, requestDTO: _):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
                     "Authorization": accessToken]
@@ -97,8 +103,7 @@ extension ChallengeAPI: Router, URLRequestConvertible {
             return ["title": dto.title,
                     "deadline": dto.deadline,
                     "content": dto.content]
-        case .completeChallenge(accessToken: _, index: let index),
-                .removeChallenge(accessToken: _, index: let index):
+        case .completeChallenge(accessToken: _, index: let index):
             return ["index": index]
         case .getCompletedChallengeList(accessToken: _, requestDTO: let dto),
                 .getOngoingChallengeList(accessToken: _, requestDTO: let dto):
@@ -108,6 +113,13 @@ extension ChallengeAPI: Router, URLRequestConvertible {
                 .getCompletedChallengeLatestPageNo,
                 .getOngoingChallengeLatestPageNo:
             return nil
+        case .modifyChallenge(accessToken: _, requestDTO: let dto):
+            return ["index": dto.index,
+                    "title": dto.title,
+                    "deadline": dto.deadline,
+                    "content": dto.content]
+        case .removeChallenge(accessToken: _, requestDTO: let dto):
+            return ["index": dto.index]
         }
     }
     
@@ -121,6 +133,7 @@ extension ChallengeAPI: Router, URLRequestConvertible {
                 .getCompletedChallengeList,
                 .getOngoingChallengeLatestPageNo,
                 .getOngoingChallengeList,
+                .modifyChallenge,
                 .removeChallenge:
             return JSONEncoding.default
         }

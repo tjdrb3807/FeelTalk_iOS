@@ -9,13 +9,20 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+enum ChallengeModelReloadType {
+    case ongoing
+    case completed
+}
+
 final class ChallengeViewModel {
     private weak var coordinator: ChallengeCoordinator?
     private let challengeUseCase: ChallengeUseCase
     private let disposeBag = DisposeBag()
     
+    private let currentOngoingChallengePageNo = PublishRelay<Int>()
     private let onGoingChallengeModelList = PublishRelay<[Challenge]>()
     private let completedChallengeModelList = PublishRelay<[Challenge]>()
+    let reloadObserver = PublishRelay<Void>()
     
     struct Input {
         let viewWillAppear: ControlEvent<Bool>
@@ -50,14 +57,17 @@ final class ChallengeViewModel {
                                                        ChallengeTabBarModel(type: .completed, count: model.completedCount)])
                         output.selectedTabBarItem.accept(.ongoing)
                     }.disposed(by: vm.disposeBag)
-                
+
+//                vm.challengeUseCase.getChallengeLatestPageNo(type: .ongoing)
+//                    .bind { pageNo in
+//                        vm.challengeUseCase.getChallengeList(type: .ongoing, pageNo: pageNo)
+//                            .bind(to: vm.onGoingChallengeModelList)
+//                            .disposed(by: vm.disposeBag)
+//                    }.disposed(by: vm.disposeBag)
                 vm.challengeUseCase.getChallengeLatestPageNo(type: .ongoing)
-                    .bind { pageNo in
-                        vm.challengeUseCase.getChallengeList(type: .ongoing, pageNo: pageNo)
-                            .bind(to: vm.onGoingChallengeModelList)
-                            .disposed(by: vm.disposeBag)
-                    }.disposed(by: vm.disposeBag)
-                
+                    .bind(to: vm.currentOngoingChallengePageNo)
+                    .disposed(by: vm.disposeBag)
+
                 vm.challengeUseCase.getChallengeLatestPageNo(type: .completed)
                     .bind { pageNo in
                         vm.challengeUseCase.getChallengeList(type: .completed, pageNo: pageNo)
@@ -65,6 +75,23 @@ final class ChallengeViewModel {
                             .disposed(by: vm.disposeBag)
                     }.disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
+        
+        currentOngoingChallengePageNo
+            .withUnretained(self)
+            .bind { vm, pageNo in
+                vm.challengeUseCase.getChallengeList(type: .ongoing,
+                                                     pageNo: pageNo)
+                .bind(to: vm.onGoingChallengeModelList)
+                .disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
+        
+        onGoingChallengeModelList
+            .filter { $0.count <= 6 }
+            .withLatestFrom(currentOngoingChallengePageNo) { (list: $0, pageNo: $1) }
+            .filter { $0.pageNo > 0 }
+            .map { $0.pageNo - 1 }
+            .bind(to: currentOngoingChallengePageNo)
+            .disposed(by: disposeBag)
         
         Observable
             .combineLatest(onGoingChallengeModelList,
@@ -78,19 +105,14 @@ final class ChallengeViewModel {
             .withUnretained(self)
             .bind { vm, _ in
                 vm.coordinator?.showChallengeDetailFlow()
-                vm.coordinator?.challengeModel.accept(nil)
-                vm.coordinator?.typeObserver.accept(.new)
+                vm.coordinator?.challengeModel.accept(Challenge())
             }.disposed(by: disposeBag)
         
         input.tapChallengeCell
             .withUnretained(self)
             .bind(onNext: { vm, model in
-                guard let isCompleted = model.isCompleted else { return }
-                
                 vm.coordinator?.showChallengeDetailFlow()
-                isCompleted ? vm.coordinator?.typeObserver.accept(.completed) : vm.coordinator?.typeObserver.accept(.ongoing)
                 vm.coordinator?.challengeModel.accept(model)
-                
             }).disposed(by: disposeBag)
         
         return output

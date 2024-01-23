@@ -20,7 +20,7 @@ final class CustomTextField01: UITextField {
                                                          height: frame.height)))
     }()
     
-    private var charCountingView: TextCountingView?
+    var charCountingView: TextCountingView?
     
     init(placeholder: String, useClearButton: Bool, textLimit: Int) {
         self.useClearButton = useClearButton

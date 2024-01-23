@@ -22,6 +22,8 @@ protocol ChallengeUseCase {
     
     func getChallengeList(type: ChallengeState, pageNo: Int) -> Observable<[Challenge]>
     
+    func modifyChallenge(model: (index: Int, title: String, deadline: String, content: String)) -> Observable<Bool>
+    
     func removeChallenge(index: Int) -> Observable<Bool>
 }
 
@@ -126,14 +128,34 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         }
     }
     
+    func modifyChallenge(model: (index: Int, title: String, deadline: String, content: String)) -> Observable<Bool> {
+        Observable.create { [weak self] observer -> Disposable in
+            guard let self = self,
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            
+            challengeRepository.modifyChallenge(accessToken: accessToken,
+                                                requestDTO: ModifyChallengeRequestDTO(index: model.index,
+                                                                                      title: model.title,
+                                                                                      deadline: model.deadline,
+                                                                                      content: model.content))
+            .asObservable()
+            .bind(onNext: { event in
+                observer.onNext(event)
+            }).disposed(by: disposeBag)
+            
+            return Disposables.create()
+        }
+    }
+    
     func removeChallenge(index: Int) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self,
                   let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.removeChallenge(accessToken: accessToken, index: index)
+            
+            challengeRepository.removeChallenge(accessToken: accessToken, requestDTO: RemoveChallengeRequestDTO(index: index))
                 .asObservable()
-                .bind(onNext: { isSuccess in
-                    observer.onNext(isSuccess)
+                .bind(onNext: { evnet in
+                    observer.onNext(evnet)
                 }).disposed(by: disposeBag)
             
             return Disposables.create()

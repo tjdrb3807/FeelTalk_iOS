@@ -12,6 +12,7 @@ import RxCocoa
 
 final class ChallengeTitleView: UIStackView {
     let typeObserver = PublishRelay<ChallengeDetailViewType>()
+    let modelObserver = PublishRelay<String>()
     let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewToolBarType>()
     private let disposeBag = DisposeBag()
     
@@ -54,16 +55,18 @@ final class ChallengeTitleView: UIStackView {
 
     private func bind() {
         typeObserver
+            .map { $0 == .new || $0 == .modify ? true : false }
             .withUnretained(self)
-            .bind { v, type in
-                v.setTitleInputviewProperties(with: type)
+            .bind { v, state in
+                v.titleInputView.rx.isEnabled.onNext(state)
+                if state { v.setUpToolBar() }
             }.disposed(by: disposeBag)
-        
-        typeObserver
-            .filter { $0 == .new || $0 == .modify }
+            
+        modelObserver
             .withUnretained(self)
-            .bind { v, _ in
-                v.setUpToolBar()
+            .bind {v, title in
+                v.titleInputView.rx.text.onNext(title)
+                v.titleInputView.charCountingView?.molecularCount.accept(title.count)
             }.disposed(by: disposeBag)
     }
     
@@ -109,23 +112,14 @@ extension ChallengeTitleView {
 }
 
 extension ChallengeTitleView {
-    private func setTitleInputviewProperties(with type: ChallengeDetailViewType) {
-        switch type {
-        case .completed, .ongoing:
-            titleInputView.rx.isEnabled.onNext(false)
-        case .modify, .new:
-            titleInputView.rx.isEnabled.onNext(true)
-        }
-    }
-    
     private func setUpToolBar() {
         let toolBar = ChallengeDetailToolbar(type: .title)
-        
+
         toolBar.nextButton.rx.tap
             .map { .title }
             .bind(to: toolBarButtonTapObserver)
             .disposed(by: disposeBag)
-        
+
         titleInputView.inputAccessoryView = toolBar
     }
 }
@@ -146,7 +140,6 @@ struct ChallengeTitleView_Previews: PreviewProvider {
     struct ChallengeTitleView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let v = ChallengeTitleView()
-            v.typeObserver.accept(.new)
             
             return v
         }

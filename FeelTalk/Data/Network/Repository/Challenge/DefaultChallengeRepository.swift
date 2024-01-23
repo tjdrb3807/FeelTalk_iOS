@@ -149,9 +149,32 @@ final class DefaultChallengeRepository: ChallengeRepository {
         }
     }
     
-    func removeChallenge(accessToken: String, index: Int) -> Single<Bool> {
+    func modifyChallenge(accessToken: String, requestDTO: ModifyChallengeRequestDTO) -> Single<Bool> {
         Single.create { observer -> Disposable in
-            AF.request(ChallengeAPI.removeChallenge(accessToken: accessToken, index: index))
+            AF.request(ChallengeAPI.modifyChallenge(accessToken: accessToken, requestDTO: requestDTO))
+                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            observer(.success(true))
+                        } else {
+                            guard let message = responseDTO.message else { return }
+                            observer(.success(false))
+                            debugPrint(message)
+                        }
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                        observer(.failure(error))
+                    }
+                }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func removeChallenge(accessToken: String, requestDTO: RemoveChallengeRequestDTO) -> Single<Bool> {
+        Single.create { observer -> Disposable in
+            AF.request(ChallengeAPI.removeChallenge(accessToken: accessToken, requestDTO: requestDTO))
                 .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
@@ -160,6 +183,7 @@ final class DefaultChallengeRepository: ChallengeRepository {
                         } else {
                             guard let message = responseDTO.message else { return }
                             debugPrint(message)
+                            observer(.success(false))
                         }
                     case .failure(let error):
                         observer(.failure(error))

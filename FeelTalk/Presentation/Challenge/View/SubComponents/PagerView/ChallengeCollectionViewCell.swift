@@ -6,12 +6,13 @@
 //
 
 import UIKit
-import UIKit
+import SnapKit
 import RxSwift
 import RxCocoa
 
 final class ChallengeCollectionViewCell: UICollectionViewCell {
-    let modelList = PublishRelay<[Challenge]>()
+    let model = PublishRelay<ChallengeListModel>()
+    let modelSelected = PublishRelay<Challenge>()
     private let disposeBag = DisposeBag()
     
     lazy var collectionView: UICollectionView = {
@@ -42,15 +43,37 @@ final class ChallengeCollectionViewCell: UICollectionViewCell {
     }
     
     private func bind() {
-        modelList
+        model
+            .filter { !$0.list.isEmpty }
+            .map { $0.list }
             .asDriver(onErrorJustReturn: [])
-            .drive(collectionView.rx.items) { cv, row, item in
+            .drive(collectionView.rx.items) { [weak self] cv, row, item in
+                guard let self = self else { return UICollectionViewCell() }
                 let index = IndexPath(row: row, section: ChallengeCollectionViewCellNameSpace.collectionViewDefaultSectionIndex)
                 guard let cell = cv.dequeueReusableCell(withReuseIdentifier: ChallengeCellNameSpace.identifier,
                                                         for: index) as? ChallengeCell else { return UICollectionViewCell() }
                 cell.model.accept(item)
+                cell.modelSelected
+                    .bind(to: modelSelected)
+                    .disposed(by: disposeBag)
                 
                 return cell
+            }.disposed(by: disposeBag)
+        
+        model
+            .filter { $0.list.isEmpty }
+            .map { $0.state }
+            .withUnretained(self)
+            .bind { cv, state in
+                let emptyChallengeView = EmptyChallengeView(state: state)
+                
+                cv.addSubview(emptyChallengeView)
+                emptyChallengeView.snp.makeConstraints {
+                    $0.top.equalToSuperview().inset(EmptyChallengeViewNameSpace.topInset)
+                    $0.centerX.equalToSuperview()
+                    $0.width.equalTo(EmptyChallengeViewNameSpace.width)
+                    $0.height.equalTo(EmptyChallengeViewNameSpace.height)
+                }
             }.disposed(by: disposeBag)
     }
     
@@ -94,16 +117,14 @@ struct ChallengeCollectionViewCell_Previews: PreviewProvider {
     struct ChallengeCollectionViewCell_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let v = ChallengeCollectionViewCell()
-            v.modelList.accept([.init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false)])
+            v.model.accept(ChallengeListModel(state: .ongoing,
+                                              list: [Challenge(index: 0,
+                                                               pageNo: 0,
+                                                               title: "Test01",
+                                                               deadline: "2024-01-20T00:00:00",
+                                                               content: "Hello01",
+                                                               creator: "KakaoSG",
+                                                               isCompleted: false)]))
             
             return v
         }

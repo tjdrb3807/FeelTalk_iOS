@@ -22,5 +22,7 @@ protocol ChallengeRepository {
     
     func getChallengeList(accessToken: String, type: ChallengeState, requestDTO: ChallengeListRequestDTO) -> Single<[Challenge]>
     
-    func removeChallenge(accessToken: String, index: Int) -> Single<Bool>
+    func modifyChallenge(accessToken: String, requestDTO: ModifyChallengeRequestDTO) -> Single<Bool>
+    
+    func removeChallenge(accessToken: String, requestDTO: RemoveChallengeRequestDTO) -> Single<Bool>
 }

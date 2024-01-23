@@ -16,8 +16,7 @@ final class DefaultChallengeCoordinator: ChallengeCoordinator {
     var challengeViewController: ChallengeViewController
     var type: CoordinatorType = .challenge
     
-    var challengeModel = PublishRelay<Challenge?>()
-    var typeObserver = PublishRelay<ChallengeDetailViewType>()
+    var challengeModel = PublishRelay<Challenge>()
     private let disposeBag = DisposeBag()
     
     init(_ navigationController: UINavigationController) {
@@ -32,10 +31,6 @@ final class DefaultChallengeCoordinator: ChallengeCoordinator {
     
     func showChallengeDetailFlow() {
         let challengeDetailCoordinator = DefaultChallengeDetailCoordinator(self.navigationController)
-        
-        typeObserver
-            .bind(to: challengeDetailCoordinator.typeObserver)
-            .disposed(by: disposeBag)
     
         challengeModel
             .bind(to: challengeDetailCoordinator.challengeModel)
@@ -49,6 +44,13 @@ final class DefaultChallengeCoordinator: ChallengeCoordinator {
 
 extension DefaultChallengeCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
+        switch childCoordinator.type {
+        case .challengeDetail:
+            challengeViewController.viewModel.reloadObserver.accept(())
+        default:
+            break
+        }
         
+        navigationController.tabBarController?.tabBar.isHidden = false
     }
 }

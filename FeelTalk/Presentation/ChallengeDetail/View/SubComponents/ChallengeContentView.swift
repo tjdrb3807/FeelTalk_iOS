@@ -12,6 +12,7 @@ import RxCocoa
 
 final class ChallengeContentView: UIStackView {
     let typeObserver = PublishRelay<ChallengeDetailViewType>()
+    let modelObserver = PublishRelay<String>()
     let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewToolBarType>()
     private let disposeBag = DisposeBag()
     
@@ -49,16 +50,19 @@ final class ChallengeContentView: UIStackView {
     
     private func bind() {
         typeObserver
+            .map { $0 == .new || $0 == .modify ? true : false }
             .withUnretained(self)
-            .bind { v, type in
-                v.setContentInputViewProperties(with: type)
+            .bind { v, state in
+                v.contentInputView.textView.rx.isEditable.onNext(state)
+                if state { v.setUpToolBar() }
             }.disposed(by: disposeBag)
         
-        typeObserver
-            .filter { $0 == .new || $0 == .modify }
+        modelObserver
             .withUnretained(self)
-            .bind { v, _ in
-                v.setUpToolBar()
+            .bind { v, model in
+                v.contentInputView.textView.rx.text.onNext(model)
+                v.contentInputView.textView.rx.textColor.onNext(.black)
+                v.contentInputView.textView.rx.isEditable.onNext(false)
             }.disposed(by: disposeBag)
     }
     
@@ -104,15 +108,6 @@ extension ChallengeContentView {
 }
 
 extension ChallengeContentView {
-    private func setContentInputViewProperties(with type: ChallengeDetailViewType) {
-        switch type {
-        case .completed, .ongoing:
-            contentInputView.textView.rx.isEditable.onNext(false)
-        case .modify, .new:
-            contentInputView.textView.rx.isEditable.onNext(true)
-        }
-    }
-    
     private func setUpToolBar() {
         let toolBar = CustomToolbar(type: .completion)
         
@@ -141,7 +136,7 @@ struct ChallengeContentView_Previews: PreviewProvider {
     struct ChallengeContentView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let v = ChallengeContentView()
-            v.typeObserver.accept(.modify)
+//            v.typeObserver.accept(.modify)
             
             return v
         }

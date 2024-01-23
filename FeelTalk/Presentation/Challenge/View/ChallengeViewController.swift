@@ -61,7 +61,7 @@ final class ChallengeViewController: UIViewController {
         
         let input = ChallengeViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
                                              tapAddButton: addButton.rx.tap,
-                                             tapChallengeCell: tapChallengeCellObserver.asObservable())
+                                             tapChallengeCell: collectionView.modelSelected.asObservable())
         
         let output = viewModel.transfer(input: input)
 
@@ -95,10 +95,6 @@ final class ChallengeViewController: UIViewController {
                 cv.numberOfItems(inSection: 0) < 6 ?
                 self.outerScrollView.rx.isScrollEnabled.onNext(false) :
                 self.outerScrollView.rx.isScrollEnabled.onNext(true)
-                
-                cv.rx.modelSelected(Challenge.self)
-                    .bind(to: tapChallengeCellObserver)
-                    .disposed(by: disposeBag)
             }).disposed(by: disposeBag)
     }
     
@@ -298,6 +294,21 @@ struct ChallengeViewController_Previews: PreviewProvider {
             vc.tabBar.modelList.accept([ChallengeTabBarModel(type: .ongoing, count: 99),
                                         ChallengeTabBarModel(type: .completed, count: 2)])
             vc.tabBar.selectedItem.accept(.ongoing)
+            vc.collectionView.model.accept([.init(state: .ongoing,
+                                                  list: [.init(index: 0,
+                                                               pageNo: 0,
+                                                               title: "hello",
+                                                               deadline: "2024-02-11",
+                                                               content: "bye",
+                                                               creator: "KakaoSG",
+                                                               isCompleted: false)]),
+                                            .init(state: .completed, list: [.init(index: 0,
+                                                                                  pageNo: 0,
+                                                                                  title: "hh",
+                                                                                  deadline: "2024-01-01",
+                                                                                  content: "???",
+                                                                                  creator: "SG",
+                                                                                  isCompleted: true)])])
             
             return vc
         }

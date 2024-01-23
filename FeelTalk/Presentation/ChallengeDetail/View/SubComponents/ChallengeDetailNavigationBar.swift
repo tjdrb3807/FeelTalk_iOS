@@ -118,7 +118,7 @@ extension ChallengeDetailNavigationBar {
             removeButton.rx.isHidden.onNext(true)
         case .ongoing:
             modifyButton.rx.isHidden.onNext(false)
-            removeButton.rx.isEnabled.onNext(false)
+            removeButton.rx.isHidden.onNext(false)
         }
     }
 }

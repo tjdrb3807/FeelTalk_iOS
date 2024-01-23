@@ -63,6 +63,11 @@ final class CustomAlertView: UIView {
             label.text = CustomAlertViewNameSpace.titleLabelSendAnswerTypeText
         case .deregisterChallenge:
             label.text = "챌린지 등록을 그만두시겠어요?"
+        case .removeChallnege:
+            label.text = "챌린지를 삭제하겠어요?"
+        case .cancelCellengeModifications:
+            label.text = "챌린지 수정을 그만두시겠어요?"
+        
         }
         
         label.textColor = .black
@@ -86,6 +91,10 @@ final class CustomAlertView: UIView {
             label.text = CustomAlertViewNameSpace.descriptionLabelBreakUpTypeText
         case .sendAnswer:
             label.text = CustomAlertViewNameSpace.descriptionLabelSendAnswerTypeText
+        case .removeChallnege:
+            label.text = "삭제한 챌린지는 복구할 수 없어요."
+        case .cancelCellengeModifications:
+            label.text = "현재 수정된 내용은 저장되지 않아요."
         }
         
         label.textColor = .black
@@ -123,6 +132,10 @@ final class CustomAlertView: UIView {
                             for: .normal)
         case .popAnswer, .sendAnswer:
             button.setTitle("취소", for: .normal)
+        case .removeChallnege:
+            button.setTitle("유지하기", for: .normal)
+        case .cancelCellengeModifications:
+            button.setTitle("계속하기", for: .normal)
         }
         
         button.setTitleColor(.black, for: .normal)
@@ -150,8 +163,10 @@ final class CustomAlertView: UIView {
             button.setTitle("나가기", for: .normal)
         case .sendAnswer:
             button.setTitle("보내기", for: .normal)
-        case .deregisterChallenge:
+        case .deregisterChallenge, .removeChallnege:
             button.setTitle("삭제하기", for: .normal)
+        case .cancelCellengeModifications:
+            button.setTitle("나가기", for: .normal)
         }
         
         button.setTitleColor(.white, for: .normal)
@@ -287,7 +302,7 @@ struct CustomAlertView_Previews: PreviewProvider {
     
     struct CustomAlertView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            let view = CustomAlertView(type: .deregisterChallenge)
+            let view = CustomAlertView(type: .removeChallnege)
             view.show()
             
             return view

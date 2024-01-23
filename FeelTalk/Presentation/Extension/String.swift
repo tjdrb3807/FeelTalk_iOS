@@ -20,4 +20,11 @@ extension String {
         
         return estimatedFrame
     }
+    
+    /// String type date 의 문자열에서 'T' 를 공백으로 변경하는 함수
+    static func replaceT(_ str: String) -> String {
+        let str = str.replacingOccurrences(of: "T", with: " ")
+        
+        return str
+    }
 }

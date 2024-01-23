@@ -12,7 +12,7 @@ import RxCocoa
 
 final class ChallengeCollectionView: UICollectionView {
     let model = PublishRelay<[ChallengeListModel]>()
-    let onGoingChallengeModel = PublishRelay<[Challenge]>()
+    let modelSelected = PublishRelay<Challenge>()
     private let disposeBag = DisposeBag()
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
@@ -34,12 +34,14 @@ final class ChallengeCollectionView: UICollectionView {
             .asDriver(onErrorJustReturn: [])
             .drive(rx.items) { [weak self] cv, row, item in
                 guard let self = self else { return UICollectionViewCell() }
-                
                 let index = IndexPath(row: row, section: 0)
                 guard let cell = cv.dequeueReusableCell(withReuseIdentifier: ChallengeCollectionViewCellNameSpace.identifier,
                                                         for: index) as? ChallengeCollectionViewCell else { return UICollectionViewCell() }
-                cell.modelList.accept(item.list)
-
+                cell.model.accept(item)
+                cell.modelSelected
+                    .bind(to: modelSelected)
+                    .disposed(by: disposeBag)
+                
                 return cell
             }.disposed(by: disposeBag)
     }

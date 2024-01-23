@@ -12,6 +12,7 @@ import RxCocoa
 
 final class ChallengeDeadlineView: UIStackView {
     let typeObserver = PublishRelay<ChallengeDetailViewType>()
+    let modelObserver = PublishRelay<String>()
     let deadlineObserver = BehaviorRelay<Date>(value: Date())
     let toolBarButtonTapObserver = PublishRelay<ChallengeDetailViewToolBarType>()
     private let disposeBag = DisposeBag()
@@ -87,16 +88,21 @@ final class ChallengeDeadlineView: UIStackView {
     
     private func bind() {
         typeObserver
+            .map { $0 == .new || $0 == .modify ? (type: $0, isEnable: true) : (type: $0, isEnable: false) }
             .withUnretained(self)
-            .bind { v, type in
-                v.setDeadlineInputViewProperties(with: type)
+            .bind { v, event in
+                v.deadlineInputView.rx.isEnabled.onNext(event.isEnable)
+                if event.type == .new { v.setUpDatePicker(selectedDate: Date()) }
+                if event.isEnable { v.setUpToolBar() }
             }.disposed(by: disposeBag)
         
-        typeObserver
-            .filter { $0 == .new || $0 == .modify }
+        modelObserver
             .withUnretained(self)
-            .bind { v, _ in
-                v.setUpToolBar()
+            .bind { v, model in
+                let deadlineStr = String.replaceT(model)
+                guard let deadline = Date.strToDate(deadlineStr) else { return }
+                v.setUpDatePicker(selectedDate: deadline)
+                v.deadlineObserver.accept(deadline)
             }.disposed(by: disposeBag)
         
         deadlineObserver
@@ -112,8 +118,6 @@ final class ChallengeDeadlineView: UIStackView {
         alignment = .fill
         distribution = .fillProportionally
         spacing = ChallengeDeadlineViewNameSpace.spacing
-        
-        setUpDatePicker()
     }
     
     private func addSubComponents() {
@@ -159,29 +163,15 @@ extension ChallengeDeadlineView {
 }
 
 extension ChallengeDeadlineView {
-    private func setDeadlineInputViewProperties(with type: ChallengeDetailViewType) {
-        switch type {
-        case .completed, .ongoing:
-            deadlineInputView.rx.isEnabled.onNext(false)
-        case .modify, .new:
-            deadlineInputView.rx.isEnabled.onNext(true)
-        }
-    }
-    
-    private func setUpDatePicker() {
+    private func setUpDatePicker(selectedDate: Date) {
         let datePicker = UIDatePicker()
 
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.locale = Locale(identifier: "ko-KR")
         
-        let calender = Calendar(identifier: .gregorian)
-        let currentDate = Date()
-        var components = DateComponents()
-        components.calendar = calender
-        
-        let minimumDate = calender.date(byAdding: components, to: currentDate)
-        datePicker.minimumDate = minimumDate
+        datePicker.rx.date.onNext(selectedDate)
+        datePicker.rx.minimumDate.onNext(Date())
         
         datePicker.rx.value
             .asObservable()
@@ -219,7 +209,6 @@ struct ChallengeDeadlineView_Previews: PreviewProvider {
     struct ChallengeDeadlineView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let v = ChallengeDeadlineView()
-            v.typeObserver.accept(.new)
             
             return v
         }

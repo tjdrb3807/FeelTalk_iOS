@@ -12,9 +12,7 @@ import RxCocoa
 protocol ChallengeDetailCoordinator: Coordinator {
     var challengeDetailViewController: ChallengeDetailViewController { get set }
     
-    var challengeModel: PublishRelay<Challenge?> { get set }
-    
-    var typeObserver: PublishRelay<ChallengeDetailViewType> { get set }
+    var challengeModel: PublishRelay<Challenge> { get set }
     
     func pop()
 }

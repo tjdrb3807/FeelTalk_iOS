@@ -109,6 +109,18 @@ final class ChallengeDetailViewController: UIViewController {
                 vc.setScrollViewPosition()
             }.disposed(by: disposeBag)
         
+        output.titleModel
+            .bind(to: titleInputView.modelObserver)
+            .disposed(by: disposeBag)
+        
+        output.deadlineModel
+            .bind(to: deadlineInputView.modelObserver)
+            .disposed(by: disposeBag)
+        
+        output.contentModel
+            .bind(to: contentInputView.modelObserver)
+            .disposed(by: disposeBag)
+        
         output.popUpAlerObserver
             .withUnretained(self)
             .bind { vc, type in
@@ -157,6 +169,14 @@ final class ChallengeDetailViewController: UIViewController {
     
     private func setProperties() {
         view.backgroundColor = .white
+        
+        navigationBar.tapButtonObserver
+            .withLatestFrom(RxKeyboard.instance.isHidden)
+            .filter { !$0 }
+            .withUnretained(self)
+            .bind { vc, _ in
+                vc.dismissKeyboard()
+            }.disposed(by: disposeBag)
     }
     
     private func addSubComponents() {
@@ -286,7 +306,6 @@ struct ChallengeDetailViewController_Previews: PreviewProvider {
             let vc = ChallengeDetailViewController()
             let vm = ChallengeDetailViewModel(coordinator: DefaultChallengeDetailCoordinator(UINavigationController()),
                                               challengeUseCase: DefaultChallengeUseCase(challengeRepository: DefaultChallengeRepository()))
-            vm.typeObserver.accept(.new)
             vc.viewModel = vm
             
             return vc

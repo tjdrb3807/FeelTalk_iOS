@@ -9,19 +9,19 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import RxGesture
 
 final class ChallengeCell: UICollectionViewCell {
     let model = PublishRelay<Challenge>()
+    let modelSelected = PublishRelay<Challenge>()
     private let disposeBag = DisposeBag()
     
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor(named: CommonColorNameSpace.gray600)
-        label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
-                            size: ChallengeCellNameSpace.dateLabelTextSize)
+        label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
+                            size: 12)
         label.textAlignment = .center
-        label.backgroundColor = UIColor(named: CommonColorNameSpace.gray200)
-        label.layer.cornerRadius = ChallengeCellNameSpace.dateLabelCornerRadius
+        label.layer.cornerRadius = ChallengeCellNameSpace.dateLabelHeight / 2
         label.clipsToBounds = true
         
         return label
@@ -32,8 +32,7 @@ final class ChallengeCell: UICollectionViewCell {
         label.textColor = .black
         label.numberOfLines = 0
         label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
-                            size: ChallengeCellNameSpace.titleLabelTextSize)
-        label.setLineHeight(height: ChallengeCellNameSpace.titleLabelLineHeight)
+                            size: 16)
         label.backgroundColor = .clear
         
         return label
@@ -43,8 +42,7 @@ final class ChallengeCell: UICollectionViewCell {
         let label = UILabel()
         label.textColor = UIColor(named: CommonColorNameSpace.gray600)
         label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
-                            size: ChallengeCellNameSpace.nicknameLabelTextSize)
-        label.setLineHeight(height: ChallengeCellNameSpace.nicknameLabelLineHeight)
+                            size: 14)
         label.backgroundColor = .clear
         
         return label
@@ -73,6 +71,43 @@ final class ChallengeCell: UICollectionViewCell {
                 v.nicknameLabel.rx.text.onNext(model.creator)
                 v.dateLabel.rx.text.onNext(model.deadline)
             }.disposed(by: disposeBag)
+        
+        model
+            .withUnretained(self)
+            .bind { c, model in
+                guard let title = model.title,
+                      let deadlineStr = model.deadline,
+                      let creator = model.creator,
+                      let isCompleted = model.isCompleted else { return }
+                
+                if !isCompleted {
+                    let deadlineStr = String.replaceT(deadlineStr)
+                    guard let deadline = Date.strToDate(deadlineStr) else { return }
+                    let dDay = Utils.calculateDday(deadline)
+                    
+                    c.dateLabel.rx.text.onNext(dDay)
+                    
+                    let interval = Int(deadline.timeIntervalSince(Date()) / 86400) + 1
+                    
+                    if interval <= 7 {  // D-day가 일주일 이내인 경우
+                        c.dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main300))
+                        c.dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.main500))
+                    } else {
+                        c.dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.gray200))
+                        c.dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.gray600))
+                    }
+                }
+                
+                c.titleLabel.rx.text.onNext(title)
+                c.titleLabel.setLineHeight(height: 24)
+                c.nicknameLabel.rx.text.onNext(creator)
+            }.disposed(by: disposeBag)
+        
+        rx.tapGesture()
+            .when(.recognized)
+            .withLatestFrom(model)
+            .bind(to: modelSelected)
+            .disposed(by: disposeBag)
     }
     
     private func setProperties() {
@@ -135,18 +170,8 @@ extension ChallengeCell {
 }
 
 extension ChallengeCell {
-    private func setDateLabelProperties(isCompleted: Bool, deadLine: String) {
-        if isCompleted {
-            dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.gray600))
-            dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.gray200))
-        } else {
-            /// if 7일 보다 안남았을 경우 {
-            /// dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.main400)
-            /// dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main500)
-            /// } else {
-            /// dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.gray600))
-            /// dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.gray200)) }
-        }
+    private func calculateDday(targetDate: Date, fromDate: Date) -> Int {
+        return Int(targetDate.timeIntervalSince(fromDate) / 86400) + 1
     }
 }
 
@@ -169,10 +194,10 @@ struct ChallengeCell_Previews: PreviewProvider {
             v.model.accept(Challenge(index: 0,
                                      pageNo: 0,
                                      title: "첫 번째 챌린지 제목입니다.",
-                                     deadline: "2023-11-12",
+                                     deadline: Optional("2024-01-20T00:00:00"),
                                      content: "첫 번째 챌린지 내용",
-                                     creator: "전성규",
-                                     isCompleted: false))
+                                     creator: "KakaoSG",
+                                     isCompleted: Optional(false)))
             
             return v
         }
