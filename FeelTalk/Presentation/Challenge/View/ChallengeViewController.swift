@@ -57,8 +57,6 @@ final class ChallengeViewController: UIViewController {
     }
     
     private func bind(to viewModel: ChallengeViewModel) {
-        let tapChallengeCellObserver = PublishRelay<Challenge>()
-        
         let input = ChallengeViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
                                              tapAddButton: addButton.rx.tap,
                                              tapChallengeCell: collectionView.modelSelected.asObservable())

@@ -20,8 +20,8 @@ final class ChallengeViewModel {
     private let disposeBag = DisposeBag()
     
     private let currentOngoingChallengePageNo = PublishRelay<Int>()
-    private let onGoingChallengeModelList = PublishRelay<[Challenge]>()
-    private let completedChallengeModelList = PublishRelay<[Challenge]>()
+    private let onGoingChallengeModelList = BehaviorRelay<[Challenge]>(value: [])
+    private let completedChallengeModelList = BehaviorRelay<[Challenge]>(value: [])
     let reloadObserver = PublishRelay<Void>()
     
     struct Input {
@@ -57,13 +57,7 @@ final class ChallengeViewModel {
                                                        ChallengeTabBarModel(type: .completed, count: model.completedCount)])
                         output.selectedTabBarItem.accept(.ongoing)
                     }.disposed(by: vm.disposeBag)
-
-//                vm.challengeUseCase.getChallengeLatestPageNo(type: .ongoing)
-//                    .bind { pageNo in
-//                        vm.challengeUseCase.getChallengeList(type: .ongoing, pageNo: pageNo)
-//                            .bind(to: vm.onGoingChallengeModelList)
-//                            .disposed(by: vm.disposeBag)
-//                    }.disposed(by: vm.disposeBag)
+                
                 vm.challengeUseCase.getChallengeLatestPageNo(type: .ongoing)
                     .bind(to: vm.currentOngoingChallengePageNo)
                     .disposed(by: vm.disposeBag)
@@ -79,28 +73,32 @@ final class ChallengeViewModel {
         currentOngoingChallengePageNo
             .withUnretained(self)
             .bind { vm, pageNo in
-                vm.challengeUseCase.getChallengeList(type: .ongoing,
-                                                     pageNo: pageNo)
-                .bind(to: vm.onGoingChallengeModelList)
-                .disposed(by: vm.disposeBag)
+                vm.challengeUseCase.getChallengeList(type: .ongoing, pageNo: pageNo)
+                    .bind(onNext: { newFetchModelList in
+                        var preModelList = vm.onGoingChallengeModelList.value
+                        newFetchModelList.forEach { preModelList.append($0) }
+
+                        vm.onGoingChallengeModelList.accept(preModelList)
+                    }).disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
         
         onGoingChallengeModelList
+            .skip(1)
             .filter { $0.count <= 6 }
-            .withLatestFrom(currentOngoingChallengePageNo) { (list: $0, pageNo: $1) }
-            .filter { $0.pageNo > 0 }
-            .map { $0.pageNo - 1 }
+            .withLatestFrom(currentOngoingChallengePageNo)
+            .filter { $0 > 0 }
+            .map { $0 - 1 }
             .bind(to: currentOngoingChallengePageNo)
             .disposed(by: disposeBag)
         
         Observable
-            .combineLatest(onGoingChallengeModelList,
-                           completedChallengeModelList) { [ChallengeListModel(state: .ongoing, list: $0),
-                                                           ChallengeListModel(state: .completed, list: $1)] }
-                           .bind(to: output.challengeModelList)
-                           .disposed(by: disposeBag)
+            .combineLatest(onGoingChallengeModelList.skip(1),
+                           completedChallengeModelList.skip(1)
+            ) { [ChallengeListModel(state: .ongoing, list: $0),
+                 ChallengeListModel(state: .completed, list: $1)]
+            }.bind(to: output.challengeModelList)
+            .disposed(by: disposeBag)
                            
-        
         input.tapAddButton
             .withUnretained(self)
             .bind { vm, _ in
