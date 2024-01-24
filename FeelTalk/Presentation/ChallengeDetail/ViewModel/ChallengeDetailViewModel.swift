@@ -180,35 +180,6 @@ final class ChallengeDetailViewModel {
                 vm.viewTypeObserver.accept(.ongoing)
             }.disposed(by: disposeBag)
         
-        // 챌린지 삭제
-        input.alertRightButtonTapObserver
-            .filter { $0 == .removeChallnege }
-            .withLatestFrom(modelObserver)
-            .compactMap { $0.index }
-            .withUnretained(self)
-            .bind { vm, index in
-                vm.challengeUseCase.removeChallenge(index: index)
-                    .filter { $0 }
-                    .bind { _ in
-                        vm.coordiantor?.finish()
-                    }.disposed(by: vm.disposeBag)
-            }.disposed(by: disposeBag)
-        
-        // 등록 페이지에서 ChallengeButton 상태 처리
-        Observable
-            .combineLatest(input.titleObserver,
-                           input.contentObserver) { (title: $0, content: $1) }
-            .withLatestFrom(viewTypeObserver) { (inputInfo: $0, type: $1) }
-            .filter { $0.type == .new }
-            .map { $0.inputInfo }
-            .map { info -> Bool in
-                !info.title.isEmpty &&
-                info.content != ChallengeContentViewNameSpace.contentInputViewPlaceholder &&
-                !info.content.isEmpty ? true : false
-            }.distinctUntilChanged()
-            .bind(to: output.isNewTypeChallengeButtonEnabled)
-            .disposed(by: disposeBag)
-        
         // 챌린지 등록
         input.challengeButtonTapObserver
             .withLatestFrom(viewTypeObserver)
@@ -220,8 +191,27 @@ final class ChallengeDetailViewModel {
             .bind { vm, model in
                 vm.challengeUseCase.addChallenge(model: model)
                     .bind { challengeChat in
-                        print(challengeChat)
-                        vm.coordiantor?.finish()
+                        vm.coordiantor?.finish(challengeViewReloadType: .addChallenge)
+                        // TODO: 채팅에 Opengraph 띄우기
+                    }.disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
+        
+        // 챌린지 삭제
+        input.alertRightButtonTapObserver
+            .filter { $0 == .removeChallnege }
+            .withLatestFrom(modelObserver)
+            .compactMap { $0.index }
+            .withLatestFrom(viewTypeObserver) { (index: $0, type: $1) }
+            .withUnretained(self)
+            .bind { vm, event in
+                vm.challengeUseCase.removeChallenge(index: event.index)
+                    .filter { $0 }
+                    .bind { _ in
+                        if event.type == .ongoing {
+                            vm.coordiantor?.finish(challengeViewReloadType: .removeOngoingChallenge)
+                        } else if event.type == .completed {
+                            vm.coordiantor?.finish(challengeViewReloadType: .removeCompletedChallenge)
+                        }
                     }.disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
             
@@ -250,9 +240,26 @@ final class ChallengeDetailViewModel {
                 .bind { _ in
                     vm.modelObserver.accept(model)
                     vm.viewTypeObserver.accept(.ongoing)
+                    ChallengeViewModel.reloadObserver.accept(.modifyChallenge)
                 }.disposed(by: vm.disposeBag)
-                
             }.disposed(by: disposeBag)
+        
+        // 챌린지 완료
+        
+        // 등록 페이지에서 ChallengeButton 상태 처리
+        Observable
+            .combineLatest(input.titleObserver,
+                           input.contentObserver) { (title: $0, content: $1) }
+            .withLatestFrom(viewTypeObserver) { (inputInfo: $0, type: $1) }
+            .filter { $0.type == .new }
+            .map { $0.inputInfo }
+            .map { info -> Bool in
+                !info.title.isEmpty &&
+                info.content != ChallengeContentViewNameSpace.contentInputViewPlaceholder &&
+                !info.content.isEmpty ? true : false
+            }.distinctUntilChanged()
+            .bind(to: output.isNewTypeChallengeButtonEnabled)
+            .disposed(by: disposeBag)
         
         input.tapToolbarButton
             .filter { $0 == .title || $0 == .deadline }

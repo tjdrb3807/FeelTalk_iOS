@@ -14,7 +14,7 @@ import RxCocoa
 import RxGesture
 
 final class ChallengeTabBarItem: UIView {
-    let countObserver = PublishRelay<Int>()
+    let countObserver = BehaviorRelay<Int?>(value: nil)
     let isSelected = PublishRelay<Bool>()
     var type: ChallengeTabBarItemType
     private let disposeBag = DisposeBag()
@@ -62,6 +62,7 @@ final class ChallengeTabBarItem: UIView {
     
     private func bind () {
         countObserver
+            .compactMap { $0 }
             .map { String($0) }
             .bind(to: countLabel.rx.text)
             .disposed(by: disposeBag)

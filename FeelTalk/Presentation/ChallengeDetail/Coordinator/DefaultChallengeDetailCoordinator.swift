@@ -39,15 +39,17 @@ final class DefaultChallengeDetailCoordinator: ChallengeDetailCoordinator {
     }
     
     func pop() {
+        ChallengeViewModel.isDetailViewPushed = true
         self.childCoordinators.removeAll()
         self.navigationController.popViewController(animated: true)
         self.navigationController.tabBarController?.tabBar.isHidden = false
     }
     
-    func finish() {
+    func finish(challengeViewReloadType: ChallengeViewReloadType) {
         self.childCoordinators.removeAll()
         self.navigationController.popViewController(animated: true)
         self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        ChallengeViewModel.reloadObserver.accept(challengeViewReloadType)
     }
 }
 

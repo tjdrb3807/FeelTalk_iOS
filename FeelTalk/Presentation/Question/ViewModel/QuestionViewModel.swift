@@ -59,11 +59,8 @@ final class QuestionViewModel {
             .bind { vm, questionPage in
                 vm.questionUseCase.getQuestionList(questionPage: questionPage)
                     .withLatestFrom(vm.questionList) { newFetchQuestionList, currentQuestionList -> [Question] in
-                        print(currentQuestionList)
-                        print(newFetchQuestionList)
                         var questionList: [Question] = currentQuestionList
                         questionList.append(contentsOf: newFetchQuestionList)
-                        print(questionList)
                         
                         return questionList
                     }.bind(to: vm.questionList)

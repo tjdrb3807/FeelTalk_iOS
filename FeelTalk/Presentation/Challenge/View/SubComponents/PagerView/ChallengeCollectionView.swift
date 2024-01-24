@@ -11,8 +11,10 @@ import RxSwift
 import RxCocoa
 
 final class ChallengeCollectionView: UICollectionView {
-    let model = PublishRelay<[ChallengeListModel]>()
-    let modelSelected = PublishRelay<Challenge>()
+    let ongoingModelList = BehaviorRelay<[Challenge]>(value: [])
+    let completedModelList = BehaviorRelay<[Challenge]>(value: [])
+    let currentDisplayCell = PublishRelay<ChallengeState>()
+    let selectedModel = PublishRelay<Challenge>()
     private let disposeBag = DisposeBag()
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
@@ -30,30 +32,56 @@ final class ChallengeCollectionView: UICollectionView {
     }
     
     private func bind() {
-        model
-            .asDriver(onErrorJustReturn: [])
-            .drive(rx.items) { [weak self] cv, row, item in
-                guard let self = self else { return UICollectionViewCell() }
-                let index = IndexPath(row: row, section: 0)
-                guard let cell = cv.dequeueReusableCell(withReuseIdentifier: ChallengeCollectionViewCellNameSpace.identifier,
-                                                        for: index) as? ChallengeCollectionViewCell else { return UICollectionViewCell() }
-                cell.model.accept(item)
-                cell.modelSelected
-                    .bind(to: modelSelected)
-                    .disposed(by: disposeBag)
+        ongoingModelList
+            .withUnretained(self)
+            .bind { vm, list in
+                guard let ongoingCollectionViewCell = vm.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell else { return }
+                ongoingCollectionViewCell.modelList.accept(list)
+
+            }.disposed(by: disposeBag)
+        
+        completedModelList
+            .withUnretained(self)
+            .bind { vm, list in
+                guard let completedCollectionViewCell = vm.cellForItem(at: IndexPath(row: 1, section: 0)) as? ChallengeCollectionViewCell else { return }
                 
-                return cell
+                completedCollectionViewCell.modelList.accept(list)
             }.disposed(by: disposeBag)
     }
     
     private func setProperties() {
         isScrollEnabled = true
-        showsHorizontalScrollIndicator = false
         isPagingEnabled = true
+        showsHorizontalScrollIndicator = false
         backgroundColor = .clear
         register(ChallengeCollectionViewCell.self,
                  forCellWithReuseIdentifier: ChallengeCollectionViewCellNameSpace.identifier)
-        rx.setDelegate(self).disposed(by: disposeBag)
+        rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        dataSource = self
+    }
+}
+
+extension ChallengeCollectionView: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        2
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChallengeCollectionViewCellNameSpace.identifier,
+                                                            for: indexPath) as? ChallengeCollectionViewCell else { return UICollectionViewCell() }
+        
+        cell.selectedModel
+            .bind(to: selectedModel)
+            .disposed(by: disposeBag)
+        
+        if indexPath.row == 0 {
+            cell.type = .ongoing
+        } else if indexPath.row == 1 {
+            cell.type = .completed
+        }
+        
+        return cell
     }
 }
 
@@ -69,6 +97,18 @@ extension ChallengeCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         0.0
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffsetX = scrollView.contentOffset.x
+        
+        guard 0 <= contentOffsetX && contentOffsetX <= UIScreen.main.bounds.width else { return }
+        
+        if contentOffsetX == 0.0 {
+            currentDisplayCell.accept(.ongoing)
+        } else if contentOffsetX == UIScreen.main.bounds.width {
+            currentDisplayCell.accept(.completed)
+        }
+    }
 }
 
 #if DEBUG
@@ -83,29 +123,17 @@ struct ChallengeCollectionView_Previews: PreviewProvider {
     struct ChallengeCollectionView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let v = ChallengeCollectionView()
-            v.model.accept([.init(state: .ongoing,
-                                  list: [.init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false)]),
-                            .init(state: .completed,
-                                  list: [.init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false),
-                                         .init(index: 0, pageNo: 0, title: "hello", deadline: "2023-11-11", content: "My name is Seong gyu", creator: "내이름", isCompleted: false)])
-            ])
+            v.ongoingModelList
+                .accept(
+                    [Challenge(index: 0, pageNo: 0, title: "테스트 제목입니다.", deadline: "2024-01-23T00:00:00", content: "Hello", creator: "KakaoSG", isCompleted: false),
+                     Challenge(index: 1, pageNo: 0, title: "Test01", deadline: "2024-01-30T00:00:00", content: "Hello", creator: "KakaoSG", isCompleted: false),
+                     Challenge(index: 2, pageNo: 0, title: "Test02", deadline: "2024-01-31T00:00:00", content: "테스트 화면", creator: "Partner", isCompleted: false),
+                     Challenge(index: 3, pageNo: 0, title: "999일 넘게 남음", deadline: "2030-01-30T00:00:00", content: "Hello", creator: "KakaoSG", isCompleted: false)])
+            
+            v.completedModelList.accept([Challenge(index: 0, pageNo: 0, title: "테스트01", deadline: "2024-01-30T00:00:00", content: "Hello", creator: "KakaoSG", isCompleted: true)])
+            
+//            v.ongoingModelList.accept([])
+//            v.completedModelList.accept([])
             
             return v
         }

@@ -138,9 +138,14 @@ final class DefaultChallengeRepository: ChallengeRepository {
                             challengeListResponseDTO.challengeList.forEach { challengeList.append($0.toDomain()) }
                             
                             observer(.success(challengeList))
+                        } else {
+                            guard let message = responseDTO.message else { return }
+                            print(message)
                         }
 
                     case .failure(let error):
+                        print(response.response?.statusCode)
+                        print(error)
                         observer(.failure(error))
                     }
                 }

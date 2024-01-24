@@ -13,7 +13,9 @@ import RxGesture
 
 final class ChallengeCell: UICollectionViewCell {
     let model = PublishRelay<Challenge>()
-    let modelSelected = PublishRelay<Challenge>()
+    let selectedModel = PublishRelay<Challenge>()
+    let selectedCellItemsIndex = PublishRelay<Int>()
+    var itemsIndex: Int?
     private let disposeBag = DisposeBag()
     
     private lazy var dateLabel: UILabel = {
@@ -63,7 +65,7 @@ final class ChallengeCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func bind() {
+    private func bind() {        
         model
             .withUnretained(self)
             .bind { v, model in
@@ -106,8 +108,21 @@ final class ChallengeCell: UICollectionViewCell {
         rx.tapGesture()
             .when(.recognized)
             .withLatestFrom(model)
-            .bind(to: modelSelected)
+            .bind(to: selectedModel)
             .disposed(by: disposeBag)
+        
+        rx.tapGesture()
+            .when(.recognized)
+            .withUnretained(self)
+            .compactMap { c, _ in c.itemsIndex }
+            .bind(to: selectedCellItemsIndex)
+            .disposed(by: disposeBag)
+            
+            
+        
+//        rx.tapGesture()
+//            .when(.recognized)
+//            .withLatestFrom(rx.index)
     }
     
     private func setProperties() {

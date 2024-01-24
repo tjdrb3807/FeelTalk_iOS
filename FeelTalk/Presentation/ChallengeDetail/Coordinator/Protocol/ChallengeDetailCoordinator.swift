@@ -15,4 +15,6 @@ protocol ChallengeDetailCoordinator: Coordinator {
     var challengeModel: PublishRelay<Challenge> { get set }
     
     func pop()
+    
+    func finish(challengeViewReloadType: ChallengeViewReloadType)
 }

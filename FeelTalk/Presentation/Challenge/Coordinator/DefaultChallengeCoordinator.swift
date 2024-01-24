@@ -46,11 +46,12 @@ extension DefaultChallengeCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
         switch childCoordinator.type {
         case .challengeDetail:
-            challengeViewController.viewModel.reloadObserver.accept(())
+            break
         default:
             break
         }
         
         navigationController.tabBarController?.tabBar.isHidden = false
+        ChallengeViewModel.isDetailViewPushed = true
     }
 }

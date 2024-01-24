@@ -12,10 +12,9 @@ import RxCocoa
 
 final class ChallengeViewController: UIViewController {
     var viewModel: ChallengeViewModel!
-    let displayCell = PublishRelay<UICollectionView>()
-    private let disposeBag = DisposeBag()
-    
+    let innerScrollViewContentOffsetY = PublishRelay<CGFloat>()
     var innerScrollingDownDueToOuterScroll = false
+    private let disposeBag = DisposeBag()
     
     private lazy var navigationBar: MainNavigationBar = { MainNavigationBar(type: .challenge) }()
     
@@ -57,9 +56,12 @@ final class ChallengeViewController: UIViewController {
     }
     
     private func bind(to viewModel: ChallengeViewModel) {
+        let isPagination = PublishRelay<Bool>()
+        
         let input = ChallengeViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
                                              tapAddButton: addButton.rx.tap,
-                                             tapChallengeCell: collectionView.modelSelected.asObservable())
+                                             tapChallengeCell: collectionView.selectedModel.asObservable(),
+                                             isPagination: isPagination.asObservable())
         
         let output = viewModel.transfer(input: input)
 
@@ -75,25 +77,100 @@ final class ChallengeViewController: UIViewController {
             .bind(to: tabBar.selectedItem)
             .disposed(by: disposeBag)
         
-        output.challengeModelList
-            .bind(to: collectionView.model)
+        output.ongoingModelList
+            .bind(to: collectionView.ongoingModelList)
             .disposed(by: disposeBag)
         
-        collectionView.rx.willDisplayCell
-            .compactMap { $0.cell as? ChallengeCollectionViewCell }
-            .map { $0.collectionView }
-            .bind(to: displayCell)
+        output.completedModelList
+            .bind(to: collectionView.completedModelList)
             .disposed(by: disposeBag)
         
-        displayCell
-            .bind(onNext: { [weak self] cv in
-                guard let self = self else { return }
-                cv.delegate = self
-                self.innerScrollView = cv
-                cv.numberOfItems(inSection: 0) < 6 ?
-                self.outerScrollView.rx.isScrollEnabled.onNext(false) :
-                self.outerScrollView.rx.isScrollEnabled.onNext(true)
-            }).disposed(by: disposeBag)
+        output.addChallenge
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard let currentTotalCount = vc.countingView.model.value,
+                      let ongoingTBI = vc.tabBar.contentStackView.subviews[0] as? ChallengeTabBarItem,
+                      let currentOngingCount = ongoingTBI.countObserver.value,
+                      let ongoingCV = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell else { return }
+                
+                vc.countingView.model.accept(currentTotalCount + 1)
+                ongoingTBI.countObserver.accept(currentOngingCount + 1)
+                ongoingCV.items.removeAll()
+            }.disposed(by: disposeBag)
+        
+        output.removeChallenge
+            .delay(RxTimeInterval.milliseconds(500), scheduler: MainScheduler.instance)
+            .withUnretained(self)
+            .bind { vc, type in
+                switch type {
+                case .ongoing:
+                    guard let currentTotalCount = vc.countingView.model.value,
+                          let ongoingTBI = vc.tabBar.contentStackView.subviews[0] as? ChallengeTabBarItem,
+                          let currentOngingCount = ongoingTBI.countObserver.value,
+                          let ongoingCV = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell,
+                          let selectedChallengeCellItemIndex = ongoingCV.selectedIndex.value else { return }
+                    
+                    vc.countingView.model.accept(currentTotalCount - 1)
+                    ongoingTBI.countObserver.accept(currentOngingCount - 1)
+                    ongoingCV.items.remove(at: selectedChallengeCellItemIndex)
+                    ongoingCV.collectionView.reloadData()
+                    ongoingCV.selectedIndex.accept(nil)
+                case .completed:
+                    break
+                }
+            }.disposed(by: disposeBag)
+        
+        output.modifyChallenge
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard let ongoingCV = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell else { return }
+                
+                ongoingCV.items.removeAll()
+            }.disposed(by: disposeBag)
+        
+        innerScrollViewContentOffsetY
+            .withUnretained(self)
+            .bind { vc, offsetY in
+                guard let innerScrollViewHeight = vc.innerScrollView?.contentSize.height else { return }
+                let paginationY = offsetY * 50
+
+                offsetY > innerScrollViewHeight - paginationY ?
+                isPagination.accept(true) :
+                isPagination.accept(false)
+            }.disposed(by: disposeBag)
+        
+        // 초기 innerScrollView 설정
+        rx.viewDidAppear
+            .take(1)
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard let ongoingCV = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell else { return }
+                let innerScrollView = ongoingCV.collectionView
+                
+                innerScrollView.delegate = self
+                innerScrollView.numberOfItems(inSection: 0) < 6 ?
+                vc.outerScrollView.rx.isScrollEnabled.onNext(false) :
+                vc.outerScrollView.rx.isScrollEnabled.onNext(true)
+                vc.innerScrollView = innerScrollView
+            }.disposed(by: disposeBag)
+        
+        // ChallengeCollectionView contentOffsetX 에 따른 innerScrollView 설정
+        collectionView.currentDisplayCell
+            .distinctUntilChanged()
+            .withUnretained(self)
+            .bind { vc, currentCVType in
+                var row: Int
+                if currentCVType == .ongoing { row = 0 } else { row = 1 }
+                
+                guard let currentCV = vc.collectionView.cellForItem(at: IndexPath(row: row, section: 0)) as? ChallengeCollectionViewCell else { return }
+                currentCV.collectionView.delegate = self
+                vc.innerScrollView = currentCV.collectionView
+                
+                currentCV.collectionView.numberOfItems(inSection: 0) < 6 ?
+                vc.outerScrollView.rx.isScrollEnabled.onNext(false) :
+                vc.outerScrollView.rx.isScrollEnabled.onNext(true)
+            }.disposed(by: disposeBag)
+
     }
     
     private func setProperties() {
@@ -207,6 +284,8 @@ extension ChallengeViewController: UICollectionViewDelegate {
         
         guard let innerScrollView = self.innerScrollView else { return }
         
+        innerScrollViewContentOffsetY.accept(innerScrollView.contentOffset.y)
+        
         let outerScrollMaxOffsetY = ChallengeCountingViewNameSpace.Height
         let innerScrollMaxOffsetY = innerScrollView.contentSize.height - innerScrollView.frame.height
         
@@ -292,21 +371,6 @@ struct ChallengeViewController_Previews: PreviewProvider {
             vc.tabBar.modelList.accept([ChallengeTabBarModel(type: .ongoing, count: 99),
                                         ChallengeTabBarModel(type: .completed, count: 2)])
             vc.tabBar.selectedItem.accept(.ongoing)
-            vc.collectionView.model.accept([.init(state: .ongoing,
-                                                  list: [.init(index: 0,
-                                                               pageNo: 0,
-                                                               title: "hello",
-                                                               deadline: "2024-02-11",
-                                                               content: "bye",
-                                                               creator: "KakaoSG",
-                                                               isCompleted: false)]),
-                                            .init(state: .completed, list: [.init(index: 0,
-                                                                                  pageNo: 0,
-                                                                                  title: "hh",
-                                                                                  deadline: "2024-01-01",
-                                                                                  content: "???",
-                                                                                  creator: "SG",
-                                                                                  isCompleted: true)])])
             
             return vc
         }

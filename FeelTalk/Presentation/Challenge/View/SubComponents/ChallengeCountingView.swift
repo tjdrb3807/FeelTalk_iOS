@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class ChallengeCountingView: UIView {
-    let model = PublishRelay<Int>()
+    let model = BehaviorRelay<Int?>(value: nil)
     private let disposeBag = DisposeBag()
     
     private lazy var contentStackView: UIStackView = {
@@ -82,6 +82,7 @@ final class ChallengeCountingView: UIView {
     private func bind() {
         model
             .distinctUntilChanged()
+            .compactMap { $0 }
             .withUnretained(self)
             .bind { v, count in
                 v.totalCountLabel.rx.text.onNext("\(count)\(ChallengeCountingViewNameSpace.totalCountLabelSubText)")

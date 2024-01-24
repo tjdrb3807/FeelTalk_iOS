@@ -16,7 +16,7 @@ final class ChallengeTabBar: UIView {
     let selectedItem = PublishRelay<ChallengeTabBarItemType>()
     private let disposeBag = DisposeBag()
     
-    private lazy var contentStackView: UIStackView = {
+    lazy var contentStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill

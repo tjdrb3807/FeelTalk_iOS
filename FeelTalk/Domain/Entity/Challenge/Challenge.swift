@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Challenge {
+struct Challenge: Equatable {
     var index: Int?
     var pageNo: Int?
     var title: String?

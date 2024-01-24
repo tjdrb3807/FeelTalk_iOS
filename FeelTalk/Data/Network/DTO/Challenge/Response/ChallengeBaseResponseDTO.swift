@@ -15,6 +15,7 @@ struct ChallengeBaseResponseDTO: Decodable {
     let content: String
     let creator: String
     let isCompleted: Bool
+    let completedDate: String?
     
     enum CodingKeys: String, CodingKey {
         case index
@@ -24,6 +25,7 @@ struct ChallengeBaseResponseDTO: Decodable {
         case content
         case creator
         case isCompleted
+        case completedDate
     }
 }
 
