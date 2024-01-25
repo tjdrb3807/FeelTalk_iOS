@@ -19,4 +19,8 @@ enum ChallengeTabBarItemNameSpace {
     // MARK: CountLabel
     /// 16.0
     static let countLabelTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26
+    
+    // MARK: Indicator
+    /// 2.0
+    static let indicatorHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 0.24
 }

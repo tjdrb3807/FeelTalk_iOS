@@ -46,6 +46,7 @@ final class ChallengeTabBar: UIView {
             }.disposed(by: disposeBag)
         
         selectedItem
+            .distinctUntilChanged()
             .withUnretained(self)
             .bind { v, type in
                 v.selectItem(type)

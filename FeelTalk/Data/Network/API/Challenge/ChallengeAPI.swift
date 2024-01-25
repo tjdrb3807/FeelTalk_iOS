@@ -11,7 +11,7 @@ import Alamofire
 enum ChallengeAPI {
     case addChallenge(accessToken: String, requestDTO: AddChallengeRequestDTO)
     
-    case completeChallenge(accessToken: String, index: Int)
+    case completeChallenge(accessToken: String, requestDTO: CompleteChallengeRequestDTO)
     
     case getChallenge(accessToken: String, index: Int)
     
@@ -38,7 +38,7 @@ extension ChallengeAPI: Router, URLRequestConvertible {
         case .addChallenge:
             return "/api/v1/challenge"
         case .completeChallenge:
-            return "/api/v1/challnege/complete"
+            return "/api/v1/challenge/complete"
         case .getChallenge(accessToken: _, index: let index):
             return "/api/v1/challenge/\(index)"
         case .getChallengeCount:
@@ -55,7 +55,7 @@ extension ChallengeAPI: Router, URLRequestConvertible {
             return "/api/v1/challenge"
         case.removeChallenge:
             return "/api/v1/challenge"
-        
+            
         }
     }
     
@@ -82,7 +82,7 @@ extension ChallengeAPI: Router, URLRequestConvertible {
     var header: [String : String] {
         switch self {
         case .addChallenge(accessToken: let accessToken, requestDTO: _),
-                .completeChallenge(accessToken: let accessToken, index: _),
+                .completeChallenge(accessToken: let accessToken, requestDTO: _),
                 .getChallenge(accessToken: let accessToken, index: _),
                 .getChallengeCount(accessToken: let accessToken),
                 .getCompletedChallengeLatestPageNo(accessToken: let accessToken),
@@ -103,8 +103,8 @@ extension ChallengeAPI: Router, URLRequestConvertible {
             return ["title": dto.title,
                     "deadline": dto.deadline,
                     "content": dto.content]
-        case .completeChallenge(accessToken: _, index: let index):
-            return ["index": index]
+        case .completeChallenge(accessToken: _, requestDTO: let dto):
+            return ["index": dto.index]
         case .getCompletedChallengeList(accessToken: _, requestDTO: let dto),
                 .getOngoingChallengeList(accessToken: _, requestDTO: let dto):
             return ["pageNo": dto.pageNo]

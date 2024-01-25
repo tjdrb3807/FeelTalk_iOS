@@ -26,8 +26,11 @@ final class ChallengeViewModel {
     private let challengeUseCase: ChallengeUseCase
     private let disposeBag = DisposeBag()
     
-    private let currentOngoingChallengePageNo = PublishRelay<Int>()
-    private let currentCompletedChallengePageNo = PublishRelay<Int>()
+    private let currentDisplayCell = BehaviorRelay<ChallengeState>(value: .ongoing)
+    private let initOngoingPageNo = PublishRelay<Int>()     // 가장 상단 pageNo
+    private let initCompletedPageNo = PublishRelay<Int>()   // 가장 상단 pageNo
+    private let currentOngoingChallengePageNo = PublishRelay<Int>()     // 최신 PageNo
+    private let currentCompletedChallengePageNo = PublishRelay<Int>()   // 최신 PageNo
     private let ongoingChallengeModelList = BehaviorRelay<[Challenge]>(value: [])
     private let completedChallengeModelList = BehaviorRelay<[Challenge]>(value: [])
     
@@ -36,6 +39,7 @@ final class ChallengeViewModel {
         let tapAddButton: ControlEvent<Void>
         let tapChallengeCell: Observable<Challenge>
         let isPagination: Observable<Bool>
+        let currentDisplayCell: PublishRelay<ChallengeState>
     }
     
     struct Output {
@@ -48,6 +52,7 @@ final class ChallengeViewModel {
         let addChallenge = PublishRelay<Void>()
         let removeChallenge = PublishRelay<ChallengeState>()
         let modifyChallenge = PublishRelay<Void>()
+        let completeChallenge = PublishRelay<Void>()
     }
     
     init(coordinator: ChallengeCoordinator, challengeUseCase: ChallengeUseCase) {
@@ -72,12 +77,16 @@ final class ChallengeViewModel {
                     }.disposed(by: vm.disposeBag)
                 
                 vm.challengeUseCase.getChallengeLatestPageNo(type: .ongoing)
-                    .bind(to: vm.currentOngoingChallengePageNo)
-                    .disposed(by: vm.disposeBag)
+                    .bind { pageNo in
+                        vm.initOngoingPageNo.accept(pageNo)
+                        vm.currentOngoingChallengePageNo.accept(pageNo)
+                    }.disposed(by: vm.disposeBag)
 
                 vm.challengeUseCase.getChallengeLatestPageNo(type: .completed)
-                    .bind(to: vm.currentCompletedChallengePageNo)
-                    .disposed(by: vm.disposeBag)
+                    .bind { pageNo in
+                        vm.initCompletedPageNo.accept(pageNo)
+                        vm.currentCompletedChallengePageNo.accept(pageNo)
+                    }.disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
         
         currentOngoingChallengePageNo
@@ -92,21 +101,43 @@ final class ChallengeViewModel {
             .withUnretained(self)
             .bind { vm, pageNo in
                 vm.challengeUseCase.getChallengeList(type: .completed, pageNo: pageNo)
-                    .bind(onNext: { newFetchModelList in
-                        var preModelList = vm.completedChallengeModelList.value
-                        newFetchModelList.forEach { preModelList.append($0) }
-                        
-                        vm.completedChallengeModelList.accept(preModelList)
-                    }).disposed(by: vm.disposeBag)
+                    .bind(to: vm.completedChallengeModelList)
+                    .disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
+        
+//        input.isPagination
+//            .distinctUntilChanged()
+//            .filter { $0 }
+//            .withLatestFrom(currentOngoingChallengePageNo)
+//            .filter { $0 > 0 }
+//            .map { $0 - 1 }
+//            .bind(to: currentOngoingChallengePageNo)
+//            .disposed(by: disposeBag)
         
         input.isPagination
             .distinctUntilChanged()
             .filter { $0 }
+            .withLatestFrom(currentDisplayCell)
+            .filter { $0 == .ongoing }
             .withLatestFrom(currentOngoingChallengePageNo)
             .filter { $0 > 0 }
             .map { $0 - 1 }
             .bind(to: currentOngoingChallengePageNo)
+            .disposed(by: disposeBag)
+        
+        input.isPagination
+            .distinctUntilChanged()
+            .filter { $0 }
+            .withLatestFrom(currentDisplayCell)
+            .filter { $0 == .completed }
+            .withLatestFrom(currentCompletedChallengePageNo)
+            .filter { $0 > 0 }
+            .map { $0 - 1 }
+            .bind(to: currentCompletedChallengePageNo)
+            .disposed(by: disposeBag)
+        
+        input.currentDisplayCell
+            .bind(to: currentDisplayCell)
             .disposed(by: disposeBag)
         
         input.tapAddButton
@@ -128,24 +159,39 @@ final class ChallengeViewModel {
                 }
             }.disposed(by: disposeBag)
         
+//        ongoingChallengeModelList
+//            .skip(1)    // initValue [] 무시
+//            .filter { $0.count <= 4 }   // page 최대 개수
+//            .withLatestFrom(currentOngoingChallengePageNo)
+//            .filter { $0 > 0 }
+//            .map { $0 - 1 }
+//            .bind(to: currentOngoingChallengePageNo)
+//            .disposed(by: disposeBag)
+        
         ongoingChallengeModelList
             .skip(1)
-            .filter { $0.count <= 4 }
-            .withLatestFrom(currentOngoingChallengePageNo)
-            .filter { $0 > 0 }
-            .map { $0 - 1 }
+            .map { $0.count }
+            .filter { $0 <= 4 }
+            .withLatestFrom(initOngoingPageNo)
+            .withLatestFrom(currentOngoingChallengePageNo) { (initNo: $0, currentNo: $1) }
+            .filter { $0.initNo == $0.currentNo }
+            .filter { $0.currentNo > 0 }
+            .map { $0.currentNo - 1 }
             .bind(to: currentOngoingChallengePageNo)
             .disposed(by: disposeBag)
         
         completedChallengeModelList
             .skip(1)
-            .filter { $0.count <= 4 }
-            .withLatestFrom(currentCompletedChallengePageNo)
-            .filter { $0 > 0 }
-            .map { $0 - 1 }
+            .map { $0.count }
+            .filter { $0 <= 4 }
+            .withLatestFrom(initCompletedPageNo)
+            .withLatestFrom(currentCompletedChallengePageNo) { (initNo: $0, currentNo: $1) }
+            .filter { $0.initNo == $0.currentNo }
+            .filter { $0.currentNo > 0 }
+            .map { $0.currentNo - 1 }
             .bind(to: currentCompletedChallengePageNo)
             .disposed(by: disposeBag)
-        
+            
         ongoingChallengeModelList
             .bind(to: output.ongoingModelList)
             .disposed(by: disposeBag)
@@ -161,19 +207,26 @@ final class ChallengeViewModel {
                 case .addChallenge:
                     output.addChallenge.accept(())
                     vm.challengeUseCase.getChallengeLatestPageNo(type: .ongoing)
-                        .bind(to: vm.currentOngoingChallengePageNo)
-                        .disposed(by: vm.disposeBag)
+                        .bind { pageNo in
+                            vm.initOngoingPageNo.accept(pageNo)
+                            vm.currentOngoingChallengePageNo.accept(pageNo)
+                        }.disposed(by: vm.disposeBag)
                 case .removeOngoingChallenge:
                     output.removeChallenge.accept(.ongoing)
                 case .removeCompletedChallenge:
-                    break
+                    output.removeChallenge.accept(.completed)
                 case .modifyChallenge:
                     output.modifyChallenge.accept(())
                     vm.challengeUseCase.getChallengeLatestPageNo(type: .ongoing)
                         .bind(to: vm.currentOngoingChallengePageNo)
                         .disposed(by: vm.disposeBag)
                 case .completedChallenge:
-                    break
+                    output.completeChallenge.accept(())
+                    vm.challengeUseCase.getChallengeLatestPageNo(type: .completed)
+                        .bind { pageNo in
+                            vm.initCompletedPageNo.accept(pageNo)
+                            vm.currentCompletedChallengePageNo.accept(pageNo)
+                        }.disposed(by: vm.disposeBag)
                 case .none:
                     break
                 }

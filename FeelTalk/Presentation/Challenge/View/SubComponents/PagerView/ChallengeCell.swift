@@ -20,10 +20,8 @@ final class ChallengeCell: UICollectionViewCell {
     
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
-                            size: 12)
         label.textAlignment = .center
-        label.layer.cornerRadius = ChallengeCellNameSpace.dateLabelHeight / 2
+        label.layer.cornerRadius = ChallengeCellNameSpace.dateLabelCornerRadius
         label.clipsToBounds = true
         
         return label
@@ -32,9 +30,9 @@ final class ChallengeCell: UICollectionViewCell {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
-        label.numberOfLines = 0
+        label.numberOfLines = ChallengeCellNameSpace.titleLabelNumberOfLines
         label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
-                            size: 16)
+                            size: ChallengeCellNameSpace.titleLabelTextSize)
         label.backgroundColor = .clear
         
         return label
@@ -44,7 +42,7 @@ final class ChallengeCell: UICollectionViewCell {
         let label = UILabel()
         label.textColor = UIColor(named: CommonColorNameSpace.gray600)
         label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
-                            size: 14)
+                            size: ChallengeCellNameSpace.nicknameLabelTextSize)
         label.backgroundColor = .clear
         
         return label
@@ -82,26 +80,40 @@ final class ChallengeCell: UICollectionViewCell {
                       let creator = model.creator,
                       let isCompleted = model.isCompleted else { return }
                 
-                if !isCompleted {
+                if isCompleted {    // 완료된 챌린지 dataLabel 세팅
+                    guard let completedDate = model.completeDate else { return }
+                    
+                    c.dateLabel.rx.text.onNext(c.convertCompletedDate(date: completedDate))
+                    c.dateLabel.rx.font.onNext(UIFont(name: CommonFontNameSpace.pretendardRegular, size: ChallengeCellNameSpace.dateLabelTextSize))
+                    c.dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.gray600))
+                    c.dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.gray200))
+                    c.dateLabel.snp.makeConstraints { $0.width.equalTo(ChallengeCellNameSpace.dateLabelCompletedTypeWidth) }
+                    
+                } else {  // 진행중인 챌린지 dataLabel 세팅
                     let deadlineStr = String.replaceT(deadlineStr)
                     guard let deadline = Date.strToDate(deadlineStr) else { return }
                     let dDay = Utils.calculateDday(deadline)
                     
                     c.dateLabel.rx.text.onNext(dDay)
+                    c.dateLabel.snp.makeConstraints { $0.width.equalTo(ChallengeCellNameSpace.dateLabelOngoingTypeWidth) }
                     
                     let interval = Int(deadline.timeIntervalSince(Date()) / 86400) + 1
                     
                     if interval <= 7 {  // D-day가 일주일 이내인 경우
+                        c.dateLabel.rx.font.onNext(UIFont(name: CommonFontNameSpace.pretendardSemiBold,
+                                                          size: ChallengeCellNameSpace.dateLabelTextSize))
                         c.dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main300))
                         c.dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.main500))
                     } else {
+                        c.dateLabel.rx.font.onNext(UIFont(name: CommonFontNameSpace.pretendardRegular,
+                                                          size: ChallengeCellNameSpace.dateLabelTextSize))
                         c.dateLabel.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.gray200))
                         c.dateLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.gray600))
                     }
                 }
                 
                 c.titleLabel.rx.text.onNext(title)
-                c.titleLabel.setLineHeight(height: 24)
+                c.titleLabel.setLineHeight(height: ChallengeCellNameSpace.titleLabelLineHeight)
                 c.nicknameLabel.rx.text.onNext(creator)
             }.disposed(by: disposeBag)
         
@@ -117,12 +129,6 @@ final class ChallengeCell: UICollectionViewCell {
             .compactMap { c, _ in c.itemsIndex }
             .bind(to: selectedCellItemsIndex)
             .disposed(by: disposeBag)
-            
-            
-        
-//        rx.tapGesture()
-//            .when(.recognized)
-//            .withLatestFrom(rx.index)
     }
     
     private func setProperties() {
@@ -163,7 +169,6 @@ extension ChallengeCell {
         dateLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(ChallengeCellNameSpace.dateLabelTopInset)
             $0.leading.equalToSuperview().inset(CommonConstraintNameSpace.leadingInset)
-            $0.width.equalTo(ChallengeCellNameSpace.dateLabelWidth)  // TODO: 진행중과 완료에 따라 넓이 고정값 설정
             $0.height.equalTo(ChallengeCellNameSpace.dateLabelHeight)
         }
     }
@@ -188,6 +193,25 @@ extension ChallengeCell {
     private func calculateDday(targetDate: Date, fromDate: Date) -> Int {
         return Int(targetDate.timeIntervalSince(fromDate) / 86400) + 1
     }
+    
+    /// ChallengeCell.dateLabel.text에 적용될 completeDate 형식 변환
+    /// - Parameter date: "yyyy-MM-ddThh:mm:ss"
+    /// - Returns: "yy.MM.dd"
+    private func convertCompletedDate(date: String) -> String {
+        let yearStartIndex = date.index(date.startIndex, offsetBy: 2)
+        let yearEndIndex = date.index(date.startIndex, offsetBy: 3)
+        let yearStr = String(date[yearStartIndex...yearEndIndex])
+        
+        let monthStartIndex = date.index(date.startIndex, offsetBy: 5)
+        let monthEndIndex = date.index(date.startIndex, offsetBy: 6)
+        let monthStr = String(date[monthStartIndex...monthEndIndex])
+        
+        let dayStartIndex = date.index(date.startIndex, offsetBy: 8)
+        let dayEndIndex = date.index(date.startIndex, offsetBy: 9)
+        let dayStr = String(date[dayStartIndex...dayEndIndex])
+        
+        return "\(yearStr).\(monthStr).\(dayStr)"
+    }
 }
 
 #if DEBUG
@@ -209,10 +233,11 @@ struct ChallengeCell_Previews: PreviewProvider {
             v.model.accept(Challenge(index: 0,
                                      pageNo: 0,
                                      title: "첫 번째 챌린지 제목입니다.",
-                                     deadline: Optional("2024-01-20T00:00:00"),
+                                     deadline: Optional("2024-02-01T00:00:00"),
                                      content: "첫 번째 챌린지 내용",
                                      creator: "KakaoSG",
-                                     isCompleted: Optional(false)))
+                                     isCompleted: Optional(true),
+                                     completeDate: "2024-04-02T00:00:00"))
             
             return v
         }

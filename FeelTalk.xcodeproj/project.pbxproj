@@ -120,6 +120,7 @@
 		452D32802A6801C3001DBB24 /* CoupleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D327F2A6801C3001DBB24 /* CoupleUseCase.swift */; };
 		452D32832A68262E001DBB24 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D32822A68262E001DBB24 /* Token.swift */; };
 		452DB87E2AB9DB7D00A614AB /* CustomSwitchButtonNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452DB87D2AB9DB7D00A614AB /* CustomSwitchButtonNameSpace.swift */; };
+		4534B8FF2B62473300739C6F /* ChallengeCompleteBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4534B8FE2B62473300739C6F /* ChallengeCompleteBottomSheetView.swift */; };
 		453522F82B136F5400B80EDE /* AdultAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453522F72B136F5400B80EDE /* AdultAuthViewController.swift */; };
 		453523012B1441A100B80EDE /* AdultAuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453523002B1441A100B80EDE /* AdultAuthViewModel.swift */; };
 		453523032B1449CA00B80EDE /* AdultAuthCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453523022B1449CA00B80EDE /* AdultAuthCoordinator.swift */; };
@@ -153,6 +154,7 @@
 		45400D102AB4439F0055141F /* DefaultConfigurationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45400D0F2AB4439F0055141F /* DefaultConfigurationRepository.swift */; };
 		45400D132AB444AE0055141F /* ConfigurationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45400D122AB444AE0055141F /* ConfigurationRepository.swift */; };
 		45400D162AB445160055141F /* ConfigurationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45400D152AB445160055141F /* ConfigurationUseCase.swift */; };
+		45401D032B6254AA00AB6BFF /* ChallengeCompleteBottomSheetViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45401D022B6254AA00AB6BFF /* ChallengeCompleteBottomSheetViewNameSpace.swift */; };
 		45405C262B023C1600980F0F /* ChatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45405C252B023C1600980F0F /* ChatType.swift */; };
 		45405C2D2B036DE200980F0F /* ChatAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45405C2C2B036DE200980F0F /* ChatAPI.swift */; };
 		45405C2F2B037DEC00980F0F /* ChatPageNoResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45405C2E2B037DEC00980F0F /* ChatPageNoResponseDTO.swift */; };
@@ -412,6 +414,8 @@
 		45B93B412B4A866200ACAB83 /* MainNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B93B402B4A866200ACAB83 /* MainNavigationBar.swift */; };
 		45B93B432B4A8BD900ACAB83 /* MainNavigationBarNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B93B422B4A8BD900ACAB83 /* MainNavigationBarNameSpace.swift */; };
 		45B93B452B4A8BE500ACAB83 /* MainNavigationBarType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B93B442B4A8BE500ACAB83 /* MainNavigationBarType.swift */; };
+		45B9A27E2B611CA200DF4305 /* CompleteChallengeRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9A27D2B611CA200DF4305 /* CompleteChallengeRequestDTO.swift */; };
+		45B9A2802B611DF100DF4305 /* CompleteChallengeResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9A27F2B611DF100DF4305 /* CompleteChallengeResponseDTO.swift */; };
 		45B9D3862ADFF13D008F9B5E /* SendTextChatRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D3852ADFF13D008F9B5E /* SendTextChatRequestDTO.swift */; };
 		45BAF1512B52755100C3BD30 /* ChallengeDeadlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BAF1502B52755100C3BD30 /* ChallengeDeadlineView.swift */; };
 		45BAF1532B527BF800C3BD30 /* ChallengeDeadlineViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BAF1522B527BF800C3BD30 /* ChallengeDeadlineViewNameSpace.swift */; };
@@ -683,6 +687,7 @@
 		452D327F2A6801C3001DBB24 /* CoupleUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleUseCase.swift; sourceTree = "<group>"; };
 		452D32822A68262E001DBB24 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		452DB87D2AB9DB7D00A614AB /* CustomSwitchButtonNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSwitchButtonNameSpace.swift; sourceTree = "<group>"; };
+		4534B8FE2B62473300739C6F /* ChallengeCompleteBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeCompleteBottomSheetView.swift; sourceTree = "<group>"; };
 		453522F72B136F5400B80EDE /* AdultAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultAuthViewController.swift; sourceTree = "<group>"; };
 		453523002B1441A100B80EDE /* AdultAuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultAuthViewModel.swift; sourceTree = "<group>"; };
 		453523022B1449CA00B80EDE /* AdultAuthCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultAuthCoordinator.swift; sourceTree = "<group>"; };
@@ -716,6 +721,7 @@
 		45400D0F2AB4439F0055141F /* DefaultConfigurationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultConfigurationRepository.swift; sourceTree = "<group>"; };
 		45400D122AB444AE0055141F /* ConfigurationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationRepository.swift; sourceTree = "<group>"; };
 		45400D152AB445160055141F /* ConfigurationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationUseCase.swift; sourceTree = "<group>"; };
+		45401D022B6254AA00AB6BFF /* ChallengeCompleteBottomSheetViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeCompleteBottomSheetViewNameSpace.swift; sourceTree = "<group>"; };
 		45405C252B023C1600980F0F /* ChatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatType.swift; sourceTree = "<group>"; };
 		45405C2C2B036DE200980F0F /* ChatAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAPI.swift; sourceTree = "<group>"; };
 		45405C2E2B037DEC00980F0F /* ChatPageNoResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPageNoResponseDTO.swift; sourceTree = "<group>"; };
@@ -977,6 +983,8 @@
 		45B93B402B4A866200ACAB83 /* MainNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationBar.swift; sourceTree = "<group>"; };
 		45B93B422B4A8BD900ACAB83 /* MainNavigationBarNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationBarNameSpace.swift; sourceTree = "<group>"; };
 		45B93B442B4A8BE500ACAB83 /* MainNavigationBarType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationBarType.swift; sourceTree = "<group>"; };
+		45B9A27D2B611CA200DF4305 /* CompleteChallengeRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteChallengeRequestDTO.swift; sourceTree = "<group>"; };
+		45B9A27F2B611DF100DF4305 /* CompleteChallengeResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteChallengeResponseDTO.swift; sourceTree = "<group>"; };
 		45B9D3852ADFF13D008F9B5E /* SendTextChatRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTextChatRequestDTO.swift; sourceTree = "<group>"; };
 		45BAF1502B52755100C3BD30 /* ChallengeDeadlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDeadlineView.swift; sourceTree = "<group>"; };
 		45BAF1522B527BF800C3BD30 /* ChallengeDeadlineViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDeadlineViewNameSpace.swift; sourceTree = "<group>"; };
@@ -2036,6 +2044,7 @@
 				455560B82AA4813700EDFFFA /* ChallengeCountResponseDTO.swift */,
 				455560BE2AA48F5B00EDFFFA /* ChallengeLatestPageNoResponseDTO.swift */,
 				455560BC2AA48D7D00EDFFFA /* ChallengeListResponseDTO.swift */,
+				45B9A27F2B611DF100DF4305 /* CompleteChallengeResponseDTO.swift */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -3414,6 +3423,7 @@
 			children = (
 				4512F7332B57BE0E009F92DD /* AddChallengeRequestDTO.swift */,
 				45B17C082B512D5A002A3239 /* ChallengeListRequestDTO.swift */,
+				45B9A27D2B611CA200DF4305 /* CompleteChallengeRequestDTO.swift */,
 				453A694A2B5F4CE50062AEB5 /* ModifyChallengeRequestDTO.swift */,
 				453A69482B5EDF8C0062AEB5 /* RemoveChallengeRequestDTO.swift */,
 			);
@@ -3841,6 +3851,7 @@
 			isa = PBXGroup;
 			children = (
 				451073C92B53BAB600B393D3 /* ChallengeButton.swift */,
+				4534B8FE2B62473300739C6F /* ChallengeCompleteBottomSheetView.swift */,
 				45BAF1542B52954000C3BD30 /* ChallengeContentView.swift */,
 				45BAF1502B52755100C3BD30 /* ChallengeDeadlineView.swift */,
 				45CB06662A90AE5F0081BE88 /* ChallengeDetailDescriptionView.swift */,
@@ -4085,6 +4096,7 @@
 			isa = PBXGroup;
 			children = (
 				451073CD2B53C77100B393D3 /* ChallengeButtonNameSpace.swift */,
+				45401D022B6254AA00AB6BFF /* ChallengeCompleteBottomSheetViewNameSpace.swift */,
 				45BAF1562B52DF0900C3BD30 /* ChallengeContentViewNameSpace.swift */,
 				45BAF1522B527BF800C3BD30 /* ChallengeDeadlineViewNameSpace.swift */,
 				4513C81D2A963BC900B0AE38 /* ChallengeDetailDescriptionViewNameSpace.swift */,
@@ -4989,6 +5001,7 @@
 				454EE3E32B307DE40040249A /* SignUpRequestDTO.swift in Sources */,
 				457CFEF02ABB2914006979BA /* LockingPasswordKeypadCellNameSpace.swift in Sources */,
 				453E49C72B454B73004B1860 /* SignalOpenGraph01.swift in Sources */,
+				45401D032B6254AA00AB6BFF /* ChallengeCompleteBottomSheetViewNameSpace.swift in Sources */,
 				45AE813F2A68AD4000DEC4E2 /* TokenAPI.swift in Sources */,
 				45BE3ABA2B24FE7B00C19F11 /* NewsAgencyViewControllerNameSpace.swift in Sources */,
 				453A69492B5EDF8C0062AEB5 /* RemoveChallengeRequestDTO.swift in Sources */,
@@ -5238,6 +5251,7 @@
 				452138132B4BCCF6007A7368 /* CustomInputViewTitle.swift in Sources */,
 				451DC2562AC2C291003648A7 /* SuggestionsEmailInputView.swift in Sources */,
 				454CCA862AB2F6AE00405F8B /* MyPageTableViewCellNameSpace.swift in Sources */,
+				45B9A27E2B611CA200DF4305 /* CompleteChallengeRequestDTO.swift in Sources */,
 				45EBCE952ACEB12D00918FB3 /* PartnerInfoViewControllerNameSpace.swift in Sources */,
 				45AA3D862AED2397001A26AA /* Signal.swift in Sources */,
 				45D52D912AD6EDD300AA0537 /* ChatFunctionView.swift in Sources */,
@@ -5307,6 +5321,7 @@
 				457DC6C52B0F553E00E47538 /* SignUpAdultAuthenticationDescriptionViewNameSpace.swift in Sources */,
 				45E149F32B0CBD4700DFB83A /* LoginRequestDTO.swift in Sources */,
 				452D32792A67EAB1001DBB24 /* InviteCodeInfoPhraseVIew.swift in Sources */,
+				4534B8FF2B62473300739C6F /* ChallengeCompleteBottomSheetView.swift in Sources */,
 				45151A452A654C6C0024A10D /* SNSLogin.swift in Sources */,
 				45E85D292A580E8B004B558C /* LoginViewController.swift in Sources */,
 				45EBCE8F2ACEA37400918FB3 /* PartnerInfoCoordinator.swift in Sources */,
@@ -5328,6 +5343,7 @@
 				455560B72AA4746600EDFFFA /* ChallengeUseCase.swift in Sources */,
 				4503960F2AD064B9008A5954 /* WithdrawalViewNameSpace.swift in Sources */,
 				457016292A7760A10006CB1D /* Coordinator.swift in Sources */,
+				45B9A2802B611DF100DF4305 /* CompleteChallengeResponseDTO.swift in Sources */,
 				457CFEF62ABB2EA4006979BA /* LockingPasswordDisplayViewNameSpace.swift in Sources */,
 				45158BB32AD5680A007A8DFD /* ChatInputView.swift in Sources */,
 				450B402F2AAF3EDC00364377 /* MyPageProfileButton.swift in Sources */,

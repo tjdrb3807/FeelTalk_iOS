@@ -15,4 +15,5 @@ struct Challenge: Equatable {
     var content: String?
     var creator: String?
     var isCompleted: Bool?
+    var completeDate: String?
 }

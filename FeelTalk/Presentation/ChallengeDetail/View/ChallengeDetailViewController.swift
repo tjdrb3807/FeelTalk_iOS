@@ -64,6 +64,7 @@ final class ChallengeDetailViewController: UIViewController {
     
     private func bind(to viewModel: ChallengeDetailViewModel) {
         let alertRightButtonTapObserver = PublishRelay<CustomAlertType>()
+        let bottomSheetConfirmButtonTapObserver = PublishRelay<Void>()
         
         let toolBarButtonTapObserver = Observable<ChallengeDetailViewToolBarType>
             .merge(titleInputView.toolBarButtonTapObserver.asObservable(),
@@ -78,7 +79,8 @@ final class ChallengeDetailViewController: UIViewController {
                                                    contentObserver: contentInputView.contentInputView.textView.rx.text.orEmpty,
                                                    alertRightButtonTapObserver: alertRightButtonTapObserver.asObservable(),
                                                    challengeButtonTapObserver: challengeButton.rx.tap.asObservable(),
-                                                   tapToolbarButton: toolBarButtonTapObserver)
+                                                   tapToolbarButton: toolBarButtonTapObserver,
+                                                   tapBottomSheetConfirmButton: bottomSheetConfirmButtonTapObserver.asObservable())
         
         let output = viewModel.transfer(input: input)
 
@@ -139,6 +141,19 @@ final class ChallengeDetailViewController: UIViewController {
                 vc.view.layoutIfNeeded()
                 
                 alertView.show()
+            }.disposed(by: disposeBag)
+        
+        output.popUpBottomSheetObserver
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard !vc.view.subviews.contains(where: { $0 is ChallengeCompleteBottomSheetView }) else { return }
+                let bottomSheet = ChallengeCompleteBottomSheetView()
+                bottomSheet.confirmButton.rx.tap.map { () }.bind(to: bottomSheetConfirmButtonTapObserver)
+                    .disposed(by: vc.disposeBag)
+                vc.view.addSubview(bottomSheet)
+                bottomSheet.snp.makeConstraints { $0.edges.equalToSuperview() }
+                vc.view.layoutIfNeeded()
+                bottomSheet.show()
             }.disposed(by: disposeBag)
         
         output.isNewTypeChallengeButtonEnabled

@@ -46,6 +46,12 @@ final class ChallengeTabBarItem: UIView {
         return label
     }()
     
+    private lazy var indicator: UIView = {
+        let view = UIView()
+        
+        return view
+    }()
+    
     init(type: ChallengeTabBarItemType) {
         self.type = type
         super.init(frame: .zero)
@@ -72,6 +78,7 @@ final class ChallengeTabBarItem: UIView {
             .bind { v, state in
                 v.updateTitleLabelProperties(with: state)
                 v.updateCountLabelProperties(with: state)
+                v.updateIndicatorProperties(with: state)
             }.disposed(by: disposeBag)
     }
     
@@ -84,14 +91,24 @@ final class ChallengeTabBarItem: UIView {
     
     private func setConstratins() {
         makeContentStackViewConstraints()
+        makeIndicatorConstraints()
     }
 }
 
 extension ChallengeTabBarItem {
-    private func addViewSubComponents() { addSubview(contentStackView) }
+    private func addViewSubComponents() {
+        [contentStackView, indicator].forEach { addSubview($0) }
+    }
     
     private func makeContentStackViewConstraints() {
         contentStackView.snp.makeConstraints { $0.center.equalToSuperview() }
+    }
+    
+    private func makeIndicatorConstraints() {
+        indicator.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(ChallengeTabBarItemNameSpace.indicatorHeight)
+        }
     }
     
     private func addContentStackViewSubComponents() {
@@ -116,6 +133,19 @@ extension ChallengeTabBarItem {
             isSelected ?
             countLabel.rx.textColor.onNext(.black) :
             countLabel.rx.textColor.onNext(UIColor(named: CommonColorNameSpace.gray400))
+        }
+    }
+    
+    private func updateIndicatorProperties(with isSelected: Bool) {
+        switch type {
+        case .ongoing:
+            isSelected ?
+            indicator.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main500)) :
+            indicator.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.main400))
+        case .completed:
+            isSelected ?
+            indicator.rx.backgroundColor.onNext(.black) :
+            indicator.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.gray500))
         }
     }
 }

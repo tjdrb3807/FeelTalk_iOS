@@ -57,11 +57,12 @@ final class ChallengeViewController: UIViewController {
     
     private func bind(to viewModel: ChallengeViewModel) {
         let isPagination = PublishRelay<Bool>()
-        
+
         let input = ChallengeViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
                                              tapAddButton: addButton.rx.tap,
                                              tapChallengeCell: collectionView.selectedModel.asObservable(),
-                                             isPagination: isPagination.asObservable())
+                                             isPagination: isPagination.asObservable(),
+                                             currentDisplayCell: collectionView.currentDisplayCell)
         
         let output = viewModel.transfer(input: input)
 
@@ -91,11 +92,11 @@ final class ChallengeViewController: UIViewController {
                 guard let currentTotalCount = vc.countingView.model.value,
                       let ongoingTBI = vc.tabBar.contentStackView.subviews[0] as? ChallengeTabBarItem,
                       let currentOngingCount = ongoingTBI.countObserver.value,
-                      let ongoingCV = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell else { return }
+                      let ongoingCell = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell else { return }
                 
                 vc.countingView.model.accept(currentTotalCount + 1)
                 ongoingTBI.countObserver.accept(currentOngingCount + 1)
-                ongoingCV.items.removeAll()
+                ongoingCell.items.removeAll()
             }.disposed(by: disposeBag)
         
         output.removeChallenge
@@ -107,25 +108,54 @@ final class ChallengeViewController: UIViewController {
                     guard let currentTotalCount = vc.countingView.model.value,
                           let ongoingTBI = vc.tabBar.contentStackView.subviews[0] as? ChallengeTabBarItem,
                           let currentOngingCount = ongoingTBI.countObserver.value,
-                          let ongoingCV = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell,
-                          let selectedChallengeCellItemIndex = ongoingCV.selectedIndex.value else { return }
+                          let ongoingCell = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell,
+                          let selectedChallengeCellItemIndex = ongoingCell.selectedIndex.value else { return }
                     
                     vc.countingView.model.accept(currentTotalCount - 1)
                     ongoingTBI.countObserver.accept(currentOngingCount - 1)
-                    ongoingCV.items.remove(at: selectedChallengeCellItemIndex)
-                    ongoingCV.collectionView.reloadData()
-                    ongoingCV.selectedIndex.accept(nil)
+                    ongoingCell.items.remove(at: selectedChallengeCellItemIndex)
+                    ongoingCell.collectionView.reloadData()
+                    ongoingCell.selectedIndex.accept(nil)
                 case .completed:
-                    break
+                    guard let currentTotalCount = vc.countingView.model.value,
+                          let completedTBI = vc.tabBar.contentStackView.subviews[1] as? ChallengeTabBarItem,
+                          let currentCompletedCount = completedTBI.countObserver.value,
+                          let completedCell = vc.collectionView.cellForItem(at: IndexPath(row: 1, section: 0)) as? ChallengeCollectionViewCell,
+                          let selectedChallengeCellItemIndex = completedCell.selectedIndex.value else { return }
+                    
+                    vc.countingView.model.accept(currentTotalCount - 1)
+                    completedTBI.countObserver.accept(currentCompletedCount - 1)
+                    vc.collectionView.completedItemList.remove(at: selectedChallengeCellItemIndex)
+                    completedCell.items.remove(at: selectedChallengeCellItemIndex)
+                    completedCell.collectionView.reloadData()
+                    completedCell.selectedIndex.accept(nil)
                 }
             }.disposed(by: disposeBag)
         
         output.modifyChallenge
             .withUnretained(self)
             .bind { vc, _ in
-                guard let ongoingCV = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell else { return }
+                guard let ongoingCell = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell else { return }
                 
-                ongoingCV.items.removeAll()
+                ongoingCell.items.removeAll()
+            }.disposed(by: disposeBag)
+        
+        output.completeChallenge
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard let ongoingTBI = vc.tabBar.contentStackView.subviews[0] as? ChallengeTabBarItem,
+                      let currentOngoingCount = ongoingTBI.countObserver.value,
+                      let completedTBI = vc.tabBar.contentStackView.subviews[1] as? ChallengeTabBarItem,
+                      let currentCompletedCount = completedTBI.countObserver.value,
+                      let ongoingCell = vc.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as? ChallengeCollectionViewCell,
+                      let selectedChallengeCellItemIndex = ongoingCell.selectedIndex.value else { return }
+                
+                ongoingTBI.countObserver.accept(currentOngoingCount - 1)
+                completedTBI.countObserver.accept(currentCompletedCount + 1)
+                ongoingCell.items.remove(at: selectedChallengeCellItemIndex)
+                ongoingCell.collectionView.reloadData()
+                vc.collectionView.completedItemList.removeAll()
+                ongoingCell.selectedIndex.accept(nil)
             }.disposed(by: disposeBag)
         
         innerScrollViewContentOffsetY
@@ -170,7 +200,32 @@ final class ChallengeViewController: UIViewController {
                 vc.outerScrollView.rx.isScrollEnabled.onNext(false) :
                 vc.outerScrollView.rx.isScrollEnabled.onNext(true)
             }.disposed(by: disposeBag)
-
+        
+        tabBar.selectedItem
+            .withUnretained(self)
+            .bind { vc, type in
+                switch type {
+                case .ongoing:
+                    vc.collectionView.setContentOffset(CGPoint(x: 0.0,
+                                                               y: 0.0),
+                                                       animated: true)
+                case .completed:
+                    vc.collectionView.setContentOffset(CGPoint(x: UIScreen.main.bounds.width,
+                                                               y: 0.0),
+                                                       animated: true)
+                }
+            }.disposed(by: disposeBag)
+        
+        collectionView.currentDisplayCell
+            .withUnretained(self)
+            .bind { vc, type in
+                switch type {
+                case .ongoing:
+                    vc.tabBar.selectedItem.accept(.ongoing)
+                case .completed:
+                    vc.tabBar.selectedItem.accept(.completed)
+                }
+            }.disposed(by: disposeBag)
     }
     
     private func setProperties() {

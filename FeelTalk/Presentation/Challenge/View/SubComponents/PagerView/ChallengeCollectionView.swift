@@ -11,8 +11,10 @@ import RxSwift
 import RxCocoa
 
 final class ChallengeCollectionView: UICollectionView {
+    static var scrollingByUser: Bool = false    // 사용자가 집적 스크롤 하는것을 판단
     let ongoingModelList = BehaviorRelay<[Challenge]>(value: [])
     let completedModelList = BehaviorRelay<[Challenge]>(value: [])
+    var completedItemList: [Challenge] = []
     let currentDisplayCell = PublishRelay<ChallengeState>()
     let selectedModel = PublishRelay<Challenge>()
     private let disposeBag = DisposeBag()
@@ -32,6 +34,7 @@ final class ChallengeCollectionView: UICollectionView {
     }
     
     private func bind() {
+        // ongoingModel 다이렉트 로드
         ongoingModelList
             .withUnretained(self)
             .bind { vm, list in
@@ -40,12 +43,32 @@ final class ChallengeCollectionView: UICollectionView {
 
             }.disposed(by: disposeBag)
         
+        // completedCollectionViewCell 이 보여지기 전 까지 model 보관
+        completedModelList
+            .withUnretained(self)
+            .bind { v, model in
+                v.completedItemList.append(contentsOf: model)
+            }.disposed(by: disposeBag)
+        
+        // pagination 처리로 fetch된 model 다이텍트 로드
         completedModelList
             .withUnretained(self)
             .bind { vm, list in
                 guard let completedCollectionViewCell = vm.cellForItem(at: IndexPath(row: 1, section: 0)) as? ChallengeCollectionViewCell else { return }
-                
                 completedCollectionViewCell.modelList.accept(list)
+
+            }.disposed(by: disposeBag)
+            
+        
+        // completedCollectionViewCell 이 보여질 때 데이터 로드
+        rx.willDisplayCell
+            .filter { $0.at.row == 1 }
+            .compactMap { $0.cell as? ChallengeCollectionViewCell }
+            .filter { !$0.isHidden }
+            .withUnretained(self)
+            .bind { cv, cell in
+                cell.items.removeAll()
+                cell.modelList.accept(cv.completedItemList)
             }.disposed(by: disposeBag)
     }
     
@@ -80,7 +103,7 @@ extension ChallengeCollectionView: UICollectionViewDataSource {
         } else if indexPath.row == 1 {
             cell.type = .completed
         }
-        
+            
         return cell
     }
 }
@@ -108,6 +131,16 @@ extension ChallengeCollectionView: UICollectionViewDelegateFlowLayout {
         } else if contentOffsetX == UIScreen.main.bounds.width {
             currentDisplayCell.accept(.completed)
         }
+        
+        guard ChallengeCollectionView.scrollingByUser else { return }
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        ChallengeCollectionView.scrollingByUser = true
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        ChallengeCollectionView.scrollingByUser = false
     }
 }
 

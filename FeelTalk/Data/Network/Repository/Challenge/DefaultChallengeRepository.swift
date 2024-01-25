@@ -33,14 +33,15 @@ final class DefaultChallengeRepository: ChallengeRepository {
         }
     }
     
-    func completeChallenge(accessToken: String, index: Int) -> Single<Bool> {
+    func completeChallenge(accessToken: String, requestDTO: CompleteChallengeRequestDTO) -> Single<ChallengeChat> {
         Single.create { observer -> Disposable in
-            AF.request(ChallengeAPI.completeChallenge(accessToken: accessToken, index: index))
-                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+            AF.request(ChallengeAPI.completeChallenge(accessToken: accessToken, requestDTO: requestDTO))
+                .responseDecodable(of: BaseResponseDTO<CompleteChallengeResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
                         if responseDTO.status == "success" {
-                            observer(.success(true))
+                            guard let completeChallengeResponseDTO = responseDTO.data! else { return }
+                            observer(.success(completeChallengeResponseDTO.toDomain()))
                         } else {
                             guard let message = responseDTO.message else { return }
                             debugPrint(message)
@@ -144,8 +145,6 @@ final class DefaultChallengeRepository: ChallengeRepository {
                         }
 
                     case .failure(let error):
-                        print(response.response?.statusCode)
-                        print(error)
                         observer(.failure(error))
                     }
                 }

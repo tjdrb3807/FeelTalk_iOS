@@ -30,12 +30,14 @@ final class ChallengeDetailViewModel {
         let alertRightButtonTapObserver: Observable<CustomAlertType>
         let challengeButtonTapObserver: Observable<Void>
         let tapToolbarButton: Observable<ChallengeDetailViewToolBarType>
+        let tapBottomSheetConfirmButton: Observable<Void>
     }
     
     struct Output {
         let keyboardHeight = BehaviorRelay<CGFloat>(value: 0.0)
         let type = PublishRelay<ChallengeDetailViewType>()
         let popUpAlerObserver = PublishRelay<CustomAlertType>()
+        let popUpBottomSheetObserver = PublishRelay<Void>()
         let isNewTypeChallengeButtonEnabled = PublishRelay<Bool>()
         let focusedInputView = PublishRelay<ChallengeDetailViewScrollDirection>()
         let navigationType = PublishRelay<ChallengeDetailViewType>()
@@ -245,6 +247,27 @@ final class ChallengeDetailViewModel {
             }.disposed(by: disposeBag)
         
         // 챌린지 완료
+        input.challengeButtonTapObserver
+            .withLatestFrom(viewTypeObserver)
+            .filter { $0 == .ongoing }
+            .withLatestFrom(modelObserver)
+            .compactMap { $0.index }
+            .withUnretained(self)
+            .bind { vm, index in
+                vm.challengeUseCase.completeChallenge(index: index)
+                    .bind { challengeChat in
+                        print(challengeChat)
+                        ChallengeViewModel.reloadObserver.accept(.completedChallenge)
+                        output.popUpBottomSheetObserver.accept(())
+                    }.disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
+        
+        input.tapBottomSheetConfirmButton
+            .delay(RxTimeInterval.milliseconds(500), scheduler: MainScheduler.instance)
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordiantor?.finish(challengeViewReloadType: .none)
+            }.disposed(by: disposeBag)
         
         // 등록 페이지에서 ChallengeButton 상태 처리
         Observable

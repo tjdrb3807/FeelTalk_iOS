@@ -12,7 +12,7 @@ import RxCocoa
 protocol ChallengeUseCase {
     func addChallenge(model: (title: String, deadline: String, content: String)) -> Observable<ChallengeChat>
     
-    func completeChallenge(index: Int) -> Observable<Bool>
+    func completeChallenge(index: Int) -> Observable<ChallengeChat>
     
     func getChallenge(index: Int) -> Observable<Challenge>
     
@@ -53,15 +53,17 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         }
     }
     
-    func completeChallenge(index: Int) -> Observable<Bool> {
+    func completeChallenge(index: Int) -> Observable<ChallengeChat> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self,
                   let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            challengeRepository.completeChallenge(accessToken: accessToken, index: index)
-                .asObservable()
-                .bind(onNext: { isSuccess in
-                    observer.onNext(isSuccess)
-                }).disposed(by: disposeBag)
+            
+            challengeRepository.completeChallenge(accessToken: accessToken,
+                                                  requestDTO: CompleteChallengeRequestDTO(index: index))
+            .asObservable()
+            .bind(onNext: { event in
+                observer.onNext(event)
+            }).disposed(by: disposeBag)
             
             return Disposables.create()
         }
