@@ -14,7 +14,7 @@ final class SuggestionsViewController: UIViewController {
     var viewModel: SuggestionsViewModel!
     private let disposeBag = DisposeBag()
     
-    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .suggestions) }()
+    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .suggestions, isRootView: true) }()
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()

@@ -20,7 +20,6 @@ final class PartnerInfoView: UIView {
         stackView.alignment = .leading
         stackView.distribution = .fillProportionally
         stackView.spacing = PartnerInfoViewNameSpcae.contentStackViewSpacing
-        stackView.backgroundColor = .clear
         
         return stackView
     }()
@@ -31,7 +30,6 @@ final class PartnerInfoView: UIView {
         label.textColor = UIColor(named: CommonColorNameSpace.gray600)
         label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
                             size: PartnerInfoViewNameSpcae.descriptionLabelTextSize)
-        label.backgroundColor = .clear
         
         return label
     }()
@@ -42,7 +40,6 @@ final class PartnerInfoView: UIView {
         stackView.alignment = .center
         stackView.distribution = .fillProportionally
         stackView.spacing = PartnerInfoViewNameSpcae.nicknameStackViewSpacing
-        stackView.backgroundColor = .clear
         
         return stackView
     }()
@@ -54,7 +51,7 @@ final class PartnerInfoView: UIView {
         label.textColor = .black
         label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
                             size: PartnerInfoViewNameSpcae.nicknameLabelTextSize)
-        label.backgroundColor = .clear
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         
         return label
     }()
@@ -82,9 +79,26 @@ final class PartnerInfoView: UIView {
     
     private func bind() {
         model
+            .map { $0.nickname }
             .withUnretained(self)
-            .bind { v, model in
-                v.nicknameLabel.rx.text.onNext(model.nickname)
+            .bind { v, partnerNickname in
+                v.nicknameLabel.rx.text.onNext(partnerNickname)
+            }.disposed(by: disposeBag)
+        
+        model
+            .map { $0.snsType }
+            .withUnretained(self)
+            .bind { v, snsType in
+                switch snsType {
+                case .apple:
+                    v.snsImageView.rx.image.onNext(UIImage(named: "icon_my_page_apple"))
+                case .google:
+                    v.snsImageView.rx.image.onNext(UIImage(named: "icon_my_page_google"))
+                case .kakao:
+                    v.snsImageView.rx.image.onNext(UIImage(named: "icon_my_page_kakao"))
+                case .naver:
+                    v.snsImageView.rx.image.onNext(UIImage(named: "icon_my_page_naver"))
+                }
             }.disposed(by: disposeBag)
     }
     
@@ -163,7 +177,8 @@ struct PartnerInfoView_Previews: PreviewProvider {
     struct PartnerInfoView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let view = PartnerInfoView()
-            view.model.accept(.init(nickname: "Partner"))
+            view.model.accept(PartnerInfo(nickname: "Partner",
+                                          snsType: .naver))
             
             return view
         }

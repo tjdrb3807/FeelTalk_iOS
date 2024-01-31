@@ -210,7 +210,7 @@ struct MyPageViewController_Previews: PreviewProvider {
                                             userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
     
             viewController.profileView.userInfo.accept(MyInfo(nickname: "SeooongGyu", snsType: .apple))
-            viewController.profileView.partnerInfoButton.partnerInfo.accept(PartnerInfo(nickname: "Partner"))
+            viewController.profileView.partnerInfoButton.partnerInfo.accept(PartnerInfo(nickname: "Partner", snsType: .naver))
         
             viewController.viewModel = viewModel
             

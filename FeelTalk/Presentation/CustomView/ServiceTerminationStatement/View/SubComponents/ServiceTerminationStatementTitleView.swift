@@ -29,6 +29,7 @@ final class ServiceTerminationStatementTitleView: UIStackView {
         label.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
                             size: ServiceTerminationStateTitleViewNameSpace.titleMessageLabelTextSize)
         label.backgroundColor = .clear
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         
         return label
     }()

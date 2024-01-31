@@ -14,7 +14,7 @@ final class InquiryViewController: UIViewController {
     var viewModel: InquiryViewModel!
     private let disposeBag = DisposeBag()
     
-    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .inquiry) }()
+    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .inquiry, isRootView: true) }()
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()

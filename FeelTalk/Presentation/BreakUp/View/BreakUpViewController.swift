@@ -15,7 +15,7 @@ final class BreakUpViewController: UIViewController {
     let isTerminationButtonAlbe = PublishRelay<Bool>()
     private let disposeBag = DisposeBag()
     
-    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .breakUp) }()
+    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .breakUp, isRootView: true) }()
     
     fileprivate lazy var serviceDataCountView: BreakUpServiceDataCountView = { BreakUpServiceDataCountView() }()
     
@@ -71,7 +71,7 @@ final class BreakUpViewController: UIViewController {
     
     private func bind(to viewModel: BreakUpViewModel) {
         let input = BreakUpViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
-                                           tapDismissButton: navigationBar.leftButton.rx.tap)
+                                           navigationBarLeftButtonTapObserver: navigationBar.leftButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
         

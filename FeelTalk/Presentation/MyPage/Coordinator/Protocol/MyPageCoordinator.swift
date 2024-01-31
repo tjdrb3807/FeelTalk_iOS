@@ -14,7 +14,7 @@ protocol MyPageCoordinator: Coordinator {
     
     func showPartnerInfoFlow()
     
-    func showSettingListFlow()
+    func showSettingsFlow()
     
     func showInquiryFlow()
     

@@ -9,5 +9,4 @@ import Foundation
 
 struct ConfigurationInfo {
     var isLock: Bool
-    var language: String  // Type으로 구현
 }

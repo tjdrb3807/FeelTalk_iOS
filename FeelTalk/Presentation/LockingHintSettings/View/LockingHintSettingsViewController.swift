@@ -18,7 +18,7 @@ enum LockingHintSettingsViewMode {
 final class LockingHintSettingsViewController: UIViewController {
     let viewMode = PublishRelay<LockingHintSettingsViewMode>()
     
-    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .lockingHintSettings) }()
+    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .lockingHintSettings, isRootView: false) }()
     
     private lazy var descriptionView: LockingHintSettingsDescriptionView = { LockingHintSettingsDescriptionView() }()
     

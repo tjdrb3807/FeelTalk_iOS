@@ -11,18 +11,8 @@ import RxSwift
 import RxCocoa
 
 final class CustomNavigationBar: UIView {
-    var type: CustomNavigationBarType
-    
     lazy var leftButton: UIButton = {
         let button = UIButton()
-        switch type {
-        case .withdrawal, .inquiry, .suggestions, .breakUp:
-            button.setImage(UIImage(named: CustomNavigationBarNameSpace.leftButtonXMarkImage),
-                            for: .normal)
-        case .settingList, .lockingSetting, .lockingHintSettings, .myPartner :
-            button.setImage(UIImage(named: CustomNavigationBarNameSpace.leftButtonLeftArrowImage),
-                            for: .normal)
-        }
         
         button.backgroundColor = .clear
         
@@ -31,8 +21,6 @@ final class CustomNavigationBar: UIView {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        
-        label.text = type.rawValue
         label.textColor = .black
         label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
                             size: CustomNavigationBarNameSpace.titleLabelTextSize)
@@ -41,9 +29,13 @@ final class CustomNavigationBar: UIView {
         return label
     }()
     
-    init(type: CustomNavigationBarType) {
-        self.type = type
+    init(type: CustomNavigationBarType, isRootView: Bool) {
         super.init(frame: .zero)
+        titleLabel.rx.text.onNext(type.rawValue)
+        
+        isRootView ?
+        leftButton.setImage(UIImage(named: CustomNavigationBarNameSpace.leftButtonXMarkImage), for: .normal) :
+        leftButton.setImage(UIImage(named: CustomNavigationBarNameSpace.leftButtonLeftArrowImage), for: .normal)
         
         self.setAttributes()
         self.addSubComponents()
@@ -102,7 +94,7 @@ struct CustomNavigationBar_Previews: PreviewProvider {
     
     struct CustomNavigationBar_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            CustomNavigationBar(type: .lockingHintSettings)
+            CustomNavigationBar(type: .lockingHintSettings, isRootView: true)
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

@@ -8,8 +8,9 @@
 import Foundation
 
 enum CustomNavigationBarType: String {
+    case accountInfo = "계정정보"
     case settingList = "환경설정"
-    case lockingSetting = "화면잠금"
+    case lockScreenSettings = "화면잠금"
     case lockingHintSettings = "암호설정"
     case withdrawal = "회원탈퇴"
     case inquiry = "문의하기"

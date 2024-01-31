@@ -71,7 +71,6 @@ final class MyPagePartnerInfoButton: UIButton {
     
     private lazy var partnerNicknameLabel: UILabel = {
         let label = UILabel()
-        label.text = MyPagePartnerInfoButtonNameSpace.partnerNicknameLabelDefaultText
         label.textColor = .black
         label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                             size: MyPagePartnerInfoButtonNameSpace.partnerNicknameLabelTextSize)
@@ -132,7 +131,6 @@ final class MyPagePartnerInfoButton: UIButton {
         makeHorizontalStackViewConstraints()
         makeDescriptionLableConstraints()
         makeRightArrowImageViewConstratins()
-        makePartnerNicknameLabelConstraints()
         makeDescriptionLableConstraints()
         makeDescriptionImageViewConstraints()
     }
@@ -158,10 +156,6 @@ extension MyPagePartnerInfoButton {
     }
     private func addVerticalStackViewSubComponent() {
         [descriptionStackView, partnerNicknameLabel].forEach { verticalStackView.addArrangedSubview($0) }
-    }
-    
-    private func makePartnerNicknameLabelConstraints() {
-        partnerNicknameLabel.snp.makeConstraints { $0.height.equalTo(MyPagePartnerInfoButtonNameSpace.partnerNicknameLabelTextLineHeight) }
     }
     
     private func makeDescriptionStackViewConstraints() {
@@ -205,7 +199,8 @@ struct MyPagePartnerInfoButton_Previews: PreviewProvider {
     struct MyPagePartnerInfoButton_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let view = MyPagePartnerInfoButton()
-            view.partnerInfo.accept(.init(nickname: "Partner"))
+            view.partnerInfo.accept(PartnerInfo(nickname: "partner",
+                                                snsType: .google))
             
             return view
         }

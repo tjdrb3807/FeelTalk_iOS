@@ -20,16 +20,16 @@ final class DefaultBreakUpCoordinator: BreakUpCoordinator {
     }
     
     func start() {
-        self.breakUpViewController.viewModel = BreakUpViewModel(coordinator: self,
-                                                                configurationUseCase: DefaultConfigurationUseCase(configurationRepository: DefaultConfigurationRepository()))
-        self.breakUpViewController.modalPresentationStyle = .fullScreen
+        let vm = BreakUpViewModel(coordinator: self,
+                                  configurationUseCase: DefaultConfigurationUseCase(configurationRepository: DefaultConfigurationRepository()))
+        self.breakUpViewController.viewModel = vm
+        self.breakUpViewController.modalPresentationStyle = .overFullScreen
         self.navigationController.present(breakUpViewController, animated: true)
         self.navigationController.tabBarController?.tabBar.isHidden = true
     }
     
     func dismiss() {
-        print("dismiss")
-        self.childCoordinators.removeAll()
-        self.navigationController.dismiss(animated: true)
+        childCoordinators.removeAll()
+        navigationController.dismiss(animated: true)
     }
 }

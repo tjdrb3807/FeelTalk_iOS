@@ -11,9 +11,10 @@ import RxSwift
 import RxCocoa
 
 final class WithdrawalViewController: UIViewController {
+    var viewModel: WithdrawalViewModel!
     private let disposeBag = DisposeBag()
     
-    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .withdrawal) }()
+    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .withdrawal, isRootView: true) }()
     
     private lazy var descriptionView: WithdrawalDescriptionView = { WithdrawalDescriptionView() }()
     
@@ -24,13 +25,25 @@ final class WithdrawalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.bind()
+        self.bind(to: viewModel)
         self.setConfigurations()
         self.addSubComponents()
         self.setConstraints()
     }
     
-    private func bind() {
+    private func bind(to viewModel: WithdrawalViewModel) {
+        let input = WithdrawalViewModel.Input(
+            viewWillAppear: rx.viewWillAppear,
+            dismissButtonTapObserver: navigationBar.leftButton.rx.tap,
+            withdrawalButtonTapObserver: terminationButton.rx.tap)
+
+        let output = viewModel.transfer(input: input)
+        
+        output.terminationStatementType
+            .bind(to: terminationStatementView.type)
+            .disposed(by: disposeBag)
+        
+        
         terminationStatementView.isConfirmButtonCheked
             .withUnretained(self)
             .bind { vc, state in
@@ -48,7 +61,7 @@ final class WithdrawalViewController: UIViewController {
     }
     
     private func setConstraints() {
-        makeNavigationBarConstratins()
+        navigationBar.makeNavigationBarConstraints()
         makeDescriptionViewConstraints()
         makeTerminationStatementViewConstraints()
         makeTerminationButtonConstraints()
@@ -56,14 +69,6 @@ final class WithdrawalViewController: UIViewController {
 }
 
 extension WithdrawalViewController {
-    private func makeNavigationBarConstratins() {
-        navigationBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(navigationBar.snp.top).offset(CustomNavigationBarNameSpace.height)
-        }
-    }
-    
     private func makeDescriptionViewConstraints() {
         descriptionView.snp.makeConstraints {
             $0.top.equalTo(navigationBar.snp.bottom).offset(WithdrawalDescriptionViewNameSpace.topOffset)
@@ -101,10 +106,13 @@ struct WithdrawalViewController_Previews: PreviewProvider {
     
     struct WithdrawalViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
-            let viewController = WithdrawalViewController()
-            viewController.terminationStatementView.type.accept(.withdrawal)
+            let vc = WithdrawalViewController()
+            let vm = WithdrawalViewModel(coordinator: DefaultWithdrawalCoordinator(UINavigationController()))
             
-            return viewController
+            vc.viewModel = vm
+            vc.terminationStatementView.type.accept(.withdrawal)
+            
+            return vc
         }
         
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

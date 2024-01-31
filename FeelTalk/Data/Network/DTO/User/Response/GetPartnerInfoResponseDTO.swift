@@ -9,14 +9,17 @@ import Foundation
 
 struct GetPartnerInfoResponseDTO: Decodable {
     let nickname: String
+    let snsType: String
     
     enum CodingKeys: String, CodingKey {
         case nickname
+        case snsType
     }
 }
 
 extension GetPartnerInfoResponseDTO {
     func toDomain() -> PartnerInfo {
-        .init(nickname: nickname)
+        .init(nickname: nickname,
+              snsType: SNSType(rawValue: snsType)!)
     }
 }

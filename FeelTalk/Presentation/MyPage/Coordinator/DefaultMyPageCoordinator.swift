@@ -20,35 +20,39 @@ final class DefaultMyPageCoordinator: MyPageCoordinator {
     }
     
     func start() {
-        self.navigationController.tabBarController?.tabBar.isHidden = false
         self.myPageViewController.viewModel = MyPageViewModel(coordinator: self,
                                                               userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
-        self.navigationController.pushViewController(myPageViewController, animated: true)
+        self.navigationController.tabBarController?.tabBar.isHidden = false
+        self.navigationController.pushViewController(myPageViewController, animated: false)
     }
     
     func showChatFlow() {
         let chatCoordinator = DefaultChatCooridnator(self.navigationController)
+        
+        self.childCoordinators.append(chatCoordinator)
         chatCoordinator.finishDelegate = self
-        childCoordinators.append(chatCoordinator)
         chatCoordinator.start()
     }
     
     func showPartnerInfoFlow() {
         let partnerInfoCoordinator = DefaultPartnerInfoCoordinator(self.navigationController)
-        partnerInfoCoordinator.finishDelegate = self
+        
         childCoordinators.append(partnerInfoCoordinator)
+        partnerInfoCoordinator.finishDelegate = self
         partnerInfoCoordinator.start()
     }
     
-    func showSettingListFlow() {
-        let settingListCoordinator = DefaultSettionListCoordinator(self.navigationController)
-        settingListCoordinator.finishDelegate = self
-        childCoordinators.append(settingListCoordinator)
-        settingListCoordinator.start()
+    func showSettingsFlow() {
+        let settingsCoordinator = DefaultSettingsCoordinator(self.navigationController)
+        
+        self.childCoordinators.append(settingsCoordinator)
+        settingsCoordinator.finishDelegate = self
+        settingsCoordinator.start()
     }
     
     func showInquiryFlow() {
         let inquiryCoordinator = DefaultInquiryCoordinator(self.navigationController)
+        
         inquiryCoordinator.finishDelegate = self
         childCoordinators.append(inquiryCoordinator)
         inquiryCoordinator.start()
@@ -56,6 +60,7 @@ final class DefaultMyPageCoordinator: MyPageCoordinator {
     
     func showSuggestionsFlow() {
         let suggestionsCoordinator = DefaultSuggestionsCoordinator(self.navigationController)
+        
         suggestionsCoordinator.finishDelegate = self
         childCoordinators.append(suggestionsCoordinator)
         suggestionsCoordinator.start()
@@ -69,6 +74,8 @@ extension DefaultMyPageCoordinator: CoordinatorFinishDelegate {
             self.myPageViewController.viewModel.showBottomSheet.accept(.inquiry)
         case .suggestions:
             self.myPageViewController.viewModel.showBottomSheet.accept(.suggestions)
+        case .partnerInfo:
+            navigationController.tabBarController?.tabBar.isHidden = false
         default:
             break
         }

@@ -42,6 +42,7 @@ final class MyPageViewModel {
         /// 나의 정보 가져기
         /// 파트너 정보 가져오기
         input.viewWillAppear
+            .take(1)
             .withUnretained(self)
             .bind { vm, _ in
                 vm.userUseCase.getMyInfo()
@@ -65,12 +66,12 @@ final class MyPageViewModel {
                 vm.coordinator?.showPartnerInfoFlow()
             }.disposed(by: disposeBag)
         
-        /// ConfigurationCoordiantor 화면 전환
+        /// SettingsCoordiantor 화면 전환
         input.tapTableViewCell
             .filter { $0 == .configurationSettings }
             .withUnretained(self)
             .bind { vm, _ in
-                vm.coordinator?.showSettingListFlow()
+                vm.coordinator?.showSettingsFlow()
             }.disposed(by: disposeBag)
         
         /// InquiryCoordinator 화면 전환

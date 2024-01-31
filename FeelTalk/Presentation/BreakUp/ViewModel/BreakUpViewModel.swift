@@ -20,7 +20,7 @@ final class BreakUpViewModel {
     
     struct Input {
         let viewWillAppear: ControlEvent<Bool>
-        let tapDismissButton: ControlEvent<Void>
+        let navigationBarLeftButtonTapObserver: ControlEvent<Void>
     }
     
     struct Output {
@@ -46,10 +46,10 @@ final class BreakUpViewModel {
                 vm.terminationType.accept(.breakUp)
             }.disposed(by: disposeBag)
         
-        input.tapDismissButton
+        input.navigationBarLeftButtonTapObserver
+            .asObservable()
             .withUnretained(self)
             .bind { vm, _ in
-                print("tap")
                 vm.coordinator?.dismiss()
             }.disposed(by: disposeBag)
         

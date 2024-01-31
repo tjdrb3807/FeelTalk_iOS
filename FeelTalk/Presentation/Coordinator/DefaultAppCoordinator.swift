@@ -27,30 +27,34 @@ final class DefaultAppCoordinator: AppCoordinator {
     
     func showSplashFlow() {
         let splashCoordinator = DefaultSplashCoordinator(self.navigationController)
+        
+        childCoordinators.append(splashCoordinator)
         splashCoordinator.finishDelegate = self
         splashCoordinator.start()
-        childCoordinators.append(splashCoordinator)
     }
     
     func showOnboardingFlow() {
         let onboardingCoordinator = DefaultOnboardingCoordinator(self.navigationController)
+        
+        childCoordinators.append(onboardingCoordinator)
         onboardingCoordinator.finishDelegate = self
         onboardingCoordinator.start()
-        childCoordinators.append(onboardingCoordinator)
     }
     
     func showLoginFlow() {
         let loginCoordinator = DefaultLoginCoordinator(self.navigationController)
+        
+        childCoordinators.append(loginCoordinator)
         loginCoordinator.finishDelegate = self
         loginCoordinator.start()
-        childCoordinators.append(loginCoordinator)
     }
     
     func showTabBarFlow() {
         let tabBarCoordinator = DefaultMainTabBarCoordinator(self.navigationController)
+        
+        childCoordinators.append(tabBarCoordinator)
         tabBarCoordinator.finishDelegate = self
         tabBarCoordinator.start()
-        childCoordinators.append(tabBarCoordinator)
     }
 }
 

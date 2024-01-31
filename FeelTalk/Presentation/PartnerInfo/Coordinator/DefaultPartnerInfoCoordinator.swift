@@ -20,16 +20,17 @@ final class DefaultPartnerInfoCoordinator: PartnerInfoCoordinator {
     }
     
     func start() {
-        self.partnerInfoViewController.viewModel = PartnerInfoViewModel(coordinator: self)
+        self.partnerInfoViewController.viewModel = PartnerInfoViewModel(coordinator: self,
+                                                                        userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
         self.navigationController.pushViewController(partnerInfoViewController.self, animated: true)
         self.navigationController.tabBarController?.tabBar.isHidden = true
-        self.navigationController.navigationBar.isHidden = true
     }
     
     func showBreakUpFlow() {
         let breakUpCoordinator = DefaultBreakUpCoordinator(self.navigationController)
-        breakUpCoordinator.finishDelegate = self
+        
         childCoordinators.append(breakUpCoordinator)
+        breakUpCoordinator.finishDelegate = self
         breakUpCoordinator.start()
     }
     

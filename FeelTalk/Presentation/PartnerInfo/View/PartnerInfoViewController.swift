@@ -14,7 +14,7 @@ final class PartnerInfoViewController: UIViewController {
     var viewModel: PartnerInfoViewModel!
     private let disposeBag = DisposeBag()
     
-    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .myPartner) }()
+    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .myPartner, isRootView: false) }()
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -39,7 +39,7 @@ final class PartnerInfoViewController: UIViewController {
     
     private lazy var topSpacingView: UIView = { UIView() }()
     
-    fileprivate lazy var partnerInfoView: PartnerInfoView = { PartnerInfoView() }()  // TODO: private 으로
+    private lazy var partnerInfoView: PartnerInfoView = { PartnerInfoView() }()  
     
     private lazy var breakUpButton: PartnerInfoBreakUpButton = { PartnerInfoBreakUpButton() }()
     
@@ -53,11 +53,16 @@ final class PartnerInfoViewController: UIViewController {
     }
     
     private func bind(to viewModel: PartnerInfoViewModel) {
-        let input = PartnerInfoViewModel.Input(viewDidDisappear: self.rx.viewDidDisappear,
-                                               tapPopButton: navigationBar.leftButton.rx.tap,
-                                               tapBreakUpButton: breakUpButton.rx.tap)
+        let input = PartnerInfoViewModel.Input(viewWillAppearObserver: rx.viewWillAppear,
+                                               viewDidDisappearObserver: rx.viewDidDisappear,
+                                               popButtonTapObserver: navigationBar.leftButton.rx.tap,
+                                               breakButtonTapObserver: breakUpButton.rx.tap)
         
-        let _ = viewModel.transfer(input: input)
+        let output = viewModel.transfer(input: input)
+        
+        output.partnerModel
+            .bind(to: partnerInfoView.model)
+            .disposed(by: disposeBag)
     }
     
     private func setConfigurations() {
@@ -141,9 +146,9 @@ struct PartnerInfoViewController_Preveiws: PreviewProvider {
     struct PartnerInfoViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
             let viewController = PartnerInfoViewController()
-            let viewModel = PartnerInfoViewModel(coordinator: DefaultPartnerInfoCoordinator(UINavigationController()))
+            let viewModel = PartnerInfoViewModel(coordinator: DefaultPartnerInfoCoordinator(UINavigationController()),
+                                                 userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
             
-            viewController.partnerInfoView.model.accept(.init(nickname: "partner"))
             viewController.viewModel = viewModel
             
             return viewController

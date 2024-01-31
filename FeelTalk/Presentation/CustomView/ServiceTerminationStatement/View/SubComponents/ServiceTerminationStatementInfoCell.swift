@@ -27,6 +27,7 @@ final class ServiceTerminationStatementInfoCell: UIStackView {
         label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
                             size: ServiceTerminationStatementInfoCellNameSpace.descriptionLabelTextSize)
         label.backgroundColor = .clear
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         
         return label
     }()

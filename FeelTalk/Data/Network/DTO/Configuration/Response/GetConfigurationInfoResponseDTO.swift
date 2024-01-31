@@ -9,17 +9,14 @@ import Foundation
 
 struct GetConfigurationInfoResponseDTO: Decodable {
     let isLock: Bool
-    let language: String
     
     enum CodingKeys: String, CodingKey {
-        case isLock
-        case language
+        case isLock = "lock"
     }
 }
 
 extension GetConfigurationInfoResponseDTO {
     func toDomain() -> ConfigurationInfo {
-        .init(isLock: isLock,
-              language: language)
+        .init(isLock: isLock)
     }
 }
