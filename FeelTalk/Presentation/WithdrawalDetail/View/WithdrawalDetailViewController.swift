@@ -47,12 +47,11 @@ final class WithdrawalDetailViewController: UIViewController {
         button.setTitle(WithdrawalDetailViewNameSpace.withdrawalButtonTitleText, for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.setTitleColor(.white, for: .disabled)
-        button.backgroundColor = UIColor(named: CommonColorNameSpace.gray400)
+        button.titleLabel?.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
+                                         size: WithdrawalDetailViewNameSpace.withdrawalButtonTitleTextSize)
         button.layer.cornerRadius = WithdrawalDetailViewNameSpace.withdrawalButtonCornerRadius
-        button.layer.borderColor = UIColor.clear.cgColor
         button.layer.borderWidth = WithdrawalDetailViewNameSpace.withdrawalButtonBorderWidth
         button.clipsToBounds = true
-        button.isEnabled = false
 
         return button
     }()
@@ -75,11 +74,18 @@ final class WithdrawalDetailViewController: UIViewController {
             cellTapObserver: reasonsSelectionView.cellTapObserver.asObservable(),
             popButtonTapObserver: navigationBar.leftButton.rx.tap)
 
-        let outout = viewModel.transfer(input: input)
+        let output = viewModel.transfer(input: input)
         
-        outout.items
+        output.items
             .bind(to: reasonsSelectionView.modelList)
             .disposed(by: disposeBag)
+        
+        output.withdrawalButtonState
+            .withUnretained(self)
+            .bind { vc, state in
+                vc.withdrawalButton.rx.isEnabled.onNext(state)
+                vc.updateWithdrawalButtonProperties(with: state)
+            }.disposed(by: disposeBag)
         
         reasonsSelectionView.selectedCell
             .withUnretained(self)
@@ -166,7 +172,18 @@ extension WithdrawalDetailViewController {
             $0.height.equalTo(WithdrawalDetailViewNameSpace.withdrawalButtonHeight)
         }
     }
+}
 
+extension WithdrawalDetailViewController {
+    private func updateWithdrawalButtonProperties(with isEnabled: Bool) {
+        if isEnabled {
+            withdrawalButton.rx.backgroundColor.onNext(.white)
+            withdrawalButton.layer.rx.borderColor.onNext(UIColor.black.cgColor)
+        } else {
+            withdrawalButton.rx.backgroundColor.onNext(UIColor(named: CommonColorNameSpace.gray400))
+            withdrawalButton.layer.rx.borderColor.onNext(UIColor.clear.cgColor)
+        }
+    }
 }
 
 #if DEBUG

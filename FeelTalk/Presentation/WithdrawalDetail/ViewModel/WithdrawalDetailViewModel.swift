@@ -14,7 +14,7 @@ final class WithdrawalDetailViewModel {
     private let disposeBag = DisposeBag()
     
     private let itemTypes = BehaviorRelay<[WithdrawalReasonsType]>(value: [.breakUp, .noFunction, .bugOrError, .etc])
-    private let selectedReasonObserver = BehaviorRelay<WithdrawalReasonsType>(value: .none)
+    private let selectedReasonObserver = PublishRelay<WithdrawalReasonsType>()
     
     struct Input {
         let viewWillAppear: ControlEvent<Bool>
@@ -41,6 +41,12 @@ final class WithdrawalDetailViewModel {
             .bind(to: output.items)
             .disposed(by: disposeBag)
         
+        input.viewWillAppear
+            .asObservable()
+            .map { _ -> WithdrawalReasonsType in .none }
+            .bind(to: selectedReasonObserver)
+            .disposed(by: disposeBag)
+        
         input.cellTapObserver
             .bind(to: selectedReasonObserver)
             .disposed(by: disposeBag)
@@ -54,7 +60,7 @@ final class WithdrawalDetailViewModel {
             }.disposed(by: disposeBag)
         
         selectedReasonObserver
-            .map { type -> Bool in type == .none ? false : true }
+            .map { type -> Bool in type != .none ? true : false }
             .bind(to: output.withdrawalButtonState)
             .disposed(by: disposeBag)
         
