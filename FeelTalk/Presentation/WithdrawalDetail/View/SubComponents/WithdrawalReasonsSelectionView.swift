@@ -91,8 +91,10 @@ final class WithdrawalReasonsSelectionView: UIStackView {
                         .when(.recognized)
                         .asObservable()
                         .map { _ in model }
-                        .bind(to: v.selectedCell)
-                        .disposed(by: v.disposeBag)
+                        .bind { model in
+                            v.selectedCell.accept(model)
+                            v.cellTapObserver.accept(model)
+                        }.disposed(by: v.disposeBag)
                     v.cellStackView.addArrangedSubview(cell)
                     
                     if model == .etc {
