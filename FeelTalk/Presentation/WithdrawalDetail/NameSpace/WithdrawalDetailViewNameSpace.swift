@@ -21,6 +21,8 @@ enum WithdrawalDetailViewNameSpace {
     static let withdrawalButtonBorderWidth: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 0.26
     /// 59.0
     static let withdrawalButtonHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 7.26
+    /// 18,0
+    static let withdrawalButtonTitleTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.8
     
     // MARK: BottomSpacing
     /// 42.0
