@@ -9,8 +9,8 @@ import Foundation
 import Alamofire
 
 enum ChatAPI {
-    case getLastPageNo(accessToken: String)
-    case getChatList(accessToken: String, pnageNo: Int)
+    case getLastPageNo
+    case getChatList(pnageNo: Int)
 }
 
 extension ChatAPI: Router, URLRequestConvertible {
@@ -19,9 +19,9 @@ extension ChatAPI: Router, URLRequestConvertible {
     var path: String {
         switch self {
         case .getLastPageNo:
-            return "api/v1/chatting-message/last/page-no"
+            return "/api/v1/chatting-message/last/page-no"
         case .getChatList:
-            return "api/v1/chatting-messages"
+            return "/api/v1/chatting-messages"
         }
     }
     
@@ -30,17 +30,16 @@ extension ChatAPI: Router, URLRequestConvertible {
         case .getLastPageNo:
             return .get
         case .getChatList:
-            return .get
+            return .post
         }
     }
     
     var header: [String : String] {
         switch self {
-        case .getLastPageNo(accessToken: let accessToken),
-            .getChatList(accessToken: let accessToken, pnageNo: _):
+        case .getLastPageNo,
+            .getChatList(pnageNo: _):
             return ["Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization": accessToken]
+                    "Accept": "application/json"]
         }
     }
     
@@ -48,7 +47,7 @@ extension ChatAPI: Router, URLRequestConvertible {
         switch self {
         case .getLastPageNo:
             return nil
-        case .getChatList(accessToken: _, pnageNo: let pageNo):
+        case .getChatList(pnageNo: let pageNo):
             return ["pageNo": pageNo]
         }
     }

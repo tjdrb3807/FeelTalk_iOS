@@ -16,12 +16,22 @@ final class DefaultSettingsCoordinator: SettingsCoordinator {
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
+        self.navigationController.interactivePopGestureRecognizer?.isEnabled = false
         self.settingsViewController = SettingsViewController()
     }
     
     func start() {
-        self.settingsViewController.viewModel = SettingsViewModel(coordinator: self,
-                                                             configurationUseCase: DefaultConfigurationUseCase(configurationRepository: DefaultConfigurationRepository()))
+        self.settingsViewController.viewModel = SettingsViewModel(
+            coordinator: self,
+            configurationUseCase: DefaultConfigurationUseCase(
+                configurationRepository: DefaultConfigurationRepository()),
+            loginUseCase: DefaultLoginUseCase(
+                loginRepository: DefaultLoginRepository(),
+                appleRepository: DefaultAppleRepository(),
+                googleRepositroy: DefaultGoogleRepository(),
+                naverRepository: DefaultNaverLoginRepository(),
+                kakaoRepository: DefaultKakaoRepository(),
+                userRepository: DefaultUserRepository()))
         self.navigationController.tabBarController?.tabBar.isHidden = true
         self.navigationController.pushViewController(settingsViewController, animated: true)
     }
@@ -44,6 +54,11 @@ final class DefaultSettingsCoordinator: SettingsCoordinator {
         childCoordinators.removeAll()
         navigationController.tabBarController?.tabBar.isHidden = false
         navigationController.popToRootViewController(animated: true)
+    }
+    
+    func dismissTabbarFlow() {
+        childCoordinators.removeAll()
+        finishDelegate?.coordinatorDidFinish(childCoordinator: self)
     }
 }
 

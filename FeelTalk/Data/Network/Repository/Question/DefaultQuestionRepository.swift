@@ -11,9 +11,11 @@ import RxSwift
 import RxCocoa
 
 final class DefaultQuestionRepository: QuestionRepository {
-    func answerQuestion(accessToken: String, requestDTO: AnswerQuestionRequestDTO) -> Single<Bool> {
+    func answerQuestion(requestDTO: AnswerQuestionRequestDTO) -> Single<Bool> {
         Single.create { observer -> Disposable in
-            AF.request(QuestionAPI.answerQuestion(accessToken: accessToken, requestDTO: requestDTO))
+            AF.request(
+                QuestionAPI.answerQuestion(requestDTO: requestDTO),
+                interceptor: DefaultRequestInterceptor())
                 .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
@@ -33,9 +35,11 @@ final class DefaultQuestionRepository: QuestionRepository {
         }
     }
     
-    func getLatestQuestionPageNo(accessToken: String) -> Single<QuestionPage> {
+    func getLatestQuestionPageNo() -> Single<QuestionPage> {
         return Single.create { observer -> Disposable in
-            AF.request(QuestionAPI.getLatestQuestionPageNo(accessToken: accessToken))
+            AF.request(
+                QuestionAPI.getLatestQuestionPageNo,
+                interceptor: DefaultRequestInterceptor())
                 .responseDecodable(of: BaseResponseDTO<GetLatestQuestionPageNoResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
@@ -56,9 +60,11 @@ final class DefaultQuestionRepository: QuestionRepository {
         }
     }
     
-    func getQuestion(accessToken: String, index: Int) -> Single<Question> {
+    func getQuestion(index: Int) -> Single<Question> {
         return Single.create { observer -> Disposable in
-            AF.request(QuestionAPI.getQuestion(accessToken: accessToken, index: index))
+            AF.request(
+                QuestionAPI.getQuestion(index: index),
+                interceptor: DefaultRequestInterceptor())
                 .responseDecodable(of: BaseResponseDTO<QuestionBaseResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
@@ -78,9 +84,11 @@ final class DefaultQuestionRepository: QuestionRepository {
         }
     }
     
-    func getQuestionList(accessToken: String, questionPage: QuestionPage) -> Single<[Question]> {
+    func getQuestionList(questionPage: QuestionPage) -> Single<[Question]> {
         return Single.create { observer -> Disposable in
-            AF.request(QuestionAPI.getQuestionList(accessToken: accessToken, questionPage: questionPage))
+            AF.request(
+                QuestionAPI.getQuestionList(questionPage: questionPage),
+                interceptor: DefaultRequestInterceptor())
                 .responseDecodable(of: BaseResponseDTO<QuestionListResponseDTO?>.self) { reseponse in
                     switch reseponse.result {
                     case .success(let responseDTO):
@@ -102,9 +110,11 @@ final class DefaultQuestionRepository: QuestionRepository {
         }
     }
     
-    func getTodayQuestion(accessToken: String) -> Single<Question> {
+    func getTodayQuestion() -> Single<Question> {
         return Single.create { observer -> Disposable in
-            AF.request(QuestionAPI.getTodayQuestion(accessToken: accessToken))
+            AF.request(
+                QuestionAPI.getTodayQuestion,
+                interceptor: DefaultRequestInterceptor())
                 .responseDecodable(of: BaseResponseDTO<QuestionBaseResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
@@ -125,9 +135,11 @@ final class DefaultQuestionRepository: QuestionRepository {
         }
     }
     
-    func pressForAnswer(_ accessToken: String, _ requestDTO: PressForAnswerRequestDTO) -> Single<Chat> {
+    func pressForAnswer(_ requestDTO: PressForAnswerRequestDTO) -> Single<Chat> {
         Single.create { observer -> Disposable in
-            AF.request(QuestionAPI.pressForAnswer(accessToken: accessToken, requestDTO: requestDTO))
+            AF.request(
+                QuestionAPI.pressForAnswer(requestDTO: requestDTO),
+                interceptor: DefaultRequestInterceptor())
                 .responseDecodable(of: BaseResponseDTO<PressForAnswerResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):

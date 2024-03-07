@@ -9,12 +9,12 @@ import Foundation
 import Alamofire
 
 enum QuestionAPI {
-    case answerQuestion(accessToken: String, requestDTO: AnswerQuestionRequestDTO)
-    case getLatestQuestionPageNo(accessToken: String)
-    case getQuestion(accessToken: String, index: Int)
-    case getQuestionList(accessToken: String, questionPage: QuestionPage)
-    case getTodayQuestion(accessToken: String)
-    case pressForAnswer(accessToken: String, requestDTO: PressForAnswerRequestDTO)
+    case answerQuestion(requestDTO: AnswerQuestionRequestDTO)
+    case getLatestQuestionPageNo
+    case getQuestion(index: Int)
+    case getQuestionList(questionPage: QuestionPage)
+    case getTodayQuestion
+    case pressForAnswer(requestDTO: PressForAnswerRequestDTO)
 }
 
 extension QuestionAPI: Router, URLRequestConvertible {
@@ -26,7 +26,7 @@ extension QuestionAPI: Router, URLRequestConvertible {
             return "/api/v1/couple-question"
         case .getLatestQuestionPageNo:
             return "/api/v1/couple-question/last/page-no"
-        case .getQuestion(accessToken: _, index: let index):
+        case .getQuestion(index: let index):
             return "/api/v1/couple-question/\(index)"
         case .getQuestionList:
             return "/api/v1/couple-questions"
@@ -50,28 +50,27 @@ extension QuestionAPI: Router, URLRequestConvertible {
     
     var header: [String : String] {
         switch self {
-        case .answerQuestion(accessToken: let accessToken, requestDTO: _),
-                .getLatestQuestionPageNo(accessToken: let accessToken),
-                .getQuestion(accessToken: let accessToken, index: _),
-                .getQuestionList(accessToken: let accessToken, questionPage: _),
-                .getTodayQuestion(accessToken: let accessToken),
-                .pressForAnswer(accessToken: let accessToken, requestDTO: _):
+        case .answerQuestion,
+                .getLatestQuestionPageNo,
+                .getQuestion,
+                .getQuestionList,
+                .getTodayQuestion,
+                .pressForAnswer:
             return ["Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization": accessToken]
+                    "Accept": "application/json"]
         }
     }
     
     var parameters: [String : Any]? {
         switch self {
-        case .answerQuestion(accessToken: _, requestDTO: let requestDTO):
+        case .answerQuestion(requestDTO: let requestDTO):
             return ["index": requestDTO.index,
                     "myAnswer": requestDTO.myAnswer]
         case .getLatestQuestionPageNo, .getQuestion, .getTodayQuestion:
             return nil
-        case .getQuestionList(accessToken: _, questionPage: let questionPage):
+        case .getQuestionList(questionPage: let questionPage):
             return ["pageNo": questionPage.pageNo]
-        case .pressForAnswer(accessToken: _, requestDTO: let requestDTO):
+        case .pressForAnswer(requestDTO: let requestDTO):
             return ["index": requestDTO.index]
         }
     }

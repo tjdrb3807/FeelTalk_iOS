@@ -10,9 +10,19 @@ import RxSwift
 import RxCocoa
 
 protocol ConfigurationRepository {
-    func getConfigurationInfo(accessToken: String) -> Single<ConfigurationInfo>
+    func getConfigurationInfo() -> Single<ConfigurationInfo>
     
-    func comment(accessToken: String, with data: InquiryOrSuggestions) -> Single<Bool>
+    func comment(with data: InquiryOrSuggestions) -> Single<Bool>
     
-    func getServiceDataTotalCount(accessToken: String) -> Single<ServiceDataCount>
+    func getServiceDataTotalCount() -> Single<ServiceDataCount>
+    
+    func getLockNumber() -> Single<String>
+    
+    func setLockNumber(requestDTO: LockNumberSettingsRequestDTO) -> Single<Bool>
+    
+    func setUnlock() -> Single<Bool>
+    
+    func resetLockNumber(_ lockNumber: String) -> Single<Bool>
+    
+    func getLockNumberHintType() -> Single<LockNumberHintType>
 }

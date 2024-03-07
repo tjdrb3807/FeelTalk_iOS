@@ -17,9 +17,9 @@ enum CoordinatorType {
     case challengeDetail
     case settingList, inquiry, suggestions
     case partnerInfo, breakUp
-    case lockScreenSettings, lockingPassword
+    case lockScreen, lockScreenSettings, lockNumberPad, lockNumberHint, lockNumberFind, lockNumberInitRequest
     case accountInfoSettings, withdrawal, withdrawalDetail
-    case chat
+    case chat, chatFuncMenu
     case alert
     case signal
 }

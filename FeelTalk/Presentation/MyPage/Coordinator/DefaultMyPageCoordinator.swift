@@ -76,6 +76,9 @@ extension DefaultMyPageCoordinator: CoordinatorFinishDelegate {
             self.myPageViewController.viewModel.showBottomSheet.accept(.suggestions)
         case .partnerInfo:
             navigationController.tabBarController?.tabBar.isHidden = false
+        case .settingList:
+            self.childCoordinators.removeAll()
+            finishDelegate?.coordinatorDidFinish(childCoordinator: self)
         default:
             break
         }

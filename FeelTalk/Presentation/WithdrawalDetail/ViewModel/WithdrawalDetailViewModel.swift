@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import RxKeyboard
 
 final class WithdrawalDetailViewModel {
     private weak var coordinator: WithdrawalDetailCoordinator?
@@ -20,12 +21,15 @@ final class WithdrawalDetailViewModel {
         let viewWillAppear: ControlEvent<Bool>
         let cellTapObserver: Observable<WithdrawalReasonsType>
         let popButtonTapObserver: ControlEvent<Void>
+        let withdrawalButtonTapObserver: ControlEvent<Void>
     }
     
     struct Output {
         let items = PublishRelay<[WithdrawalReasonsType]>()
         let selectedCell = PublishRelay<WithdrawalReasonsType>()
         let withdrawalButtonState = PublishRelay<Bool>()
+        let popUpAlert = PublishRelay<CustomAlertType>()
+        let keyboardHeight = PublishRelay<CGFloat>()
     }
     
     init(coordinator: WithdrawalDetailCoordinator) {
@@ -59,9 +63,21 @@ final class WithdrawalDetailViewModel {
                 vm.coordinator?.pop()
             }.disposed(by: disposeBag)
         
+        input.withdrawalButtonTapObserver
+            .asObservable()
+            .map { _ -> CustomAlertType in .withdrawal }
+            .bind(to: output.popUpAlert)
+            .disposed(by: disposeBag)
+        
         selectedReasonObserver
             .map { type -> Bool in type != .none ? true : false }
             .bind(to: output.withdrawalButtonState)
+            .disposed(by: disposeBag)
+        
+        RxKeyboard.instance.visibleHeight
+            .asObservable()
+            .filter { 0.0 <= $0 }
+            .bind(to: output.keyboardHeight)
             .disposed(by: disposeBag)
         
         

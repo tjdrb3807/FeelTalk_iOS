@@ -32,6 +32,7 @@ final class DefaultInquiryCoordinator: InquiryCoordinator {
     func dismiss() {
         self.childCoordinators.removeAll()
         self.navigationController.dismiss(animated: true)
+        self.navigationController.tabBarController?.tabBar.isHidden = false
     }
     
     func finish() {

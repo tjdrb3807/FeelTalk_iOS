@@ -54,12 +54,12 @@ final class CustomSwitchButton: UIButton {
                 v.updateState(with: state)
             }.disposed(by: disposeBag)
         
-        self.rx.tap
-            .withLatestFrom(isState)
-            .withUnretained(self)
-            .bind { v, state in
-                v.isState.accept(!state)
-            }.disposed(by: disposeBag)
+//        self.rx.tap
+//            .withLatestFrom(isState)
+//            .withUnretained(self)
+//            .bind { v, state in
+//                v.isState.accept(!state)
+//            }.disposed(by: disposeBag)
     }
     
     private func setConfigurations() {

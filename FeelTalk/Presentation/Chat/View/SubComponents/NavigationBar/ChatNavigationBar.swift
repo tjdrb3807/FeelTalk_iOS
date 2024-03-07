@@ -24,7 +24,7 @@ final class ChatNavigationBar: UIView {
         return label
     }()
     
-    private lazy var menuButton: UIButton = {
+    lazy var menuButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: ChatNavigationBarNameSpace.menuButtonImage),
                         for: .normal)

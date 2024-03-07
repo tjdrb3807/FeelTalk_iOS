@@ -17,4 +17,5 @@ enum CustomAlertType {
     case deregisterChallenge
     case removeChallnege
     case cancelCellengeModifications
+    case withdrawal
 }

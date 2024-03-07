@@ -13,4 +13,6 @@ protocol SettingsCoordinator: Coordinator {
     func showLockScreenSettingsFlow()
     
     func showAccountInfoSettingsFlow()
+    
+    func dismissTabbarFlow()
 }

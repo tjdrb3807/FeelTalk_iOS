@@ -27,24 +27,24 @@ final class DefaultUserUseCase: UserUseCase {
     
     func getInviteCode() -> Observable<String> {
         Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            guard let self = self else { return Disposables.create() }
             
-            userRepository.getInviteCode(accessToken: accessToken)
+            userRepository
+                .getInviteCode()
                 .asObservable()
                 .subscribe(onNext: { code in
                     observer.onNext(code)
                 }).disposed(by: disposeBag)
-
+            
             return Disposables.create()
         }
     }
     
     func getMyInfo() -> Observable<MyInfo> {
         Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String  else { return Disposables.create() }
-            userRepository.getMyInfo(accessToken: accessToken)
+            guard let self = self else { return Disposables.create() }
+            userRepository
+                .getMyInfo()
                 .asObservable()
                 .bind(onNext: { info in
                     observer.onNext(info)
@@ -56,9 +56,9 @@ final class DefaultUserUseCase: UserUseCase {
     
     func getPartnerInfo() -> Observable<PartnerInfo> {
         Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-            userRepository.getPartnerInfo(accessToken: accessToken)
+            guard let self = self else { return Disposables.create() }
+            userRepository
+                .getPartnerInfo()
                 .asObservable()
                 .bind(onNext: { info in
                     observer.onNext(info)

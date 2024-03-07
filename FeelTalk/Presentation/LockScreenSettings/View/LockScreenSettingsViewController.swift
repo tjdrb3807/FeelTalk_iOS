@@ -1,0 +1,169 @@
+//
+//  LockScreenSettingsViewController.swift
+//  FeelTalk
+//
+//  Created by 전성규 on 2024/01/29.
+//
+
+import UIKit
+import SnapKit
+import RxSwift
+import RxCocoa
+import RxDataSources
+
+struct LockScreenSettingsSection {
+    var items: [Item]
+}
+
+extension LockScreenSettingsSection: SectionModelType {
+    typealias Item = SettingsModel
+    
+    init(original: LockScreenSettingsSection, items: [SettingsModel]) {
+        self = original
+        self.items = items
+    }
+}
+
+final class LockScreenSettingsViewController: UIViewController {
+    var viewModel: LockScreenSettingsViewModel!
+    private let disposeBag = DisposeBag()
+    
+    let dataSource = RxTableViewSectionedReloadDataSource<LockScreenSettingsSection>(configureCell: { ds, tv, indexPath, item in
+        if item.category == .lock {
+            guard let cell = tv.dequeueReusableCell(withIdentifier: "LockScreenSettingsCell") as? LockScreenSettingsCell else { return UITableViewCell() }
+            cell.modelObserver.accept(item)
+            cell.selectionStyle = .none
+            
+            return cell
+        } else if item.category == .changePassword {
+            guard let cell = tv.dequeueReusableCell(withIdentifier: SettingsCellNameSpace.identifier) as? SettingsCell else { return UITableViewCell() }
+            cell.modelObserver.accept(item)
+            cell.selectionStyle = .none
+            
+            return cell
+        }
+        
+        return UITableViewCell()
+    })
+    
+    private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .lockScreenSettings, isRootView: false) }()
+    
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.register(SettingsCell.self, forCellReuseIdentifier: SettingsCellNameSpace.identifier)
+        tableView.register(LockScreenSettingsCell.self, forCellReuseIdentifier: "LockScreenSettingsCell")
+        
+        tableView.separatorStyle = .singleLine
+        tableView.separatorColor = UIColor(named: CommonColorNameSpace.gray100)
+        tableView.separatorInset = UIEdgeInsets(top: 0.0,
+                                                left: 0.0,
+                                                bottom: 0.0,
+                                                right: 0.0)
+        tableView.backgroundColor = .clear
+        
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        
+        return tableView
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.bind(to: viewModel)
+        self.setProperties()
+        self.addSubComponents()
+        self.setConstraints()
+    }
+    
+    private func bind(to viewModel: LockScreenSettingsViewModel) {
+        let input = LockScreenSettingsViewModel.Input(
+            viewWillAppear: rx.viewWillAppear,
+            cellTapObsercer: tableView.rx.modelSelected(LockScreenSettingsSection.Item.self),
+            popButtonTapObserver: navigationBar.leftButton.rx.tap)
+        
+        let output = viewModel.transfer(input: input)
+        
+        output.sections
+            .asDriver(onErrorJustReturn: [])
+            .drive(tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        output.popToastMessage
+            .withUnretained(self)
+            .bind { vc, message in
+                guard !vc.view.subviews.contains(where: { $0 is CustomToastMessage }) else { return }
+                let toastMessage = CustomToastMessage(message: message)
+                
+                vc.view.addSubview(toastMessage)
+                toastMessage.setConstraints()
+                vc.view.layoutIfNeeded()
+                
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                    toastMessage.show()
+                }
+                
+            }.disposed(by: disposeBag)
+    }
+    
+    private func setProperties() {
+        view.backgroundColor = .white
+    }
+    
+    private func addSubComponents() {
+        addViewSubComponents()
+    }
+    
+    private func setConstraints() {
+        navigationBar.makeNavigationBarConstraints()
+        makeTableViewConstraints()
+    }
+}
+
+extension LockScreenSettingsViewController {
+    private func addViewSubComponents() {
+        [navigationBar, tableView].forEach { view.addSubview($0) }
+    }
+    
+    private func makeTableViewConstraints() {
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+    }
+}
+
+extension LockScreenSettingsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        56.0
+    }
+}
+
+#if DEBUG
+
+import SwiftUI
+
+struct LockScreenSettingsViewController_Previews: PreviewProvider {
+    static var previews: some View {
+        LockScreenSettingsViewController_Presentable()
+            .edgesIgnoringSafeArea(.bottom)
+    }
+    
+    struct LockScreenSettingsViewController_Presentable: UIViewControllerRepresentable {
+        func makeUIViewController(context: Context) -> some UIViewController {
+            let vc = LockScreenSettingsViewController()
+            let vm = LockScreenSettingsViewModel(
+                coordinator: DefaultLockScreenSettingsCoordinator(UINavigationController()),
+                configurationUseCase: DefaultConfigurationUseCase(
+                    configurationRepository: DefaultConfigurationRepository()))
+            
+            vc.viewModel = vm
+            
+            return vc
+        }
+        
+        func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+    }
+}
+
+#endif

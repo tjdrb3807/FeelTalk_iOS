@@ -9,9 +9,11 @@ import Foundation
 import Alamofire
 
 enum LoginAPI {
-    case autoLogin(accessToken: String)
+    case autoLogin
     case reLogin(request: ReLoginRequestDTO)
     case login(_ data: LoginRequestDTO)
+    case reissuanceAccessToken(requestDTO: AccessTokenReissuanceRequestDTO)
+    case logout
 }
 
 extension LoginAPI: Router, URLRequestConvertible {
@@ -25,6 +27,10 @@ extension LoginAPI: Router, URLRequestConvertible {
             return "/api/v1/re-login"
         case .login:
             return "/api/v1/login"
+        case .reissuanceAccessToken:
+            return "/api/v1/reissue"
+        case .logout:
+            return "/api/v1/logout"
         }
     }
     
@@ -32,31 +38,29 @@ extension LoginAPI: Router, URLRequestConvertible {
         switch self {
         case .autoLogin:
             return .get
-        case .reLogin:
+        case .reLogin, .logout:
             return .post
-        case .login:
+        case .login, .reissuanceAccessToken:
             return .post
         }
     }
     
     var header: [String : String] {
         switch self {
-        case .autoLogin(accessToken: let accessToken):
+        case .autoLogin, .reLogin, .login, .logout:
+            return ["Content-Type": "application/json",
+                    "Accept": "application/json"]
+        case .reissuanceAccessToken(requestDTO: let requestDTO):
             return ["Content-Type": "application/json",
                     "Accept": "application/json",
-                    "AccessToken": accessToken]
-        case .reLogin:
-            return ["Content-Type": "application/json",
-                    "Accept": "application/json"]
-        case .login:
-            return ["Content-Type": "application/json",
-                    "Accept": "application/json"]
+                    "Authorization": requestDTO.accessToken,
+                    "Authorization-refresh": requestDTO.refreshToken]
         }
     }
     
     var parameters: [String : Any]? {
         switch self {
-        case .autoLogin:
+        case .autoLogin, .reissuanceAccessToken, .logout:
             return nil
         case .reLogin(request: _):
 //            return ["snsType": reLoginRequest.snsType,
@@ -74,7 +78,7 @@ extension LoginAPI: Router, URLRequestConvertible {
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .autoLogin, .reLogin, .login:
+        case .autoLogin, .reLogin, .login, .reissuanceAccessToken, .logout:
             return JSONEncoding.default
         }
     }

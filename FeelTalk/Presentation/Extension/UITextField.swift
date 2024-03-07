@@ -22,8 +22,9 @@ extension UITextField {
         self.rx.backgroundColor.onNext(UIColor(named: "gray_200"))
     }
     
-    func setPlaceholder(text: String, color: UIColor) {
-        self.attributedPlaceholder = NSAttributedString(string: text,
+    func setPlaceholder(text: String?, color: UIColor) {
+        guard let placeholder = text else { return }
+        self.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                         attributes: [NSAttributedString.Key.foregroundColor : color])
     }
     
@@ -70,6 +71,17 @@ extension UITextField {
         self.text = ""
         sendActions(for: .editingChanged)
     }
-    
-    
+}
+
+extension Reactive where Base: UITextField {
+    public var changeText: ControlProperty<String?> {
+        base.rx.controlProperty(
+            editingEvents: [.editingChanged, .valueChanged],
+            getter: { textField in textField.text },
+            setter: { textField, value in
+                if textField.text != value {
+                    textField.text = value
+                }
+            })
+    }
 }

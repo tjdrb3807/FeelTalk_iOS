@@ -12,44 +12,59 @@ import RxCocoa
 final class SettingsViewModel {
     private weak var coordinator: SettingsCoordinator?
     private let configurationUseCase: ConfigurationUseCase
+    private let loginUseCase: LoginUseCase
     private let disposeBag = DisposeBag()
     
-    var sections = BehaviorRelay<[SettingsSection]>(value: [
-        SettingsSection(header: "Settings_first",
-                        items: [SettingsModel(category: .lock, state: nil, isArrowIconHidden: false)]),
-        SettingsSection(header: "Settings_second",
-                        items: [SettingsModel(category: .info, state: nil, isArrowIconHidden: false)])
-    ])
+    private let sections = BehaviorRelay<[SettingsSection]>(value: [])
+    
+//    var sections = BehaviorRelay<[SettingsSection]>(value: [
+//        SettingsSection(header: "Settings_first",
+//                        items: [SettingsModel(category: .lock, state: nil, isArrowIconHidden: false)]),
+//        SettingsSection(header: "Settings_second",
+//                        items: [SettingsModel(category: .info, state: nil, isArrowIconHidden: false)])
+//    ])
     
     struct Input {
         let viewWillAppear: ControlEvent<Bool>
         let viewDisDisappear: ControlEvent<Bool>
         let popButtonTabObserver: ControlEvent<Void>
         let selectedCellObserver: ControlEvent<SettingsSection.Item>
+        let logoutButtonTapObserver: ControlEvent<Void>
     }
     
     struct Output {
         let sectionObserver = PublishRelay<[SettingsSection]>()
     }
     
-    init(coordinator: SettingsCoordinator, configurationUseCase: ConfigurationUseCase) {
+    init(coordinator: SettingsCoordinator, configurationUseCase: ConfigurationUseCase, loginUseCase: LoginUseCase) {
         self.coordinator = coordinator
         self.configurationUseCase = configurationUseCase
+        self.loginUseCase = loginUseCase
     }
     
     func transfer(input: Input) -> Output {
         let output = Output()
         
+        sections
+            .skip(1)
+            .bind(to: output.sectionObserver)
+            .disposed(by: disposeBag)
+        
         input.viewWillAppear
-            .take(1)
             .asObservable()
+            .map { _ -> Bool in DefaultAppCoordinator.isLockScreenObserver.value }
+            .map { state -> String in state ? LockScreenState.on.rawValue : LockScreenState.off.rawValue }
             .withUnretained(self)
-            .bind { vm, _ in
-                vm.configurationUseCase.getConfigurationInfo()
-                    .map { $0.isLock ? LockScreenState.on.rawValue : LockScreenState.off.rawValue }
-                    .bind { state in
-                        vm.updateIsLockCell(with: state)
-                    }.disposed(by: vm.disposeBag)
+            .bind { vm, state in
+                vm.sections.accept(
+                    [SettingsSection(
+                        header: "Settings_first",
+                        items: [SettingsModel(category: .lock, state: state, isArrowIconHidden: false)]),
+                    SettingsSection(
+                        header: "Settings_second",
+                        items: [SettingsModel(category: .info, isArrowIconHidden: false)])
+                    ]
+                )
             }.disposed(by: disposeBag)
         
         input.selectedCellObserver
@@ -68,14 +83,6 @@ final class SettingsViewModel {
                 vm.coordinator?.showAccountInfoSettingsFlow()
             }.disposed(by: disposeBag)
         
-//        Observable
-//            .merge(input.viewDisDisappear.asObservable().map { _ in () },
-//                   input.popButtonTabObserver.asObservable())
-//            .withUnretained(self)
-//            .bind { vm, _ in
-//                vm.coordinator?.finish()
-//            }.disposed(by: disposeBag)
-        
         input.popButtonTabObserver
             .asObservable()
             .withUnretained(self)
@@ -83,10 +90,15 @@ final class SettingsViewModel {
                 vm.coordinator?.finish()
             }.disposed(by: disposeBag)
         
-        sections
-            .skip(1)
-            .bind(to: output.sectionObserver)
-            .disposed(by: disposeBag)
+        input.logoutButtonTapObserver
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.loginUseCase
+                    .logout()
+                    .bind(onNext: {
+                        vm.coordinator?.dismissTabbarFlow()
+                    }).disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
         
         return output
     }
@@ -100,6 +112,9 @@ extension SettingsViewModel {
         
         sections[0] = newSection
         
+        
+        
+//        self.sections.accept(sections)
         self.sections.accept(sections)
     }
 }

@@ -9,6 +9,8 @@ import UIKit
 import KakaoSDKAuth
 import NaverThirdPartyLogin
 import GoogleSignIn
+import RxSwift
+import RxCocoa
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -21,6 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = UIWindow(windowScene: windowScene)
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
+        self.window?.backgroundColor = .white
         
         self.appCoordinator = DefaultAppCoordinator(navigationController)
         self.appCoordinator?.start()

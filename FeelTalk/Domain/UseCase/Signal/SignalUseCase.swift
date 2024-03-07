@@ -28,10 +28,10 @@ final class DefaultSignalUseCase: SignalUseCase {
     
     func getMySignal() -> Observable<Signal> {
         Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
-                
-            signalRepositroy.getMySignal(accessToken: accessToken)
+            guard let self = self else { return Disposables.create() }
+            
+            signalRepositroy
+                .getMySignal()
                 .asObservable()
                 .subscribe(onNext: { signal in
                     observer.onNext(signal)
@@ -43,10 +43,10 @@ final class DefaultSignalUseCase: SignalUseCase {
     
     func getPartnerSignal() -> Observable<Signal> {
         Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            guard let self = self else { return Disposables.create() }
             
-            signalRepositroy.getPartnerSignal(accessToken: accessToken)
+            signalRepositroy
+                .getPartnerSignal()
                 .asObservable()
                 .subscribe(onNext: { signal in
                     observer.onNext(signal)
@@ -58,10 +58,10 @@ final class DefaultSignalUseCase: SignalUseCase {
     
     func changeMySignal(_ model: Signal) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create() }
+            guard let self = self else { return Disposables.create() }
             
-            signalRepositroy.changeMySignal(accessToken: accessToken, requestDTO: model.toDTO())
+            signalRepositroy
+                .changeMySignal(requestDTO: model.toDTO())
                 .asObservable()
                 .subscribe(onNext: { event in
                     observer.onNext(event)

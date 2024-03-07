@@ -10,10 +10,33 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import RxGesture
+import RxDataSources
+
+struct ChatSectionModel {
+    var items: [Item]
+}
+
+extension ChatSectionModel: SectionModelType {
+    typealias Item = Chat
+    
+    init(original: ChatSectionModel, items: [Item]) {
+        self = original
+        self.items = items
+    }
+}
 
 final class ChatViewController: UIViewController {
     var viewModel: ChatViewModel!
+    let modelObserver = BehaviorRelay<[ChatSectionModel]>(value: [ChatSectionModel(items: [ChallengeChat(index: 0, type: .addChallengeChatting, isRead: false, isMine: true, createAt: "2024-01-01T12:00:00", challengeIndex: 0, challengeTitle: "다섯글자임", challengeDeadline: "20249-01-01T12:00:00")])])
     private let disposeBag = DisposeBag()
+    
+    let dataSource = RxCollectionViewSectionedReloadDataSource<ChatSectionModel>(configureCell: { ds, cv, indexPath, item in
+        guard let cell = cv.dequeueReusableCell(withReuseIdentifier: "ChatCell", for: indexPath) as? ChatCell else { return UICollectionViewCell() }
+        cell.modelObserver.accept(item)
+        cell.backgroundColor = .yellow
+        
+        return cell
+    })
     
     private lazy var dimmedView: UIView = {
         let view = UIView()
@@ -54,14 +77,38 @@ final class ChatViewController: UIViewController {
     
     fileprivate lazy var navigationBar: ChatNavigationBar = { ChatNavigationBar() }()
     
+    private func createLayout() -> UICollectionViewLayout {
+        let sectionProvider = { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+            
+            var config = UICollectionLayoutListConfiguration(appearance: .plain)
+            config.showsSeparators = false
+            
+            let section = NSCollectionLayoutSection.list(
+                using: config,
+                layoutEnvironment: layoutEnvironment
+            )
+            
+            return section
+        }
+        return UICollectionViewCompositionalLayout(sectionProvider: sectionProvider)
+    }
+    
     fileprivate lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 4.0
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.alwaysBounceVertical = true
         collectionView.backgroundColor = .clear
+        collectionView.register(ChatCell.self, forCellWithReuseIdentifier: "ChatCell")
         
         collectionView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        
+        modelObserver
+//            .skip(1)
+            .asDriver(onErrorJustReturn: [])
+            .drive(collectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
         return collectionView
@@ -97,12 +144,14 @@ final class ChatViewController: UIViewController {
     
     private func bind(to viewModel: ChatViewModel) {
         let input = ChatViewModel.Input(
+            viewWillAppearObserver: rx.viewWillAppear,
             tapInputButton: chatInputView.inputButton.rx.tap.asObservable(),
             messageText: chatInputView.messageInputView.messageInputTextView.rx.text.orEmpty.asObservable(),
             tapFunctionButton: chatInputView.functionButton.rx.tap.asObservable(),
             viewWillAppear: self.rx.viewWillAppear,
             tapDimmiedView: dimmedView.rx.tapGesture().when(.recognized).map { _ in () }.asObservable(),
-            tapChatRoomButton: chatRoomButton.rx.tap.asObservable())
+            tapChatRoomButton: chatRoomButton.rx.tap.asObservable(),
+            chatFuncMenuButtonTapObserver: navigationBar.menuButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
         
@@ -162,39 +211,9 @@ final class ChatViewController: UIViewController {
         output.partnerNickname
             .bind(to: navigationBar.partnerNickname)
             .disposed(by: disposeBag)
-        
-        //        output.chatModelList
-        //            .asDriver(onErrorJustReturn: [])
-        //            .drive(collectionView.rx.items) { [weak self] cv, row, item in
-        //                guard let self = self else { return UICollectionViewCell() }
-        //                let index = IndexPath(row: row, section: 0)
-        //
-        //                switch item.type {
-        //                case .challengeChatting:
-        //                    break
-        //                case .imageChatting:
-        //                    break
-        //                case .questionChatting:
-        //                    break
-        //                case .textChatting:
-        //                    guard let cell = cv.dequeueReusableCell(withReuseIdentifier: "TextChatCell",
-        //                                                            for: index) as? TextChatCell else { return UICollectionViewCell() }
-        //                    let model = item as! TextChatModel
-        //                    cell.model.accept(model)
-        //
-        //                    return cell
-        //                case .voiceChatting:
-        //                    break
-        //                }
-        //
-        //
-        //
-        //                return UICollectionViewCell()
-        //            }.disposed(by: disposeBag)
     }
     
     private func setProperties() {
-        //        view.backgroundColor = .black.withAlphaComponent(ChatViweNameSpace.backgroundColorAlpha)
         view.backgroundColor = .clear
     }
     
@@ -286,9 +305,17 @@ extension ChatViewController {
 }
 
 extension ChatViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width, height: 120)
-    }
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        CGSize(width: UIScreen.main.bounds.width, height: 308.0)
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+//        UIEdgeInsets(top: 16.0, left: 0.0, bottom: 16.0, right: 0.0)
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+//        4.0
+//    }
 }
 
 #if DEBUG

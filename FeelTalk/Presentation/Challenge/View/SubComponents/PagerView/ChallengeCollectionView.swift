@@ -158,7 +158,7 @@ struct ChallengeCollectionView_Previews: PreviewProvider {
             let v = ChallengeCollectionView()
             v.ongoingModelList
                 .accept(
-                    [Challenge(index: 0, pageNo: 0, title: "테스트 제목입니다.", deadline: "2024-01-23T00:00:00", content: "Hello", creator: "KakaoSG", isCompleted: false),
+                    [Challenge(index: 0, pageNo: 0, title: "테스트 제목입니다.", deadline: "2024-01-23T10:00:00", content: "Hello", creator: "KakaoSG", isCompleted: false),
                      Challenge(index: 1, pageNo: 0, title: "Test01", deadline: "2024-01-30T00:00:00", content: "Hello", creator: "KakaoSG", isCompleted: false),
                      Challenge(index: 2, pageNo: 0, title: "Test02", deadline: "2024-01-31T00:00:00", content: "테스트 화면", creator: "Partner", isCompleted: false),
                      Challenge(index: 3, pageNo: 0, title: "999일 넘게 남음", deadline: "2030-01-30T00:00:00", content: "Hello", creator: "KakaoSG", isCompleted: false)])

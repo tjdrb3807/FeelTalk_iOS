@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 enum TabBarPage: String, CaseIterable {
     case home, question, challenge, myPage
@@ -44,7 +46,7 @@ enum TabBarPage: String, CaseIterable {
         case .home: return "icon_tab_home_normal"
         case .question: return "icon_tab_question_normal"
         case .challenge: return "icon_tab_challenge_normal"
-        case .myPage: return "icon_tab_my_normal"  // TODO: 추후 변경
+        case .myPage: return "icon_tab_my_normal"
         }
     }
     
@@ -65,9 +67,13 @@ final class DefaultMainTabBarCoordinator: MainTabBarCoordinator {
     var tabBarController: UITabBarController
     var type: CoordinatorType { .tab }
     
+    var lockScreenStateObserver = BehaviorRelay<Bool>(value: true)
+    private let disposeBag = DisposeBag()
+    
     required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.tabBarController = MainTabBarController()
+        self.setUpLockScreen()
     }
     
     func start() {
@@ -91,9 +97,9 @@ final class DefaultMainTabBarCoordinator: MainTabBarCoordinator {
     }
     
     private func configureTabBarController(with tabViewControllers: [UIViewController]) {
-        self.tabBarController.setViewControllers(tabViewControllers, animated: true)
+        self.tabBarController.setViewControllers(tabViewControllers, animated: false)
         self.tabBarController.selectedIndex = TabBarPage.home.pageOfNumber()
-        self.navigationController.pushViewController(self.tabBarController, animated: true)
+        self.navigationController.pushViewController(self.tabBarController, animated: false)
     }
     
     private func configureTabBarItem(of page: TabBarPage) -> UITabBarItem {
@@ -139,12 +145,66 @@ final class DefaultMainTabBarCoordinator: MainTabBarCoordinator {
     }
 }
 
+extension DefaultMainTabBarCoordinator {
+    private func setUpLockScreen() {
+        NotificationCenter
+            .default.rx.notification(UIScene.willDeactivateNotification)
+            .withLatestFrom(DefaultAppCoordinator.isLockScreenObserver)
+            .filter { $0 }
+            .withUnretained(self)
+            .compactMap { cn, _ in cn.childCoordinators.last?.type }
+            .filter { $0 != .lockScreen }
+            .withUnretained(self)
+            .subscribe { cn, _ in
+                cn.showLockScreenFlow()
+            }.disposed(by: disposeBag)
+        
+        NotificationCenter
+            .default.rx.notification(UIScene.didEnterBackgroundNotification)
+            .withLatestFrom(DefaultAppCoordinator.isLockScreenObserver)
+            .filter { $0 }
+            .withUnretained(self)
+            .compactMap { cn, _ in cn.childCoordinators.last as? DefaultLockScreenCoordinator }
+            .filter { $0.childCoordinators.isEmpty }
+            .subscribe { lockScreenCN in
+                lockScreenCN.showLockNumberPadFlow()
+            }.disposed(by: disposeBag)
+
+        NotificationCenter
+            .default.rx.notification(UIScene.didActivateNotification)
+            .withLatestFrom(DefaultAppCoordinator.isLockScreenObserver)
+            .filter { $0 }
+            .withUnretained(self)
+            .compactMap { cn, _ in cn.childCoordinators.last as? DefaultLockScreenCoordinator }
+            .filter { $0.childCoordinators.isEmpty }
+            .withUnretained(self)
+            .subscribe { cn, lockScreenCN in
+                lockScreenCN.finish()
+            }.disposed(by: disposeBag)
+    }
+    
+    private func showLockScreenFlow() {
+        let lockScreenCN = DefaultLockScreenCoordinator(self.navigationController)
+        lockScreenCN.start()
+        lockScreenCN.finishDelegate = self
+        childCoordinators.append(lockScreenCN)
+    }
+}
+
 extension DefaultMainTabBarCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
-        self.childCoordinators = childCoordinators.filter { $0.type != childCoordinator.type }
-        if childCoordinator.type == .home {
-            // TODO: logic
+//        self.childCoordinators = childCoordinators.filter { $0.type != childCoordinator.type }
+        
+        switch childCoordinator.type {
+        case .home:
             selectPage(.question)
+        case .lockScreen:
+            childCoordinators.removeLast()
+        case .myPage:
+            self.childCoordinators.removeAll()
+            finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        default:
+            break
         }
     }
 }

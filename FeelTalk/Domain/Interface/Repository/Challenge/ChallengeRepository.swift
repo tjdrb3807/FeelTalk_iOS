@@ -10,19 +10,19 @@ import RxSwift
 import RxCocoa
 
 protocol ChallengeRepository {
-    func addChallenge(accessToken: String, requestDTO: AddChallengeRequestDTO) -> Single<ChallengeChat>
+    func addChallenge(requestDTO: AddChallengeRequestDTO) -> Single<ChallengeChat>
     
-    func completeChallenge(accessToken: String, requestDTO: CompleteChallengeRequestDTO) -> Single<ChallengeChat>
+    func completeChallenge(requestDTO: CompleteChallengeRequestDTO) -> Single<ChallengeChat>
     
-    func getChallenge(accessToken: String, index: Int) -> Single<Challenge>
+    func getChallenge(index: Int) -> Single<Challenge>
     
-    func getChallengeCount(accessToken: String) -> Single<ChallengeCount>
+    func getChallengeCount() -> Single<ChallengeCount>
     
-    func getChallengeLatestPageNo(accessToken: String, type: ChallengeState) -> Single<ChallengePage>
+    func getChallengeLatestPageNo(type: ChallengeState) -> Single<ChallengePage>
     
-    func getChallengeList(accessToken: String, type: ChallengeState, requestDTO: ChallengeListRequestDTO) -> Single<[Challenge]>
+    func getChallengeList(type: ChallengeState, requestDTO: ChallengeListRequestDTO) -> Single<[Challenge]>
     
-    func modifyChallenge(accessToken: String, requestDTO: ModifyChallengeRequestDTO) -> Single<Bool>
+    func modifyChallenge(requestDTO: ModifyChallengeRequestDTO) -> Single<Bool>
     
-    func removeChallenge(accessToken: String, requestDTO: RemoveChallengeRequestDTO) -> Single<Bool>
+    func removeChallenge(requestDTO: RemoveChallengeRequestDTO) -> Single<Bool>
 }

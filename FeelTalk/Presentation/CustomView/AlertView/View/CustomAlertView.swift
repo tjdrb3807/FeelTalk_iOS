@@ -67,7 +67,8 @@ final class CustomAlertView: UIView {
             label.text = "챌린지를 삭제하겠어요?"
         case .cancelCellengeModifications:
             label.text = "챌린지 수정을 그만두시겠어요?"
-        
+        case .withdrawal:
+            label.text = "정말 탈퇴하시겠어요?"
         }
         
         label.textColor = .black
@@ -95,6 +96,8 @@ final class CustomAlertView: UIView {
             label.text = "삭제한 챌린지는 복구할 수 없어요."
         case .cancelCellengeModifications:
             label.text = "현재 수정된 내용은 저장되지 않아요."
+        case .withdrawal:
+            label.text = "모든 데이터는 복구할 수 없습니다."
         }
         
         label.textColor = .black
@@ -130,7 +133,7 @@ final class CustomAlertView: UIView {
         case .breakUp:
             button.setTitle(CustomAlertViewNameSpace.leftButtonBreakUpTypeTitleText,
                             for: .normal)
-        case .popAnswer, .sendAnswer:
+        case .popAnswer, .sendAnswer, .withdrawal:
             button.setTitle("취소", for: .normal)
         case .removeChallnege:
             button.setTitle("유지하기", for: .normal)
@@ -139,6 +142,8 @@ final class CustomAlertView: UIView {
         }
         
         button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
+                                         size: CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26)  // 16.0
         button.backgroundColor = UIColor(named: CommonColorNameSpace.gray200)
         button.layer.cornerRadius = CustomAlertViewNameSpace.buttonCornerRadius
         button.clipsToBounds = true
@@ -167,9 +172,13 @@ final class CustomAlertView: UIView {
             button.setTitle("삭제하기", for: .normal)
         case .cancelCellengeModifications:
             button.setTitle("나가기", for: .normal)
+        case .withdrawal:
+            button.setTitle("탈퇴", for: .normal)
         }
         
         button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
+                                         size: CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26)  // 16.0
         button.backgroundColor = .black
         button.layer.cornerRadius = CustomAlertViewNameSpace.buttonCornerRadius
         button.clipsToBounds = true
@@ -302,7 +311,7 @@ struct CustomAlertView_Previews: PreviewProvider {
     
     struct CustomAlertView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            let view = CustomAlertView(type: .removeChallnege)
+            let view = CustomAlertView(type: .withdrawal)
             view.show()
             
             return view

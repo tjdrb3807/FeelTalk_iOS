@@ -96,7 +96,7 @@ extension CustomInputViewTitle {
         case .withdrawalReason:
             break
         case .myAnswer, .partnerAnswer,
-                .challengeTitle, .challnegeContent, .challengeDeadline:
+                .challengeTitle, .challnegeContent, .challengeDeadline, .lockNumberHint:
             titleLabel.textColor = UIColor(named: CommonColorNameSpace.gray600)
             titleLabel.font = UIFont(name: CommonFontNameSpace.pretendardSemiBold,
                                      size: CustomInputViewTitleNameSpace.titleLabelTextSize12)

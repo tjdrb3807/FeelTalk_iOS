@@ -98,7 +98,7 @@ struct SignalChat: Chat {
 }
 
 /// 비밀번호 재설정 요청 채팅 Entity
-struct RestPartenrPasswordChat: Chat {
+struct ResetPartenrPasswordChat: Chat {
     var index: Int
     var type: ChatType
     var isRead: Bool

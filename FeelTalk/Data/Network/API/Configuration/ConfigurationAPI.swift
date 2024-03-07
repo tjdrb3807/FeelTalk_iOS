@@ -9,10 +9,14 @@ import Foundation
 import Alamofire
 
 enum ConfigurationAPI {
-    case getConfigurationInfo(accessToken: String)
-    case comment(accessToken: String, data: CommentRequestDTO)
-    case getServiceDataTotalCount(accessToken: String)
-    
+    case getConfigurationInfo
+    case comment(data: CommentRequestDTO)
+    case getServiceDataTotalCount
+    case setLockNumber(dto: LockNumberSettingsRequestDTO)
+    case getLockNumber
+    case setUnlock
+    case resetLockNumber(dto: LockNumberResettingsRequestDTO)
+    case getLockNumberHintType
 }
 
 extension ConfigurationAPI: Router, URLRequestConvertible {
@@ -26,41 +30,65 @@ extension ConfigurationAPI: Router, URLRequestConvertible {
             return "/api/v1/comment"
         case .getServiceDataTotalCount:
             return "/api/v1/member/service-data"
+        case .setLockNumber:
+            return "/api/v1/member/config/lock"
+        case .getLockNumber:
+            return "/api/v1/member/config/password"
+        case .setUnlock:
+            return "/api/v1/member/config/unlock"
+        case .resetLockNumber:
+            return "/api/v1/member/config/password"
+        case .getLockNumberHintType:
+            return "/api/v1/member/config/question-type"
         }
     }
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .getConfigurationInfo, .comment, .getServiceDataTotalCount:
+        case .getConfigurationInfo, .comment, .getServiceDataTotalCount, .getLockNumber, .getLockNumberHintType:
             return .get
+        case .setLockNumber, .resetLockNumber:
+            return .post
+        case .setUnlock:
+            return .put
         }
     }
     
     var header: [String : String] {
         switch self {
-        case .getConfigurationInfo(accessToken: let accessToken),
-                .comment(accessToken: let accessToken, data: _),
-                .getServiceDataTotalCount(accessToken: let accessToken):
+        case .getConfigurationInfo,
+                .comment,
+                .getServiceDataTotalCount,
+                .setLockNumber,
+                .getLockNumber,
+                .setUnlock,
+                .resetLockNumber,
+                .getLockNumberHintType:
             return ["Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization": accessToken]
+                    "Accept": "application/json"]
         }
     }
     
     var parameters: [String : Any]? {
         switch self {
-        case .getConfigurationInfo, .getServiceDataTotalCount:
+        case .getConfigurationInfo, .getServiceDataTotalCount, .getLockNumber, .setUnlock, .getLockNumberHintType:
             return nil
-        case .comment(accessToken: _, data: let data):
+        case .comment(data: let data):
             return ["title": data.title,
                     "body": data.body as Any,
                     "email": data.email]
+        case .setLockNumber(dto: let dto):
+            return ["password": dto.lockNumber,
+                    "questionType": dto.hintType,
+                    "answer": dto.correctAnswer]
+        case .resetLockNumber(dto: let dto):
+            return ["password": dto.lockNumber]
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
-        case .getConfigurationInfo, .comment, .getServiceDataTotalCount:
+        case .getConfigurationInfo, .comment, .getServiceDataTotalCount, .setLockNumber, .getLockNumber, .setUnlock, .resetLockNumber, .getLockNumberHintType:
             return JSONEncoding.default
         }
     }

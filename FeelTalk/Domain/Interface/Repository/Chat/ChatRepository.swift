@@ -10,5 +10,7 @@ import RxSwift
 import RxCocoa
 
 protocol ChatRepository {
-    func getLastPageNo(accessToken: String) -> Single<Int>
+    func getLastPageNo() -> Single<Int>
+    
+    func getChatList(pageNo: Int) -> Single<[Chat]>
 }

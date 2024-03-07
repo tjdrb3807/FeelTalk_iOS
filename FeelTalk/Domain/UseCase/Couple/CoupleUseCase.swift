@@ -24,10 +24,10 @@ final class DefaultCoupleUaseCase: CoupleUseCase {
     
     func registerInviteCode(_ code: String) -> Single<Bool> {
         return Single.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String else { return Disposables.create()}
+            guard let self = self else { return Disposables.create()}
             
-            coupleRepository.registerInviteCode(accessToken: accessToken, inviteCode: code)
+            coupleRepository
+                .registerInviteCode(inviteCode: code)
                 .subscribe(onSuccess: { observer(.success($0)) },
                            onFailure: { observer(.failure($0)) },
                            onDisposed: nil)

@@ -23,11 +23,23 @@
                                     <constraint firstAttribute="width" constant="184" id="wgr-3f-nTb"/>
                                 </constraints>
                             </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo_description" translatesAutoresizingMaskIntoConstraints="NO" id="5ED-5C-Ctb">
+                                <rect key="frame" x="76.666666666666686" y="460.66666666666669" width="240" height="14"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="LJ7-Ez-q3t"/>
+                                    <constraint firstAttribute="width" constant="240" id="d6i-4j-GBb"/>
+                                    <constraint firstAttribute="width" secondItem="5ED-5C-Ctb" secondAttribute="height" multiplier="120:7" id="pDB-Sa-ppe"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="qcY-lX-cgL"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="5ED-5C-Ctb" firstAttribute="top" secondItem="cYk-fL-34Y" secondAttribute="bottom" constant="20" id="2eG-qA-qcG"/>
+                            <constraint firstItem="cYk-fL-34Y" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="BKX-Ki-dIv"/>
+                            <constraint firstItem="5ED-5C-Ctb" firstAttribute="centerX" secondItem="cYk-fL-34Y" secondAttribute="centerX" id="N4w-GG-ULh"/>
                             <constraint firstItem="cYk-fL-34Y" firstAttribute="centerX" secondItem="qcY-lX-cgL" secondAttribute="centerX" id="YOr-Md-Bxx"/>
+                            <constraint firstItem="5ED-5C-Ctb" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="c1r-8p-oJE"/>
                             <constraint firstItem="cYk-fL-34Y" firstAttribute="top" secondItem="qcY-lX-cgL" secondAttribute="top" constant="316.79000000000002" id="vCu-vf-1gB"/>
                         </constraints>
                     </view>
@@ -38,6 +50,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="logo_description" width="198.66667175292969" height="14"/>
         <image name="logo_feeltalk_white" width="159" height="45"/>
     </resources>
 </document>

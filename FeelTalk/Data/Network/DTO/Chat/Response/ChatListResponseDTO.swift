@@ -9,7 +9,7 @@ import Foundation
 
 struct ChatListResponseDTO: Decodable {
     let page: Int
-    let chatList: [ChatResponseDTO]?
+    let chatList: [ChatResponseDTO]
     
     enum CodingKeys: String, CodingKey {
         case page
@@ -29,7 +29,8 @@ struct ChatResponseDTO: Decodable {
     let challenge: ChallengeChatResponseDTO?
     let emoji: String?
     let url: String?
-    let signal: SignalType.RawValue?
+//    let signal: SignalType.RawValue?
+    let signal: Int?
     
     enum CodingKeys: String, CodingKey {
         case index
@@ -128,7 +129,7 @@ extension ChatResponseDTO {
                                  createAt: self.createAt,
                                  emoji: self.emoji!)
             case .resetPartnerPasswordChatting:
-                return RestPartenrPasswordChat(index: self.index,
+                return ResetPartenrPasswordChat(index: self.index,
                                                type: type,
                                                isRead: self.isRead,
                                                isMine: self.isMine,
@@ -150,12 +151,13 @@ extension ChatResponseDTO {
                                      challengeTitle: self.challenge!.title,
                                      challengeDeadline: self.challenge!.deadline)
             case .signalChatting:
-                return SignalChat(index: self.index,
-                                  type: type,
-                                  isRead: self.isRead,
-                                  isMine: self.isMine,
-                                  createAt: self.createAt,
-                                  signal: SignalType(rawValue: self.signal!)!)
+//                return SignalChat(index: self.index,
+//                                  type: type,
+//                                  isRead: self.isRead,
+//                                  isMine: self.isMine,
+//                                  createAt: self.createAt,
+//                                  signal: SignalType(rawValue: self.signal!)!)
+                break
             }
         }
         

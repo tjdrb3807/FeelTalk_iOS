@@ -16,21 +16,25 @@ final class ChatViewModel {
     private let chatUseCase: ChatUseCase
     private let disposeBag = DisposeBag()
     
+    private let crtPageNoObserver = PublishRelay<Int>()
+    
     private let partnerNickname = PublishRelay<String>()
     private let keyboardHeight = PublishRelay<CGFloat>()
     private let inputMode = BehaviorRelay<ChatInputMode>(value: .basics)
     private let isFunctionActive = BehaviorRelay<Bool>(value: false)
     private let pageNo = PublishSubject<Int>()
-
+    
     private let chatCellHeightList = PublishSubject<[CGFloat]>()
     
     struct Input {
+        let viewWillAppearObserver: ControlEvent<Bool>
         let tapInputButton: Observable<Void>
         let messageText: Observable<String>
         let tapFunctionButton: Observable<Void>
         let viewWillAppear: ControlEvent<Bool>
         let tapDimmiedView: Observable<Void>
         let tapChatRoomButton: Observable<Void>
+        let chatFuncMenuButtonTapObserver: ControlEvent<Void>
     }
     
     struct Output {
@@ -55,14 +59,22 @@ final class ChatViewModel {
                 vm.keyboardHeight.accept(keyboardHeight)
             }.disposed(by: disposeBag)
         
-//        input.viewWillAppear
-//            .withUnretained(self)
-//            .bind { vm, _ in
-//                vm.chatUseCase.getLastPageNo()
-//                    .bind(onNext: {
-//                        print($0)
-//                    }).disposed(by: vm.disposeBag)
-//            }.disposed(by: disposeBag)
+        input.viewWillAppear
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.chatUseCase.getLastPageNo()
+                    .bind(to: vm.crtPageNoObserver)
+                    .disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
+        
+        crtPageNoObserver
+            .withUnretained(self)
+            .bind { vm, pageNo in
+                vm.chatUseCase.getChatList(pageNo: 0)
+                    .bind(onNext: {
+                        print($0)
+                    }).disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
         
         input.tapInputButton
             .withLatestFrom(inputMode)
@@ -106,7 +118,14 @@ final class ChatViewModel {
             .bind { vm, _ in
                 vm.coordinator?.finish()
             }.disposed(by: disposeBag)
-            
+        
+        input.chatFuncMenuButtonTapObserver
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.showChatFuncMenuFlow()
+            }.disposed(by: disposeBag)
+        
         return Output(keyboardHeight: self.keyboardHeight,
                       inputMode: self.inputMode,
                       isFunctionActive: self.isFunctionActive,

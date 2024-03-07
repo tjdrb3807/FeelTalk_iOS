@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 enum CoupleAPI {
-    case registerInviteCode(accessToken: String, inviteCode: String)
+    case registerInviteCode(inviteCode: String)
 }
     
 extension CoupleAPI: Router, URLRequestConvertible {
@@ -31,16 +31,15 @@ extension CoupleAPI: Router, URLRequestConvertible {
         
     var header: [String : String] {
         switch self {
-        case .registerInviteCode(accessToken: let accessToken, inviteCode: _):
+        case .registerInviteCode:
             return ["Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization": accessToken]
+                    "Accept": "application/json"]
         }
     }
         
     var parameters: [String : Any]? {
         switch self {
-        case .registerInviteCode(accessToken: _, inviteCode: let inviteCode):
+        case .registerInviteCode(inviteCode: let inviteCode):
             return ["inviteCode": inviteCode]
         }
     }

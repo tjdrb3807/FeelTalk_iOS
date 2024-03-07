@@ -20,4 +20,8 @@ enum SettingsCellNameSpace {
     // MARK: StateLabel
     /// 16.0
     static let stateLabelTextSize: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 4.26
+    
+    // MARK: ArrowIcon
+    /// "icon_arrow_right"
+    static let arrowIconImage: String = "icon_arrow_right"
 }

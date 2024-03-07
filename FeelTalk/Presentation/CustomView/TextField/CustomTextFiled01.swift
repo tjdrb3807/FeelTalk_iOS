@@ -68,7 +68,13 @@ final class CustomTextField01: UITextField {
                     }
                 }.disposed(by: disposeBag)
             
-            rx.text.orEmpty
+//            rx.text.orEmpty
+//                .withUnretained(self)
+//                .bind { v, text in
+//                    v.limitChar(text)
+//                }.disposed(by: disposeBag)
+            rx.changedText
+                .orEmpty
                 .withUnretained(self)
                 .bind { v, text in
                     v.limitChar(text)
@@ -112,9 +118,31 @@ extension CustomTextField01 {
             $0.trailing.equalToSuperview().inset(CustomTextFiledNameSpace01.charCountingViewDefaultTrailingInset)
         }
         
-        rx.text.orEmpty
-            .map { $0.count }
-            .bind(to: charCountingView!.molecularCount)
+//        rx.text.orEmpty
+//            .map { $0.count }
+//            .bind(to: charCountingView!.molecularCount)
+//            .disposed(by: disposeBag)
+        
+//        rx.changedText
+//            .orEmpty
+//            .map { $0.count }
+//            .asDriver(onErrorJustReturn: 0)
+//            .drive(charCountingView!.molecularCount)
+//            .disposed(by: disposeBag)
+        
+        rx.changedText
+            .orEmpty
+            .scan(self.text) { [weak self] prev, new -> String? in
+                guard let self = self else { return prev }
+                
+                if new.count > self.maxNumberOfChar {
+                    return prev
+                }
+                
+                return new
+            }.map { text -> Int in text!.count }
+            .asDriver(onErrorJustReturn: 0)
+            .drive(charCountingView!.molecularCount)
             .disposed(by: disposeBag)
     }
     
@@ -139,6 +167,19 @@ extension CustomTextField01 {
             
             self.text = String(text[..<index])
         }
+    }
+}
+
+extension Reactive where Base: CustomTextField01 {
+    /// textField의 값이 변경될 때 발생하는 .editingChanged, .valueChanged가 발생할 떄 textField의 value 방출
+    var changedText: ControlProperty<String?> {
+        base.rx.controlProperty(
+            editingEvents: [.editingChanged, .valueChanged],
+            getter: { textField in textField.text },
+            setter: { textField, value in
+                if textField.text != value {
+                    textField.text = value}
+            })
     }
 }
 

@@ -11,86 +11,94 @@ import RxSwift
 import RxCocoa
 
 final class DefaultUserRepository: UserRepository {
-    func getInviteCode(accessToken: String) -> Single<String> {
+    func getInviteCode() -> Single<String> {
         return Single.create { observer -> Disposable in
-            AF.request(UserAPI.getInviteCode(accessToken: accessToken))
-                .responseDecodable(of: BaseResponseDTO<InviteCodeResponseDTO?>.self) { response in
-                    switch response.result {
-                    case .success(let responseDTO):
-                        if responseDTO.status == "success" {
-                            guard let inviteCodeResponseDTO = responseDTO.data! else { return }
-                            observer(.success(inviteCodeResponseDTO.inviteCode))
-                        } else {
-                            guard let message = responseDTO.message else { return }
-                            print(message)
-                        }
-                    case .failure(let error):
-                        observer(.failure(error))
+            AF.request(
+                UserAPI.getInviteCode,
+                interceptor: DefaultRequestInterceptor())
+            .responseDecodable(of: BaseResponseDTO<InviteCodeResponseDTO?>.self) { response in
+                switch response.result {
+                case .success(let responseDTO):
+                    if responseDTO.status == "success" {
+                        guard let inviteCodeResponseDTO = responseDTO.data! else { return }
+                        observer(.success(inviteCodeResponseDTO.inviteCode))
+                    } else {
+                        guard let message = responseDTO.message else { return }
+                        print(message)
                     }
+                case .failure(let error):
+                    observer(.failure(error))
                 }
-            
-            return Disposables.create()
-        }
-    }
-     
-    func getMyInfo(accessToken: String) -> Single<MyInfo> {
-        Single.create { observer -> Disposable in
-            AF.request(UserAPI.getMyInfo(accessToken: accessToken))
-                .responseDecodable(of: BaseResponseDTO<GetMyInfoResponseDTO?>.self) { response in
-                    switch response.result {
-                    case .success(let responseDTO):
-                        if responseDTO.status == "success" {
-                            guard let getMyInfoResponseDTO = responseDTO.data! else { return }
-                            observer(.success(getMyInfoResponseDTO.toDomain()))
-                        } else {
-                            guard let message = responseDTO.message else { return }
-                            debugPrint(message)
-                        }
-                    case .failure(let error):
-                        observer(.failure(error))
-                    }
-                }
+            }
             
             return Disposables.create()
         }
     }
     
-    func getPartnerInfo(accessToken: String) -> Single<PartnerInfo> {
+    func getMyInfo() -> Single<MyInfo> {
         Single.create { observer -> Disposable in
-            AF.request(UserAPI.getPartnerInfo(accessToken: accessToken))
-                .responseDecodable(of: BaseResponseDTO<GetPartnerInfoResponseDTO?>.self) { response in
-                    switch response.result {
-                    case .success(let responseDTO):
-                        if responseDTO.status == "success" {
-                            guard let getPartnerInfoResponseDTO = responseDTO.data! else { return }
-                            observer(.success(getPartnerInfoResponseDTO.toDomain()))
-                        } else {
-                            guard let message = responseDTO.message else { return }
-                            debugPrint(message)
-                        }
-                    case .failure(let error):
-                        observer(.failure(error))
+            AF.request(
+                UserAPI.getMyInfo,
+                interceptor: DefaultRequestInterceptor())
+            .responseDecodable(of: BaseResponseDTO<GetMyInfoResponseDTO?>.self) { response in
+                switch response.result {
+                case .success(let responseDTO):
+                    if responseDTO.status == "success" {
+                        guard let getMyInfoResponseDTO = responseDTO.data! else { return }
+                        observer(.success(getMyInfoResponseDTO.toDomain()))
+                    } else {
+                        guard let message = responseDTO.message else { return }
+                        debugPrint(message)
                     }
+                case .failure(let error):
+                    observer(.failure(error))
                 }
+            }
             
             return Disposables.create()
         }
     }
     
-    func getUserState(accessToken: String) ->Single<UserState> {
+    func getPartnerInfo() -> Single<PartnerInfo> {
         Single.create { observer -> Disposable in
-            AF.request(UserAPI.getUserState(accessToken: accessToken))
-                .responseDecodable(of: BaseResponseDTO<UserStateResponseDTO?>.self) { response in
-                    switch response.result {
-                    case .success(let responseDTO):
-                        if responseDTO.status == "success" {
-                            guard let userStateResponseDTO = responseDTO.data! else { return }
-                            observer(.success(UserState(rawValue: userStateResponseDTO.state)!))
-                        }
-                    case .failure(let error):
-                        observer(.failure(error))
+            AF.request(
+                UserAPI.getPartnerInfo,
+                interceptor: DefaultRequestInterceptor())
+            .responseDecodable(of: BaseResponseDTO<GetPartnerInfoResponseDTO?>.self) { response in
+                switch response.result {
+                case .success(let responseDTO):
+                    if responseDTO.status == "success" {
+                        guard let getPartnerInfoResponseDTO = responseDTO.data! else { return }
+                        observer(.success(getPartnerInfoResponseDTO.toDomain()))
+                    } else {
+                        guard let message = responseDTO.message else { return }
+                        debugPrint(message)
                     }
+                case .failure(let error):
+                    observer(.failure(error))
                 }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getUserState() ->Single<UserState> {
+        Single.create { observer -> Disposable in
+            AF.request(
+                UserAPI.getUserState,
+                interceptor: DefaultRequestInterceptor())
+            .responseDecodable(of: BaseResponseDTO<UserStateResponseDTO?>.self) { response in
+                switch response.result {
+                case .success(let responseDTO):
+                    if responseDTO.status == "success" {
+                        guard let userStateResponseDTO = responseDTO.data! else { return }
+                        observer(.success(UserState(rawValue: userStateResponseDTO.state)!))
+                    }
+                case .failure(let error):
+                    observer(.failure(error))
+                }
+            }
             
             
             return Disposables.create()

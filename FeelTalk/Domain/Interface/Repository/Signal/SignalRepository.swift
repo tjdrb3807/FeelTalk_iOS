@@ -10,9 +10,9 @@ import RxSwift
 import RxCocoa
 
 protocol SignalRepository {
-    func getMySignal(accessToken: String) -> Single<Signal>
+    func getMySignal() -> Single<Signal>
     
-    func getPartnerSignal(accessToken: String) -> Single<Signal>
+    func getPartnerSignal() -> Single<Signal>
     
-    func changeMySignal(accessToken: String, requestDTO: ChangeMySignalRequestDTO) -> Single<Bool>
+    func changeMySignal(requestDTO: ChangeMySignalRequestDTO) -> Single<Bool>
 }

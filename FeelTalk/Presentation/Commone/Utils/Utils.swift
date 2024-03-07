@@ -68,7 +68,7 @@ extension Utils {
         if interval < 0 {
             return "D-day"
         } else if interval > 999 {
-            return "D+999"
+            return "D-999"
         } else {
             return "D-\(Int(interval) + 1)"
         }

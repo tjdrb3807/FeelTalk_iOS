@@ -11,9 +11,11 @@ import RxSwift
 import RxCocoa
 
 final class DefaultCoupleRepository: CoupleRepository {
-    func registerInviteCode(accessToken: String, inviteCode: String) -> Single<Bool> {
+    func registerInviteCode(inviteCode: String) -> Single<Bool> {
         return Single.create { observer -> Disposable in
-            AF.request(CoupleAPI.registerInviteCode(accessToken: accessToken, inviteCode: inviteCode))
+            AF.request(
+                CoupleAPI.registerInviteCode(inviteCode: inviteCode),
+                interceptor: DefaultRequestInterceptor())
                 .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):

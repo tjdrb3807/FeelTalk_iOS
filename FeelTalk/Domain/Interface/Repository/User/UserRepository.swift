@@ -10,11 +10,11 @@ import RxSwift
 import RxCocoa
 
 protocol UserRepository {
-    func getInviteCode(accessToken: String) -> Single<String>
+    func getInviteCode() -> Single<String>
     
-    func getMyInfo(accessToken: String) -> Single<MyInfo>
+    func getMyInfo() -> Single<MyInfo>
     
-    func getPartnerInfo(accessToken: String) -> Single<PartnerInfo>
+    func getPartnerInfo() -> Single<PartnerInfo>
     
-    func getUserState(accessToken: String) -> Single<UserState>
+    func getUserState() -> Single<UserState>
 }

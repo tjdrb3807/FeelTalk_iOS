@@ -32,7 +32,11 @@ final class SettingsCell: UITableViewCell {
         return label
     }()
     
-    private lazy var arrowIcon: UIImageView = { UIImageView(image: UIImage(named: "icon_arrow_right")) }()
+    private lazy var arrowIcon: UIImageView = {
+        UIImageView(
+            image: UIImage(
+                named: SettingsCellNameSpace.arrowIconImage))
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -49,37 +53,25 @@ final class SettingsCell: UITableViewCell {
     
     private func bind () {
         modelObserver
-            .map { $0.category.rawValue }
-            .bind(to: titleLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        modelObserver
-            .map { $0.isArrowIconHidden }
-            .bind(to: arrowIcon.rx.isHidden)
-            .disposed(by: disposeBag)
-        
-        modelObserver
             .withUnretained(self)
             .bind { c, model in
-                guard let state = model.state else { return }
-
-                c.stateLabel.rx.text.onNext(state)
-                c.contentView.addSubview(c.stateLabel)
-                c.stateLabel.snp.makeConstraints {
-                    $0.centerY.equalToSuperview()
-                    $0.width.equalTo(c.stateLabel.intrinsicContentSize.width)
-                }
+                c.titleLabel.rx.text.onNext(model.category.rawValue)
+                c.arrowIcon.rx.isHidden.onNext(model.isArrowIconHidden)
+                c.stateLabel.rx.text.onNext(model.state)
                 
                 if model.isArrowIconHidden {
-                    c.stateLabel.snp.makeConstraints {
+                    c.stateLabel.snp.remakeConstraints {
+                        $0.centerY.equalToSuperview()
+                        $0.width.equalTo(c.stateLabel.intrinsicContentSize.width)
                         $0.trailing.equalToSuperview().inset(CommonConstraintNameSpace.trailingInset)
                     }
                 } else {
-                    c.stateLabel.snp.makeConstraints {
+                    c.stateLabel.snp.remakeConstraints {
+                        $0.centerY.equalToSuperview()
+                        $0.width.equalTo(c.stateLabel.intrinsicContentSize.width)
                         $0.trailing.equalTo(c.arrowIcon.snp.leading)
                     }
                 }
-                
             }.disposed(by: disposeBag)
     }
     
@@ -98,7 +90,7 @@ final class SettingsCell: UITableViewCell {
 
 extension SettingsCell {
     private func addCellSubComponents() {
-        [titleLabel, arrowIcon].forEach { contentView.addSubview($0) }
+        [titleLabel, stateLabel, arrowIcon].forEach { contentView.addSubview($0) }
     }
     
     private func makeTitleLabelConstraints() {
@@ -133,7 +125,7 @@ struct SettingsCell_Previews: PreviewProvider {
         func makeUIView(context: Context) -> some UIView {
             let c = SettingsCell()
             c.modelObserver.accept(SettingsModel(category: .lock,
-                                                 state: Optional("켜짐"),
+                                                 state: "꺼짐",
                                                  isArrowIconHidden: false))
             
             return c

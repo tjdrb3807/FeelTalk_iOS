@@ -11,7 +11,7 @@ import RxCocoa
 
 final class SplashViewModel {
     private weak var coordinator: SplashCoordinator?
-    private let userUseCase: UserUseCase?
+    private let userUseCase: UserUseCase
     private let disposeBag = DisposeBag()
     
     struct Input {

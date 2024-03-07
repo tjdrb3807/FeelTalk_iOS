@@ -50,7 +50,7 @@ final class LoginViewController: UIViewController {
     
     private lazy var speechBubble: LoginSpeechBubbleView = { LoginSpeechBubbleView() }()
     
-    private lazy var inquiryButton: InquiryButton = { InquiryButton() }()
+    private lazy var inquiryButton: CustomBottomBorderButton = { CustomBottomBorderButton(title: LoginViewNameSpace.inquiryButtonTitleText) }()
     
     override func viewDidLoad() {
         
@@ -146,6 +146,7 @@ extension LoginViewController {
         inquiryButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(loginButtonStackView.snp.bottom).offset(LoginViewNameSpace.inquiryButtonTopOffset)
+            $0.height.equalTo(LoginViewNameSpace.inquiryButtonHeight)
         }
     }
 }

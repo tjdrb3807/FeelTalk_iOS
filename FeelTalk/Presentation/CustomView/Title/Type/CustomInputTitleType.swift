@@ -18,4 +18,5 @@ enum CustomInputTitleType: String {
     case challengeTitle = "챌린지명"
     case challengeDeadline = "챌린지 마감일"
     case challnegeContent = "챌린지 내용"
+    case lockNumberHint = "질문"
 }

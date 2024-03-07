@@ -9,9 +9,9 @@ import Foundation
 import Alamofire
 
 enum SignalAPI {
-    case getMySignal(_ accessToken: String)
-    case getPartnerSignal(_ accessToken: String)
-    case changeMySignal(accessToken: String, dto: ChangeMySignalRequestDTO)
+    case getMySignal
+    case getPartnerSignal
+    case changeMySignal(dto: ChangeMySignalRequestDTO)
 }
 
 extension SignalAPI: Router, URLRequestConvertible {
@@ -39,12 +39,11 @@ extension SignalAPI: Router, URLRequestConvertible {
     
     var header: [String : String] {
         switch self {
-        case .getMySignal(let accessToken),
-                .getPartnerSignal(let accessToken),
-                .changeMySignal(accessToken: let accessToken, dto: _):
+        case .getMySignal,
+                .getPartnerSignal,
+                .changeMySignal:
             return ["Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization" : accessToken]
+                    "Accept": "application/json"]
         }
     }
     
@@ -52,7 +51,7 @@ extension SignalAPI: Router, URLRequestConvertible {
         switch self {
         case .getMySignal, .getPartnerSignal:
             return nil
-        case .changeMySignal(accessToken: _, dto: let dto):
+        case .changeMySignal(dto: let dto):
             return ["mySignal": dto.mySignal]
         }
     }

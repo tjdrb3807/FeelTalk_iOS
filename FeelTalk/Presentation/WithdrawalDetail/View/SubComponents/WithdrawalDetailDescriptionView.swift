@@ -8,7 +8,29 @@
 import UIKit
 import SnapKit
 
-final class WithdrawalDetailDescriptionView: UIView {
+final class WithdrawalDetailDescriptionView: UIStackView {
+    private lazy var leadingSpacing: UIView = { UIView() }()
+    
+    private lazy var trailingSpacing: UIView = { UIView() }()
+    
+    private lazy var gradationView: UIView = {
+        let view = UIView(frame: CGRect(origin: .zero,
+                                        size: CGSize(width: UIScreen.main.bounds.width - (CommonConstraintNameSpace.leadingInset + CommonConstraintNameSpace.trailingInset),
+                                                     height: WithdrawalDetailDescriptionViewNameSpace.height)))
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.bounds
+        gradientLayer.colors = [UIColor.white.withAlphaComponent(0.0).cgColor, UIColor.white.cgColor]
+        gradientLayer.type = .axial
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        gradientLayer.locations = [0.0, 0.2]
+        gradientLayer.position = view.center
+        
+        view.layer.addSublayer(gradientLayer)
+        
+        return view
+    }()
+    
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = WithdrawalDetailDescriptionViewNameSpace.descriptionLabelText
@@ -23,36 +45,42 @@ final class WithdrawalDetailDescriptionView: UIView {
     }()
     
     override init(frame: CGRect) {
-        super.init(frame: CGRect(origin: .zero,
-                                 size: CGSize(width: UIScreen.main.bounds.width,
-                                              height: WithdrawalDetailDescriptionViewNameSpace.height)))
+        super.init(frame: frame)
         
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
     }
     
-    required init?(coder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func setProperties() {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = bounds
-        gradientLayer.colors = [UIColor.white.withAlphaComponent(0.0).cgColor, UIColor.white.cgColor]
-        gradientLayer.type = .axial
-        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
-        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
-        gradientLayer.locations = [0.0, 0.2]
-        gradientLayer.position = center
 
-        self.layer.addSublayer(gradientLayer)
+    private func setProperties() {
+        axis = .horizontal
+        alignment = .fill
+        distribution = .fill
+        spacing = CommonConstraintNameSpace.leadingInset
+        backgroundColor = .clear
     }
     
-    private func addSubComponents() { addSubview(descriptionLabel) }
+    private func addSubComponents() {
+        addViewSubComponents()
+        addGradationViewSubComponents()
+    }
     
     private func setConstraints() {
         descriptionLabel.snp.makeConstraints { $0.center.equalToSuperview() }
+    }
+}
+
+extension WithdrawalDetailDescriptionView {
+    private func addViewSubComponents() {
+        [leadingSpacing, gradationView, trailingSpacing].forEach { addArrangedSubview($0) }
+    }
+    
+    private func addGradationViewSubComponents() {
+        gradationView.addSubview(descriptionLabel)
     }
 }
 

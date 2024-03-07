@@ -19,7 +19,7 @@ final class CustomNavigationBar: UIView {
         return button
     }()
     
-    private lazy var titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
         label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
@@ -94,7 +94,7 @@ struct CustomNavigationBar_Previews: PreviewProvider {
     
     struct CustomNavigationBar_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            CustomNavigationBar(type: .lockingHintSettings, isRootView: true)
+            CustomNavigationBar(type: .lockNumberReset, isRootView: true)
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

@@ -23,11 +23,10 @@ enum SettingsViewNameSpace {
     static let tableViewSectionHeaderHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 0.98
     
     // MARK: LogOutButton
+    /// "로그아웃"
     static let logOutButtonTitle: String = "로그아웃"
     /// -28.0
     static let logOutButtonBottomOffset: CGFloat = -(CommonConstraintNameSpace.verticalRatioCalculator * 3.44)
-    /// 48.0
-    static let logOutButtonWidth: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 12.8
     /// 21.0
     static let logOutButtonHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 2.58
 }

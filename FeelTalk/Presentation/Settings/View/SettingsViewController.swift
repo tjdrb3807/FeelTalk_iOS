@@ -23,7 +23,7 @@ enum SettingsCategory: String {
     case withdrawal = "회원탈퇴"
 }
 
-struct SettingsModel {
+struct SettingsModel: Equatable {
     let category: SettingsCategory
     var state: String?
     let isArrowIconHidden: Bool
@@ -47,6 +47,15 @@ final class SettingsViewController: UIViewController {
     var viewModel: SettingsViewModel!
     let disposeBag = DisposeBag()
     
+    let dataSource = RxTableViewSectionedReloadDataSource<SettingsSection>(configureCell: { ds, tv, indexPath, item in
+        guard let cell = tv.dequeueReusableCell(withIdentifier: SettingsCellNameSpace.identifier) as? SettingsCell else { return UITableViewCell() }
+        
+        cell.modelObserver.accept(item)
+        cell.selectionStyle = .none
+        
+        return cell
+    })
+    
     private lazy var navigationBar: CustomNavigationBar = { CustomNavigationBar(type: .settingList, isRootView: false) }()
     
     private lazy var tableView: UITableView = {
@@ -67,7 +76,9 @@ final class SettingsViewController: UIViewController {
         return tableView
     }()
     
-    private lazy var logOutButton: BottomBorderButton = { BottomBorderButton(title: SettingsViewNameSpace.logOutButtonTitle) }()
+    private lazy var logOutButton: CustomBottomBorderButton = {
+        CustomBottomBorderButton(title: SettingsViewNameSpace.logOutButtonTitle)
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,20 +90,12 @@ final class SettingsViewController: UIViewController {
     }
     
     private func bind(to viewModel: SettingsViewModel) {
-        let dataSource = RxTableViewSectionedReloadDataSource<SettingsSection>(configureCell: { ds, tv, indexPath, item in
-            guard let cell = tv.dequeueReusableCell(withIdentifier: SettingsCellNameSpace.identifier) as? SettingsCell else { return UITableViewCell() }
-            
-            cell.modelObserver.accept(item)
-            cell.rx.selectionStyle.onNext(.none)
-            
-            return cell
-        })
-        
         let input = SettingsViewModel.Input(
             viewWillAppear: rx.viewWillAppear,
             viewDisDisappear: rx.viewDidDisappear,
             popButtonTabObserver: navigationBar.leftButton.rx.tap,
-            selectedCellObserver: tableView.rx.modelSelected(SettingsSection.Item.self))
+            selectedCellObserver: tableView.rx.modelSelected(SettingsSection.Item.self),
+            logoutButtonTapObserver: logOutButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
         
@@ -119,14 +122,13 @@ final class SettingsViewController: UIViewController {
 
 extension SettingsViewController {
     private func addViewSubComponents() {
-        [navigationBar, logOutButton, tableView].forEach { view.addSubview($0) }
+        [navigationBar, tableView, logOutButton].forEach { view.addSubview($0) }
     }
     
     private func makeLogOutButtonConstraints() {
         logOutButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(SettingsViewNameSpace.logOutButtonBottomOffset)
-            $0.width.equalTo((logOutButton.titleLabel?.intrinsicContentSize.width)!)
             $0.height.equalTo(SettingsViewNameSpace.logOutButtonHeight)
         }
     }
@@ -171,21 +173,20 @@ struct SettingsViewController_Previews: PreviewProvider {
     struct SettingsViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = SettingsViewController()
-            let vm = SettingsViewModel(coordinator: DefaultSettingsCoordinator(UINavigationController()),
-                                       configurationUseCase: DefaultConfigurationUseCase(configurationRepository: DefaultConfigurationRepository()))
-            
-                
+            let vm = SettingsViewModel(
+                coordinator: DefaultSettingsCoordinator(
+                    UINavigationController()),
+                configurationUseCase: DefaultConfigurationUseCase(
+                    configurationRepository: DefaultConfigurationRepository()),
+                loginUseCase: DefaultLoginUseCase(
+                    loginRepository: DefaultLoginRepository(),
+                    appleRepository: DefaultAppleRepository(),
+                    googleRepositroy: DefaultGoogleRepository(),
+                    naverRepository: DefaultNaverLoginRepository(),
+                    kakaoRepository: DefaultKakaoRepository(),
+                    userRepository: DefaultUserRepository()))
             
             vc.viewModel = vm
-            vc.rx.viewDidLoad
-                .bind(onNext: {
-                    vm.sections.accept([
-                        SettingsSection(header: "Settings_first",
-                                        items: [SettingsModel(category: .lock, state: "꺼짐", isArrowIconHidden: false)]),
-                        SettingsSection(header: "Settings_second",
-                                        items: [SettingsModel(category: .info, state: nil, isArrowIconHidden: false)])
-                    ])
-                }).disposed(by: vc.disposeBag)
             
             return vc
         }

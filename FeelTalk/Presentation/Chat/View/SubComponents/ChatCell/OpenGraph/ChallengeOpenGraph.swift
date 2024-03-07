@@ -2,7 +2,7 @@
 //  ChallengeOpenGraph.swift
 //  FeelTalk
 //
-//  Created by 전성규 on 2023/11/16.
+//  Created by 전성규 on 2024/02/19.
 //
 
 import UIKit
@@ -10,20 +10,37 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-struct ChallengeChatModel {
-    let type: ChatType
-}
-
-final class ChallengeOpenGraph: UIStackView {
-    let model = PublishRelay<ChallengeChatModel>()
+/// ChallengeOpenGraphType == .add || .ongoing
+final class ChallengeOpenGraph: UIView {
+    let modelObserver = PublishRelay<ChallengeChat>()
     private let disposeBag = DisposeBag()
     
-    private lazy var topSpacingView: UIView = { UIView() }()
+    private lazy var totalContentStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.distribution = .fillProportionally
+        stackView.spacing = ChallengeOpenGraphNameSpace.totalContentStackViewSpacing
+        
+        return stackView
+    }()
     
-    private lazy var titleImageView: UIImageView = {
+    private lazy var flagImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "image_challenge_open_graph")
-        imageView.backgroundColor = .red.withAlphaComponent(0.4)
+        modelObserver
+            .map { model -> ChatType in model.type }
+            .map { type -> String in
+                switch type {
+                case .addChallengeChatting:
+                    return ChallengeOpenGraphNameSpace.flagImageAddChallengeType
+                case .challengeChatting:
+                    return ChallengeOpenGraphNameSpace.flagImageChallengeType
+                default:
+                    return ChallengeOpenGraphNameSpace.flageImageDefaultType
+                }
+            }.map { imageStr -> UIImage? in UIImage(named: imageStr) }
+            .bind(to: imageView.rx.image)
+            .disposed(by: disposeBag)
         
         return imageView
     }()
@@ -31,12 +48,25 @@ final class ChallengeOpenGraph: UIStackView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
-        label.numberOfLines = 0
-        label.font = UIFont(name: CommonFontNameSpace.pretendardMedium,
-                            size: 16.0)
-        label.setLineHeight(height: 24.0)
-        label.textAlignment = .center
-        label.backgroundColor = .red.withAlphaComponent(0.4)
+        label.font = UIFont(
+            name: CommonFontNameSpace.pretendardMedium,
+            size: ChallengeOpenGraphNameSpace.titleLabelFontSize)
+        
+        modelObserver
+            .map { model -> ChatType in model.type }
+            .map { type -> String? in
+                switch type {
+                case .addChallengeChatting:
+                    return "새 챌린지를 등록했어요!"
+                case .challengeChatting:
+                    return "챌린지를 진행하고 있어요!"
+                default:
+                    return nil
+                }
+            }.bind { text in
+                label.rx.text.onNext(text)
+                label.setLineHeight(height: 24.0)
+            }.disposed(by: disposeBag)
         
         return label
     }()
@@ -54,62 +84,66 @@ final class ChallengeOpenGraph: UIStackView {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.distribution = .fillProportionally
-        stackView.spacing = 8.0
-        stackView.backgroundColor = .red.withAlphaComponent(0.4)
+        stackView.spacing = 4.0
         
         return stackView
     }()
     
     private lazy var dDayLabel: UILabel = {
         let label = UILabel()
-        label.text = "D+999"
         label.textColor = UIColor(named: CommonColorNameSpace.main500)
-        label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
-                            size: 12.0)
-        label.setLineHeight(height: 18.0)
         label.textAlignment = .center
+        label.font = UIFont(
+            name: CommonFontNameSpace.pretendardRegular,
+            size: 12.0)
         label.backgroundColor = UIColor(named: CommonColorNameSpace.main300)
         label.layer.cornerRadius = 8.0
         label.clipsToBounds = true
         
+        modelObserver
+            .map { model -> String in model.challengeDeadline }
+            .map { String.replaceT($0) }
+            .bind {
+                guard let deadline = Date.strToDate($0) else { return }
+                let dDay = Utils.calculateDday(deadline)
+                
+                label.rx.text.onNext(dDay)
+            }.disposed(by: disposeBag)
+        
         return label
     }()
     
-    private lazy var challengeTitleLabel: UILabel = {
+    private lazy var challengeContentLabel: UILabel = {
         let label = UILabel()
-        label.text = """
-                     다섯글자임다섯글자임
-                     다섯글자임다섯글자임
-                     """
         label.textColor = .black
-        label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
-                            size: 14.0)
-        label.setLineHeight(height: 21.0)
-        label.numberOfLines = 0
-        label.backgroundColor = .blue.withAlphaComponent(0.4)
+        label.textAlignment = .center
+        label.numberOfLines = 2
+        label.font = UIFont(
+            name: CommonFontNameSpace.pretendardRegular,
+            size: 14.0)
         
+        modelObserver
+            .map { model -> String? in model.challengeTitle }
+            .bind { text in
+                guard var text = text else { return }
+                if text.count > 10 {
+                    let index = text.index(text.startIndex, offsetBy: 10)
+                    text.insert("\n", at: index)
+                }
+                label.rx.text.onNext(text)
+                label.setLineHeight(height: 21.0)
+            }.disposed(by: disposeBag)
+
         return label
     }()
     
-    private lazy var deadlineLabel: UILabel = {
-        let label = UILabel()
-        label.text = "2026년 5월 16일까지"
-        label.textColor = UIColor(named: CommonColorNameSpace.gray600)
-        label.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
-                            size: 12.0)
-        label.setLineHeight(height: 18.0)
-        label.backgroundColor = .blue.withAlphaComponent(0.4)
-        
-        return label
-    }()
-    
-    private lazy var confirmButton: UIButton = {
+    lazy var presentChallengeButton: UIButton = {
         let button = UIButton()
         button.setTitle("보러가기", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont(name: CommonFontNameSpace.pretendardRegular,
-                                         size: 16.0)
+        button.titleLabel?.font = UIFont(
+            name: CommonFontNameSpace.pretendardRegular,
+            size: 16.0)
         button.backgroundColor = UIColor(named: CommonColorNameSpace.main500)
         button.layer.cornerRadius = 40.0 / 2
         button.clipsToBounds = true
@@ -117,113 +151,91 @@ final class ChallengeOpenGraph: UIStackView {
         return button
     }()
     
-    private lazy var bottomSpacingView: UIView = { UIView() }()
-    
     override init(frame: CGRect) {
-        super.init(frame: frame)
+        super.init(
+            frame: CGRect(
+                origin: .zero,
+                size: CGSize(
+                    width: 250.0,
+                    height: 308.0)))
         
-        self.bind()
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
     }
     
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func bind() {
-        model
-            .withUnretained(self)
-            .bind { v, model in
-                if model.type == .challengeChatting {
-                    v.titleLabel.rx.text.onNext("챌린지를 진행하고 있어요!")
-                } else if model.type == .addChallengeChatting {
-                    v.titleLabel.rx.text.onNext("""
-                                              새로운 챌린지를
-                                              등록했어요 !
-                                              """)
-                }
-            }.disposed(by: disposeBag)
-    }
-    
     private func setProperties() {
-        axis = .vertical
-        alignment = .center
-        distribution = .fillProportionally
-        spacing = 12.0
         backgroundColor = UIColor(named: CommonColorNameSpace.gray100)
         layer.cornerRadius = 16.0
-        clipsToBounds = true
     }
     
     private func addSubComponents() {
         addViewSubComponents()
+        addTotalContentStackViewSubComponents()
         addContentViewSubComponents()
-        addContentStakcViewSubComponents()
+        addContentStackViewSubComponents()
     }
     
     private func setConstraints() {
-        makeSpacingViewConstraints()
-        makeTitleImageViewConstraints()
+        makeTotalContentStackViewConstraints()
+        makeFlagImageConstraints()
         makeContentViewConstraints()
-        makeContentStackViewConstratins()
-        makeDDayLabelConstraints()
-        makeConfirmButtonConstraints()
+        makeContentStackViewConstraints()
+        makeDdayLabelConstraints()
+        makePresentChallengeButtonConstraints()
     }
 }
 
 extension ChallengeOpenGraph {
-    private func addViewSubComponents() {
-        [topSpacingView, titleImageView, titleLabel, contentView, confirmButton, bottomSpacingView].forEach { addArrangedSubview($0) }
+    private func addViewSubComponents() { addSubview(totalContentStackView) }
+    
+    private func makeTotalContentStackViewConstraints() {
+        totalContentStackView.snp.makeConstraints { $0.center.equalToSuperview() }
     }
     
-    private func makeSpacingViewConstraints() {
-        [topSpacingView, bottomSpacingView].forEach {
-            $0.snp.makeConstraints {
-                $0.width.equalToSuperview()
-                $0.height.equalTo(4)
-            }}
+    private func addTotalContentStackViewSubComponents() {
+        [flagImage, titleLabel, contentView, presentChallengeButton].forEach { totalContentStackView.addArrangedSubview($0) }
     }
     
-    private func makeTitleImageViewConstraints() {
-        titleImageView.snp.makeConstraints {
-            $0.width.equalTo(130.0)
-            $0.height.equalTo(130.0)
+    private func makeFlagImageConstraints() {
+        flagImage.snp.makeConstraints {
+            $0.width.equalTo(84.0)
+            $0.height.equalTo(84.0)
         }
+    }
+    
+    private func addContentViewSubComponents() {
+        contentView.addSubview(contentStackView)
     }
     
     private func makeContentViewConstraints() {
         contentView.snp.makeConstraints {
             $0.width.equalTo(226.0)
-            $0.height.equalTo(134.0)
+            $0.height.equalTo(92.0)
         }
     }
     
-    private func addContentViewSubComponents() { contentView.addSubview(contentStackView) }
-    
-    private func makeContentStackViewConstratins() {
-        contentStackView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().inset(10.0)
-            $0.trailing.equalToSuperview().inset(10.0)
-            $0.top.equalToSuperview().inset(12.0)
-        }
+    private func makeContentStackViewConstraints() {
+        contentStackView.snp.makeConstraints { $0.center.equalToSuperview() }
     }
     
-    private func addContentStakcViewSubComponents() {
-        [dDayLabel, challengeTitleLabel, deadlineLabel].forEach { contentStackView.addArrangedSubview($0) }
+    private func addContentStackViewSubComponents() {
+        [dDayLabel, challengeContentLabel].forEach { contentStackView.addArrangedSubview($0) }
     }
     
-    private func makeDDayLabelConstraints() {
+    private func makeDdayLabelConstraints() {
         dDayLabel.snp.makeConstraints {
-            $0.width.equalTo(54)
-            $0.height.equalTo(34)
+            $0.width.equalTo(52.0)
+            $0.height.equalTo(30.0)
         }
     }
     
-    private func makeConfirmButtonConstraints() {
-        confirmButton.snp.makeConstraints {
+    private func makePresentChallengeButtonConstraints() {
+        presentChallengeButton.snp.makeConstraints {
             $0.width.equalTo(226.0)
             $0.height.equalTo(40.0)
         }
@@ -238,15 +250,18 @@ struct ChallengeOpenGraph_Previews: PreviewProvider {
     static var previews: some View {
         ChallengeOpenGraph_Presentable()
             .edgesIgnoringSafeArea(.all)
-            .frame(width: 250,
-                   height: 396,
-                   alignment: .center)
+            .frame(
+                width: 250.0,
+                height: 308.0,
+                alignment: .center)
     }
     
     struct ChallengeOpenGraph_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let v = ChallengeOpenGraph()
-            v.model.accept(ChallengeChatModel(type: .challengeChatting))
+            v.modelObserver.accept(
+                ChallengeChat(index: 0, type: .challengeChatting, isRead: false, isMine: false, createAt: "2024-01-01T12:00:00", challengeIndex: 0, challengeTitle: "다섯글자임다섯글자임다섯글자임다섯글자임", challengeDeadline: "2025-01-01T12:00:00")
+            )
             
             return v
         }

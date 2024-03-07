@@ -5,8 +5,12 @@
 //  Created by 전성규 on 2023/10/10.
 //
 
-import Foundation
+import UIKit
 
 protocol ChatCoordinator: Coordinator {
     var chatViewController: ChatViewController { get set }
+    
+    var chatViewNC: UINavigationController { get set }
+    
+    func showChatFuncMenuFlow()
 }

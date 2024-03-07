@@ -88,7 +88,7 @@ final class OnboardingViewController: UIViewController {
         return button
     }()
     
-    private lazy var inquiryButton: InquiryButton = { InquiryButton() }()
+    private lazy var inquiryButton: CustomBottomBorderButton = { CustomBottomBorderButton(title: OnboardingViewNameSpace.inquiryButtonTitleText) }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -178,7 +178,8 @@ extension OnboardingViewController {
     private func makeInquiryButtonConstraints() {
         inquiryButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(startButton.snp.bottom).offset(12.0)
+            $0.top.equalTo(startButton.snp.bottom).offset(OnboardingViewNameSpace.inquiryButtonTopOffset)
+            $0.height.equalTo(OnboardingViewNameSpace.inquiryButtonHeight)
         }
     }
 }

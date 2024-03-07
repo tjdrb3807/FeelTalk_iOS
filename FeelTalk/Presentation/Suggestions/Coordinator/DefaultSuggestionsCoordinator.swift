@@ -36,5 +36,6 @@ final class DefaultSuggestionsCoordinator: SuggestionsCoordinator {
     func dismiss() {
         self.childCoordinators.removeAll()
         self.navigationController.dismiss(animated: true)
+        self.navigationController.tabBarController?.tabBar.isHidden = false
     }
 }

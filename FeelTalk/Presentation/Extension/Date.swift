@@ -73,4 +73,19 @@ extension Date {
             return .future
         }
     }
+    
+    static func toString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        return formatter.string(from: date)
+    }
+    
+    static func toDate(_ string: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        
+        return formatter.date(from: string)
+    }
 } 

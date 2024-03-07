@@ -10,8 +10,12 @@ import RxSwift
 import RxCocoa
 
 protocol LoginRepository {
-    func autoLogin(accessToken: String) -> Single<String>
+    func autoLogin() -> Single<String>
     
     func login(_ data: SNSLogin01) -> Single<Token01>
+    
+    func reissuanceAccessToken(accessToken: String, refreshToken: String) -> Single<Token01>
+    
+    func logout() -> Single<Bool>
 }
 

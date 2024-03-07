@@ -6,12 +6,17 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class DefaultAppCoordinator: AppCoordinator {
+    static let isLockScreenObserver = BehaviorRelay<Bool>(value: false)
     weak var finishDelegate: CoordinatorFinishDelegate?
     var navigationController: UINavigationController
     var childCoordinators = [Coordinator]()
     var type: CoordinatorType { .app }
+    var configurationUseCase = DefaultConfigurationUseCase(configurationRepository: DefaultConfigurationRepository())
+    private let disposeBag = DisposeBag()
     
     required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -19,10 +24,28 @@ final class DefaultAppCoordinator: AppCoordinator {
     }
     
     func start() {
-//        DefaultAppCoordinator.isFirstRun() ? showOnboardingFlow() : showSplashFlow()
+        // 앱을 처음 다운받아서 실행한 경우
+        if DefaultAppCoordinator.isFirstRun() {
+            showOnboardingFlow()
+            return
+        }
         
-        showOnboardingFlow()
-//        showSplashFlow()
+        guard let _ = KeychainRepository.getItem(key: "accessToken") as? String else {
+            // 로그아웃 상태인 경우
+            showLoginFlow()
+            return
+        }
+        
+        bindIsLockScreenObserver()
+        
+        DefaultAppCoordinator
+            .isLockScreenObserver
+            .skip(1)
+            .take(1)
+            .withUnretained(self)
+            .bind { cn, state in
+                state ? cn.showLockNumberPadFlow() : cn.showTabBarFlow()
+            }.disposed(by: disposeBag)
     }
     
     func showSplashFlow() {
@@ -56,6 +79,16 @@ final class DefaultAppCoordinator: AppCoordinator {
         tabBarCoordinator.finishDelegate = self
         tabBarCoordinator.start()
     }
+    
+    func showLockNumberPadFlow() {
+        let lockNumberPadCoordinator = DefaultLockNumberPadCoordinator(self.navigationController)
+        
+        lockNumberPadCoordinator.start()
+        lockNumberPadCoordinator.viewType.accept(.access)
+        lockNumberPadCoordinator.finishDelegate = self
+        
+        childCoordinators.append(lockNumberPadCoordinator)
+    }
 }
 
 extension DefaultAppCoordinator {
@@ -68,6 +101,14 @@ extension DefaultAppCoordinator {
         } else {
             return false
         }
+    }
+    
+    private func bindIsLockScreenObserver() {
+        configurationUseCase
+            .getConfigurationInfo()
+            .map { $0.isLock }
+            .bind(to: DefaultAppCoordinator.isLockScreenObserver)
+            .disposed(by: disposeBag)
     }
 }
 
@@ -84,6 +125,10 @@ extension DefaultAppCoordinator: CoordinatorFinishDelegate {
         case .tab:
             self.showLoginFlow()
         case .login:
+            self.childCoordinators.removeAll()
+            self.bindIsLockScreenObserver()
+            self.showTabBarFlow()
+        case .lockNumberPad:
             self.showTabBarFlow()
         default:
             break

@@ -10,7 +10,6 @@ import Security
 
 final class KeychainRepository {
     static func addItem(value: Any, key: Any) -> Bool {
-        print("[CALL]: KeychainRepository.addItem(value:key:)")
         let addQuery: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                    kSecAttrAccount: key,
                                      kSecValueData: (value as AnyObject).data(using: String.Encoding.utf8.rawValue) as Any]
@@ -32,7 +31,6 @@ final class KeychainRepository {
     }
     
     static func getItem(key: Any) -> Any? {
-        print("[CALL]: KeychainRepository.getItem(key:)")
         let getQuery: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                    kSecAttrAccount: key,
                               kSecReturnAttributes: true,
@@ -54,7 +52,6 @@ final class KeychainRepository {
     }
     
     static func updateItem(value: Any, key: Any) -> Bool {
-        print("[CALL]: KeychainRepositroy.updateItem(value:)")
         let prevQuery: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                           kSecAttrAccount: key]
         let updateQuery: [CFString: Any] = [kSecValueData: (value as AnyObject).data(using: String.Encoding.utf8.rawValue) as Any]
@@ -73,7 +70,6 @@ final class KeychainRepository {
     }
     
     static func deleteItem(key: String) -> Bool {
-        print("[CALL]: KeychainRepository.deleteItem(key:)")
         let deleteQuery: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                       kSecAttrAccount: key]
         let status = SecItemDelete(deleteQuery as CFDictionary)
@@ -91,12 +87,7 @@ final class KeychainRepository {
 extension KeychainRepository {
     static func setExpiredTime() -> String {
         let expiredTime = Date(timeIntervalSinceNow: 3600)
-        let formatter = DateFormatter()
-        
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
-        let expiredTimeStr = formatter.string(from: expiredTime)
-        
-        return expiredTimeStr
+
+        return Date.toString(expiredTime)
     }
 }

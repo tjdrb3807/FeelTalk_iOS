@@ -10,5 +10,5 @@ import RxSwift
 import RxCocoa
 
 protocol CoupleRepository {
-    func registerInviteCode(accessToken: String, inviteCode: String) -> Single<Bool>
+    func registerInviteCode(inviteCode: String) -> Single<Bool>
 }

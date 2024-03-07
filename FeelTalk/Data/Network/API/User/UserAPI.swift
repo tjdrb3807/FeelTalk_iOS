@@ -9,10 +9,10 @@ import Foundation
 import Alamofire
 
 enum UserAPI {
-    case getInviteCode(accessToken: String)
-    case getMyInfo(accessToken: String)
-    case getPartnerInfo(accessToken: String)
-    case getUserState(accessToken: String)
+    case getInviteCode
+    case getMyInfo
+    case getPartnerInfo
+    case getUserState
 }
 
 extension UserAPI: Router, URLRequestConvertible {
@@ -40,13 +40,12 @@ extension UserAPI: Router, URLRequestConvertible {
     
     var header: [String : String] {
         switch self {
-        case .getInviteCode(accessToken: let accessToken),
-                .getMyInfo(accessToken: let accessToken),
-                .getPartnerInfo(accessToken: let accessToken),
-                .getUserState(accessToken: let accessToken):
+        case .getInviteCode,
+                .getMyInfo,
+                .getPartnerInfo,
+                .getUserState:
             return ["Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization": accessToken]
+                    "Accept": "application/json"]
         }
     }
     
