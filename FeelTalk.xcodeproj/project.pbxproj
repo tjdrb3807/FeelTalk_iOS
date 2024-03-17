@@ -642,6 +642,7 @@
 		45FCF2752AE55717001F3B16 /* SignalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FCF2742AE55717001F3B16 /* SignalViewModel.swift */; };
 		45FCF2772AE55763001F3B16 /* SignalCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FCF2762AE55763001F3B16 /* SignalCoordinator.swift */; };
 		45FCF27A2AE557BA001F3B16 /* DefaultSignalCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FCF2792AE557BA001F3B16 /* DefaultSignalCoordinator.swift */; };
+		64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1286,6 +1287,7 @@
 		4ED6E863B57DA25C5FE14B12 /* Pods-FeelTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.debug.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.debug.xcconfig"; sourceTree = "<group>"; };
 		58102C3C5ED2F798A20B785C /* Pods_FeelTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeelTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63683F033A68EBA863CDAFB3 /* Pods-FeelTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.release.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.release.xcconfig"; sourceTree = "<group>"; };
+		64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatResponseDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4087,6 +4089,7 @@
 			children = (
 				459CFA522AE0FE3B0076DD8A /* ChatListResponseDTO.swift */,
 				45405C2E2B037DEC00980F0F /* ChatPageNoResponseDTO.swift */,
+				64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -5699,6 +5702,7 @@
 				45A73A5F2AE67415000EB045 /* SignalDialView.swift in Sources */,
 				4573B8C32A7A47DA003C2E75 /* PartnerAnswerView.swift in Sources */,
 				45E3DAD82B6B75D900105BAD /* PasswordConfirmViewCell.swift in Sources */,
+				64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */,
 				45EBCE912ACEA38000918FB3 /* DefaultPartnerInfoCoordinator.swift in Sources */,
 				455560BB2AA4828400EDFFFA /* ChallengeCount.swift in Sources */,
 				45FAEBA92AC16692007DF1C5 /* CustomTextViewNameSpace.swift in Sources */,

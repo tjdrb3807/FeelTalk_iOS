@@ -11,6 +11,9 @@ import Alamofire
 enum ChatAPI {
     case getLastPageNo
     case getChatList(pnageNo: Int)
+    case sendTextChat(text: String)
+    case sendImageChat(image: UIImage)
+    case sendVoiceChat(audio: Data)
 }
 
 extension ChatAPI: Router, URLRequestConvertible {
@@ -22,6 +25,12 @@ extension ChatAPI: Router, URLRequestConvertible {
             return "/api/v1/chatting-message/last/page-no"
         case .getChatList:
             return "/api/v1/chatting-messages"
+        case .sendTextChat:
+            return "/api/v1/chatting-message/text"
+        case .sendImageChat:
+            return "/api/v1/chatting-message/image"
+        case .sendVoiceChat:
+            return "/api/v1/chatting-message/voice"
         }
     }
     
@@ -31,32 +40,50 @@ extension ChatAPI: Router, URLRequestConvertible {
             return .get
         case .getChatList:
             return .post
+        case .sendTextChat:
+            return .post
+        case .sendImageChat:
+            return .post
+        case .sendVoiceChat:
+            return .post
         }
     }
     
     var header: [String : String] {
         switch self {
         case .getLastPageNo,
-            .getChatList(pnageNo: _):
+            .getChatList(pnageNo: _),
+            .sendTextChat(text: _):
             return ["Content-Type": "application/json",
                     "Accept": "application/json"]
+       case .sendImageChat(image: _),
+                .sendVoiceChat(audio: _):
+            return ["Content-Type": "multipart/form-data"]
         }
     }
     
     var parameters: [String : Any]? {
         switch self {
-        case .getLastPageNo:
+        case .getLastPageNo,
+                .sendImageChat(image: _),
+                .sendVoiceChat(audio: _):
             return nil
         case .getChatList(pnageNo: let pageNo):
             return ["pageNo": pageNo]
+        case .sendTextChat(text: let message):
+            return ["message": message]
         }
     }
     
     var encoding: Alamofire.ParameterEncoding? {
         switch self {
         case .getLastPageNo,
-                .getChatList:
+                .getChatList,
+                .sendTextChat:
             return JSONEncoding.default
+        case .sendImageChat,
+                .sendVoiceChat:
+            return nil
         }
     }
     

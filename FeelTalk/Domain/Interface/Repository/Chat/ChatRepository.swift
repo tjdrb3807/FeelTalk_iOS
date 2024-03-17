@@ -13,4 +13,10 @@ protocol ChatRepository {
     func getLastPageNo() -> Single<Int>
     
     func getChatList(pageNo: Int) -> Single<[Chat]>
+    
+    func sendTextChat(text: String) -> Single<TextChat>
+    
+    func sendImageChat(image: UIImage) -> Single<ImageChat>
+    
+    func sendVoiceChat(audio: Data) -> Single<VoiceChat>
 }

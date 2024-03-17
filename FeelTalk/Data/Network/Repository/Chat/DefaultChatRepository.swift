@@ -59,4 +59,121 @@ final class DefaultChatRepository: ChatRepository {
             return Disposables.create()
         }
     }
+    
+    func sendTextChat(text: String) -> Single<TextChat> {
+        Single.create { observer -> Disposable in
+            AF.request(
+                ChatAPI.sendTextChat(text: text),
+                interceptor: DefaultRequestInterceptor()
+            ).responseDecodable(of: BaseResponseDTO<SendChatResponseDTO?>.self) { response in
+                switch response.result {
+                case .success(let responseDTO):
+                    if responseDTO.status == "success" {
+                        guard let sendChatDTO = responseDTO.data! else { return }
+                        print(sendChatDTO)
+                        observer(.success(
+                            TextChat(
+                                index: sendChatDTO.index,
+                                type: .textChatting,
+                                isRead: sendChatDTO.isRead,
+                                isMine: true,
+                                createAt: sendChatDTO.createAt,
+                                text: text)
+                        ))
+                    } else {
+                        guard let message = responseDTO.message else { return }
+                        
+                    }
+                case .failure(let error):
+                    observer(.failure(error))
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func sendImageChat(image: UIImage) -> Single<ImageChat> {
+        Single.create { observer -> Disposable in
+            AF.upload(
+                multipartFormData: { multipart in
+                    multipart.append(
+                        image.pngData()!,
+                        withName: "imageFile",
+                        fileName: nil,
+                        mimeType: "image/png"
+                    )
+                },
+                with: ChatAPI.sendImageChat(image: image),
+                usingThreshold: UInt64.init(),
+                interceptor: DefaultRequestInterceptor()
+            ).responseDecodable(of: BaseResponseDTO<SendChatResponseDTO?>.self) { response in
+                switch response.result {
+                case .success(let responseDTO):
+                    if responseDTO.status == "success" {
+                        guard let sendChatDTO = responseDTO.data! else { return }
+                        print(sendChatDTO)
+                        observer(.success(
+                            ImageChat(
+                                index: sendChatDTO.index,
+                                type: .imageChatting,
+                                isRead: sendChatDTO.isRead,
+                                isMine: true,
+                                createAt: sendChatDTO.createAt,
+                                imageURL: "url 서버에서 안 보내주는데 이거 어캄 망함")
+                        ))
+                    } else {
+                        guard let message = responseDTO.message else { return }
+                        
+                    }
+                case .failure(let error):
+                    observer(.failure(error))
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
+    func sendVoiceChat(audio: Data) -> Single<VoiceChat> {
+            Single.create { observer -> Disposable in
+                AF.upload(
+                    multipartFormData: { multipart in
+                        multipart.append(
+                            audio,
+                            withName: "voiceFile",
+                            fileName: nil,
+                            mimeType: "audio/*"
+                        )
+                    },
+                    with: ChatAPI.sendVoiceChat(audio: audio),
+                    usingThreshold: UInt64.init(),
+                    interceptor: DefaultRequestInterceptor()
+                ).responseDecodable(of: BaseResponseDTO<SendChatResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            guard let sendChatDTO = responseDTO.data! else { return }
+                            print(sendChatDTO)
+                            observer(.success(
+                                VoiceChat(
+                                    index: sendChatDTO.index,
+                                    type: .imageChatting,
+                                    isRead: sendChatDTO.isRead,
+                                    isMine: true,
+                                    createAt: sendChatDTO.createAt,
+                                    voiceURL: "url 서버에서 안 보내주는데 이거 어캄 망함2")
+                            ))
+                        } else {
+                            guard let message = responseDTO.message else { return }
+                            
+                        }
+                    case .failure(let error):
+                        observer(.failure(error))
+                    }
+                }
+                
+                return Disposables.create()
+            }
+    }
 }
