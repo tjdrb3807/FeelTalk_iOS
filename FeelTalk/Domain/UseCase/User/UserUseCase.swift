@@ -29,12 +29,12 @@ final class DefaultUserUseCase: UserUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            userRepository
+            self.userRepository
                 .getInviteCode()
                 .asObservable()
                 .subscribe(onNext: { code in
                     observer.onNext(code)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -43,12 +43,12 @@ final class DefaultUserUseCase: UserUseCase {
     func getMyInfo() -> Observable<MyInfo> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
-            userRepository
+            self.userRepository
                 .getMyInfo()
                 .asObservable()
                 .bind(onNext: { info in
                     observer.onNext(info)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -57,12 +57,12 @@ final class DefaultUserUseCase: UserUseCase {
     func getPartnerInfo() -> Observable<PartnerInfo> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
-            userRepository
+            self.userRepository
                 .getPartnerInfo()
                 .asObservable()
                 .bind(onNext: { info in
                     observer.onNext(info)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }

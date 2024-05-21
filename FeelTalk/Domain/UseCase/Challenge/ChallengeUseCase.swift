@@ -39,7 +39,7 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            challengeRepository
+            self.challengeRepository
                 .addChallenge(
                     requestDTO: AddChallengeRequestDTO(
                         title: model.title,
@@ -48,7 +48,7 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
                 ).asObservable()
                 .bind(onNext: { event in
                     observer.onNext(event)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -58,13 +58,13 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            challengeRepository
+            self.challengeRepository
                 .completeChallenge(
                     requestDTO: CompleteChallengeRequestDTO(index: index)
                 ).asObservable()
                 .bind(onNext: { event in
                     observer.onNext(event)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
             
@@ -74,12 +74,12 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
     func getChallenge(index: Int) -> Observable<Challenge> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
-            challengeRepository
+            self.challengeRepository
                 .getChallenge(index: index)
                 .asObservable()
                 .bind(onNext: { challenge in
                     observer.onNext(challenge)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -89,13 +89,13 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            challengeRepository
+            self.challengeRepository
                 .getChallengeLatestPageNo(type: type)
                 .asObservable()
                 .map { $0.pageNo }
                 .bind(onNext: {
                     observer.onNext($0)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -105,14 +105,14 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            challengeRepository
+            self.challengeRepository
                 .getChallengeList(
                     type: type,
                     requestDTO: ChallengeListRequestDTO(pageNo: pageNo)
                 ).asObservable()
                 .bind(onNext: {
                     observer.onNext($0)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -121,12 +121,12 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
     func getChallengeCount() -> Observable<ChallengeCount> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
-            challengeRepository
+            self.challengeRepository
                 .getChallengeCount()
                 .asObservable()
                 .bind(onNext: { challengeCount in
                     observer.onNext(challengeCount)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -136,7 +136,7 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            challengeRepository
+            self.challengeRepository
                 .modifyChallenge(
                     requestDTO: ModifyChallengeRequestDTO(
                         index: model.index,
@@ -146,7 +146,7 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
                 ).asObservable()
                 .bind(onNext: { event in
                     observer.onNext(event)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -156,13 +156,13 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            challengeRepository
+            self.challengeRepository
                 .removeChallenge(
                     requestDTO: RemoveChallengeRequestDTO(index: index)
                 ).asObservable()
                 .bind(onNext: { evnet in
                     observer.onNext(evnet)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }

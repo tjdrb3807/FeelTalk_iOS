@@ -98,12 +98,12 @@ final class AdultAuthNewsAgencyButton: UIButton {
             guard let self = self else { return }
             
             let rotate = CGAffineTransform(rotationAngle: .pi)
-            arrowIcon.transform = rotate
+            self.arrowIcon.transform = rotate
         } completion: { [weak self] result in
             guard let self = self else { return }
             
             let rotate = CGAffineTransform(rotationAngle: .pi)
-            arrowIcon.transform = rotate
+            self.arrowIcon.transform = rotate
         }
     }
 }

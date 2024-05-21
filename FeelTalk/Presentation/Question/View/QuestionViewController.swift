@@ -60,7 +60,7 @@ final class QuestionViewController: UIViewController {
             .drive(questionTableView.rx.items) { [weak self] tv, row, model in
                 guard let self = self else { return UITableViewCell() }
                 let index = IndexPath(row: row, section: 0)
-                let cell = questionTableView.dequeueReusableCell(withIdentifier: QuestionTableViewCellNameSpace.identifier,
+                let cell = self.questionTableView.dequeueReusableCell(withIdentifier: QuestionTableViewCellNameSpace.identifier,
                                                                  for: index) as! QuestionTableViewCell
                 
                 cell.model.accept(model)

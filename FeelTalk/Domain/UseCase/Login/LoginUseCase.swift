@@ -49,7 +49,7 @@ final class DefaultLoginUseCase: LoginUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            loginRepository
+            self.loginRepository
                 .login(data)
                 .asObservable()
                 .filter {
@@ -62,7 +62,7 @@ final class DefaultLoginUseCase: LoginUseCase {
                         .subscribe(onNext: { state in
                             observer.onNext(state)
                         }).disposed(by: self.disposeBag)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -72,7 +72,7 @@ final class DefaultLoginUseCase: LoginUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            loginRepository
+            self.loginRepository
                 .reissuanceAccessToken(
                     accessToken: accessToken,
                     refreshToken: refreshToken)
@@ -84,7 +84,7 @@ final class DefaultLoginUseCase: LoginUseCase {
                 }.map { _ -> Void in }
                 .subscribe(onNext: {
                     observer.onNext(())
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -94,7 +94,7 @@ final class DefaultLoginUseCase: LoginUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            loginRepository
+            self.loginRepository
                 .logout()
                 .asObservable()
                 .filter { $0 }
@@ -105,7 +105,7 @@ final class DefaultLoginUseCase: LoginUseCase {
                 }.map { _ -> Void in }
                 .subscribe(onNext: {
                     observer.onNext(())
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -144,12 +144,12 @@ extension DefaultLoginUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            userRepository
+            self.userRepository
                 .getUserState()
                 .asObservable()
                 .bind(onNext: { state in
                     observer.onNext(state)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }

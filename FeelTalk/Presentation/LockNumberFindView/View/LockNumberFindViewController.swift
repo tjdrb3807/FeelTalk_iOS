@@ -207,7 +207,7 @@ extension LockNumberFindViewController {
             options: .curveEaseInOut,
             animations: { [weak self] in
                 guard let self = self else { return }
-                view.layoutIfNeeded()
+                self.view.layoutIfNeeded()
             }, completion: nil)
     }
     
@@ -222,7 +222,7 @@ extension LockNumberFindViewController {
             options: .curveEaseInOut,
             animations: { [weak self] in
                 guard let self = self else { return }
-                view.layoutIfNeeded()
+                self.view.layoutIfNeeded()
             }, completion: nil)
     }
 }

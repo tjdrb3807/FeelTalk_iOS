@@ -186,7 +186,7 @@ extension AdultAuthAlertView {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + AdultAuthAlertViewNameSpace.animateDelay) { [weak self] in
             guard let self = self else { return }
             
-            removeFromSuperview()
+            self.removeFromSuperview()
         }
     }
 }

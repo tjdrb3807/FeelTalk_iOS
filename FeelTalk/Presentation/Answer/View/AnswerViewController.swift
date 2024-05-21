@@ -302,8 +302,8 @@ extension AnswerViewController {
                        animations: { [weak self] in
             guard let self = self else { return }
             
-            dimmedView.alpha = 0.0
-            view.layoutIfNeeded()
+            self.dimmedView.alpha = 0.0
+            self.view.layoutIfNeeded()
         })
     }
 }

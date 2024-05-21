@@ -51,12 +51,12 @@ extension DefaultNaverLoginRepository {
     func getInfo() -> Observable<SNSLogin01> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self,
-                  let isValidAccessToken = loginInstance?.isValidAccessTokenExpireTimeNow() else { return Disposables.create() }
+                  let isValidAccessToken = self.loginInstance?.isValidAccessTokenExpireTimeNow() else { return Disposables.create() }
             
             if !isValidAccessToken { return Disposables.create() }
             
-            guard let tokenType = loginInstance?.tokenType,
-                  let accessToken = loginInstance?.accessToken else { return Disposables.create() }
+            guard let tokenType = self.loginInstance?.tokenType,
+                  let accessToken = self.loginInstance?.accessToken else { return Disposables.create() }
             
             let urlStr = "https://openapi.naver.com/v1/nid/me"
             let url = URL(string: urlStr)!

@@ -93,11 +93,11 @@ extension UIScrollView {
             
             switch direction {
             case .title:
-                scrollToTop()
+                self.scrollToTop()
             case .deadline:
                 break
             case .content:
-                scrollToBottom()
+                self.scrollToBottom()
             case .none:
                 break
             }

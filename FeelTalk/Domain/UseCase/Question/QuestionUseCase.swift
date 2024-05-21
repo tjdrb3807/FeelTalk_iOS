@@ -37,12 +37,12 @@ final class DefaultQuestionUseCase: QuestionUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            questionRepository
+            self.questionRepository
                 .answerQuestion(requestDTO: entity.toDTO())
                 .asObservable()
                 .subscribe(onNext: { result in
                     observer.onNext(result)
-                }).disposed(by: disposbag)
+                }).disposed(by: self.disposbag)
                 
             
             return Disposables.create()
@@ -53,7 +53,7 @@ final class DefaultQuestionUseCase: QuestionUseCase {
         return Observable.create { [weak self] observer in
             guard let self = self else { return Disposables.create() }
             
-            questionRepository
+            self.questionRepository
                 .getLatestQuestionPageNo()
                 .subscribe(
                     onSuccess: { questionPage in
@@ -63,7 +63,7 @@ final class DefaultQuestionUseCase: QuestionUseCase {
                         print(error.localizedDescription)
                     },
                     onDisposed: nil)
-                .disposed(by: disposbag)
+                .disposed(by: self.disposbag)
             
             return Disposables.create()
         }
@@ -73,12 +73,12 @@ final class DefaultQuestionUseCase: QuestionUseCase {
         return Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create()}
     
-            questionRepository
+            self.questionRepository
                 .getQuestion(index: index)
                 .asObservable()
                 .bind(onNext: { question in
                     observer.onNext(question)
-                }).disposed(by: disposbag)
+                }).disposed(by: self.disposbag)
             
             return Disposables.create()
         }
@@ -88,12 +88,12 @@ final class DefaultQuestionUseCase: QuestionUseCase {
         return Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            questionRepository
+            self.questionRepository
                 .getQuestionList(questionPage: questionPage)
                 .asObservable()
                 .bind(onNext: { questions in
                     observer.onNext(questions)
-                }).disposed(by: disposbag)
+                }).disposed(by: self.disposbag)
             
             return Disposables.create()
         }
@@ -103,13 +103,13 @@ final class DefaultQuestionUseCase: QuestionUseCase {
         return Single.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create()}
             
-            questionRepository
+            self.questionRepository
                 .getTodayQuestion()
                 .subscribe(
                     onSuccess: { observer(.success($0)) },
                     onFailure: { observer(.failure($0)) },
                     onDisposed: nil)
-                .disposed(by: disposbag)
+                .disposed(by: self.disposbag)
             
             return Disposables.create()
         }
@@ -119,7 +119,7 @@ final class DefaultQuestionUseCase: QuestionUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            questionRepository
+            self.questionRepository
                 .pressForAnswer(PressForAnswerRequestDTO(index: index))
                 .asObservable()
                 .subscribe(onNext: { event in
@@ -130,7 +130,7 @@ final class DefaultQuestionUseCase: QuestionUseCase {
                         .bind(onNext: {
                             observer.onNext($0.nickname)
                         }).disposed(by: self.disposbag)
-                }).disposed(by: disposbag)
+                }).disposed(by: self.disposbag)
             
             return Disposables.create()
         }

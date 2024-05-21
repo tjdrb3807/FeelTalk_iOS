@@ -32,11 +32,11 @@ final class DefaultSignUpUseCase: SignUpUseCase {
             guard let self = self,
                   let requestDTO = entity.convertAuthNumberRequestDTO() else { return Disposables.create() }
             
-            signUpRepository.getAuthNumber(requestDTO)
+            self.signUpRepository.getAuthNumber(requestDTO)
                 .asObservable()
                 .subscribe(onNext: { state in
                     observer.onNext(state)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -47,11 +47,11 @@ final class DefaultSignUpUseCase: SignUpUseCase {
             guard let self = self,
                   let requestDTO = entity.convertReAuthNumberRequestDTO() else { return Disposables.create() }
             
-            signUpRepository.getReAuthNumber(requestDTO)
+            self.signUpRepository.getReAuthNumber(requestDTO)
                 .asObservable()
                 .subscribe(onNext: { state in
                     observer.onNext(state)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -61,11 +61,11 @@ final class DefaultSignUpUseCase: SignUpUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            signUpRepository.verifyAnAdult(VerificationRequestDTO(authNumber: authNumber))
+            self.signUpRepository.verifyAnAdult(VerificationRequestDTO(authNumber: authNumber))
                 .asObservable()
                 .subscribe(onNext: { state in
                     observer.onNext(state)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -82,11 +82,11 @@ final class DefaultSignUpUseCase: SignUpUseCase {
                                               marketingConsent: model.marketingConsent,
                                               fcmToken: fcmToken)
 
-            signUpRepository.signUp(requestDTO)
+            self.signUpRepository.signUp(requestDTO)
                 .asObservable()
                 .subscribe(onNext: { state in
                     observer.onNext(state)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
 
             return Disposables.create()
         }

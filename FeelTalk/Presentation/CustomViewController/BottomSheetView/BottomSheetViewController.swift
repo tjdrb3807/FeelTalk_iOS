@@ -137,8 +137,8 @@ extension BottomSheetViewController {
                        options: .curveEaseInOut,
                        animations: { [weak self] in
             guard let self = self else { return }
-            view.backgroundColor = .black.withAlphaComponent(BottomSheetViewControllerNameSpace.backgroundColorAlpha)
-            view.layoutIfNeeded()
+            self.view.backgroundColor = .black.withAlphaComponent(BottomSheetViewControllerNameSpace.backgroundColorAlpha)
+            self.view.layoutIfNeeded()
         })
         
         dismiss.accept(false)
@@ -153,14 +153,14 @@ extension BottomSheetViewController {
                      options: .curveEaseInOut,
                      animations: { [weak self] in
                 guard let self = self else { return }
-                view.backgroundColor = .clear
-                view.layoutIfNeeded()
+                self.view.backgroundColor = .clear
+                self.view.layoutIfNeeded()
             })
 
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + BottomSheetViewControllerNameSpace.bottomSheetViewAnimateDuration) { [weak self] in
             guard let self = self else { return }
 
-            dismiss.accept(true)
+            self.dismiss.accept(true)
         }
     }
 }

@@ -40,12 +40,12 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
     func getConfigurationInfo() -> Observable<ConfigurationInfo> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
-            configurationRepository
+            self.configurationRepository
                 .getConfigurationInfo()
                 .asObservable()
                 .bind(onNext: { info in
                     observer.onNext(info)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -54,11 +54,11 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
     func commnent(with data: InquiryOrSuggestions) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
-            configurationRepository.comment(with: data)
+            self.configurationRepository.comment(with: data)
                 .asObservable()
                 .bind(onNext: { isSuccess in
                     observer.onNext(isSuccess)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -76,11 +76,11 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
     func getServiceDataTotalCount() -> Observable<ServiceDataCount> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
-            configurationRepository.getServiceDataTotalCount()
+            self.configurationRepository.getServiceDataTotalCount()
                 .asObservable()
                 .bind(onNext: { data in
                     observer.onNext(data)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -90,12 +90,12 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            configurationRepository
+            self.configurationRepository
                 .getLockNumber()
                 .asObservable()
                 .subscribe(onNext: { lockNumber in
                     observer.onNext(lockNumber)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -105,13 +105,13 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            configurationRepository
+            self.configurationRepository
                 .setLockNumber(requestDTO: setting.toDTO())
                 .asObservable()
                 .filter { $0 }
                 .subscribe(onNext: { _ in
                     observer.onNext(true)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -131,13 +131,13 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            configurationRepository
+            self.configurationRepository
                 .resetLockNumber(lockNumber)
                 .asObservable()
                 .filter { $0 }
                 .subscribe(onNext: { result in
                     observer.onNext(result)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -147,12 +147,12 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            configurationRepository
+            self.configurationRepository
                 .getLockNumberHintType()
                 .asObservable()
                 .subscribe(onNext: { type in
                     observer.onNext(type)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }

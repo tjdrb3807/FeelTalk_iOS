@@ -25,7 +25,30 @@ final class FCMHandler {
             return
         }
         
+        // MARK: 밑에 handler들에서 질문을 불러올 때 사용할 것
+        let questionUseCase = DefaultQuestionUseCase(
+            questionRepository: DefaultQuestionRepository(),
+            userRepository: DefaultUserRepository())
+        
+        
         switch type {
+        case "createCouple":
+            handleCreateCouple(userInfo)
+        case "todayQuestion":
+            handleTodayQuestion(userInfo)
+        case "questionChatting":
+            handleQuestionChatting(userInfo)
+        case "answerChatting":
+            handleAnswerChatting(userInfo)
+        case "addChallengeChatting":
+            handleAddChallenge(userInfo)
+        case "completeChallengeChatting":
+            handleCompleteChallenge(userInfo)
+        case "deleteChallenge":
+            handleDeleteChallenge(userInfo)
+        case "modifyChallenge":
+            handleDeleteChallenge(userInfo)
+            
         case "signalChatting":
             handleSignalChatting(userInfo)
         case "chatRoomStatusChange":
@@ -50,11 +73,52 @@ extension FCMHandler {
 
 // MARK: Couple
 extension FCMHandler {
-    
+    func handleCreateCouple(_ data: [AnyHashable: Any]) {
+        let title = data["title"] as? String ?? "연인 등록을 완료했어요"
+        showNotification(identifier: title,
+                         title: title,
+                         body: data["message"] as? String ?? "앱에 들어와서 확인해보세요")
+    }
 }
 
 // MARK: Question
 extension FCMHandler {
+    func handleTodayQuestion(_ data: [AnyHashable: Any]) {
+        guard let title = data["title"] as? String else { return }
+        guard let message = data["message"] as? String else { return }
+        guard let index  = data["index"] as? String else { return }
+        
+        showNotification(identifier: index,
+                         title: title,
+                         body: message)
+    }
+    
+    func handleQuestionChatting(_ data: [AnyHashable: Any]) {
+        guard let index  = data["index"] as? String else { return }
+        guard let pageIndex  = data["pageIndex"] as? Int else { return }
+        guard let isRead  = data["isRead"] as? Bool else { return }
+        guard let createAt  = data["createAt"] as? String else { return }
+        guard let coupleQuestionJson  = data["coupleQuestion"] as? String else { return }
+//        guard let questionIndex  = data[""] as? Int else { return }
+        
+        showNotification(identifier: index,
+                         title: "연인 모두 질문에 답변했어요",
+                         body: "앱에 들어와서 확인해보세요")
+    }
+    
+    func handleAnswerChatting(_ data: [AnyHashable: Any]) {
+        guard let index  = data["index"] as? String else { return }
+        guard let pageIndex  = data["pageIndex"] as? Int else { return }
+        guard let isRead  = data["isRead"] as? Bool else { return }
+        guard let createAt  = data["createAt"] as? String else { return }
+        guard let coupleQuestionJson  = data["coupleQuestion"] as? String else { return }
+//        guard let questionIndex  = data[""] as? Int else { return }
+        
+        showNotification(identifier: index,
+                         title: "연인이 질문에 답변을 했어요",
+                         body: "앱에 들어와서 확인해보세요")
+    }
+    
     func handlePressForAnswerChatting(_ data: [AnyHashable: Any]) {
         guard let chatIndexStr = data["index"] as? String,
               let chatPageIndexStr = data["pageIndex"] as? String,
@@ -72,6 +136,52 @@ extension FCMHandler {
                          body: "오늘의 질문에 답변을 남겨주세요!")
         
     }
+}
+
+// MARK: Challenge
+extension FCMHandler {
+    func handleAddChallenge(_ data: [AnyHashable: Any]) {
+        guard let index  = data["index"] as? String else { return }
+        guard let pageIndex  = data["pageIndex"] as? Int else { return }
+        guard let isRead  = data["isRead"] as? Bool else { return }
+        guard let createAt  = data["createAt"] as? String else { return }
+        guard let coupleChallengeJson  = data["coupleChallenge"] as? String
+        else { return }
+//        guard let challengeIndex  = data[""] as? Int else { return }
+        
+        showNotification(identifier: index,
+                         title: "연인이 챌린지를 추가했어요",
+                         body: "앱에 들어와서 확인해보세요")
+    }
+    
+    func handleCompleteChallenge(_ data: [AnyHashable: Any]) {
+        guard let index  = data["index"] as? String else { return }
+        guard let pageIndex  = data["pageIndex"] as? Int else { return }
+        guard let isRead  = data["isRead"] as? Bool else { return }
+        guard let createAt  = data["createAt"] as? String else { return }
+        guard let coupleChallengeJson  = data["coupleChallenge"] as? String
+        else { return }
+//        guard let challengeIndex  = data[""] as? Int else { return }
+        
+        showNotification(identifier: index,
+                         title: "연인이 챌린지를 완료했어요",
+                         body: "앱에 들어와서 확인해보세요")
+    }
+    
+    func handleDeleteChallenge(_ data: [AnyHashable: Any]) {
+        guard let index  = data["index"] as? String else { return }
+    }
+    
+    func handleModifyChallenge(_ data: [AnyHashable: Any]) {
+        guard let index  = data["index"] as? String else { return }
+        let title  = data["title"] as? String ?? "연인이 챌린지를 수정했어요"
+        let message  = data["message"] as? String ?? "앱에 들어와서 확인해보세요"
+        
+        showNotification(identifier: index,
+                         title: title,
+                         body: message)
+    }
+    
 }
 
 // MARK: Signal

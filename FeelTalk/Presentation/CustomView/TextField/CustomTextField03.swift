@@ -72,7 +72,7 @@ final class CustomTextField03: UIStackView {
                 let pattern = regularExPression.rawValue
 
                 if new.count > maxNumOfChar {
-                    warningObserver.accept(.exceedingLetters)
+                    self.warningObserver.accept(.exceedingLetters)
                     return prev
                 }
                 do {
@@ -83,18 +83,18 @@ final class CustomTextField03: UIStackView {
                         in: new,
                         options: NSRegularExpression.MatchingOptions.reportCompletion,
                         range: NSMakeRange(0, new.count)) {
-                        countView?.molecularCount.accept(new.count)
-                        warningObserver.accept(.none)
+                        self.countView?.molecularCount.accept(new.count)
+                        self.warningObserver.accept(.none)
                         return new
                     }
                 } catch {
-                    warningObserver.accept(.none)
-                    countView?.molecularCount.accept(prev.count)
+                    self.warningObserver.accept(.none)
+                    self.countView?.molecularCount.accept(prev.count)
                     return prev
                 }
 
-                warningObserver.accept(.useSpecialCharOfSpace)
-                countView?.molecularCount.accept(prev.count)
+                self.warningObserver.accept(.useSpecialCharOfSpace)
+                self.countView?.molecularCount.accept(prev.count)
                 return prev
             }.asDriver(onErrorJustReturn: "")
             .drive(textField.rx.text)

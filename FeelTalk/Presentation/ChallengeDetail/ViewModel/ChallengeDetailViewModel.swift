@@ -125,10 +125,10 @@ final class ChallengeDetailViewModel {
             .map { [weak self] dateCompare -> Bool in
                 guard let self = self else { return false }
                 
-                return !title.value.isEmpty ? true :
+                return !self.title.value.isEmpty ? true :
                 dateCompare != .same ? true :
-                content.value == ChallengeContentViewNameSpace.contentInputViewPlaceholder ? false :
-                content.value.count > 0 ? true : false
+                self.content.value == ChallengeContentViewNameSpace.contentInputViewPlaceholder ? false :
+                self.content.value.count > 0 ? true : false
             }.withUnretained(self)
             .bind { vm, event in
                 event ? output.popUpAlerObserver.accept(.deregisterChallenge) : vm.coordiantor?.pop()
@@ -227,9 +227,9 @@ final class ChallengeDetailViewModel {
                 
                 return Challenge(index: preModel.index,
                                  pageNo: preModel.pageNo,
-                                 title: title.value,
-                                 deadline: deadline.value,
-                                 content: content.value,
+                                 title: self.title.value,
+                                 deadline: self.deadline.value,
+                                 content: self.content.value,
                                  creator: preModel.creator,
                                  isCompleted: preModel.isCompleted)
             }.withUnretained(self)

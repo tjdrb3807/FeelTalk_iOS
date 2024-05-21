@@ -30,12 +30,12 @@ final class DefaultSignalUseCase: SignalUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            signalRepositroy
+            self.signalRepositroy
                 .getMySignal()
                 .asObservable()
                 .subscribe(onNext: { signal in
                     observer.onNext(signal)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -45,12 +45,12 @@ final class DefaultSignalUseCase: SignalUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            signalRepositroy
+            self.signalRepositroy
                 .getPartnerSignal()
                 .asObservable()
                 .subscribe(onNext: { signal in
                     observer.onNext(signal)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -60,12 +60,12 @@ final class DefaultSignalUseCase: SignalUseCase {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            signalRepositroy
+            self.signalRepositroy
                 .changeMySignal(requestDTO: model.toDTO())
                 .asObservable()
                 .subscribe(onNext: { event in
                     observer.onNext(event)
-                }).disposed(by: disposeBag)
+                }).disposed(by: self.disposeBag)
             
             return Disposables.create()
         }

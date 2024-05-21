@@ -92,8 +92,8 @@ extension SignUpAdultAuthenticationView {
                 options: .allowAnimatedContent,
                 animations: { [weak self] in
                     guard let self = self else { return }
-                    titleImageView.rx.image.onNext(UIImage(named: SignUpAdultAuthenticationViewNameSpace.titleImageViewAuthenticatedStatusImage))
-                    titleImageView.snp.remakeConstraints {
+                    self.titleImageView.rx.image.onNext(UIImage(named: SignUpAdultAuthenticationViewNameSpace.titleImageViewAuthenticatedStatusImage))
+                    self.titleImageView.snp.remakeConstraints {
                         $0.width.equalTo(SignUpAdultAuthenticationViewNameSpace.titleImageViewAuthenticatedStatusWidth)
                         $0.height.equalTo(SignUpAdultAuthenticationViewNameSpace.titleImageViewAuthenticatedStatusHeight)
                     }

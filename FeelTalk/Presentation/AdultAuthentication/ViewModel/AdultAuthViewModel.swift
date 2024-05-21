@@ -267,7 +267,7 @@ extension AdultAuthViewModel {
                 return
             }
             
-            expiradTime.accept(String(format: "%02d:%02d",
+            self.expiradTime.accept(String(format: "%02d:%02d",
                                       Int(remainSeconds / 60),
                                       Int(remainSeconds % 60)))
         })

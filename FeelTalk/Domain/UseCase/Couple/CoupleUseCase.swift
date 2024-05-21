@@ -26,12 +26,12 @@ final class DefaultCoupleUaseCase: CoupleUseCase {
         return Single.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create()}
             
-            coupleRepository
+            self.coupleRepository
                 .registerInviteCode(inviteCode: code)
                 .subscribe(onSuccess: { observer(.success($0)) },
                            onFailure: { observer(.failure($0)) },
                            onDisposed: nil)
-                .disposed(by: disposeBag)
+                .disposed(by: self.disposeBag)
             
             return Disposables.create()
         }

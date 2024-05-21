@@ -86,15 +86,15 @@ extension CustomToastMessage {
             animations: { [weak self] in
                 guard let self = self else { return }
                 
-                snp.updateConstraints {
+                self.snp.updateConstraints {
                     $0.bottom.equalToSuperview().inset(CustomToastMessageNameSpace.updateBottomInset)
                 }
-                superview?.layoutIfNeeded()
+                self.superview?.layoutIfNeeded()
             },completion: { (isCompleted) in
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(3)) { [weak self] in
                     guard let self = self else { return }
                     
-                    hidden()
+                    self.hidden()
                 }
             })
     }

@@ -162,7 +162,7 @@ extension ChallengeCompleteBottomSheetView {
                        options: .curveEaseInOut,
                        animations: { [weak self] in
             guard let self = self else { return }
-            layoutIfNeeded()
+            self.layoutIfNeeded()
         },
         completion: nil)
     }
@@ -182,7 +182,7 @@ extension ChallengeCompleteBottomSheetView {
                        options: .curveEaseInOut,
                        animations: { [weak self] in
             guard let self = self else { return }
-            layoutIfNeeded()
+            self.layoutIfNeeded()
         },
         completion: nil)
     }

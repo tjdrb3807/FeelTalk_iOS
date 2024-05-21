@@ -192,8 +192,8 @@ extension OnboardingViewController {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 
-                firstTitleView.alpha = alpha
-                secondTitleView.alpha = 1.0 - alpha
+                self.firstTitleView.alpha = alpha
+                self.secondTitleView.alpha = 1.0 - alpha
             }
         } else {
             let alpha = 1.0 + alpha
@@ -201,8 +201,8 @@ extension OnboardingViewController {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 
-                secondTitleView.alpha = alpha
-                thirdTitleView.alpha = 1.0 - alpha
+                self.secondTitleView.alpha = alpha
+                self.thirdTitleView.alpha = 1.0 - alpha
             }
         }
     }
