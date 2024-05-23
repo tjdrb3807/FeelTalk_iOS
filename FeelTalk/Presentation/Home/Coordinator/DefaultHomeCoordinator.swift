@@ -54,11 +54,11 @@ final class DefaultHomeCoordinator: HomeCoordinator {
     }
     
     func showChatFlow() {
-        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
-        
-        childCoordinators.append(chatCoordinator)
-        chatCoordinator.finishDelegate = self
-        chatCoordinator.start()
+//        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
+//        
+//        childCoordinators.append(chatCoordinator)
+//        chatCoordinator.finishDelegate = self
+//        chatCoordinator.start()
     }
 }
 

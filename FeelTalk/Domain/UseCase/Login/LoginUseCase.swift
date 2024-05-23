@@ -149,6 +149,14 @@ extension DefaultLoginUseCase {
                 .asObservable()
                 .bind(onNext: { state in
                     observer.onNext(state)
+                    
+                    // MARK: Mixpanel Log In
+                    if state != UserState.newbie {
+                        self.userRepository.getMyInfo()
+                            .subscribe(onSuccess: {myInfo in
+                                MixpanelRepository.shared.logIn(id: myInfo.id)
+                            }).disposed(by: self.disposeBag)
+                    }
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()

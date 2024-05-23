@@ -73,6 +73,9 @@ final class MyPageViewController: UIViewController {
         self.setAttributes()
         self.addSubComponents()
         self.setConfigurations()
+        
+        // MARK: Mixpanel Navigate Page
+        MixpanelRepository.shared.navigatePage()
     }
     
     private func bind(to viewModel: MyPageViewModel) {
@@ -209,7 +212,7 @@ struct MyPageViewController_Previews: PreviewProvider {
             let viewModel = MyPageViewModel(coordinator: DefaultMyPageCoordinator(UINavigationController()),
                                             userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
     
-            viewController.profileView.userInfo.accept(MyInfo(nickname: "SeooongGyu", snsType: .apple))
+            viewController.profileView.userInfo.accept(MyInfo(id: 0, nickname: "SeooongGyu", snsType: .apple))
             viewController.profileView.partnerInfoButton.partnerInfo.accept(PartnerInfo(nickname: "Partner", snsType: .naver))
         
             viewController.viewModel = viewModel

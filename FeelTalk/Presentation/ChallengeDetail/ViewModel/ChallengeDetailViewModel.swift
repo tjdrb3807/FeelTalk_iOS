@@ -73,7 +73,6 @@ final class ChallengeDetailViewModel {
                                               deadline: $1.deadline,
                                               content: $1.content,
                                               isCompleted: $1.isCompleted)
-                
             }.withUnretained(self)
             .bind { vm, model in
                 guard let title = model.title,
@@ -87,6 +86,11 @@ final class ChallengeDetailViewModel {
                 output.titleModel.accept(title)
                 output.deadlineModel.accept(deadline)
                 output.contentModel.accept(content)
+                
+                if isCompleted {
+                    // MARK: Mixpanel Navigate Page
+                    MixpanelRepository.shared.openCompletedChallengeDetail()
+                }
             }.disposed(by: disposeBag)
         
         input.titleObserver

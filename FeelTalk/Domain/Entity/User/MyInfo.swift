@@ -8,6 +8,7 @@
 import Foundation
 
 struct MyInfo {
+    let id: Int
     var nickname: String
     let snsType: SNSType
 }

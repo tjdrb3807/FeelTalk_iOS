@@ -60,6 +60,9 @@ final class SuggestionsViewController: UIViewController {
         self.setConstraints()
         self.bind()
         self.bind(to: viewModel)
+        
+        // MARK: Mixpanel Navigate Page
+        MixpanelRepository.shared.navigatePage()
     }
     
     private func bind() {

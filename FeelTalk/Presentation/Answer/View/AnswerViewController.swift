@@ -88,12 +88,21 @@ final class AnswerViewController: UIViewController {
         self.setProperties()
         self.addSubComponents()
         self.setConfigurations()
+        
+        // MARK: Mixpanel Navigate Page
+        MixpanelRepository.shared.navigatePage()
+        MixpanelRepository.shared.setInAnswerSheet(isInAnswer: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         self.show()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        // MARK: Mixpanel Navigate Page
+        MixpanelRepository.shared.setInAnswerSheet(isInAnswer: false)
     }
     
     private func bind(to viewModel: AnswerViewModel) {

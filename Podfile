@@ -19,4 +19,5 @@ target 'FeelTalk' do
   pod 'naveridlogin-sdk-ios'
   pod 'GoogleSignIn'
   pod 'FirebaseMessaging'
+  pod 'Mixpanel-swift'
 end

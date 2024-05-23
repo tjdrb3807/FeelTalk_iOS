@@ -70,6 +70,9 @@ final class InquiryViewController: UIViewController {
         self.addSubComponents()
         self.setConstratins()
         self.bind(to: viewModel)
+        
+        // MARK: Mixpanel Navigate Page
+        MixpanelRepository.shared.navigatePage()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .darkContent }

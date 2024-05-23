@@ -56,6 +56,9 @@ final class ChallengeDetailViewController: UIViewController {
         self.setProperties()
         self.addSubComponents()
         self.setConfigurations()
+        
+        // MARK: Mixpanel Navigate Page
+        MixpanelRepository.shared.navigatePage()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

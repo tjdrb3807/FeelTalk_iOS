@@ -42,6 +42,10 @@ final class DefaultQuestionUseCase: QuestionUseCase {
                 .asObservable()
                 .subscribe(onNext: { result in
                     observer.onNext(result)
+                    if result == true {
+                        // MARK: Mixpanel
+                        MixpanelRepository.shared.answerQuestion()
+                    }
                 }).disposed(by: self.disposbag)
                 
             

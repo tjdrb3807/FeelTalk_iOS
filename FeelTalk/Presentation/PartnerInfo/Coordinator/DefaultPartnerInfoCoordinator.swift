@@ -24,6 +24,9 @@ final class DefaultPartnerInfoCoordinator: PartnerInfoCoordinator {
                                                                         userUseCase: DefaultUserUseCase(userRepository: DefaultUserRepository()))
         self.navigationController.pushViewController(partnerInfoViewController.self, animated: true)
         self.navigationController.tabBarController?.tabBar.isHidden = true
+        
+        // MARK: Mixpanel Navigate Page
+        MixpanelRepository.shared.navigatePage()
     }
     
     func showBreakUpFlow() {

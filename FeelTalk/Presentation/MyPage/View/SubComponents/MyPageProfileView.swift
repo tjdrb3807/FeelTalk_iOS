@@ -193,7 +193,7 @@ struct MyPageProfileView_Previews: PreviewProvider {
     struct MyPageProfileView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
             let view = MyPageProfileView()
-            view.userInfo.accept(.init(nickname: "니달리장인", snsType: .naver))
+            view.userInfo.accept(.init(id: 1, nickname: "니달리장인", snsType: .naver))
             
             return view
         }

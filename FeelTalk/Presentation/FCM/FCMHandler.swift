@@ -25,11 +25,14 @@ final class FCMHandler {
             return
         }
         
-        // MARK: 밑에 handler들에서 질문을 불러올 때 사용할 것
-        let questionUseCase = DefaultQuestionUseCase(
-            questionRepository: DefaultQuestionRepository(),
-            userRepository: DefaultUserRepository())
+        // MARK: 나중에 handler들에서 질문과 챌린지를 불러올 때 사용할 것
+//        let questionUseCase = DefaultQuestionUseCase(
+//            questionRepository: DefaultQuestionRepository(),
+//            userRepository: DefaultUserRepository())
+//        let challengeUseCase = DefaultChallengeUseCase(
+//            challengeRepository: DefaultChallengeRepository())
         
+        print(userInfo)
         
         switch type {
         case "createCouple":

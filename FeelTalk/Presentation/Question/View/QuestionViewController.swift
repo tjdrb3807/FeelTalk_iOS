@@ -18,6 +18,7 @@ final class QuestionViewController: UIViewController {
     private lazy var navigationBar: MainNavigationBar = { MainNavigationBar(type: .question) }()
     
     private lazy var questionTableView: QuestionTableView = { QuestionTableView() }()
+        
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +27,15 @@ final class QuestionViewController: UIViewController {
         self.setAttributes()
         self.addSubComponents()
         self.setConfigurations()
+        
+        // MARK: Mixpanel
+        MixpanelRepository.shared.navigatePage()
+        MixpanelRepository.shared.setInQuestionPage(isInQuestion: true)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        // MARK: Mixpanel
+        MixpanelRepository.shared.setInQuestionPage(isInQuestion: false)
     }
     
     private func bind(to viewModel: QuestionViewModel) {

@@ -27,11 +27,11 @@ final class DefaultMyPageCoordinator: MyPageCoordinator {
     }
     
     func showChatFlow() {
-        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
-        
-        self.childCoordinators.append(chatCoordinator)
-        chatCoordinator.finishDelegate = self
-        chatCoordinator.start()
+//        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
+//        
+//        self.childCoordinators.append(chatCoordinator)
+//        chatCoordinator.finishDelegate = self
+//        chatCoordinator.start()
     }
     
     func showPartnerInfoFlow() {

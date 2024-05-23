@@ -65,6 +65,10 @@ final class DefaultSignalUseCase: SignalUseCase {
                 .asObservable()
                 .subscribe(onNext: { event in
                     observer.onNext(event)
+                    if event == true {
+                        // MARK: Mixpanel
+                        MixpanelRepository.shared.changeMySignal()
+                    }
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()

@@ -72,6 +72,9 @@ final class WithdrawalDetailViewController: UIViewController {
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
+        
+        // MARK: Mixpanel Navigate Page
+        MixpanelRepository.shared.navigatePage()
     }
     
     private func bind(to viewModel: WithdrawalDetailViewModel) {

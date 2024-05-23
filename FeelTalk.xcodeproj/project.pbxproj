@@ -642,6 +642,7 @@
 		45FCF2752AE55717001F3B16 /* SignalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FCF2742AE55717001F3B16 /* SignalViewModel.swift */; };
 		45FCF2772AE55763001F3B16 /* SignalCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FCF2762AE55763001F3B16 /* SignalCoordinator.swift */; };
 		45FCF27A2AE557BA001F3B16 /* DefaultSignalCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FCF2792AE557BA001F3B16 /* DefaultSignalCoordinator.swift */; };
+		64A0B1F62BFC8A3E00663F40 /* MixpanelRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0B1F52BFC8A3E00663F40 /* MixpanelRepository.swift */; };
 		64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */; };
 /* End PBXBuildFile section */
 
@@ -1287,6 +1288,7 @@
 		4ED6E863B57DA25C5FE14B12 /* Pods-FeelTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.debug.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.debug.xcconfig"; sourceTree = "<group>"; };
 		58102C3C5ED2F798A20B785C /* Pods_FeelTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeelTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63683F033A68EBA863CDAFB3 /* Pods-FeelTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.release.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.release.xcconfig"; sourceTree = "<group>"; };
+		64A0B1F52BFC8A3E00663F40 /* MixpanelRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixpanelRepository.swift; sourceTree = "<group>"; };
 		64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatResponseDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -3848,6 +3850,7 @@
 		45AF0D652A4D7C8A0041AE81 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
+				64A0B1F42BFC8A2C00663F40 /* Mixpanel */,
 				454623572A8CA77600FEFEC6 /* Challenge */,
 				45405C302B037E2500980F0F /* Chat */,
 				45400D0C2AB443720055141F /* Configuration */,
@@ -5397,6 +5400,14 @@
 			path = Protocol;
 			sourceTree = "<group>";
 		};
+		64A0B1F42BFC8A2C00663F40 /* Mixpanel */ = {
+			isa = PBXGroup;
+			children = (
+				64A0B1F52BFC8A3E00663F40 /* MixpanelRepository.swift */,
+			);
+			path = Mixpanel;
+			sourceTree = "<group>";
+		};
 		C42E5F312ADC751658ACEE66 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -5766,6 +5777,7 @@
 				45CB06842A933DBE0081BE88 /* ChallengeDetailCoordinator.swift in Sources */,
 				4564CC692B98A5F900F5303C /* ChallengeOpenGraphNameSpace.swift in Sources */,
 				450565142B1EBBE200ED13BE /* AdultAuthNumberInfoViewNameSpace.swift in Sources */,
+				64A0B1F62BFC8A3E00663F40 /* MixpanelRepository.swift in Sources */,
 				4520A31C2AD68D7C00176473 /* ChatInputViewNameSpace.swift in Sources */,
 				45BAF1512B52755100C3BD30 /* ChallengeDeadlineView.swift in Sources */,
 				453B607B2B42921200740940 /* OnboardingTitleViewNameSpace.swift in Sources */,

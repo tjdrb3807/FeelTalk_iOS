@@ -48,6 +48,9 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
                 ).asObservable()
                 .bind(onNext: { event in
                     observer.onNext(event)
+                    
+                    // MARK: Mixpanel
+                    MixpanelRepository.shared.addChallenge()
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()
@@ -64,6 +67,9 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
                 ).asObservable()
                 .bind(onNext: { event in
                     observer.onNext(event)
+                    
+                    // MARK: Mixpanel
+                    MixpanelRepository.shared.completeChallenge()
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()
@@ -162,6 +168,9 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
                 ).asObservable()
                 .bind(onNext: { evnet in
                     observer.onNext(evnet)
+                    
+                    // MARK: Mixpanel
+                    MixpanelRepository.shared.deleteChallenge()
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()

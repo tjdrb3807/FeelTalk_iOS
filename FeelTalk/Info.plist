@@ -41,6 +41,8 @@
 	</array>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
+	<key>MixpanelToken</key>
+	<string>e7341c990703953973ddb05e871b4929</string>
 	<key>GIDClientID</key>
 	<string>422145577673-r3mps4c0nc5cn9cp4fq7onvdm7m9qpql.apps.googleusercontent.com</string>
 	<key>GIDServerClientID</key>

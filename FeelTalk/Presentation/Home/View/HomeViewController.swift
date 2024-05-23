@@ -29,6 +29,9 @@ final class HomeViewController: UIViewController {
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
+        
+        // MARK: Mixpanel Navigate Page
+        MixpanelRepository.shared.navigatePage()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .darkContent }

@@ -14,6 +14,7 @@ import GoogleSignIn
 import FirebaseCore
 import FirebaseMessaging
 import UserNotifications
+import Mixpanel
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -29,6 +30,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // UserNotification setting
         UNUserNotificationCenter.current().delegate = self
         registerForPushNotifications()
+        
+        // mixpanel setting
+        Mixpanel.initialize(
+            token: Bundle.main.infoDictionary?["MixpanelToken"] as? String ?? "",
+            trackAutomaticEvents: true)
         
         return true
     }
