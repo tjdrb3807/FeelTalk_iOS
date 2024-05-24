@@ -11,19 +11,30 @@ import RxSwift
 import RxCocoa
 
 final class DefaultSignUpRepository: SignUpRepository {
-    func getAuthNumber(_ requestDTO: AuthNumberRequestDTO) -> Single<Bool> {
+    
+    struct AdultCodeResponseDTO: Decodable {
+        let sessionUuid: String
+    }
+    
+    func getAuthNumber(_ requestDTO: AuthNumberRequestDTO) -> Single<String> {
         Single.create { observer -> Disposable in
             AF.request(SignUpAPI.getAuthNumber(requestDTO))
-                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                .responseDecodable(of: BaseResponseDTO<AdultCodeResponseDTO>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
-                        if responseDTO.status == "success" {
-                            observer(.success(true))
+                        if let sessionUuid = responseDTO.data?.sessionUuid {
+                            observer(.success(sessionUuid))
                         } else {
-                            guard let message = responseDTO.message else { return }
-                            print(message)
-                            observer(.success(false))
+                            observer(.failure(NSError()))
                         }
+                        
+//                        if responseDTO.status == "success" {
+//                            observer(.success(responseDTO.data?.sessionUuid))
+//                        } else {
+//                            guard let message = responseDTO.message else { return }
+//                            print(message)
+//                            observer(.success(false))
+//                        }
                     case .failure(let error):
                         observer(.failure(error))
                     }
@@ -58,6 +69,7 @@ final class DefaultSignUpRepository: SignUpRepository {
         Single.create { observer -> Disposable in
             AF.request(SignUpAPI.verification(requestDTO))
                 .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                    
                     switch response.result {
                     case .success(let responseDTO):
                         if responseDTO.status == "success" {
@@ -68,6 +80,7 @@ final class DefaultSignUpRepository: SignUpRepository {
                             observer(.success(false))
                         }
                     case .failure(let error):
+                        print("error: \(error)")
                         observer(.failure(error))
                     }
                 }

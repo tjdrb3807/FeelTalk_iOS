@@ -9,4 +9,5 @@ import Foundation
 
 struct VerificationRequestDTO: Encodable {
     let authNumber: String
+    let sessionUuid: String
 }

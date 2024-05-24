@@ -72,7 +72,8 @@ extension SignUpAPI: Router, URLRequestConvertible {
                     "userNation": requestDTO.userNation]
             
         case .verification(let requestDTO):
-            return ["authNumber": requestDTO.authNumber]
+            return ["authNumber": requestDTO.authNumber,
+                    "sessionUuid": requestDTO.sessionUuid]
         case .signUp(let requestDTO):
             return ["state": requestDTO.state as Any,
                     "nickname": requestDTO.nickname,

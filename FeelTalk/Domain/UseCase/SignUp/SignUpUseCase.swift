@@ -8,13 +8,14 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import FirebaseMessaging
 
 protocol SignUpUseCase {
-    func getAuthNumber(_ entity: UserAuthInfo) -> Observable<Bool>
+    func getAuthNumber(_ entity: UserAuthInfo) -> Observable<String>
     
     func getReAuthNumber(_ entity: UserAuthInfo) -> Observable<Bool>
     
-    func verifyAnAdult(_ authNumber: String) -> Observable<Bool>
+    func verifyAnAdult(authNumber: String, sessionUuid: String) -> Observable<Bool>
     
     func signUp(_ model: SignUpInfo) -> Observable<Bool>
 }
@@ -27,7 +28,7 @@ final class DefaultSignUpUseCase: SignUpUseCase {
         self.signUpRepository = signUpRepository
     }
     
-    func getAuthNumber(_ entity: UserAuthInfo) -> Observable<Bool> {
+    func getAuthNumber(_ entity: UserAuthInfo) -> Observable<String> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self,
                   let requestDTO = entity.convertAuthNumberRequestDTO() else { return Disposables.create() }
@@ -57,11 +58,11 @@ final class DefaultSignUpUseCase: SignUpUseCase {
         }
     }
     
-    func verifyAnAdult(_ authNumber: String) -> Observable<Bool> {
+    func verifyAnAdult(authNumber: String, sessionUuid: String) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             
-            self.signUpRepository.verifyAnAdult(VerificationRequestDTO(authNumber: authNumber))
+            self.signUpRepository.verifyAnAdult(VerificationRequestDTO(authNumber: authNumber, sessionUuid: sessionUuid))
                 .asObservable()
                 .subscribe(onNext: { state in
                     observer.onNext(state)
@@ -74,13 +75,21 @@ final class DefaultSignUpUseCase: SignUpUseCase {
     func signUp(_ model: SignUpInfo) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String,
-                  let fcmToken = KeychainRepository.getItem(key: "fcmToken") as? String else { return Disposables.create() }
+                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String
+                   else { return Disposables.create() }
+            
+            let fcmToken = KeychainRepository.getItem(key: "fcmToken") as? String ?? Messaging.messaging().fcmToken
+            
+            print("fcm token (when sign up): \(String(describing: fcmToken))")
+            
+            if fcmToken == nil {
+                return Disposables.create()
+            }
 
             let requestDTO = SignUpRequestDTO(accessToken: accessToken,
                                               nickname: model.nickname,
                                               marketingConsent: model.marketingConsent,
-                                              fcmToken: fcmToken)
+                                              fcmToken: fcmToken!)
 
             self.signUpRepository.signUp(requestDTO)
                 .asObservable()

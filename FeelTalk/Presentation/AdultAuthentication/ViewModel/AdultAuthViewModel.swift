@@ -56,6 +56,7 @@ final class AdultAuthViewModel {
         let expiradTime = PublishRelay<String>()
         let isRequested = BehaviorRelay<AdultAuthNumberRequestState>(value: .none) // 인증 요청 상태
         let isAuthNumberInputViewEnable = BehaviorRelay<Bool>(value: false)
+        let sessionUuid = BehaviorRelay<String>(value: "")
     }
     
     init(coordiantor: AdultAuthCoordinator, signUpUseCase: SignUpUseCase) {
@@ -170,10 +171,11 @@ final class AdultAuthViewModel {
                 case .none: // 인증 요청을 하지 않은 경우
                     vm.signUpUseCase.getAuthNumber(model)
                         .bind { result in
-                            if result {
+                            if !result.isEmpty {
                                 vm.setTimer(with: 180)    // 인증 만료시간 설정(3m)
                                 output.authDescriptionState.accept(.base)
                                 output.isRequested.accept(.requested)
+                                output.sessionUuid.accept(result)
                                 vm.preUserInfo.accept(model)
                             } else {
                                 output.popAlert.accept(())
@@ -195,10 +197,11 @@ final class AdultAuthViewModel {
                     } else {    // 이전 사용자 정보와 다른 경우(새로 요청)
                         vm.signUpUseCase.getAuthNumber(model)
                             .bind { result in
-                                if result {
+                                if !result.isEmpty {
                                     vm.setTimer(with: 180)    // 인증 만료시간 설정(3m)
                                     output.authDescriptionState.accept(.base)
                                     output.isRequested.accept(.requested)
+                                    output.sessionUuid.accept(result)
                                     vm.preUserInfo.accept(model)
                                 } else {
                                     output.popAlert.accept(())
@@ -220,7 +223,7 @@ final class AdultAuthViewModel {
             .withUnretained(self)
             .bind { vm, event in
                 if event.state {
-                    vm.signUpUseCase.verifyAnAdult(event.authNumber)
+                    vm.signUpUseCase.verifyAnAdult(authNumber: event.authNumber, sessionUuid: output.sessionUuid.value)
                         .bind(to: vm.isAuthenticated)
                         .disposed(by: vm.disposeBag)
                 } else {
