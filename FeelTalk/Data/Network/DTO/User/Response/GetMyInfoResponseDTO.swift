@@ -8,14 +8,14 @@
 import Foundation
 
 struct GetMyInfoResponseDTO: Decodable {
-    let id: String
+    let id: Int
     let nickname: String
     let snsType: String
 }
 
 extension GetMyInfoResponseDTO {
     func toDomain() -> MyInfo {
-        .init(id: Int(id) ?? 0,
+        .init(id: id,
               nickname: nickname,
               snsType: SNSType(rawValue: snsType)!)
     }

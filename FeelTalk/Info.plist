@@ -9,7 +9,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>kakao${KAKAO_NATIVE_APP_KEY}</string>
+				<string>kakaob2e92652651b8321288757cbb1f7ce8b</string>
 			</array>
 		</dict>
 		<dict>
@@ -41,14 +41,12 @@
 	</array>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
-	<key>MixpanelToken</key>
-	<string>e7341c990703953973ddb05e871b4929</string>
 	<key>GIDClientID</key>
 	<string>422145577673-r3mps4c0nc5cn9cp4fq7onvdm7m9qpql.apps.googleusercontent.com</string>
 	<key>GIDServerClientID</key>
 	<string>422145577673-9pi0ubc9n5k1soetj6bn9uh4l0d76hm9.apps.googleusercontent.com</string>
 	<key>KAKAO_NATIVE_APP_KEY</key>
-	<string>${KAKAO_NATIVE_APP_KEY}</string>
+	<string>b2e92652651b8321288757cbb1f7ce8b</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaokompassauth</string>
@@ -56,6 +54,8 @@
 		<string>naversearchapp</string>
 		<string>naversearchthirdlogin</string>
 	</array>
+	<key>MixpanelToken</key>
+	<string>e7341c990703953973ddb05e871b4929</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
