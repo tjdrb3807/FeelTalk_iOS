@@ -37,10 +37,12 @@ final class DefaultLoginRepository: NSObject, LoginRepository {
     
     func login(_ data: SNSLogin01) -> Single<Token01>{
         Single.create { observer -> Disposable in
+            print("RequestDTO: \(data.toDTO())")
             AF.request(LoginAPI.login(data.toDTO()))
                 .responseDecodable(of: BaseResponseDTO<LoginResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
+                        print("ResponseDTO: \(responseDTO)")
                         if responseDTO.status == "success" {
                             guard let loginResponseDTO = responseDTO.data! else { return }
                             observer(.success(loginResponseDTO.toDomain()))

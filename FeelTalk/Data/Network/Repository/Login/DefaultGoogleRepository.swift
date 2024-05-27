@@ -21,9 +21,9 @@ final class DefaultGoogleRepository: GoogleRepository {
                 
                 signInResult.user.refreshTokensIfNeeded { user, error in
                     guard error == nil else { return }
-                    guard let authorizationCode = signInResult.serverAuthCode else { return }
+                    guard let oauthId = signInResult.user.userID else { return }
                     
-                    observer(.success(SNSLogin01(oauthId: authorizationCode,
+                    observer(.success(SNSLogin01(oauthId: oauthId,
                                                  snsType: SNSType.google.rawValue)))
                 }
             }

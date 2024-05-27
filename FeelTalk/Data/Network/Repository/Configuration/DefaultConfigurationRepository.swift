@@ -86,11 +86,13 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
     
     func setLockNumber(requestDTO: LockNumberSettingsRequestDTO) -> Single<Bool> {
         Single.create { observer -> Disposable in
+            print("Request: \(requestDTO)")
             AF.request(ConfigurationAPI.setLockNumber(dto: requestDTO),
                        interceptor: DefaultRequestInterceptor())
             .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
                 switch response.result {
                 case .success(let responseDTO):
+                    print("Success ResponseDTO: \(responseDTO)")
                     if responseDTO.status == "success" {
                         observer(.success(true))
                     } else {
@@ -99,6 +101,7 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
                         observer(.success(false))
                     }
                 case .failure(let error):
+                    print("Failure ResponseDTO: \(error)")
                     observer(.failure(error))
                 }
             }
