@@ -45,9 +45,9 @@ extension ConfigurationAPI: Router, URLRequestConvertible {
     
     var method: Alamofire.HTTPMethod {
         switch self {
-        case .getConfigurationInfo, .comment, .getServiceDataTotalCount, .getLockNumber, .getLockNumberHintType:
+        case .getConfigurationInfo, .getServiceDataTotalCount, .getLockNumber, .getLockNumberHintType:
             return .get
-        case .setLockNumber, .resetLockNumber:
+        case .setLockNumber, .resetLockNumber, .comment:
             return .post
         case .setUnlock:
             return .put

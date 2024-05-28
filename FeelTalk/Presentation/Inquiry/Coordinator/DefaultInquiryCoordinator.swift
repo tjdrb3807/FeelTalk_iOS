@@ -15,7 +15,6 @@ final class DefaultInquiryCoordinator: InquiryCoordinator {
     var childCoordinators: [Coordinator] = []
     var inquiryViewController: InquiryViewController
     var type: CoordinatorType = .inquiry
-    private let disposeBag = DisposeBag()
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -23,7 +22,12 @@ final class DefaultInquiryCoordinator: InquiryCoordinator {
     }
     
     func start() {
-        self.inquiryViewController.viewModel = InquiryViewModel(coordinator: self)
+        self.inquiryViewController.viewModel = InquiryViewModel(
+            coordinator: self,
+            useCase: DefaultConfigurationUseCase(
+                configurationRepository: DefaultConfigurationRepository()
+            )
+        )
         self.inquiryViewController.modalPresentationStyle = .fullScreen
         self.navigationController.present(inquiryViewController, animated: true)
         self.navigationController.tabBarController?.tabBar.isHidden = true
@@ -36,6 +40,8 @@ final class DefaultInquiryCoordinator: InquiryCoordinator {
     }
     
     func finish() {
-        
+        self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        self.childCoordinators.removeAll()
+        self.navigationController.dismiss(animated: true)
     }
 }

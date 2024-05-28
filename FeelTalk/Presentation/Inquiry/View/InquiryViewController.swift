@@ -82,7 +82,45 @@ final class InquiryViewController: UIViewController {
                                            contentText: contentInputView.contentInputTextView.textView.rx.text.orEmpty,
                                            emailText: emailInputView.emailInputTextField.rx.text.orEmpty,
                                            tapSubmitButton: submitButton.rx.tap,
-                                           tapDismissButton: navigationBar.leftButton.rx.tap)
+                                           tapCompletionButton: emailInputView.emailInputTextFieldAccessoryView.rightButton.rx.tap,
+                                           tapDismissButton: navigationBar.leftButton.rx.tap,
+                                           tapAlertExitButton: alertView.rightButton.rx.tap)
+        
+        contentInputView.contentInputTextView.textView.rx.didBeginEditing
+            .withUnretained(self)
+            .bind { vc, _ in
+                vc.scrollView.scrollToTop()
+            }.disposed(by: disposeBag)
+        
+        emailInputView.emailInputTextField.rx.controlEvent(.editingDidBegin)
+            .withUnretained(self)
+            .bind { vc, _ in
+                vc.scrollView.scrollToBottom()
+            }.disposed(by: disposeBag)
+        
+        contentInputView.titleInputTextViewAccessoryView.rightButton.rx.tap
+            .withUnretained(self)
+            .bind { vc, _ in
+                DispatchQueue.main.async {
+                    vc.contentInputView.contentInputTextView.textView.becomeFirstResponder()
+                }
+            }.disposed(by: disposeBag)
+        
+        contentInputView.contentInputTextViewAccessoryView.rightButton.rx.tap
+            .withUnretained(self)
+            .bind { vc, _ in
+                DispatchQueue.main.async {
+                    vc.emailInputView.emailInputTextField.becomeFirstResponder()
+                }
+            }.disposed(by: disposeBag)
+        
+        emailInputView.emailInputTextFieldAccessoryView.rightButton.rx.tap
+            .withUnretained(self)
+            .bind { vc, _ in
+                DispatchQueue.main.async {
+                    vc.contentInputView.titleInputTextField.becomeFirstResponder()
+                }
+            }.disposed(by: disposeBag)
         
         let output = viewModel.transfer(input: input)
         
@@ -97,6 +135,25 @@ final class InquiryViewController: UIViewController {
             .withUnretained(self)
             .bind { vc, state in
                 vc.submitButton.isState.accept(state)
+            }.disposed(by: disposeBag)
+        
+        output.focusingInputView
+            .withUnretained(self)
+            .bind { vc, focuseNumber in
+                DispatchQueue.main.async { vc.isFocused(to: focuseNumber) }
+            }.disposed(by: disposeBag)
+        
+        output.popUpAlert
+            .withUnretained(self)
+            .bind { vc, _ in
+                vc.dismissKeyboard()
+                guard !vc.view.subviews.contains(where: { $0 is CustomAlertView }) else { return }
+                let alertView = vc.alertView
+                vc.view.addSubview(alertView)
+                alertView.snp.makeConstraints { $0.edges.equalToSuperview() }
+                vc.view.layoutIfNeeded()
+                
+                alertView.show()
             }.disposed(by: disposeBag)
     }
     
@@ -185,6 +242,19 @@ extension InquiryViewController {
         scrollView.snp.updateConstraints { $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(keyboardHeight) }
         view.layoutIfNeeded()
     }
+    
+    /// 0: titleInputView
+    /// 1: contentInputView
+    /// 2: emailInputView
+    private func isFocused(to number: Int) {
+        if number == 0 {
+            contentInputView.titleInputTextField.textInputView.becomeFirstResponder()
+        } else if number == 1 {
+            contentInputView.contentInputTextView.textView.becomeFirstResponder()
+        } else if number == 2 {
+            dismissKeyboard()
+        }
+    }
 }
 
 #if DEBUG
@@ -200,7 +270,7 @@ struct InquiryViewController_Previews: PreviewProvider {
     struct InquiryViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
             let viewController = InquiryViewController()
-            let viewModel = InquiryViewModel(coordinator: DefaultInquiryCoordinator(UINavigationController()))
+            let viewModel = InquiryViewModel(coordinator: DefaultInquiryCoordinator(UINavigationController()), useCase: DefaultConfigurationUseCase(configurationRepository: DefaultConfigurationRepository()))
         
             viewController.viewModel = viewModel
             

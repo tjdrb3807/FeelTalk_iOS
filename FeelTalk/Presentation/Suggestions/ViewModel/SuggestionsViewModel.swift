@@ -76,7 +76,7 @@ final class SuggestionsViewModel {
             .withLatestFrom(input.emailText) { (idea: $0, email: $1) }
             .withUnretained(self)
             .bind { vm, data in
-                vm.useCase.commnent(with: InquiryOrSuggestions(title: data.idea,
+                vm.useCase.comment(with: InquiryOrSuggestions(title: data.idea,
                                                                body: nil,
                                                                email: data.email))
                 .filter { $0 }

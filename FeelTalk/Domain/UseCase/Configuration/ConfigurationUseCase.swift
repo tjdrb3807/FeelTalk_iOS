@@ -12,7 +12,7 @@ import RxCocoa
 protocol ConfigurationUseCase {
     func getConfigurationInfo() -> Observable<ConfigurationInfo>
     
-    func commnent(with data: InquiryOrSuggestions) -> Observable<Bool>
+    func comment(with data: InquiryOrSuggestions) -> Observable<Bool>
     
     func getNowVersion() -> Observable<String>
     
@@ -51,12 +51,15 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
         }
     }
     
-    func commnent(with data: InquiryOrSuggestions) -> Observable<Bool> {
+    func comment(with data: InquiryOrSuggestions) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
+            print("comment 1")
             guard let self = self else { return Disposables.create() }
+            print("comment 2")
             self.configurationRepository.comment(with: data)
                 .asObservable()
                 .bind(onNext: { isSuccess in
+                    print("comment 3: \(isSuccess)")
                     observer.onNext(isSuccess)
                 }).disposed(by: self.disposeBag)
             

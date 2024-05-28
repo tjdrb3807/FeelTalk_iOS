@@ -38,13 +38,16 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
     
     func comment(with data: InquiryOrSuggestions) -> Single<Bool> {
         Single.create { observer -> Disposable in
+            print("comment request: \(data)")
             AF.request(
                 ConfigurationAPI.comment(
                     data: CommentRequestDTO(title: data.title, body: data.body, email: data.email)),
                 interceptor: DefaultRequestInterceptor())
             .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                print("Comment Response: \(String(describing: response.response))")
                 switch response.result {
                 case .success(let responseDTO):
+                    print("Comment Success: \(responseDTO)")
                     if responseDTO.status == "success" {
                         observer(.success(true))
                     } else {
@@ -52,6 +55,7 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
                         debugPrint(message)
                     }
                 case .failure(let error):
+                    print("Comment Failure: \(error)")
                     observer(.failure(error))
                 }
             }
@@ -86,13 +90,13 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
     
     func setLockNumber(requestDTO: LockNumberSettingsRequestDTO) -> Single<Bool> {
         Single.create { observer -> Disposable in
-            print("Request: \(requestDTO)")
+            print("SetLockNumber Request: \(requestDTO)")
             AF.request(ConfigurationAPI.setLockNumber(dto: requestDTO),
                        interceptor: DefaultRequestInterceptor())
             .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
                 switch response.result {
                 case .success(let responseDTO):
-                    print("Success ResponseDTO: \(responseDTO)")
+                    print("SetLockNumber Success ResponseDTO: \(responseDTO)")
                     if responseDTO.status == "success" {
                         observer(.success(true))
                     } else {
@@ -101,7 +105,7 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
                         observer(.success(false))
                     }
                 case .failure(let error):
-                    print("Failure ResponseDTO: \(error)")
+                    print("SetLockNumber Failure ResponseDTO: \(error)")
                     observer(.failure(error))
                 }
             }
