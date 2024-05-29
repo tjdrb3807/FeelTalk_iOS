@@ -18,7 +18,7 @@ protocol ConfigurationUseCase {
     
     func getServiceDataTotalCount() -> Observable<ServiceDataCount>
     
-    func getLockNubmer() -> Observable<String>
+    func getLockNubmer() -> Observable<String?>
     
     func setLockNumber(_ setting: LockNumberSettings) -> Observable<Bool>
     
@@ -89,7 +89,7 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
         }
     }
     
-    func getLockNubmer() -> Observable<String> {
+    func getLockNubmer() -> Observable<String?> {
         Observable.create { [weak self] observer -> Disposable in
             guard let self = self else { return Disposables.create() }
             

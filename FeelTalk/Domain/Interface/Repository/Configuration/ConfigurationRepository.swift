@@ -16,7 +16,7 @@ protocol ConfigurationRepository {
     
     func getServiceDataTotalCount() -> Single<ServiceDataCount>
     
-    func getLockNumber() -> Single<String>
+    func getLockNumber() -> Single<String?>
     
     func setLockNumber(requestDTO: LockNumberSettingsRequestDTO) -> Single<Bool>
     

@@ -48,6 +48,8 @@ final class LockNumberPadViewModel {
                 if type == .access {
                     vm.configurationUseCase
                         .getLockNubmer()
+                        .filter { $0 != nil }
+                        .map { $0! }
                         .bind(to: vm.setPasswordObserver)
                         .disposed(by: vm.disposeBag)
                 }

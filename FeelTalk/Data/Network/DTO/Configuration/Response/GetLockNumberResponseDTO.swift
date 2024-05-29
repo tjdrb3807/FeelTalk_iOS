@@ -8,7 +8,7 @@
 import Foundation
 
 struct GetLockNumberResponseDTO: Decodable {
-    let lockNumber: String
+    let lockNumber: String?
     
     enum CodingKeys: String, CodingKey {
         case lockNumber = "password"

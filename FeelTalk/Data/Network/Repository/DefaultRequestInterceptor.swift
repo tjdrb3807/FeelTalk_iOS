@@ -32,7 +32,7 @@ final class DefaultRequestInterceptor: RequestInterceptor {
             .responseDecodable(of: BaseResponseDTO<LoginResponseDTO?>.self) { response in
                 switch response.result {
                 case .success(let responseDTO):
-                    guard let loginResponseDTO = responseDTO.data! else { return }
+                    guard let loginResponseDTO: LoginResponseDTO = responseDTO.data! else { return }
 
                     if KeychainRepository.updateItem(value: loginResponseDTO.accessToken, key: "accessToken") &&
                         KeychainRepository.updateItem(value: loginResponseDTO.refreshToken, key: "refreshToken") &&

@@ -105,10 +105,16 @@ extension DefaultAppCoordinator {
     
     private func bindIsLockScreenObserver() {
         configurationUseCase
-            .getConfigurationInfo()
-            .map { $0.isLock }
+            .getLockNubmer()
+            .map { $0?.count == 4 }
             .bind(to: DefaultAppCoordinator.isLockScreenObserver)
             .disposed(by: disposeBag)
+        
+//        configurationUseCase
+//            .getConfigurationInfo()
+//            .map { $0.isLock }
+//            .bind(to: DefaultAppCoordinator.isLockScreenObserver)
+//            .disposed(by: disposeBag)
     }
 }
 

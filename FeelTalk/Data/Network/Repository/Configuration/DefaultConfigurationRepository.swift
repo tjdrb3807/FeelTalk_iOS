@@ -114,7 +114,7 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
         }
     }
     
-    func getLockNumber() -> Single<String> {
+    func getLockNumber() -> Single<String?> {
         Single.create { observer -> Disposable in
             AF.request(
                 ConfigurationAPI.getLockNumber,
@@ -197,8 +197,9 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
                 switch response.result {
                 case .success(let responseDTO):
                     if responseDTO.status == "success" {
-                        guard let lockNumberHintTypeResponseDTO = responseDTO.data! else { return }
-                        observer(.success(LockNumberHintType(rawValue: lockNumberHintTypeResponseDTO.lockNumberHintType)!))
+                        guard let lockNumberHintType = responseDTO.data??.lockNumberHintType else { return }
+                        guard let hint = LockNumberHintType(rawValue: lockNumberHintType) else { return }
+                        observer(.success(hint))
                     } else {
                         guard let message = responseDTO.message else { return }
                         print(message)
