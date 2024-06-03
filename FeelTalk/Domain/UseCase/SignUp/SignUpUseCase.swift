@@ -78,9 +78,9 @@ final class DefaultSignUpUseCase: SignUpUseCase {
                   let accessToken = KeychainRepository.getItem(key: "accessToken") as? String
                    else { return Disposables.create() }
             
-//            let fcmToken = KeychainRepository.getItem(key: "fcmToken") as? String ?? Messaging.messaging().fcmToken
+            let fcmToken = KeychainRepository.getItem(key: "fcmToken") as? String ?? Messaging.messaging().fcmToken
             
-            let fcmToken: String? = "TestFcmToken"
+//            let fcmToken: String? = "TestFcmToken"
             
             print("fcm token (when sign up): \(String(describing: fcmToken))")
             

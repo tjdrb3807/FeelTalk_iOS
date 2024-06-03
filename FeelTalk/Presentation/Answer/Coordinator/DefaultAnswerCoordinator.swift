@@ -44,6 +44,7 @@ final class DefaultAnswerCoordinator: AnswerCoordinator {
     }
     
     func finish() {
+        self.type = .answered
         self.childCoordinators.removeAll()
         self.navigationController.dismiss(animated: false)
         self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)

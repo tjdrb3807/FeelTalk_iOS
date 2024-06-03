@@ -13,7 +13,7 @@ enum CoordinatorType {
     case login, tab
     case home, question, challenge, myPage
     case signUp, adultAuth, newsAgency, authConsent, nickname, inviteCode, inviteCodeBottomSheet
-    case answer
+    case answer, answered
     case challengeDetail
     case settingList, inquiry, suggestions
     case partnerInfo, breakUp

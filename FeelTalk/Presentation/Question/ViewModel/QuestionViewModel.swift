@@ -35,6 +35,13 @@ final class QuestionViewModel {
         self.questionUseCase = questionUseCase
     }
     
+    func reloadTodayQuestion() {
+        self.questionUseCase.getTodayQuestion()
+            .asObservable()
+            .bind(to: self.todayQuestion)
+            .disposed(by: self.disposeBag)
+    }
+    
     func transfer(input: Input) -> Output {
         input.viewWillAppear
             .element(at: 0)
