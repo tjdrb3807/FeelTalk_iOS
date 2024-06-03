@@ -16,6 +16,7 @@ final class FCMHandler {
     static let shared = FCMHandler()
     let userNotificationCenter = UNUserNotificationCenter.current()
     
+    let createCoupleObservable = PublishRelay<Bool>()
     let partnerSignalObservable = PublishRelay<Signal>()
     let partnerChatRoomStatusObserver = PublishRelay<Bool>()
     
@@ -78,6 +79,7 @@ extension FCMHandler {
 extension FCMHandler {
     func handleCreateCouple(_ data: [AnyHashable: Any]) {
         let title = data["title"] as? String ?? "연인 등록을 완료했어요"
+        createCoupleObservable.accept(true)
         showNotification(identifier: title,
                          title: title,
                          body: data["message"] as? String ?? "앱에 들어와서 확인해보세요")

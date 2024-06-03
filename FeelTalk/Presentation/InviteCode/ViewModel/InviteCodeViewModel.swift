@@ -13,6 +13,7 @@ final class InviteCodeViewModel {
     private weak var coordinator: InviteCodeCoordinator?
     private let userUseCase: UserUseCase
     private let disposBag = DisposeBag()
+    let fcmHandeler = FCMHandler.shared
     
     struct Input {
         let viewDidLoad: ControlEvent<Bool>
@@ -30,6 +31,12 @@ final class InviteCodeViewModel {
     
     func transfer(input: Input) -> Output {
         let output = Output()
+        
+        fcmHandeler.createCoupleObservable
+            .withUnretained(self)
+            .bind { vm, state in
+                if state { vm.coordinator?.finish() }
+            }.disposed(by: disposBag)
         
         input.viewDidLoad
             .withUnretained(self)
