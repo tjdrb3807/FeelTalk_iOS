@@ -61,7 +61,9 @@ final class QuestionViewModel {
                     .withLatestFrom(vm.questionList) { newFetchQuestionList, currentQuestionList -> [Question] in
                         var questionList: [Question] = currentQuestionList
                         questionList.append(contentsOf: newFetchQuestionList)
-                        
+                        if !questionList.isEmpty {
+                            questionList.remove(at: 0)
+                        }
                         return questionList
                     }.bind(to: vm.questionList)
                     .disposed(by: vm.disposeBag)
