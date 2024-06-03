@@ -60,6 +60,7 @@ final class DefaultLoginUseCase: LoginUseCase {
                 .subscribe(onNext: { accessToken in
                     self.getUserState(accessToken)
                         .subscribe(onNext: { state in
+                            KeychainRepository.addItem(value: "userState", key: state.rawValue)
                             observer.onNext(state)
                         }).disposed(by: self.disposeBag)
                 }).disposed(by: self.disposeBag)
@@ -101,7 +102,8 @@ final class DefaultLoginUseCase: LoginUseCase {
                 .filter { _ in
                     KeychainRepository.deleteItem(key: "accessToken") &&
                     KeychainRepository.deleteItem(key: "refreshToken") &&
-                    KeychainRepository.deleteItem(key: "expiredTime")
+                    KeychainRepository.deleteItem(key: "expiredTime") && 
+                    KeychainRepository.deleteItem(key: "userState")
                 }.map { _ -> Void in }
                 .subscribe(onNext: {
                     observer.onNext(())
