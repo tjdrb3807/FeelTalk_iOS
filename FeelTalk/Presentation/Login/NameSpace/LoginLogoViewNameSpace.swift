@@ -14,7 +14,7 @@ enum LoginLogoViewNameSpace {
     static let topOffset: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 16.74                   // 136.0
     
     // LogoImageView
-    static let logoImageViewImage: String = "logo_feeltalk_main_500"
+    static let logoImageViewImage: String = "logo_feeltalk_white"
     static let logoImageViewWidth: CGFloat = CommonConstraintNameSpace.horizontalRatioCalculaotr * 42.4         // 159.0
     static let logoImageViewHeight: CGFloat = CommonConstraintNameSpace.verticalRatioCalculator * 5.54          // 45.0
     

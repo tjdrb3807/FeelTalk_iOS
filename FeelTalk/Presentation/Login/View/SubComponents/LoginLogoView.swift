@@ -20,7 +20,7 @@ final class LoginLogoView: UIStackView {
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = LoginLogoViewNameSpace.descriptionLabelText
-        label.textColor = UIColor(named: CommonColorNameSpace.main300)
+        label.textColor = UIColor(named: CommonColorNameSpace.main500)
         label.font = UIFont(name: CommonFontNameSpace.payboocMedium,
                             size: LoginLogoViewNameSpace.descriptionLabelTextSize)
         
