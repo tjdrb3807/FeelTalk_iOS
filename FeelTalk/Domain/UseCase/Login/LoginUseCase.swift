@@ -60,7 +60,8 @@ final class DefaultLoginUseCase: LoginUseCase {
                 .subscribe(onNext: { accessToken in
                     self.getUserState(accessToken)
                         .subscribe(onNext: { state in
-                            KeychainRepository.addItem(value: "userState", key: state.rawValue)
+                            print("user state: \(state.rawValue)")
+                            KeychainRepository.addItem(value: state.rawValue, key: "userState")
                             observer.onNext(state)
                         }).disposed(by: self.disposeBag)
                 }).disposed(by: self.disposeBag)

@@ -22,7 +22,7 @@ final class KeychainRepository {
             } else if status == errSecDuplicateItem {
                 return updateItem(value: value, key: key)
             }
-            
+
             debugPrint("[FAIL]: Add \(key) item error. - \(status.description)")
             return false
         }()

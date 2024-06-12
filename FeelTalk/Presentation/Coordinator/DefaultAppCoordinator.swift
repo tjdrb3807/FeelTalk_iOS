@@ -36,7 +36,7 @@ final class DefaultAppCoordinator: AppCoordinator {
             return
         }
         
-        guard let _ = KeychainRepository.getItem(key: "userState") as? String else {
+        if UserState.couple.rawValue != KeychainRepository.getItem(key: "userState") as? String {
             // 커플 상태가 아니면 모두 로그인 페이지로
             showLoginFlow()
             return
