@@ -60,7 +60,6 @@ final class DefaultLoginUseCase: LoginUseCase {
                 .subscribe(onNext: { accessToken in
                     self.getUserState(accessToken)
                         .subscribe(onNext: { state in
-                            print("user state: \(state.rawValue)")
                             KeychainRepository.addItem(value: state.rawValue, key: "userState")
                             observer.onNext(state)
                         }).disposed(by: self.disposeBag)
@@ -80,9 +79,9 @@ final class DefaultLoginUseCase: LoginUseCase {
                     refreshToken: refreshToken)
                 .asObservable()
                 .filter { event in
-                    KeychainRepository.updateItem(value: event.accessToken, key: "accessToken") &&
-                    KeychainRepository.updateItem(value: event.refreshToken, key: "refreshToken") &&
-                    KeychainRepository.updateItem(value: event.expiredTime, key: "expiredTime")
+                    KeychainRepository.addItem(value: event.accessToken, key: "accessToken") &&
+                    KeychainRepository.addItem(value: event.refreshToken, key: "refreshToken") &&
+                    KeychainRepository.addItem(value: KeychainRepository.setExpiredTime(), key: "expiredTime")
                 }.map { _ -> Void in }
                 .subscribe(onNext: {
                     observer.onNext(())

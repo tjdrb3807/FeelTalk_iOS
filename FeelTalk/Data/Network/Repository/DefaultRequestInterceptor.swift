@@ -34,9 +34,9 @@ final class DefaultRequestInterceptor: RequestInterceptor {
                 case .success(let responseDTO):
                     guard let loginResponseDTO: LoginResponseDTO = responseDTO.data! else { return }
 
-                    if KeychainRepository.updateItem(value: loginResponseDTO.accessToken, key: "accessToken") &&
-                        KeychainRepository.updateItem(value: loginResponseDTO.refreshToken, key: "refreshToken") &&
-                        KeychainRepository.updateItem(value: KeychainRepository.setExpiredTime(), key: "expiredTime") {
+                    if KeychainRepository.addItem(value: loginResponseDTO.accessToken, key: "accessToken") &&
+                        KeychainRepository.addItem(value: loginResponseDTO.refreshToken, key: "refreshToken") &&
+                        KeychainRepository.addItem(value: KeychainRepository.setExpiredTime(), key: "expiredTime") {
 
                         print("재발급 토큰 업데이트 완료")
                     } else {
