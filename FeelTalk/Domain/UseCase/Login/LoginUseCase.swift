@@ -59,9 +59,27 @@ final class DefaultLoginUseCase: LoginUseCase {
                 }.compactMap { _ in KeychainRepository.getItem(key: "accessToken") as? String }
                 .subscribe(onNext: { accessToken in
                     self.getUserState(accessToken)
+                        .asObservable()
+                        .catch({ error in
+                            print("Fail to get user state: \(error)")
+                            let state = KeychainRepository.getItem(key: "userState") as? String
+                            if state == nil {
+                                return Observable.error(error)
+                            } else {
+                                return Observable.just(UserState(rawValue: state!)!)
+                            }
+                        })
                         .subscribe(onNext: { state in
                             KeychainRepository.addItem(value: state.rawValue, key: "userState")
                             observer.onNext(state)
+                        }, onError: { error in
+                            print("Fail to get user state: \(error)")
+                            let state = KeychainRepository.getItem(key: "userState") as? String
+                            if state == nil {
+                                observer.onError(error)
+                            } else {
+                                observer.onNext(UserState(rawValue: state!)!)
+                            }
                         }).disposed(by: self.disposeBag)
                 }).disposed(by: self.disposeBag)
             

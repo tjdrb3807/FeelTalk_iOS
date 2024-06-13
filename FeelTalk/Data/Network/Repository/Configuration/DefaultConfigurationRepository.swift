@@ -120,17 +120,21 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
                 ConfigurationAPI.getLockNumber,
                 interceptor: DefaultRequestInterceptor()
             ).responseDecodable(of: BaseResponseDTO<GetLockNumberResponseDTO?>.self) { response in
+                print("getLockNumber Response: \(response.result)")
                 switch response.result {
                 case .success(let responseDTO):
+                    print("getLockNumber Success: \(responseDTO)")
                     if responseDTO.status == "success" {
                         guard let getLockNumberResponseDTO = responseDTO.data! else { return }
                         observer(.success(getLockNumberResponseDTO.lockNumber))
                     } else {
                         guard let message = responseDTO.message else { return }
                         print(message)
+                        observer(.failure(NetworkError.Failure))
                     }
 
                 case .failure(let error):
+                    print("getLockNumber failure: \(error)")
                     observer(.failure(error))
                 }
             }

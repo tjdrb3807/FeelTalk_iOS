@@ -64,7 +64,7 @@ final class MainNavigationBar: UIView {
             addSubview(titleLabel)
         }
         
-        addSubview(chatRoomButton)
+//        addSubview(chatRoomButton)
     }
     
     private func setConstratins(with type: MainNavigationBarType) {
@@ -75,7 +75,7 @@ final class MainNavigationBar: UIView {
             makeTitleLabelConstraints()
         }
         
-        makeChatRoomButtonConstraints()
+//        makeChatRoomButtonConstraints()
     }
 }
 

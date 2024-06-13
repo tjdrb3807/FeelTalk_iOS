@@ -16,6 +16,12 @@ final class DefaultAppCoordinator: AppCoordinator {
     var childCoordinators = [Coordinator]()
     var type: CoordinatorType { .app }
     var configurationUseCase = DefaultConfigurationUseCase(configurationRepository: DefaultConfigurationRepository())
+    var loginUseCase = DefaultLoginUseCase(loginRepository: DefaultLoginRepository(),
+                                           appleRepository: DefaultAppleRepository(),
+                                           googleRepositroy: DefaultGoogleRepository(),
+                                           naverRepository: DefaultNaverLoginRepository(),
+                                           kakaoRepository: DefaultKakaoRepository(),
+                                           userRepository: DefaultUserRepository())
     private let disposeBag = DisposeBag()
     
     required init(_ navigationController: UINavigationController) {
@@ -42,10 +48,16 @@ final class DefaultAppCoordinator: AppCoordinator {
             return
         }
         
+        reissueToken()
+        
         bindIsLockScreenObserver()
         
         DefaultAppCoordinator
             .isLockScreenObserver
+            .map({ state in
+                print("isLockScreenObserver: \(state)")
+                return state
+            })
             .skip(1)
             .take(1)
             .withUnretained(self)
@@ -106,6 +118,28 @@ extension DefaultAppCoordinator {
             return true
         } else {
             return false
+        }
+    }
+    
+    private func reissueToken() {
+        guard let crtAccessToken = KeychainRepository.getItem(key: "accessToken") as? String,
+              let crtExpiredTime = KeychainRepository.getItem(key: "expiredTime") as? String,
+              let targetDate = Date.toDate(crtExpiredTime) else {
+            return
+        }
+        let crtDate = Date()
+        
+        if Int(targetDate.timeIntervalSince(crtDate)) <= 60 {
+            guard let crtRefreshToken = KeychainRepository.getItem(key: "refreshToken") as? String else {
+                return
+            }
+            
+            print("DefaultAppCoordinator reissueToken()")
+            
+            loginUseCase.reissuanceAccessToken(accessToken: crtAccessToken, refreshToken: crtRefreshToken)
+                .asObservable()
+                .subscribe()
+                .disposed(by: disposeBag)
         }
     }
     

@@ -10,6 +10,8 @@ import Alamofire
 
 final class DefaultRequestInterceptor: RequestInterceptor {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+        print("[REQUEST]: \(urlRequest)")
+        
         let crtDateStr = Date.toString(Date())
         guard let crtAccessToken = KeychainRepository.getItem(key: "accessToken") as? String,
               let crtExpiredTime = KeychainRepository.getItem(key: "expiredTime") as? String,
@@ -18,11 +20,12 @@ final class DefaultRequestInterceptor: RequestInterceptor {
             completion(.success(urlRequest))
             return }
 
-        if Int(targetDate.timeIntervalSince(crtDate)) < 60 { // 토큰 만료 시간이 1분 이하인 경우(재발급)
+        if Int(targetDate.timeIntervalSince(crtDate)) <= 60 { // 토큰 만료 시간이 1분 이하인 경우(재발급)
             guard let crtRefreshToken = KeychainRepository.getItem(key: "refreshToken") as? String else {
                 completion(.success(urlRequest))
                 return
             }
+            print("[REQUEST]: reissue token adapt()")
 
             AF.request(
                 LoginAPI.reissuanceAccessToken(
@@ -32,10 +35,17 @@ final class DefaultRequestInterceptor: RequestInterceptor {
             .responseDecodable(of: BaseResponseDTO<LoginResponseDTO?>.self) { response in
                 switch response.result {
                 case .success(let responseDTO):
-                    guard let loginResponseDTO: LoginResponseDTO = responseDTO.data! else { return }
+                    print("[RESPONSE]: Success to reissue \(responseDTO)")
+                    let loginResponseDTO: LoginResponseDTO?? = responseDTO.data
+                    guard let data_unwrap = loginResponseDTO else {
+                        return
+                    }
+                    guard let data = data_unwrap else {
+                        return
+                    }
 
-                    if KeychainRepository.addItem(value: loginResponseDTO.accessToken, key: "accessToken") &&
-                        KeychainRepository.addItem(value: loginResponseDTO.refreshToken, key: "refreshToken") &&
+                    if KeychainRepository.addItem(value: data.accessToken, key: "accessToken") &&
+                        KeychainRepository.addItem(value: data.refreshToken, key: "refreshToken") &&
                         KeychainRepository.addItem(value: KeychainRepository.setExpiredTime(), key: "expiredTime") {
 
                         print("재발급 토큰 업데이트 완료")
@@ -44,6 +54,7 @@ final class DefaultRequestInterceptor: RequestInterceptor {
                         return
                     }
                 case .failure(let error):
+                    print("[RESPONSE]: Fail to reissue \(error)")
                     print("토큰 재발급 실패")
                     print(error)
                 }
@@ -62,6 +73,7 @@ final class DefaultRequestInterceptor: RequestInterceptor {
     }
     
     func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        print("call retry()")
         guard let response = request.task?.response as? HTTPURLResponse,
               response.statusCode == 401 else {
             completion(.doNotRetryWithError(error))

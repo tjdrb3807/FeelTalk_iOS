@@ -642,6 +642,7 @@
 		45FCF2752AE55717001F3B16 /* SignalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FCF2742AE55717001F3B16 /* SignalViewModel.swift */; };
 		45FCF2772AE55763001F3B16 /* SignalCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FCF2762AE55763001F3B16 /* SignalCoordinator.swift */; };
 		45FCF27A2AE557BA001F3B16 /* DefaultSignalCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FCF2792AE557BA001F3B16 /* DefaultSignalCoordinator.swift */; };
+		649CEDBF2C1B203900215E77 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649CEDBE2C1B203900215E77 /* NetworkError.swift */; };
 		64A0B1F62BFC8A3E00663F40 /* MixpanelRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0B1F52BFC8A3E00663F40 /* MixpanelRepository.swift */; };
 		64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */; };
 /* End PBXBuildFile section */
@@ -1288,6 +1289,7 @@
 		4ED6E863B57DA25C5FE14B12 /* Pods-FeelTalk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.debug.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.debug.xcconfig"; sourceTree = "<group>"; };
 		58102C3C5ED2F798A20B785C /* Pods_FeelTalk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FeelTalk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63683F033A68EBA863CDAFB3 /* Pods-FeelTalk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FeelTalk.release.xcconfig"; path = "Target Support Files/Pods-FeelTalk/Pods-FeelTalk.release.xcconfig"; sourceTree = "<group>"; };
+		649CEDBE2C1B203900215E77 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		64A0B1F52BFC8A3E00663F40 /* MixpanelRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixpanelRepository.swift; sourceTree = "<group>"; };
 		64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatResponseDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2664,6 +2666,7 @@
 		4562473C2A4B8D0B0053B3F4 /* DTO */ = {
 			isa = PBXGroup;
 			children = (
+				649CEDBE2C1B203900215E77 /* NetworkError.swift */,
 				4562473E2A4B8E170053B3F4 /* BaseResponseDTO.swift */,
 				45D312642A6B10C2001E4D25 /* NoDataResponseDTO.swift */,
 				454623532A8CA2F400FEFEC6 /* Challenge */,
@@ -5913,6 +5916,7 @@
 				453522F82B136F5400B80EDE /* AdultAuthViewController.swift in Sources */,
 				455361652AC1C9ED005E97F8 /* CustomAlertViewNameSpace.swift in Sources */,
 				45E2E0F52B95AE3E002FC24D /* CompletedChallengeOpenGraph.swift in Sources */,
+				649CEDBF2C1B203900215E77 /* NetworkError.swift in Sources */,
 				45F495052B74E822009D10BB /* LockNumberHintPickerViewNameSpace.swift in Sources */,
 				4517263A2A753CD900D3DBC2 /* QuestionTableView.swift in Sources */,
 				458C242A2A5D334800BDB047 /* NaverRepository.swift in Sources */,

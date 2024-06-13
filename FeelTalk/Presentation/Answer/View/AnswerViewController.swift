@@ -198,7 +198,7 @@ final class AnswerViewController: UIViewController {
     
     private func setConfigurations() {
         makeDimmedViewConstraints()
-        makeChatRoomButtonConstraints()
+//        makeChatRoomButtonConstraints()
         makeBottomSheetViewConstraints()
         makePopButtonConstraints()
         makeScrollViewConstraints()
@@ -210,7 +210,8 @@ final class AnswerViewController: UIViewController {
 
 extension AnswerViewController {
     private func addViewSubComponents() {
-        [dimmedView, chatRoomButton, bottomSheetView].forEach { view.addSubview($0) }
+//        [dimmedView, chatRoomButton, bottomSheetView].forEach { view.addSubview($0) }
+        [dimmedView, bottomSheetView].forEach { view.addSubview($0) }
     }
     
     private func makeDimmedViewConstraints() {
