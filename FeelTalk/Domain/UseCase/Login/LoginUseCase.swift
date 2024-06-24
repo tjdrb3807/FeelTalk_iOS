@@ -70,6 +70,7 @@ final class DefaultLoginUseCase: LoginUseCase {
                             }
                         })
                         .subscribe(onNext: { state in
+                            print("Success to get user state: \(state)")
                             KeychainRepository.addItem(value: state.rawValue, key: "userState")
                             observer.onNext(state)
                         }, onError: { error in

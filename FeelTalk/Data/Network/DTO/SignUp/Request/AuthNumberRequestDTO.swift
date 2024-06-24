@@ -18,12 +18,5 @@ struct AuthNumberRequestDTO: Encodable {
 }
 
 struct ReAuthNumberRequestDTO: Encodable {
-    let serviceType: String = "telcoAuth"
-    var providerId: String
-    var reqAuthType: String = "SMS"
-    var userName: String
-    var userPhone: String
-    var userBirthday: String
-    var userGender: String
-    var userNation: String
+    let sessionUuid: String
 }

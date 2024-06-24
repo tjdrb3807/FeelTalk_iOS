@@ -35,7 +35,10 @@ final class InviteCodeViewModel {
         fcmHandeler.createCoupleObservable
             .withUnretained(self)
             .bind { vm, state in
-                if state { vm.coordinator?.finish() }
+                if state {
+                    KeychainRepository.addItem(value: UserState.couple.rawValue, key: "userState")
+                    vm.coordinator?.finish()
+                }
             }.disposed(by: disposBag)
         
         input.viewDidLoad

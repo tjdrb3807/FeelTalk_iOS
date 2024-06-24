@@ -56,7 +56,12 @@ final class InviteCodeBottomSheetViewModel {
             .bind { vm, inviteCode in
                 vm.coupleUseCase.registerInviteCode(inviteCode)
                     .subscribe(
-                        onSuccess: { state in if state { vm.coordinator?.finish() } },
+                        onSuccess: { state in
+                            if state {
+                                KeychainRepository.addItem(value: UserState.couple.rawValue, key: "userState")
+                                vm.coordinator?.finish()
+                            }
+                        },
                         onFailure: { error in print(error.localizedDescription) },
                         onDisposed: nil)
                     .disposed(by: vm.disposeBag)

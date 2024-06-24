@@ -56,16 +56,16 @@ final class HomeViewController: UIViewController {
             .bind(to: todaySignalView.partnerSignalButton.model)
             .disposed(by: disposeBag)
         
-        output.showBottomSheet
-            .withUnretained(self)
-            .bind { vc, _ in
-                guard !vc.view.subviews.contains(where: { $0 is HomeBottomSheetView }) else { return }
-                let bottomSheet = vc.bottomSheet
-                vc.view.addSubview(bottomSheet)
-                bottomSheet.snp.makeConstraints { $0.edges.equalToSuperview() }
-                vc.view.layoutIfNeeded()
-                bottomSheet.isHidden(false)
-            }.disposed(by: disposeBag)
+//        output.showBottomSheet
+//            .withUnretained(self)
+//            .bind { vc, _ in
+//                guard !vc.view.subviews.contains(where: { $0 is HomeBottomSheetView }) else { return }
+//                let bottomSheet = vc.bottomSheet
+//                vc.view.addSubview(bottomSheet)
+//                bottomSheet.snp.makeConstraints { $0.edges.equalToSuperview() }
+//                vc.view.layoutIfNeeded()
+//                bottomSheet.isHidden(false)
+//            }.disposed(by: disposeBag)
         
         bottomSheet.confirmButton.rx.tap
             .delay(RxTimeInterval.milliseconds(300), scheduler: MainScheduler.instance)

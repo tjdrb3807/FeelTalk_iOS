@@ -46,10 +46,12 @@ final class DefaultSignUpRepository: SignUpRepository {
     
     func getReAuthNumber(_ requestDTO: ReAuthNumberRequestDTO) -> Single<Bool> {
         Single.create { observer -> Disposable in
+            print("getReAuthNumber() request: \(SignUpAPI.getReAuthNumber(requestDTO))")
             AF.request(SignUpAPI.getReAuthNumber(requestDTO))
                 .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
+                        print("getReAuthNumber() ResponseDTO: \(responseDTO)")
                         if responseDTO.status == "success" {
                             observer(.success(true))
                         } else {

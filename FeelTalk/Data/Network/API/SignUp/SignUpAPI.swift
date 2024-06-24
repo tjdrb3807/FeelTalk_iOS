@@ -23,7 +23,7 @@ extension SignUpAPI: Router, URLRequestConvertible {
         case .getAuthNumber:
             return "/api/v1/adult/authentication"
         case .getReAuthNumber:
-            return "/api/v1/adult/re-authentication"
+            return "/api/v1/adult/authentication/resend"
         case .verification:
             return "/api/v1/adult/authentication/verification"
         case .signUp:
@@ -62,14 +62,7 @@ extension SignUpAPI: Router, URLRequestConvertible {
                     "userNation": requestDTO.userNation]
             
         case .getReAuthNumber(let requestDTO):
-            return ["serviceType": requestDTO.serviceType,
-                    "providerId": requestDTO.providerId,
-                    "reqAuthType": requestDTO.reqAuthType,
-                    "userName": requestDTO.userName,
-                    "userPhone": requestDTO.userPhone,
-                    "userBirthday": requestDTO.userBirthday,
-                    "userGender": requestDTO.userGender,
-                    "userNation": requestDTO.userNation]
+            return ["sessionUuid": requestDTO.sessionUuid]
             
         case .verification(let requestDTO):
             return ["authNumber": requestDTO.authNumber,

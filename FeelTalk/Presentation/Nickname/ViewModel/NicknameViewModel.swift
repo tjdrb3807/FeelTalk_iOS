@@ -87,6 +87,7 @@ class NicknameViewModel {
                 vm.signUpUseCase.signUp(model)
                     .filter { $0 }
                     .bind { _ in
+                        KeychainRepository.addItem(value: UserState.solo.rawValue, key: "userState")
                         vm.coodinator?.finish()                        
                     }.disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)

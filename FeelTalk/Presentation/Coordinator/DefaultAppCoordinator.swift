@@ -42,6 +42,12 @@ final class DefaultAppCoordinator: AppCoordinator {
             return
         }
         
+        if UserState.solo.rawValue == KeychainRepository.getItem(key: "userState") as? String {
+            // 솔로 상태면 초대코드 페이지로
+            showInviteCodeFlow()
+            return
+        }
+        
         if UserState.couple.rawValue != KeychainRepository.getItem(key: "userState") as? String {
             // 커플 상태가 아니면 모두 로그인 페이지로
             showLoginFlow()
@@ -88,6 +94,14 @@ final class DefaultAppCoordinator: AppCoordinator {
         childCoordinators.append(loginCoordinator)
         loginCoordinator.finishDelegate = self
         loginCoordinator.start()
+    }
+    
+    func showInviteCodeFlow() {
+        let inviteCodeCoordinator = DefaultInviteCodeCoordinator(self.navigationController)
+        
+        childCoordinators.append(inviteCodeCoordinator)
+        inviteCodeCoordinator.finishDelegate = self
+        inviteCodeCoordinator.start()
     }
     
     func showTabBarFlow() {

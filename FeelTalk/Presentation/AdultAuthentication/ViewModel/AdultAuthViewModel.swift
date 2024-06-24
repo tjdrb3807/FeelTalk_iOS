@@ -185,7 +185,7 @@ final class AdultAuthViewModel {
                     let preValue = vm.preUserInfo.value
                     
                     if preValue ==  model { // 이전 사용자 정보가 같은 경우(재요청)
-                        vm.signUpUseCase.getReAuthNumber(model)
+                        vm.signUpUseCase.getReAuthNumber(output.sessionUuid.value)
                             .bind { result in
                                 if result {
                                     vm.setTimer(with: 180)

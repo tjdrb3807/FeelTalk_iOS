@@ -13,7 +13,7 @@ import FirebaseMessaging
 protocol SignUpUseCase {
     func getAuthNumber(_ entity: UserAuthInfo) -> Observable<String>
     
-    func getReAuthNumber(_ entity: UserAuthInfo) -> Observable<Bool>
+    func getReAuthNumber(_ sessionUuid: String) -> Observable<Bool>
     
     func verifyAnAdult(authNumber: String, sessionUuid: String) -> Observable<Bool>
     
@@ -35,6 +35,9 @@ final class DefaultSignUpUseCase: SignUpUseCase {
             
             self.signUpRepository.getAuthNumber(requestDTO)
                 .asObservable()
+                .catch({ error in
+                    return Observable.just("")
+                })
                 .subscribe(onNext: { state in
                     observer.onNext(state)
                 }).disposed(by: self.disposeBag)
@@ -43,10 +46,10 @@ final class DefaultSignUpUseCase: SignUpUseCase {
         }
     }
     
-    func getReAuthNumber(_ entity: UserAuthInfo) -> Observable<Bool> {
+    func getReAuthNumber(_ sessionUuid: String) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let requestDTO = entity.convertReAuthNumberRequestDTO() else { return Disposables.create() }
+            guard let self = self else { return Disposables.create() }
+            let requestDTO = ReAuthNumberRequestDTO(sessionUuid: sessionUuid)
             
             self.signUpRepository.getReAuthNumber(requestDTO)
                 .asObservable()
@@ -78,9 +81,9 @@ final class DefaultSignUpUseCase: SignUpUseCase {
                   let accessToken = KeychainRepository.getItem(key: "accessToken") as? String
                    else { return Disposables.create() }
             
-            let fcmToken = KeychainRepository.getItem(key: "fcmToken") as? String ?? Messaging.messaging().fcmToken
+//            let fcmToken = KeychainRepository.getItem(key: "fcmToken") as? String ?? Messaging.messaging().fcmToken
             
-//            let fcmToken: String? = "TestFcmToken"
+            let fcmToken: String? = "TestFcmToken"
             
             print("fcm token (when sign up): \(String(describing: fcmToken))")
             

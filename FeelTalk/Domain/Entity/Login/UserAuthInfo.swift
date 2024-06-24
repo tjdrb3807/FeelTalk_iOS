@@ -34,20 +34,20 @@ extension UserAuthInfo {
                      userNation: convertUserNationType(with: genderNumber))
     }
     
-    func convertReAuthNumberRequestDTO() -> ReAuthNumberRequestDTO? {
-        guard let name,
-              let birthday,
-              let genderNumber,
-              let newsAgency,
-              let phoneNumber else { return nil }
-        
-        return .init(providerId: newsAgency.rawValue,
-                     userName: name,
-                     userPhone: phoneNumber,
-                     userBirthday: convertBirthday(birthday, with: genderNumber),
-                     userGender: convertGenderType(with: genderNumber),
-                     userNation: convertUserNationType(with: genderNumber))
-    }
+//    func convertReAuthNumberRequestDTO() -> ReAuthNumberRequestDTO? {
+//        guard let name,
+//              let birthday,
+//              let genderNumber,
+//              let newsAgency,
+//              let phoneNumber else { return nil }
+//
+//        return .init(providerId: newsAgency.rawValue,
+//                     userName: name,
+//                     userPhone: phoneNumber,
+//                     userBirthday: convertBirthday(birthday, with: genderNumber),
+//                     userGender: convertGenderType(with: genderNumber),
+//                     userNation: convertUserNationType(with: genderNumber))
+//    }
 }
 
 extension UserAuthInfo {
