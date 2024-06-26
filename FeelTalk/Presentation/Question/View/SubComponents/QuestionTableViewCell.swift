@@ -97,7 +97,7 @@ extension QuestionTableViewCell {
         self.model
             .withUnretained(self)
             .bind { c, question in
-                c.indexLabel.rx.text.onNext(String(question.index))
+                c.indexLabel.rx.text.onNext(String(question.index + 1))
                 c.questionBodyLable.rx.text.onNext(question.body)
             }.disposed(by: disposeBag)
     }

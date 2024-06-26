@@ -47,7 +47,7 @@ final class HomeTodayQuestionView: UIView {
         todayQuestion
             .withUnretained(self)
             .bind { v, model in
-                v.countView.count.accept(model.index)
+                v.countView.count.accept(model.index + 1)
                 v.answerButton.todayQuestion.accept(model)
             }.disposed(by: disposeBag)
     }

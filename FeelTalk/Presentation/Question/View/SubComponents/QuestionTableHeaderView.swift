@@ -239,7 +239,7 @@ extension QuestionTableHeaderView {
         self.model
             .withUnretained(self)
             .bind { v, question in
-                v.questionIndexLabel.rx.text.onNext(String(question.index))
+                v.questionIndexLabel.rx.text.onNext(String(question.index + 1))
                 v.questionHeaderLabel.rx.text.onNext(question.header)
                 v.questionBodyLabel.rx.text.onNext(question.body)
                 

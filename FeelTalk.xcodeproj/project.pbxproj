@@ -6314,6 +6314,8 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = K5RZZ64DS3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FeelTalk/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "필로우톡";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "마이크 이용 권한 요청 메세지";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
@@ -6353,6 +6355,8 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = K5RZZ64DS3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FeelTalk/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "필로우톡";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "마이크 이용 권한 요청 메세지";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
