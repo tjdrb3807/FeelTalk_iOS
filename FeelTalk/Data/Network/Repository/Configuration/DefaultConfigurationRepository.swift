@@ -126,6 +126,7 @@ final class DefaultConfigurationRepository: ConfigurationRepository, RequestInte
                     print("getLockNumber Success: \(responseDTO)")
                     if responseDTO.status == "success" {
                         guard let getLockNumberResponseDTO = responseDTO.data! else { return }
+//                        observer(.failure(NetworkError.Failure))
                         observer(.success(getLockNumberResponseDTO.lockNumber))
                     } else {
                         guard let message = responseDTO.message else { return }
