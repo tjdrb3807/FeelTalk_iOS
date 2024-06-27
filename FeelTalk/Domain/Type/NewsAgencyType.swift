@@ -10,8 +10,8 @@ import Foundation
 enum NewsAgencyType: String, CaseIterable {
     case skt = "SKT"
     case kt = "KT"
-    case lg = "LG"
+    case lg = "LGU"
     case sktThrifty = "SKTMVNO"
     case ktThrifty = "KTMVNO"
-    case lgThrifty = "LGMVNO"
+    case lgThrifty = "LGUMVNO"
 }

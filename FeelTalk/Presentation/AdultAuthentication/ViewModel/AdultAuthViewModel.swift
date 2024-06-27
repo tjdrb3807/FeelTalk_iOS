@@ -133,12 +133,12 @@ final class AdultAuthViewModel {
                 vm.coordinator?.isFullConsented.accept(state)
             }.disposed(by: disposeBag)
         
-        input.tapAuthButton
-            .withLatestFrom(output.isRequested)
-            .withUnretained(self)
-            .bind { vm, isRequested in
-                
-            }.disposed(by: disposeBag)
+//        input.tapAuthButton
+//            .withLatestFrom(output.isRequested)
+//            .withUnretained(self)
+//            .bind { vm, isRequested in
+//                
+//            }.disposed(by: disposeBag)
         
         input.tapAuthButton
             .withLatestFrom(output.isRequested)

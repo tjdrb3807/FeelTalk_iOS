@@ -96,6 +96,21 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
             self.configurationRepository
                 .getLockNumber()
                 .asObservable()
+//                .catch({ error in
+//                    print("[ERROR CATCH] ConfigurationUseCase getLockNubmer(): \(error)")
+//                    return Observable.just("")
+//                        .asObservable()
+//                        .delay(
+//                            .seconds(3),
+//                            scheduler: ConcurrentDispatchQueueScheduler(queue: DispatchQueue.main)
+//                        ).concat(self.configurationRepository
+//                            .getLockNumber()
+//                            .asObservable())
+//                        .filter({ result in
+//                            !(result ?? "").isEmpty
+//                        })
+//                        .observe(on: MainScheduler.instance)
+//                })
                 .catch({ error in
                     print("[ERROR CATCH] ConfigurationUseCase getLockNubmer(): \(error)")
                     return self.configurationRepository
