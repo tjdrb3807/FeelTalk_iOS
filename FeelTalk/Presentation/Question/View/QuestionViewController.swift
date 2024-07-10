@@ -53,7 +53,8 @@ final class QuestionViewController: UIViewController {
                 let paginationY = contentOffsetY * 0.2  // TODO: page 30개로 늘리면 변경
                 
                 return contentOffsetY > contentSizeHeight - paginationY ? true : false
-            }
+            },
+            tapChatRoomButton: navigationBar.chatRoomButton.rx.tap
         )
         
         let output = viewModel.transfer(input: input)

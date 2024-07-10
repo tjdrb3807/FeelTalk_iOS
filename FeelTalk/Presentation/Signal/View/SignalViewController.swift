@@ -17,6 +17,8 @@ final class SignalViewController: UIViewController {
     private let selectedSignal = PublishRelay<Signal>()
     private let disposeBag = DisposeBag()
     
+    private lazy var chatRoomButton: CustomChatRoomButton = { CustomChatRoomButton() }()
+    
     private lazy var bottomSheetView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -184,7 +186,8 @@ final class SignalViewController: UIViewController {
             viewWillAppear: self.rx.viewWillAppear,
             selectedSignal: self.selectedSignal.asObservable(),
             tapChangeSignalButton: changeSignalButton.rx.tap,
-            dismiss: self.dismiss)
+            dismiss: self.dismiss,
+            tapChatRoomButton: self.chatRoomButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
         
@@ -209,6 +212,7 @@ final class SignalViewController: UIViewController {
     
     private func setConstraints() {
         makeBottomSheetViewConstraints()
+        makeChatRoomButtonConstraints()
         makePanGestureAreaConstratins()
         makeGarbberConstraints()
         makeDescriptionLabelConstraints()
@@ -219,7 +223,10 @@ final class SignalViewController: UIViewController {
 }
 
 extension SignalViewController {
-    private func addViewSubComponents() { view.addSubview(bottomSheetView) }
+    private func addViewSubComponents() {
+//        view.addSubview(bottomSheetView)
+        [chatRoomButton, bottomSheetView].forEach { view.addSubview($0) }
+    }
     
     private func makeBottomSheetViewConstraints() {
         bottomSheetView.snp.makeConstraints {
@@ -237,6 +244,15 @@ extension SignalViewController {
             $0.top.equalToSuperview()
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(percentageView.snp.bottom)
+        }
+    }
+    
+    private func makeChatRoomButtonConstraints() {
+        chatRoomButton.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(CustomChatRoomButtonNameSpace.topOffset)
+            $0.trailing.equalToSuperview().inset(CommonConstraintNameSpace.trailingInset)
+            $0.width.equalTo(CustomChatRoomButtonNameSpace.profileImageViewWidth)
+            $0.height.equalTo(CustomChatRoomButtonNameSpace.profileImageViewHeight)
         }
     }
     

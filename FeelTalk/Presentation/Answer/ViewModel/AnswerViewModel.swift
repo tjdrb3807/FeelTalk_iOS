@@ -27,6 +27,7 @@ final class AnswerViewModel {
         let tapPopButton: ControlEvent<Void>
         let tapAlertRightButton: Observable<CustomAlertType>
         let tapAnswerCompletedButton: ControlEvent<Void>
+        let tapChatRoomButton: ControlEvent<Void>
     }
     
     struct Output {
@@ -126,7 +127,14 @@ final class AnswerViewModel {
             .bind { vm, _ in
                 vm.coordinator?.dismiss()
             }.disposed(by: disposeBag)
-
+        
+        input.tapChatRoomButton
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.dismissAndShowChatFlow()
+            }.disposed(by: disposeBag)
+        
         return output
     }
 }

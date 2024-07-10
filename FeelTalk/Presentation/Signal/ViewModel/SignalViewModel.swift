@@ -23,6 +23,7 @@ final class SignalViewModel {
         let selectedSignal: Observable<Signal>
         let tapChangeSignalButton: ControlEvent<Void>
         let dismiss: Observable<Void>
+        let tapChatRoomButton: ControlEvent<Void>
     }
     
     struct Output {
@@ -66,6 +67,13 @@ final class SignalViewModel {
             .withUnretained(self)
             .bind { vm, _ in
                 vm.coordinator?.dismiss()
+            }.disposed(by: disposeBag)
+        
+        input.tapChatRoomButton
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.dismissAndShowChatFlow()
             }.disposed(by: disposeBag)
         
         return Output(selectedSignal: self.model)

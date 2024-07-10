@@ -19,7 +19,7 @@ enum CoordinatorType {
     case partnerInfo, breakUp
     case lockScreen, lockScreenSettings, lockNumberPad, lockNumberHint, lockNumberFind, lockNumberInitRequest
     case accountInfoSettings, withdrawal, withdrawalDetail
-    case chat, chatFuncMenu
+    case chat, chatFuncMenu, chatFromBottomSheet
     case alert
     case signal
 }

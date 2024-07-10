@@ -23,6 +23,7 @@ final class QuestionViewModel {
         let tapQuestionAnswerButton: Observable<Question>
         let questionSelected: Observable<Question>
         let isPagination: Observable<Bool>
+        let tapChatRoomButton: ControlEvent<Void>
     }
     
     struct Output {
@@ -104,6 +105,13 @@ final class QuestionViewModel {
                 vm.coordinator?.model.accept(quesiton)
             }.disposed(by: disposeBag)
     
+        input.tapChatRoomButton
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.showChatFlow()
+            }.disposed(by: disposeBag)
+        
         return Output(todayQuestion: self.todayQuestion,
                       questionList: self.questionList)
     }

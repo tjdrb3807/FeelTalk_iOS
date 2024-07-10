@@ -15,4 +15,6 @@ protocol SignalCoordinator: Coordinator {
     func finish()
     
     func dismiss()
+    
+    func dismissAndShowChatFlow()
 }

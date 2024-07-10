@@ -49,4 +49,11 @@ final class DefaultAnswerCoordinator: AnswerCoordinator {
         self.navigationController.dismiss(animated: false)
         self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
     }
+    
+    func dismissAndShowChatFlow() {
+        self.type = .chatFromBottomSheet
+        self.childCoordinators.removeAll()
+        self.navigationController.dismiss(animated: false)
+        self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+    }
 }

@@ -40,6 +40,7 @@ final class ChallengeViewModel {
         let tapChallengeCell: Observable<Challenge>
         let isPagination: Observable<Bool>
         let currentDisplayCell: PublishRelay<ChallengeState>
+        let tapChatRoomButton: ControlEvent<Void>
     }
     
     struct Output {
@@ -230,6 +231,14 @@ final class ChallengeViewModel {
                 case .none:
                     break
                 }
+            }.disposed(by: disposeBag)
+        
+        
+        input.tapChatRoomButton
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.coordinator?.showChatFlow()
             }.disposed(by: disposeBag)
         
         return output

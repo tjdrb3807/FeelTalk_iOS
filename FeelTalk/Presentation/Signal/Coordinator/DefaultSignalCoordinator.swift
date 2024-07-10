@@ -44,4 +44,11 @@ final class DefaultSignalCoordinator: SignalCoordinator {
         self.navigationController.dismiss(animated: false)
         self.navigationController.tabBarController?.tabBar.isHidden = false
     }
+    
+    func dismissAndShowChatFlow() {
+        self.type = .chatFromBottomSheet
+        self.childCoordinators.removeAll()
+        self.navigationController.dismiss(animated: false)
+        self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+    }
 }

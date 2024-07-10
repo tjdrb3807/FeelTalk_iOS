@@ -15,4 +15,6 @@ protocol ChallengeCoordinator: Coordinator {
     var challengeModel: PublishRelay<Challenge> { get set }
     
     func showChallengeDetailFlow()
+    
+    func showChatFlow()
 }

@@ -65,7 +65,8 @@ final class ChallengeViewController: UIViewController {
                                              tapAddButton: addButton.rx.tap,
                                              tapChallengeCell: collectionView.selectedModel.asObservable(),
                                              isPagination: isPagination.asObservable(),
-                                             currentDisplayCell: collectionView.currentDisplayCell)
+                                             currentDisplayCell: collectionView.currentDisplayCell,
+                                             tapChatRoomButton: navigationBar.chatRoomButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
 

@@ -114,7 +114,8 @@ final class AnswerViewController: UIViewController {
             tapPressForAnswerButton: partnerAnswerView.noAnswerView.pressForAnswerButton.rx.tap,
             tapPopButton: popButton.rx.tap,
             tapAlertRightButton: tapAlertRightButtonObserver.asObserver(),
-            tapAnswerCompletedButton: answerCompletedButton.rx.tap)
+            tapAnswerCompletedButton: answerCompletedButton.rx.tap,
+            tapChatRoomButton: chatRoomButton.rx.tap)
         
         let output = viewModel.transfer(input: input)
             
@@ -198,7 +199,7 @@ final class AnswerViewController: UIViewController {
     
     private func setConfigurations() {
         makeDimmedViewConstraints()
-//        makeChatRoomButtonConstraints()
+        makeChatRoomButtonConstraints()
         makeBottomSheetViewConstraints()
         makePopButtonConstraints()
         makeScrollViewConstraints()
@@ -210,8 +211,8 @@ final class AnswerViewController: UIViewController {
 
 extension AnswerViewController {
     private func addViewSubComponents() {
-//        [dimmedView, chatRoomButton, bottomSheetView].forEach { view.addSubview($0) }
-        [dimmedView, bottomSheetView].forEach { view.addSubview($0) }
+        [dimmedView, chatRoomButton, bottomSheetView].forEach { view.addSubview($0) }
+//        [dimmedView, bottomSheetView].forEach { view.addSubview($0) }
     }
     
     private func makeDimmedViewConstraints() {

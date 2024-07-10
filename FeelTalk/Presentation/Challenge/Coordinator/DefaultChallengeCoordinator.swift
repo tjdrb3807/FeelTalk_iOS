@@ -40,6 +40,14 @@ final class DefaultChallengeCoordinator: ChallengeCoordinator {
         challengeDetailCoordinator.finishDelegate = self
         challengeDetailCoordinator.start()
     }
+    
+    func showChatFlow() {
+        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
+        
+        childCoordinators.append(chatCoordinator)
+        chatCoordinator.finishDelegate = self
+        chatCoordinator.start()
+    }
 }
 
 extension DefaultChallengeCoordinator: CoordinatorFinishDelegate {

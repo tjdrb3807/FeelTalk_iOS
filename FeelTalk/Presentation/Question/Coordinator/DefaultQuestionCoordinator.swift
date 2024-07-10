@@ -44,11 +44,11 @@ final class DefaultQuestionCoordinator: QuestionCoordinator {
     }
     
     func showChatFlow() {
-//        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
-//        
-//        childCoordinators.append(chatCoordinator)
-//        chatCoordinator.finishDelegate = self
-//        chatCoordinator.start()
+        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
+        
+        childCoordinators.append(chatCoordinator)
+        chatCoordinator.finishDelegate = self
+        chatCoordinator.start()
     }
     
     func reloadQuestionPage() {
@@ -59,12 +59,16 @@ final class DefaultQuestionCoordinator: QuestionCoordinator {
 extension DefaultQuestionCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
         switch childCoordinator.type {
-        case .answer:
-            showChatFlow()
+//        case .answer:
+//            showChatFlow()
         case .answered:
             reloadQuestionPage()
+        case .chatFromBottomSheet:
+            showChatFlow()
         default:
             break
         }
+        
+        self.navigationController.tabBarController?.tabBar.isHidden = false
     }
 }

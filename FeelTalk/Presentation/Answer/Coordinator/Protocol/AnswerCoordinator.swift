@@ -15,4 +15,6 @@ protocol AnswerCoordinator: Coordinator {
     var answerViewController: AnswerViewController { get set}
     
     func dismiss()
+    
+    func dismissAndShowChatFlow()
 }

@@ -54,25 +54,28 @@ final class DefaultHomeCoordinator: HomeCoordinator {
     }
     
     func showChatFlow() {
-//        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
-//        
-//        childCoordinators.append(chatCoordinator)
-//        chatCoordinator.finishDelegate = self
-//        chatCoordinator.start()
+        let chatCoordinator = DefaultChatCooridnator(self.navigationController)
+        
+        childCoordinators.append(chatCoordinator)
+        chatCoordinator.finishDelegate = self
+        chatCoordinator.start()
     }
 }
 
 extension DefaultHomeCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
-        self.navigationController.tabBarController?.tabBar.isHidden = false
         switch childCoordinator.type {
         case .signal:
             homeViewController.viewModel.reloadObservable.accept(.signal)
         case .answer:
             homeViewController.viewModel.reloadObservable.accept(.todayQuestion)
+//            showChatFlow()
+        case .chatFromBottomSheet:
             showChatFlow()
         default:
             break
         }
+        
+        self.navigationController.tabBarController?.tabBar.isHidden = false
     }
 }
