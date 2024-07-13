@@ -47,7 +47,11 @@ final class ChatViewModel {
         let partnerNickname: PublishRelay<String>
     }
     
-    init(coordinator: ChatCoordinator?, userUseCase: UserUseCase, chatUseCase: ChatUseCase) {
+    init(
+        coordinator: ChatCoordinator?,
+        userUseCase: UserUseCase,
+        chatUseCase: ChatUseCase
+    ) {
         self.coordinator = coordinator
         self.userUseCase = userUseCase
         self.chatUseCase = chatUseCase
@@ -62,14 +66,16 @@ final class ChatViewModel {
             chatFuncMenuButtonTapObserver: Observable<Void>.empty()
         )
         self.output = Output(
-            keyboardHeight: PublishRelay<CGFloat>.init(),
-            inputMode: BehaviorRelay<ChatInputMode>.init(value: .basics),
-            isFunctionActive: BehaviorRelay<Bool>.init(value: false),
-            partnerNickname: PublishRelay<String>.init()
+            keyboardHeight: self.keyboardHeight,
+            inputMode: self.inputMode,
+            isFunctionActive: self.isFunctionActive,
+            partnerNickname: self.partnerNickname
         )
     }
     
     func transfer(input: Input) -> Output {
+        self.input = input
+        
         RxKeyboard.instance.visibleHeight
             .asObservable()
             .filter { $0 >= 0 }
@@ -81,6 +87,11 @@ final class ChatViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .bind { vm, _ in
+                vm.userUseCase.getPartnerInfo()
+                    .bind(onNext: { partnerInfo in
+                        vm.partnerNickname.accept(partnerInfo.nickname)
+                    }).disposed(by: vm.disposeBag)
+                
                 vm.chatUseCase.getLastPageNo()
                     .bind(to: vm.crtPageNoObserver)
                     .disposed(by: vm.disposeBag)
@@ -145,13 +156,7 @@ final class ChatViewModel {
                 vm.coordinator?.showChatFuncMenuFlow()
             }.disposed(by: disposeBag)
         
-        self.input = input
-        self.output = Output(
-            keyboardHeight: self.keyboardHeight,
-            inputMode: self.inputMode,
-            isFunctionActive: self.isFunctionActive,
-            partnerNickname: self.partnerNickname)
-        
         return self.output
     }
+    
 }

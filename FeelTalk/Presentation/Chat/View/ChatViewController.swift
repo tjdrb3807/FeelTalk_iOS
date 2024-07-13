@@ -130,7 +130,7 @@ final class ChatViewController: UIViewController {
     
     fileprivate lazy var chatListView: UIHostingController =  {
         return UIHostingController(
-            rootView: ChatListView(viewModel: self.viewModel)
+            rootView: ChatListView(viewModel: self.viewModel!)
         )
     }()
     
@@ -141,15 +141,17 @@ final class ChatViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let sigleTapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                               action: #selector(myTapMethod))
+        let sigleTapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(myTapMethod)
+        )
         sigleTapGestureRecognizer.numberOfTapsRequired = 1
         sigleTapGestureRecognizer.isEnabled = true
         sigleTapGestureRecognizer.cancelsTouchesInView = false
 //        collectionView.addGestureRecognizer(sigleTapGestureRecognizer)
         chatListView.view.addGestureRecognizer(sigleTapGestureRecognizer)
         
-        self.bind(to: viewModel)
+        self.bind(to: viewModel!)
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
@@ -174,7 +176,8 @@ final class ChatViewController: UIViewController {
             viewWillAppear: self.rx.viewWillAppear.asObservable(),
             tapDimmiedView: dimmedView.rx.tapGesture().when(.recognized).map { _ in () }.asObservable(),
             tapChatRoomButton: chatRoomButton.rx.tap.asObservable(),
-            chatFuncMenuButtonTapObserver: navigationBar.menuButton.rx.tap.asObservable())
+            chatFuncMenuButtonTapObserver: navigationBar.menuButton.rx.tap.asObservable()
+        )
         
         let output = viewModel.transfer(input: input)
         
@@ -360,11 +363,17 @@ struct ChatViewController_Previews: PreviewProvider {
     struct ChatViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = ChatViewController()
-            let vm = ChatViewModel(coordinator: DefaultChatCooridnator(UINavigationController()),
-                                   userUseCase: DefaultUserUseCase(
-                                    userRepository: DefaultUserRepository()),
-                                   chatUseCase: DefaultChatUseCase(
-                                    chatRepository: DefaultChatRepository()))
+            let vm = ChatViewModel(
+                coordinator: DefaultChatCooridnator(
+                    UINavigationController()
+                ),
+                userUseCase: DefaultUserUseCase(
+                    userRepository: DefaultUserRepository()
+                ),
+                chatUseCase: DefaultChatUseCase(
+                    chatRepository: DefaultChatRepository()
+                )
+            )
             
             vc.viewModel = vm
             vc.navigationBar.partnerNickname.accept("partner")

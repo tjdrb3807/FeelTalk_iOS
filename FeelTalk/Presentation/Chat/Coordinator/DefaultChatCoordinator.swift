@@ -27,11 +27,15 @@ final class DefaultChatCooridnator: ChatCoordinator {
         self.navigationController.tabBarController?.tabBar.isHidden = true
         self.navigationController.navigationBar.isHidden = true
         
-        self.chatViewController.viewModel = ChatViewModel(coordinator: self,
-                                                          userUseCase: DefaultUserUseCase(
-                                                            userRepository: DefaultUserRepository()),
-                                                          chatUseCase: DefaultChatUseCase(
-                                                            chatRepository: DefaultChatRepository()))
+        self.chatViewController.viewModel = ChatViewModel(
+            coordinator: self,
+            userUseCase: DefaultUserUseCase(
+                userRepository: DefaultUserRepository()
+            ),
+            chatUseCase: DefaultChatUseCase(
+                chatRepository: DefaultChatRepository()
+            )
+        )
         self.chatViewNC.modalPresentationStyle = .overFullScreen
         
         self.navigationController.present(chatViewNC, animated: false)

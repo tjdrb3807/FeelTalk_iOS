@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RxSwift
 
 struct ChatListView: View {
     @ObservedObject private var viewModel: ObservableChatListViewModel
@@ -25,10 +26,9 @@ private typealias ObservableChatListViewModel = ObservableViewModel<ChatViewMode
 extension ObservableChatListViewModel {
     convenience init(_ viewModel: ChatViewModel) {
         self.init(inputs: viewModel.input, outputs: viewModel.output)
-        outputs.bind(\.keyboardHeight, value: 0.0)
-        outputs.bind(\.inputMode, value: .basics)
-        outputs.bind(\.isFunctionActive, value: false)
+        
         outputs.bind(\.partnerNickname, value: "partner")
+        
     }
 }
 
