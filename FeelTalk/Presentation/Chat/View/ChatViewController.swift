@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 import RxGesture
 import RxDataSources
+import SwiftUI
 
 struct ChatSectionModel {
     var items: [Item]
@@ -27,7 +28,20 @@ extension ChatSectionModel: SectionModelType {
 
 final class ChatViewController: UIViewController {
     var viewModel: ChatViewModel!
-    let modelObserver = BehaviorRelay<[ChatSectionModel]>(value: [ChatSectionModel(items: [ChallengeChat(index: 0, type: .addChallengeChatting, isRead: false, isMine: true, createAt: "2024-01-01T12:00:00", challengeIndex: 0, challengeTitle: "다섯글자임", challengeDeadline: "20249-01-01T12:00:00")])])
+    
+    let modelObserver = BehaviorRelay<[ChatSectionModel]>(
+        value: [
+            ChatSectionModel(
+                items: [
+                    ChallengeChat(index: 0, type: .addChallengeChatting, isRead: false, isMine: true, createAt: "2024-01-01T12:00:00", challengeIndex: 0, challengeTitle: "다섯글자임", challengeDeadline: "20249-01-01T12:00:00"),
+                    TextChat(index: 1, type: .textChatting, isRead: false, isMine: false, createAt: "2024-01-01T12:00:01", text: "텍스트 채팅"),
+                    TextChat(index: 2, type: .textChatting, isRead: false, isMine: true, createAt: "2024-01-01T12:00:02", text: "텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅"),
+                    TextChat(index: 3, type: .textChatting, isRead: true, isMine: false, createAt: "2024-01-01T12:00:03", text: "텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅"),
+                    TextChat(index: 4, type: .textChatting, isRead: true, isMine: true, createAt: "2024-01-01T12:00:04", text: "텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅")
+                ]
+            )
+        ]
+    )
     private let disposeBag = DisposeBag()
     
     let dataSource = RxCollectionViewSectionedReloadDataSource<ChatSectionModel>(configureCell: { ds, cv, indexPath, item in
@@ -93,25 +107,31 @@ final class ChatViewController: UIViewController {
         return UICollectionViewCompositionalLayout(sectionProvider: sectionProvider)
     }
     
-    fileprivate lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.alwaysBounceVertical = true
-        collectionView.backgroundColor = .clear
-        collectionView.register(ChatCell.self, forCellWithReuseIdentifier: "ChatCell")
-        
-        collectionView.rx.setDelegate(self)
-            .disposed(by: disposeBag)
-        
-        modelObserver
-//            .skip(1)
-            .asDriver(onErrorJustReturn: [])
-            .drive(collectionView.rx.items(dataSource: dataSource))
-            .disposed(by: disposeBag)
-        
-        return collectionView
+//    fileprivate lazy var collectionView: UICollectionView = {
+//        let layout = UICollectionViewFlowLayout()
+//        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+//
+//        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+//        collectionView.alwaysBounceVertical = true
+//        collectionView.backgroundColor = .clear
+//        collectionView.register(ChatCell.self, forCellWithReuseIdentifier: "ChatCell")
+//
+//        collectionView.rx.setDelegate(self)
+//            .disposed(by: disposeBag)
+//
+//        modelObserver
+////            .skip(1)
+//            .asDriver(onErrorJustReturn: [])
+//            .drive(collectionView.rx.items(dataSource: dataSource))
+//            .disposed(by: disposeBag)
+//
+//        return collectionView
+//    }()
+    
+    fileprivate lazy var chatListView: UIHostingController =  {
+        return UIHostingController(
+            rootView: ChatListView(viewModel: self.viewModel)
+        )
     }()
     
     fileprivate lazy var chatInputView: ChatInputView = { ChatInputView() }()
@@ -126,12 +146,15 @@ final class ChatViewController: UIViewController {
         sigleTapGestureRecognizer.numberOfTapsRequired = 1
         sigleTapGestureRecognizer.isEnabled = true
         sigleTapGestureRecognizer.cancelsTouchesInView = false
-        collectionView.addGestureRecognizer(sigleTapGestureRecognizer)
+//        collectionView.addGestureRecognizer(sigleTapGestureRecognizer)
+        chatListView.view.addGestureRecognizer(sigleTapGestureRecognizer)
         
         self.bind(to: viewModel)
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
+        
+        chatListView.didMove(toParent: self)
     }
     
     @objc private func myTapMethod(sender: UITapGestureRecognizer) {
@@ -144,14 +167,14 @@ final class ChatViewController: UIViewController {
     
     private func bind(to viewModel: ChatViewModel) {
         let input = ChatViewModel.Input(
-            viewWillAppearObserver: rx.viewWillAppear,
+            viewWillAppearObserver: rx.viewWillAppear.asObservable(),
             tapInputButton: chatInputView.inputButton.rx.tap.asObservable(),
             messageText: chatInputView.messageInputView.messageInputTextView.rx.text.orEmpty.asObservable(),
             tapFunctionButton: chatInputView.functionButton.rx.tap.asObservable(),
-            viewWillAppear: self.rx.viewWillAppear,
+            viewWillAppear: self.rx.viewWillAppear.asObservable(),
             tapDimmiedView: dimmedView.rx.tapGesture().when(.recognized).map { _ in () }.asObservable(),
             tapChatRoomButton: chatRoomButton.rx.tap.asObservable(),
-            chatFuncMenuButtonTapObserver: navigationBar.menuButton.rx.tap)
+            chatFuncMenuButtonTapObserver: navigationBar.menuButton.rx.tap.asObservable())
         
         let output = viewModel.transfer(input: input)
         
@@ -259,7 +282,8 @@ extension ChatViewController {
     }
     
     private func addChatRoomViewSubComponents() {
-        [navigationBar, collectionView, chatInputView].forEach { chatRoomView.addSubview($0) }
+//        [navigationBar, collectionView, chatInputView].forEach { chatRoomView.addSubview($0) }
+        [navigationBar, chatListView.view, chatInputView].forEach { chatRoomView.addSubview($0) }
     }
     
     private func makeNavigationBarConstraints() {
@@ -270,7 +294,12 @@ extension ChatViewController {
     }
     
     private func makeCollectionViewConstraints() {
-        collectionView.snp.makeConstraints {
+//        collectionView.snp.makeConstraints {
+//            $0.top.equalTo(navigationBar.snp.bottom)
+//            $0.leading.trailing.equalToSuperview()
+//            $0.bottom.equalTo(chatInputView.snp.top)
+//        }
+        chatListView.view.snp.makeConstraints {
             $0.top.equalTo(navigationBar.snp.bottom)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(chatInputView.snp.top)
@@ -305,17 +334,17 @@ extension ChatViewController {
 }
 
 extension ChatViewController: UICollectionViewDelegateFlowLayout {
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        CGSize(width: UIScreen.main.bounds.width, height: 308.0)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-//        UIEdgeInsets(top: 16.0, left: 0.0, bottom: 16.0, right: 0.0)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//        4.0
-//    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        UIEdgeInsets(top: 16.0, left: 0.0, bottom: 16.0, right: 0.0)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        4.0
+    }
 }
 
 #if DEBUG

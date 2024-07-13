@@ -26,15 +26,18 @@ final class ChatViewModel {
     
     private let chatCellHeightList = PublishSubject<[CGFloat]>()
     
+    var input: Input
+    var output: Output
+    
     struct Input {
-        let viewWillAppearObserver: ControlEvent<Bool>
+        let viewWillAppearObserver: Observable<Bool>
         let tapInputButton: Observable<Void>
         let messageText: Observable<String>
         let tapFunctionButton: Observable<Void>
-        let viewWillAppear: ControlEvent<Bool>
+        let viewWillAppear: Observable<Bool>
         let tapDimmiedView: Observable<Void>
         let tapChatRoomButton: Observable<Void>
-        let chatFuncMenuButtonTapObserver: ControlEvent<Void>
+        let chatFuncMenuButtonTapObserver: Observable<Void>
     }
     
     struct Output {
@@ -44,10 +47,26 @@ final class ChatViewModel {
         let partnerNickname: PublishRelay<String>
     }
     
-    init(coordinator: ChatCoordinator, userUseCase: UserUseCase, chatUseCase: ChatUseCase) {
+    init(coordinator: ChatCoordinator?, userUseCase: UserUseCase, chatUseCase: ChatUseCase) {
         self.coordinator = coordinator
         self.userUseCase = userUseCase
         self.chatUseCase = chatUseCase
+        self.input = Input(
+            viewWillAppearObserver: Observable<Bool>.empty(),
+            tapInputButton: Observable<Void>.empty(),
+            messageText: Observable<String>.empty(),
+            tapFunctionButton: Observable<Void>.empty(),
+            viewWillAppear: Observable<Bool>.empty(),
+            tapDimmiedView: Observable<Void>.empty(),
+            tapChatRoomButton: Observable<Void>.empty(),
+            chatFuncMenuButtonTapObserver: Observable<Void>.empty()
+        )
+        self.output = Output(
+            keyboardHeight: PublishRelay<CGFloat>.init(),
+            inputMode: BehaviorRelay<ChatInputMode>.init(value: .basics),
+            isFunctionActive: BehaviorRelay<Bool>.init(value: false),
+            partnerNickname: PublishRelay<String>.init()
+        )
     }
     
     func transfer(input: Input) -> Output {
@@ -126,9 +145,13 @@ final class ChatViewModel {
                 vm.coordinator?.showChatFuncMenuFlow()
             }.disposed(by: disposeBag)
         
-        return Output(keyboardHeight: self.keyboardHeight,
-                      inputMode: self.inputMode,
-                      isFunctionActive: self.isFunctionActive,
-                      partnerNickname: self.partnerNickname)
+        self.input = input
+        self.output = Output(
+            keyboardHeight: self.keyboardHeight,
+            inputMode: self.inputMode,
+            isFunctionActive: self.isFunctionActive,
+            partnerNickname: self.partnerNickname)
+        
+        return self.output
     }
 }

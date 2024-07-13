@@ -43,7 +43,7 @@ final class ChatCell: UICollectionViewCell {
     
     private lazy var contentStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.axis = .horizontal
+        stackView.axis = .vertical
         stackView.alignment = .bottom
         stackView.distribution = .fillProportionally
         stackView.spacing = 8.0
@@ -70,7 +70,20 @@ final class ChatCell: UICollectionViewCell {
                 case .answerChatting:
                     break
                 case .textChatting:
-                    break
+                    let stateView = ChatStateView()
+                    stateView.modelObserver.accept(ChatCellState(isRead: model.isRead, isMine: model.isMine, createAt: model.createAt))
+                    
+                    let textView = TextChatView(isMine: model.isMine, message: (model as! TextChat).text)
+//                    textView.snp.makeConstraints {
+//                        $0.width.equalTo(250.0)
+//                        $0.height.equalTo(308.0)
+//                    }
+                    
+                    if model.isMine {
+                        [stateView, textView].forEach { stackView.addArrangedSubview($0) }
+                    } else {
+                        [textView, stateView].forEach { stackView.addArrangedSubview($0) }
+                    }
                 case .voiceChatting:
                     break
                 case .imageChatting:
