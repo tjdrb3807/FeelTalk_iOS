@@ -88,6 +88,22 @@ final class PressForAnswerOpenGraph: UIView {
         self.setConstraints()
     }
     
+    init(onClickButton: @escaping () -> Void = {}) {
+        super.init(frame: CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: 250.0,
+                height: 244.0)))
+        
+        self.setProperties()
+        self.addSubComponents()
+        self.setConstraints()
+        
+        answerButton.addAction {
+            onClickButton()
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

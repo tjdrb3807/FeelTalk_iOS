@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol Chat {
     var index: Int { get set }
@@ -17,7 +18,7 @@ protocol Chat {
 
 struct PressForAnswerOpenGraphChat: Chat {
     var index: Int
-    var pageIndex: Int
+//    var pageIndex: Int
     var type: ChatType
     var isRead: Bool
     var isMine: Bool
@@ -53,6 +54,7 @@ struct QuestionChat: Chat {
     var isMine: Bool
     var createAt: String
     let questionIndex: Int
+    var question: Question? = nil
 }
 
 /// 챌린지 채팅 Entity
@@ -65,6 +67,7 @@ struct ChallengeChat: Chat {
     let challengeIndex: Int
     let challengeTitle: String
     let challengeDeadline: String
+    var challenge: Challenge? = nil
 }
 
 /// 이모티콘 채팅 Entity
@@ -85,6 +88,7 @@ struct ImageChat: Chat {
     var isMine: Bool
     var createAt: String
     var imageURL: String
+    var uiImage: UIImage? = nil
 }
 
 /// 시그널 채팅 Entity

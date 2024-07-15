@@ -115,6 +115,22 @@ final class LockNumberOpenGraph: UIView {
         self.setConstraints()
     }
     
+    init(onClickButton: @escaping () -> Void) {
+        super.init(frame: CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: LockNumberOpenGraphNameSpace.width,
+                height: LockNumberOpenGraphNameSpace.height)))
+        
+        self.setProperties()
+        self.addSubComponents()
+        self.setConstraints()
+        
+        helpButton.addAction {
+            onClickButton()
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

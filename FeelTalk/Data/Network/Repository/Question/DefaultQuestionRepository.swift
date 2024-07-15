@@ -145,13 +145,23 @@ final class DefaultQuestionRepository: QuestionRepository {
                     case .success(let responseDTO):
                         if responseDTO.status == "success" {
                             guard let pressForAnswerResponseDTO = responseDTO.data! else { return }
-                            let model = PressForAnswerOpenGraphChat(index: pressForAnswerResponseDTO.chatIndex,
-                                                                    pageIndex: pressForAnswerResponseDTO.chatPageIndex,
-                                                                    type: .pressForAnswerChatting,
-                                                                    isRead: pressForAnswerResponseDTO.isRead,
-                                                                    isMine: true,
-                                                                    questionIndex: requestDTO.index,
-                                                                    createAt: pressForAnswerResponseDTO.createAt)
+//                            let model = PressForAnswerOpenGraphChat(
+//                                index: pressForAnswerResponseDTO.chatIndex,
+//                                pageIndex: pressForAnswerResponseDTO.chatPageIndex,
+//                                type: .pressForAnswerChatting,
+//                                isRead: pressForAnswerResponseDTO.isRead,
+//                                isMine: true,
+//                                questionIndex: requestDTO.index,
+//                                createAt: pressForAnswerResponseDTO.createAt
+//                            )
+                            let model = PressForAnswerOpenGraphChat(
+                                index: pressForAnswerResponseDTO.chatIndex,
+                                type: .pressForAnswerChatting,
+                                isRead: pressForAnswerResponseDTO.isRead,
+                                isMine: true,
+                                questionIndex: requestDTO.index,
+                                createAt: pressForAnswerResponseDTO.createAt
+                            )
                             observer(.success(model))
                         } else {
                             guard let message = responseDTO.message else { return }

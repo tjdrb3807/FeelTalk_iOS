@@ -34,6 +34,9 @@ final class DefaultChatCooridnator: ChatCoordinator {
             ),
             chatUseCase: DefaultChatUseCase(
                 chatRepository: DefaultChatRepository()
+            ),
+            signalUseCase: DefaultSignalUseCase(
+                signalRepositroy: DefaultSignalRepository()
             )
         )
         self.chatViewNC.modalPresentationStyle = .overFullScreen

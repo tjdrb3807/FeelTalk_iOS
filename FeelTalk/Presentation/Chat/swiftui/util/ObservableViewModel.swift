@@ -17,13 +17,13 @@ final class ObservableViewModel<ViewModelInputs, ViewModelOutputs>: ObservableOb
     let outputs: ObservableOutputs<ViewModelOutputs>
     private var cancellables = Set<AnyCancellable>()
   
-  init(inputs: ViewModelInputs, outputs: ViewModelOutputs) {
-    self.inputs = inputs
-    self.outputs = .init(outputs)
-    self.outputs.objectWillChange
-      .sink(receiveValue: objectWillChange.send)
-      .store(in: &cancellables)
-  }
+    init(inputs: ViewModelInputs, outputs: ViewModelOutputs) {
+        self.inputs = inputs
+        self.outputs = .init(outputs)
+        self.outputs.objectWillChange
+            .sink(receiveValue: objectWillChange.send)
+            .store(in: &cancellables)
+    }
 }
 
 extension ObservableViewModel {

@@ -646,6 +646,18 @@
 		649320E22C42E64F0098DC80 /* ObservableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649320E12C42E64F0098DC80 /* ObservableViewModel.swift */; };
 		649CEDBF2C1B203900215E77 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649CEDBE2C1B203900215E77 /* NetworkError.swift */; };
 		64A0B1F62BFC8A3E00663F40 /* MixpanelRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A0B1F52BFC8A3E00663F40 /* MixpanelRepository.swift */; };
+		64C6E39D2C43CC51005CF5EA /* StateChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E39C2C43CC51005CF5EA /* StateChatItem.swift */; };
+		64C6E3A32C440DFF005CF5EA /* TextChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A22C440DFF005CF5EA /* TextChatItemView.swift */; };
+		64C6E3A52C441626005CF5EA /* SignalChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A42C441626005CF5EA /* SignalChatItemView.swift */; };
+		64C6E3A72C441D10005CF5EA /* UIView#AddAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A62C441D10005CF5EA /* UIView#AddAction.swift */; };
+		64C6E3A92C441D9B005CF5EA /* PressForAnswerChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A82C441D9B005CF5EA /* PressForAnswerChatItemView.swift */; };
+		64C6E3AB2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3AA2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift */; };
+		64C6E3AD2C442929005CF5EA /* ChallengeChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3AC2C442929005CF5EA /* ChallengeChatItemView.swift */; };
+		64C6E3B12C4431DB005CF5EA /* CompleteChallengeChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B02C4431DB005CF5EA /* CompleteChallengeChatItemView.swift */; };
+		64C6E3B32C454141005CF5EA /* AnswerChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B22C454141005CF5EA /* AnswerChatItemView.swift */; };
+		64C6E3B52C45480E005CF5EA /* QuestionChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B42C45480E005CF5EA /* QuestionChatItemView.swift */; };
+		64C6E3B72C4549B0005CF5EA /* ImageChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B62C4549B0005CF5EA /* ImageChatItemView.swift */; };
+		64C6E3B92C455E9A005CF5EA /* VoiceChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */; };
 		64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */; };
 /* End PBXBuildFile section */
 
@@ -1295,6 +1307,18 @@
 		649320E12C42E64F0098DC80 /* ObservableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableViewModel.swift; sourceTree = "<group>"; };
 		649CEDBE2C1B203900215E77 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		64A0B1F52BFC8A3E00663F40 /* MixpanelRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixpanelRepository.swift; sourceTree = "<group>"; };
+		64C6E39C2C43CC51005CF5EA /* StateChatItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateChatItem.swift; sourceTree = "<group>"; };
+		64C6E3A22C440DFF005CF5EA /* TextChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3A42C441626005CF5EA /* SignalChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3A62C441D10005CF5EA /* UIView#AddAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView#AddAction.swift"; sourceTree = "<group>"; };
+		64C6E3A82C441D9B005CF5EA /* PressForAnswerChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressForAnswerChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3AA2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPartnerPasswordChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3AC2C442929005CF5EA /* ChallengeChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChallengeChatItemView.swift; path = ../../../../../../../../Downloads/ChallengeChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3B02C4431DB005CF5EA /* CompleteChallengeChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteChallengeChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3B22C454141005CF5EA /* AnswerChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3B42C45480E005CF5EA /* QuestionChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3B62C4549B0005CF5EA /* ImageChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceChatItemView.swift; sourceTree = "<group>"; };
 		64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatResponseDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -5411,6 +5435,7 @@
 		649320DB2C42D9370098DC80 /* swiftui */ = {
 			isa = PBXGroup;
 			children = (
+				64C6E39B2C43C3CD005CF5EA /* components */,
 				649320DE2C42DD710098DC80 /* util */,
 				649320DC2C42D9EA0098DC80 /* ChatListView.swift */,
 			);
@@ -5421,6 +5446,7 @@
 			isa = PBXGroup;
 			children = (
 				649320E12C42E64F0098DC80 /* ObservableViewModel.swift */,
+				64C6E3A62C441D10005CF5EA /* UIView#AddAction.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -5431,6 +5457,32 @@
 				64A0B1F52BFC8A3E00663F40 /* MixpanelRepository.swift */,
 			);
 			path = Mixpanel;
+			sourceTree = "<group>";
+		};
+		64C6E39B2C43C3CD005CF5EA /* components */ = {
+			isa = PBXGroup;
+			children = (
+				64C6E39F2C43FD27005CF5EA /* ChatItem */,
+				64C6E39C2C43CC51005CF5EA /* StateChatItem.swift */,
+			);
+			path = components;
+			sourceTree = "<group>";
+		};
+		64C6E39F2C43FD27005CF5EA /* ChatItem */ = {
+			isa = PBXGroup;
+			children = (
+				64C6E3A22C440DFF005CF5EA /* TextChatItemView.swift */,
+				64C6E3A42C441626005CF5EA /* SignalChatItemView.swift */,
+				64C6E3A82C441D9B005CF5EA /* PressForAnswerChatItemView.swift */,
+				64C6E3AA2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift */,
+				64C6E3AC2C442929005CF5EA /* ChallengeChatItemView.swift */,
+				64C6E3B02C4431DB005CF5EA /* CompleteChallengeChatItemView.swift */,
+				64C6E3B22C454141005CF5EA /* AnswerChatItemView.swift */,
+				64C6E3B42C45480E005CF5EA /* QuestionChatItemView.swift */,
+				64C6E3B62C4549B0005CF5EA /* ImageChatItemView.swift */,
+				64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */,
+			);
+			path = ChatItem;
 			sourceTree = "<group>";
 		};
 		C42E5F312ADC751658ACEE66 /* Pods */ = {
@@ -5569,6 +5621,7 @@
 				45CB06672A90AE5F0081BE88 /* ChallengeDetailDescriptionView.swift in Sources */,
 				457AB0DF2AE6568E00873CD3 /* SignalPercentageViewNameSpace.swift in Sources */,
 				45DBD7CF2B7A69B700492021 /* LockNumberSettingsRequestDTO.swift in Sources */,
+				64C6E39D2C43CC51005CF5EA /* StateChatItem.swift in Sources */,
 				458636192A71665C00047ECF /* GetLatestQuestionPageNoResponseDTO.swift in Sources */,
 				649320E22C42E64F0098DC80 /* ObservableViewModel.swift in Sources */,
 				45D0E6B82A56A4F800A602D1 /* SignUpRepository.swift in Sources */,
@@ -5619,6 +5672,7 @@
 				457016442A77EAF10006CB1D /* InviteCodeCoordinator.swift in Sources */,
 				45D7115D2A947BC80093B700 /* TextCountingView.swift in Sources */,
 				457D944E2B825360002A2AE3 /* ChallengeOpenGraph.swift in Sources */,
+				64C6E3AB2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift in Sources */,
 				4555A2132AE2E5BA0048D2AB /* HomeTodaySignalViewNameSpace.swift in Sources */,
 				4576EAAD2B21742400D7789F /* GenderNumberInputView.swift in Sources */,
 				454EE3E32B307DE40040249A /* SignUpRequestDTO.swift in Sources */,
@@ -5682,6 +5736,7 @@
 				452DB87E2AB9DB7D00A614AB /* CustomSwitchButtonNameSpace.swift in Sources */,
 				4576EAAF2B217BAB00D7789F /* GenderNumberInputViewNameSpace.swift in Sources */,
 				45FBA5DF2AAC3BA400281431 /* DefaultMyPageCoordinator.swift in Sources */,
+				64C6E3B52C45480E005CF5EA /* QuestionChatItemView.swift in Sources */,
 				452AC70F2B2722D800F35146 /* NewsAgencyType.swift in Sources */,
 				45E426DA2B457BB80082F5C1 /* SignalRepository.swift in Sources */,
 				457D94552B82551F002A2AE3 /* ChatFuncMenuCoordinator.swift in Sources */,
@@ -5708,12 +5763,14 @@
 				45DDA6AC2A6D9B8900F2C62B /* UILabel.swift in Sources */,
 				45400D102AB4439F0055141F /* DefaultConfigurationRepository.swift in Sources */,
 				4597E9F12B6FFCB700E407D3 /* LockNumberHintViewModel.swift in Sources */,
+				64C6E3B92C455E9A005CF5EA /* VoiceChatItemView.swift in Sources */,
 				45DBD7C52B767FFD00492021 /* CustomTextField02.swift in Sources */,
 				45B6AACE2B24B9D000271AE6 /* NewsAgencyViewModel.swift in Sources */,
 				456C13F32AC0363A00EEB433 /* CustomTitleViewNameSpace.swift in Sources */,
 				457D0D822ABD62DE0006A3EF /* ServiceTerminationStatementTitleView.swift in Sources */,
 				45E426E22B458BB60082F5C1 /* ChangeMySignalRequestDTO.swift in Sources */,
 				45158BAA2AD54286007A8DFD /* DefaultChatCoordinator.swift in Sources */,
+				64C6E3A32C440DFF005CF5EA /* TextChatItemView.swift in Sources */,
 				45EB435A2B6E27FC0045D206 /* DefaultLockScreenCoordinator.swift in Sources */,
 				45EBCE882ACE9C8000918FB3 /* PartnerInfoBreakUpButton.swift in Sources */,
 				458C24502A5FFFB200BDB047 /* NickNameNameSpace.swift in Sources */,
@@ -5748,6 +5805,7 @@
 				45CB06652A90A50E0081BE88 /* ChallengeDetailNavigationBar.swift in Sources */,
 				45C319552A7AC8EF007DAB84 /* PartnerGotAnswerViewNameSpace.swift in Sources */,
 				451DC2602AC2D339003648A7 /* SuggestionsViewModel.swift in Sources */,
+				64C6E3B72C4549B0005CF5EA /* ImageChatItemView.swift in Sources */,
 				45DBD7C92B7A5D3400492021 /* CustomTextFieldNameSpace03.swift in Sources */,
 				45EBCEA42ACEC93200918FB3 /* BreakUpCoordinator.swift in Sources */,
 				45B6AA3F2A6E445A004F20F0 /* GoogleRepository.swift in Sources */,
@@ -5794,6 +5852,7 @@
 				45B17C102B518021002A3239 /* ChallengeTitleInputViewNameSpace.swift in Sources */,
 				45B93B412B4A866200ACAB83 /* MainNavigationBar.swift in Sources */,
 				452AB1702AD86AAE0097E027 /* ChatRecordingDescriptionViewNameSpace.swift in Sources */,
+				64C6E3B12C4431DB005CF5EA /* CompleteChallengeChatItemView.swift in Sources */,
 				45D312602A6B0B28001E4D25 /* RegisterInviteCodeRequestDTO.swift in Sources */,
 				459C3F7E2ACA9D330093D309 /* CustomChatRoomButton.swift in Sources */,
 				45B6AA3D2A6DD482004F20F0 /* DefaultGoogleRepository.swift in Sources */,
@@ -5843,6 +5902,7 @@
 				456544672B15D4020029905C /* NewsAgencyButton.swift in Sources */,
 				457B9BE12B0FAB3100C9C725 /* SignUpFullInfoSelectionViewNameSpace.swift in Sources */,
 				457016302A7764E70006CB1D /* DefaultLoginCoordinator.swift in Sources */,
+				64C6E3A92C441D9B005CF5EA /* PressForAnswerChatItemView.swift in Sources */,
 				450565122B1EB99D00ED13BE /* AdultAuthNumberInputViewNameSpace.swift in Sources */,
 				45CFFED52B846DB100AF5151 /* ChatFuncMenuTabBarItem.swift in Sources */,
 				45400D002AB41FCD0055141F /* GetPartnerInfoResponseDTO.swift in Sources */,
@@ -5864,6 +5924,7 @@
 				45E85D3E2A583997004B558C /* LoginViewNameSpace.swift in Sources */,
 				4554F7022AEAD063006F994D /* ChallengeCollectionViewCellNameSpace.swift in Sources */,
 				459CFA5A2AE12C5F0076DD8A /* TextChatCellNameSpcae.swift in Sources */,
+				64C6E3AD2C442929005CF5EA /* ChallengeChatItemView.swift in Sources */,
 				4586360F2A714C5600047ECF /* QuestionBaseResponseDTO.swift in Sources */,
 				4554F6FC2AEAC371006F994D /* ChallengeListModel.swift in Sources */,
 				457DC6CA2B0F5A0900E47538 /* AdutlAuthStatus.swift in Sources */,
@@ -6010,6 +6071,7 @@
 				455560B72AA4746600EDFFFA /* ChallengeUseCase.swift in Sources */,
 				4503960F2AD064B9008A5954 /* WithdrawalViewNameSpace.swift in Sources */,
 				457016292A7760A10006CB1D /* Coordinator.swift in Sources */,
+				64C6E3B32C454141005CF5EA /* AnswerChatItemView.swift in Sources */,
 				45DBD7D32B7B40D700492021 /* DefaultRequestInterceptor.swift in Sources */,
 				45B9A2802B611DF100DF4305 /* CompleteChallengeResponseDTO.swift in Sources */,
 				45E3DABB2B6B681700105BAD /* DefaultLockNumberPadCoordinator.swift in Sources */,
@@ -6031,6 +6093,7 @@
 				45EBCEAB2ACED52200918FB3 /* BreakUpServiceDataCountViewNameSpace.swift in Sources */,
 				4512F7342B57BE0E009F92DD /* AddChallengeRequestDTO.swift in Sources */,
 				45E05E0A2AFB75E600D63F86 /* ChallengeTabBarItemNameSpace.swift in Sources */,
+				64C6E3A72C441D10005CF5EA /* UIView#AddAction.swift in Sources */,
 				4573B8C12A7A4575003C2E75 /* MyAnswerView.swift in Sources */,
 				45FCF2752AE55717001F3B16 /* SignalViewModel.swift in Sources */,
 				4505650F2B1EB84400ED13BE /* AdultAuthNumberDescriptionViewNameSpace.swift in Sources */,
@@ -6138,6 +6201,7 @@
 				4512B4F42B69066400AECF7F /* AccountInfoSettingsCoordinator.swift in Sources */,
 				45400D162AB445160055141F /* ConfigurationUseCase.swift in Sources */,
 				458441902AEA888000E21226 /* ChallengeTabBarItem.swift in Sources */,
+				64C6E3A52C441626005CF5EA /* SignalChatItemView.swift in Sources */,
 				45005BC62B7EA23B007A7E62 /* LockNumberFindCellNameSpace.swift in Sources */,
 				45DE4C722B275B3F00D3DA75 /* AuthConsentViewModel.swift in Sources */,
 				45E3DAE62B6B8A1700105BAD /* LockNumberPadViewNameSpace.swift in Sources */,

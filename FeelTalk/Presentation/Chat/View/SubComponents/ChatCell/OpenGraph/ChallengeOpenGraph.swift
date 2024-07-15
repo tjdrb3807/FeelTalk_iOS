@@ -48,16 +48,18 @@ final class ChallengeOpenGraph: UIView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
+        label.textAlignment = .center
         label.font = UIFont(
             name: CommonFontNameSpace.pretendardMedium,
-            size: ChallengeOpenGraphNameSpace.titleLabelFontSize)
+            size: ChallengeOpenGraphNameSpace.titleLabelFontSize
+        )
         
         modelObserver
             .map { model -> ChatType in model.type }
             .map { type -> String? in
                 switch type {
                 case .addChallengeChatting:
-                    return "새 챌린지를 등록했어요!"
+                    return "새로운 챌린지를 등록했어요!"
                 case .challengeChatting:
                     return "챌린지를 진행하고 있어요!"
                 default:
@@ -164,6 +166,23 @@ final class ChallengeOpenGraph: UIView {
         self.setConstraints()
     }
     
+    init(onClickButton: @escaping () -> Void) {
+        super.init(
+            frame: CGRect(
+                origin: .zero,
+                size: CGSize(
+                    width: 250.0,
+                    height: 308.0)))
+        
+        self.setProperties()
+        self.addSubComponents()
+        self.setConstraints()
+        
+        presentChallengeButton.addAction {
+            onClickButton()
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -187,11 +206,18 @@ final class ChallengeOpenGraph: UIView {
         makeContentStackViewConstraints()
         makeDdayLabelConstraints()
         makePresentChallengeButtonConstraints()
+        makeTitleLabelConstraints()
     }
 }
 
 extension ChallengeOpenGraph {
     private func addViewSubComponents() { addSubview(totalContentStackView) }
+    
+    private func makeTitleLabelConstraints() {
+        titleLabel.snp.makeConstraints {
+            $0.height.equalTo(24.0)
+        }
+    }
     
     private func makeTotalContentStackViewConstraints() {
         totalContentStackView.snp.makeConstraints { $0.center.equalToSuperview() }

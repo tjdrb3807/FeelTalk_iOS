@@ -52,8 +52,8 @@ final class TextChatView: UITextView {
         isScrollEnabled = false
         isEditable = false
         
-        
-        sizeToFit() // 텍스트 길이에 맞에 사이즈 맞춤
+        // 텍스트 길이에 맞에 사이즈 맞춤
+        sizeToFit()
     }
 }
 
@@ -73,7 +73,7 @@ struct TextChatView_Previews: PreviewProvider {
     
     struct TextChatView_Presentable: UIViewRepresentable {
         func makeUIView(context: Context) -> some UIView {
-            TextChatView(isMine: false, message: "grapes vanilla carnival florence\nmarshmallow cresent\nserendipity flutter like laptop\nway bijou lovable charming.")
+            TextChatView(isMine: false, message: "grapes vanilla carnival florence marshmallow cresent serendipity flutter like laptop way bijou lovable charming.")
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {}

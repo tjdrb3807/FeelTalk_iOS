@@ -14,13 +14,13 @@ import RxDataSources
 import SwiftUI
 
 struct ChatSectionModel {
-    var items: [Item]
+    var items: [any Item]
 }
 
 extension ChatSectionModel: SectionModelType {
     typealias Item = Chat
     
-    init(original: ChatSectionModel, items: [Item]) {
+    init(original: ChatSectionModel, items: [any Item]) {
         self = original
         self.items = items
     }
@@ -33,11 +33,7 @@ final class ChatViewController: UIViewController {
         value: [
             ChatSectionModel(
                 items: [
-                    ChallengeChat(index: 0, type: .addChallengeChatting, isRead: false, isMine: true, createAt: "2024-01-01T12:00:00", challengeIndex: 0, challengeTitle: "다섯글자임", challengeDeadline: "20249-01-01T12:00:00"),
-                    TextChat(index: 1, type: .textChatting, isRead: false, isMine: false, createAt: "2024-01-01T12:00:01", text: "텍스트 채팅"),
-                    TextChat(index: 2, type: .textChatting, isRead: false, isMine: true, createAt: "2024-01-01T12:00:02", text: "텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅"),
-                    TextChat(index: 3, type: .textChatting, isRead: true, isMine: false, createAt: "2024-01-01T12:00:03", text: "텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅"),
-                    TextChat(index: 4, type: .textChatting, isRead: true, isMine: true, createAt: "2024-01-01T12:00:04", text: "텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅 텍스트 채팅")
+                    ChallengeChat(index: 0, type: .addChallengeChatting, isRead: false, isMine: true, createAt: "2024-01-01T12:00:00", challengeIndex: 0, challengeTitle: "다섯글자임", challengeDeadline: "20249-01-01T12:00:00")
                 ]
             )
         ]
@@ -130,7 +126,10 @@ final class ChatViewController: UIViewController {
     
     fileprivate lazy var chatListView: UIHostingController =  {
         return UIHostingController(
-            rootView: ChatListView(viewModel: self.viewModel!)
+            rootView: ChatListView(
+                viewModel: self.viewModel!,
+                bottomOffset: chatInputView.frame.height
+            )
         )
     }()
     
@@ -179,7 +178,7 @@ final class ChatViewController: UIViewController {
             chatFuncMenuButtonTapObserver: navigationBar.menuButton.rx.tap.asObservable()
         )
         
-        let output = viewModel.transfer(input: input)
+        let output = viewModel.bind(input: input)
         
         output.keyboardHeight
             .withUnretained(self)
@@ -337,17 +336,17 @@ extension ChatViewController {
 }
 
 extension ChatViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        UIEdgeInsets(top: 16.0, left: 0.0, bottom: 16.0, right: 0.0)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        4.0
-    }
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+//        UIEdgeInsets(top: 16.0, left: 0.0, bottom: 16.0, right: 0.0)
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+//        4.0
+//    }
 }
 
 #if DEBUG
@@ -372,6 +371,9 @@ struct ChatViewController_Previews: PreviewProvider {
                 ),
                 chatUseCase: DefaultChatUseCase(
                     chatRepository: DefaultChatRepository()
+                ),
+                signalUseCase: DefaultSignalUseCase(
+                    signalRepositroy: DefaultSignalRepository()
                 )
             )
             
