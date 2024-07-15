@@ -27,16 +27,24 @@ final class DefaultChatCooridnator: ChatCoordinator {
         self.navigationController.tabBarController?.tabBar.isHidden = true
         self.navigationController.navigationBar.isHidden = true
         
+        let userRepository = DefaultUserRepository()
         self.chatViewController.viewModel = ChatViewModel(
             coordinator: self,
             userUseCase: DefaultUserUseCase(
-                userRepository: DefaultUserRepository()
+                userRepository: userRepository
             ),
             chatUseCase: DefaultChatUseCase(
                 chatRepository: DefaultChatRepository()
             ),
             signalUseCase: DefaultSignalUseCase(
                 signalRepositroy: DefaultSignalRepository()
+            ),
+            questionUseCase: DefaultQuestionUseCase(
+                questionRepository: DefaultQuestionRepository(),
+                userRepository: userRepository
+            ),
+            challengeUseCase: DefaultChallengeUseCase(
+                challengeRepository: DefaultChallengeRepository()
             )
         )
         self.chatViewNC.modalPresentationStyle = .overFullScreen

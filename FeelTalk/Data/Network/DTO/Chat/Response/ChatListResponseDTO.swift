@@ -151,13 +151,14 @@ extension ChatResponseDTO {
                                      challengeTitle: self.challenge!.title,
                                      challengeDeadline: self.challenge!.deadline)
             case .signalChatting:
-//                return SignalChat(index: self.index,
-//                                  type: type,
-//                                  isRead: self.isRead,
-//                                  isMine: self.isMine,
-//                                  createAt: self.createAt,
-//                                  signal: SignalType(rawValue: self.signal!)!)
-                break
+                return SignalChat(
+                    index: self.index,
+                    type: type,
+                    isRead: self.isRead,
+                    isMine: self.isMine,
+                    createAt: self.createAt,
+                    signal: self.signal?.toSignalType() ?? .sexy
+                )
             }
         }
         

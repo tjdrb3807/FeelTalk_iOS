@@ -71,7 +71,7 @@ struct StateChatItem: View {
                     )
                     .frame(width: 250, height: 296, alignment: .top)
                 case .pressForAnswerChatting:
-                    let chat = item as! PressForAnswerOpenGraphChat
+                    let chat = item as! QuestionChat
                     PressForAnswerChatItemView {
                         onClickAnswer(chat.questionIndex)
                     }
@@ -116,7 +116,7 @@ struct StateChatItem: View {
                     let chat = item as! VoiceChat
                     VoiceChatItemView(chat: chat)
                 default:
-                    Text("아직 미구현: \(item.type.rawValue)")
+                    EmptyView()
                 }
                 
                 if !item.isMine {

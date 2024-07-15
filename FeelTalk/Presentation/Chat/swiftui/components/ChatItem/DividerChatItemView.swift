@@ -34,7 +34,7 @@ struct DividerChatItemView: View {
     var formattedDate: String {
         get {
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'hh:mm:ss"
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
             guard let dateObj = dateFormatter.date(from: date) else {
                 return date
             }
@@ -49,7 +49,7 @@ struct DividerChatItemView: View {
 struct DividerChatItemView_Previews: PreviewProvider {
     static var previews: some View {
         DividerChatItemView(
-            date: "2024-01-01T12:00:00"
+            date: "2024-06-14T10:18:14"
         )
     }
 }

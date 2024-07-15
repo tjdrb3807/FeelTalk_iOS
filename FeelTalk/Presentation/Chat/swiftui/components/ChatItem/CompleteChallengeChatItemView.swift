@@ -55,7 +55,7 @@ struct CompleteChallengeChatItemView: View {
             let dateString = chat.challenge?.completeDate ?? chat.challengeDeadline
             
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'hh:mm:ss"
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
             guard let date = dateFormatter.date(from: dateString) else {
                 return dateString
             }

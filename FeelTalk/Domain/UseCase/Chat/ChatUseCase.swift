@@ -50,9 +50,16 @@ final class DefaultChatUseCase: ChatUseCase {
             self.chatRepository
                 .getChatList(pageNo: pageNo)
                 .asObservable()
-                .bind(onNext: {
-                    print($0)
-                }).disposed(by: self.disposeBag)
+                .subscribe(onNext: { data in
+                    observer.onNext(data)
+                }, onError: { error in
+                    observer.onError(error)
+                })
+                .disposed(by: self.disposeBag)
+//                .bind(onNext: { data in
+//                    observer.onNext(data)
+//                })
+//                .disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
@@ -64,8 +71,9 @@ final class DefaultChatUseCase: ChatUseCase {
             self.chatRepository
                 .sendTextChat(text: text)
                 .asObservable()
-                .bind(onNext: {
-                    print($0)
+                .bind(onNext: { data in
+                    print(data)
+                    observer.onNext(data)
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()
@@ -78,8 +86,9 @@ final class DefaultChatUseCase: ChatUseCase {
             self.chatRepository
                 .sendImageChat(image: image)
                 .asObservable()
-                .bind(onNext: {
-                    print($0)
+                .bind(onNext: { data in
+                    print(data)
+                    observer.onNext(data)
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()
@@ -92,8 +101,9 @@ final class DefaultChatUseCase: ChatUseCase {
             self.chatRepository
                 .sendVoiceChat(audio: audio)
                 .asObservable()
-                .bind(onNext: {
-                    print($0)
+                .bind(onNext: { data in
+                    print(data)
+                    observer.onNext(data)
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()

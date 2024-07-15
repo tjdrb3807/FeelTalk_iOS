@@ -649,7 +649,7 @@
 		64C6E39D2C43CC51005CF5EA /* StateChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E39C2C43CC51005CF5EA /* StateChatItem.swift */; };
 		64C6E3A32C440DFF005CF5EA /* TextChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A22C440DFF005CF5EA /* TextChatItemView.swift */; };
 		64C6E3A52C441626005CF5EA /* SignalChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A42C441626005CF5EA /* SignalChatItemView.swift */; };
-		64C6E3A72C441D10005CF5EA /* UIView#AddAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A62C441D10005CF5EA /* UIView#AddAction.swift */; };
+		64C6E3A72C441D10005CF5EA /* UIView+AddAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A62C441D10005CF5EA /* UIView+AddAction.swift */; };
 		64C6E3A92C441D9B005CF5EA /* PressForAnswerChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A82C441D9B005CF5EA /* PressForAnswerChatItemView.swift */; };
 		64C6E3AB2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3AA2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift */; };
 		64C6E3AD2C442929005CF5EA /* ChallengeChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3AC2C442929005CF5EA /* ChallengeChatItemView.swift */; };
@@ -659,6 +659,7 @@
 		64C6E3B72C4549B0005CF5EA /* ImageChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B62C4549B0005CF5EA /* ImageChatItemView.swift */; };
 		64C6E3B92C455E9A005CF5EA /* VoiceChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */; };
 		64C6E3BB2C456361005CF5EA /* DividerChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3BA2C456361005CF5EA /* DividerChatItemView.swift */; };
+		64C6E3BD2C45A002005CF5EA /* View+OnFirstAppearModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3BC2C45A002005CF5EA /* View+OnFirstAppearModifier.swift */; };
 		64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */; };
 /* End PBXBuildFile section */
 
@@ -1311,7 +1312,7 @@
 		64C6E39C2C43CC51005CF5EA /* StateChatItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateChatItem.swift; sourceTree = "<group>"; };
 		64C6E3A22C440DFF005CF5EA /* TextChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3A42C441626005CF5EA /* SignalChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalChatItemView.swift; sourceTree = "<group>"; };
-		64C6E3A62C441D10005CF5EA /* UIView#AddAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView#AddAction.swift"; sourceTree = "<group>"; };
+		64C6E3A62C441D10005CF5EA /* UIView+AddAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AddAction.swift"; sourceTree = "<group>"; };
 		64C6E3A82C441D9B005CF5EA /* PressForAnswerChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressForAnswerChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3AA2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPartnerPasswordChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3AC2C442929005CF5EA /* ChallengeChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChallengeChatItemView.swift; path = ../../../../../../../../Downloads/ChallengeChatItemView.swift; sourceTree = "<group>"; };
@@ -1321,6 +1322,7 @@
 		64C6E3B62C4549B0005CF5EA /* ImageChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3BA2C456361005CF5EA /* DividerChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DividerChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3BC2C45A002005CF5EA /* View+OnFirstAppearModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+OnFirstAppearModifier.swift"; sourceTree = "<group>"; };
 		64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatResponseDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -5448,7 +5450,8 @@
 			isa = PBXGroup;
 			children = (
 				649320E12C42E64F0098DC80 /* ObservableViewModel.swift */,
-				64C6E3A62C441D10005CF5EA /* UIView#AddAction.swift */,
+				64C6E3A62C441D10005CF5EA /* UIView+AddAction.swift */,
+				64C6E3BC2C45A002005CF5EA /* View+OnFirstAppearModifier.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -5994,6 +5997,7 @@
 				45C319512A7AC434007DAB84 /* PartnerNoAnswerViewNameSpace.swift in Sources */,
 				4512B5112B69431A00AECF7F /* WithdrawalReasonCell.swift in Sources */,
 				45445A632A98744900FD039D /* ChallengeToolbarBannerContent.swift in Sources */,
+				64C6E3BD2C45A002005CF5EA /* View+OnFirstAppearModifier.swift in Sources */,
 				45B6AAC32B24A3BE00271AE6 /* BottomSheetViewController.swift in Sources */,
 				4528F5322B8CE069000A2311 /* ChatChallengeCellNameSpace.swift in Sources */,
 				45E49A552B01F4A600DC223A /* CustomTextField.swift in Sources */,
@@ -6096,7 +6100,7 @@
 				45EBCEAB2ACED52200918FB3 /* BreakUpServiceDataCountViewNameSpace.swift in Sources */,
 				4512F7342B57BE0E009F92DD /* AddChallengeRequestDTO.swift in Sources */,
 				45E05E0A2AFB75E600D63F86 /* ChallengeTabBarItemNameSpace.swift in Sources */,
-				64C6E3A72C441D10005CF5EA /* UIView#AddAction.swift in Sources */,
+				64C6E3A72C441D10005CF5EA /* UIView+AddAction.swift in Sources */,
 				4573B8C12A7A4575003C2E75 /* MyAnswerView.swift in Sources */,
 				45FCF2752AE55717001F3B16 /* SignalViewModel.swift in Sources */,
 				4505650F2B1EB84400ED13BE /* AdultAuthNumberDescriptionViewNameSpace.swift in Sources */,

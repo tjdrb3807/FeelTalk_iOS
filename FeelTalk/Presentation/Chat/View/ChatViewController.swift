@@ -374,6 +374,13 @@ struct ChatViewController_Previews: PreviewProvider {
                 ),
                 signalUseCase: DefaultSignalUseCase(
                     signalRepositroy: DefaultSignalRepository()
+                ),
+                questionUseCase: DefaultQuestionUseCase(
+                    questionRepository: DefaultQuestionRepository(),
+                    userRepository: DefaultUserRepository()
+                ),
+                challengeUseCase: DefaultChallengeUseCase(
+                    challengeRepository: DefaultChallengeRepository()
                 )
             )
             

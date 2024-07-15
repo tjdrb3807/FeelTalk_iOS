@@ -44,6 +44,7 @@ struct VoiceChat: Chat {
     var isMine: Bool
     var createAt: String
     let voiceURL: String
+    var voiceFile: Data? = nil
 }
 
 /// 질문 채팅 Entity

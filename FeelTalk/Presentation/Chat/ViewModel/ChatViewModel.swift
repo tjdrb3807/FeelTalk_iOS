@@ -15,6 +15,8 @@ final class ChatViewModel {
     private let userUseCase: UserUseCase
     private let chatUseCase: ChatUseCase
     private let signalUseCase: SignalUseCase
+    private let questionUseCase: QuestionUseCase
+    private let challengeUseCase: ChallengeUseCase
     private let disposeBag = DisposeBag()
     
     private let keyboardHeight = PublishRelay<CGFloat>()
@@ -24,13 +26,17 @@ final class ChatViewModel {
     private let chatCellHeightList = PublishSubject<[CGFloat]>()
     
     
-    private let crtPageNoObserver = PublishRelay<Int>()
+    private let crtPageNoObserver = BehaviorRelay<Int>(value: -1)
     private let pageNo = PublishSubject<Int>()
+    private let isLastPage = BehaviorRelay<Bool>(value: false)
     
     private let partnerNickname = PublishRelay<String>()
     private let partnerSignal = BehaviorRelay<Signal>(value: .init(type: .sexy))
     private let chatList = BehaviorRelay<[Chat]>(value: [])
     private let scrollToBottomCount = BehaviorRelay<Int>(value: 0)
+    private let showTodayDivider = BehaviorRelay<Bool>(value: false)
+    
+    private let isLoadingChatList = BehaviorRelay<Bool>(value: true)
     
     var input: Input
     var output: Output
@@ -54,18 +60,25 @@ final class ChatViewModel {
         let partnerSignal: BehaviorRelay<Signal>
         let chatList: BehaviorRelay<[Chat]>
         let scrollToBottomCount: BehaviorRelay<Int>
+        let showTodayDivider: BehaviorRelay<Bool>
+        let isLastPage: BehaviorRelay<Bool>
+        let isLoadingChatList: BehaviorRelay<Bool>
     }
     
     init(
         coordinator: ChatCoordinator?,
         userUseCase: UserUseCase,
         chatUseCase: ChatUseCase,
-        signalUseCase: SignalUseCase
+        signalUseCase: SignalUseCase,
+        questionUseCase: QuestionUseCase,
+        challengeUseCase: ChallengeUseCase
     ) {
         self.coordinator = coordinator
         self.userUseCase = userUseCase
         self.chatUseCase = chatUseCase
         self.signalUseCase = signalUseCase
+        self.questionUseCase = questionUseCase
+        self.challengeUseCase = challengeUseCase
         self.input = Input(
             viewWillAppearObserver: Observable<Bool>.empty(),
             tapInputButton: Observable<Void>.empty(),
@@ -83,7 +96,10 @@ final class ChatViewModel {
             partnerNickname: self.partnerNickname,
             partnerSignal: self.partnerSignal,
             chatList: self.chatList,
-            scrollToBottomCount: self.scrollToBottomCount
+            scrollToBottomCount: self.scrollToBottomCount,
+            showTodayDivider: self.showTodayDivider,
+            isLastPage: self.isLastPage,
+            isLoadingChatList: self.isLoadingChatList
         )
         
         // initialize output values
@@ -91,29 +107,74 @@ final class ChatViewModel {
     }
     
     private func initOutputs() {
-        chatList.accept(sampleChatList)
-        
         userUseCase.getPartnerInfo()
-            .bind(onNext: { partnerInfo in
-                self.partnerNickname.accept(partnerInfo.nickname)
+            .withUnretained(self)
+            .bind(onNext: { vm, partnerInfo in
+                vm.partnerNickname.accept(partnerInfo.nickname)
             }).disposed(by: self.disposeBag)
         
         signalUseCase.getPartnerSignal()
-            .bind { partnerSignal in
-                self.partnerSignal.accept(partnerSignal)
+            .withUnretained(self)
+            .bind { vm, partnerSignal in
+                vm.partnerSignal.accept(partnerSignal)
             }.disposed(by: self.disposeBag)
         
         chatUseCase.getLastPageNo()
-            .bind(to: self.crtPageNoObserver)
+            .withUnretained(self)
+            .bind(onNext: { vm, pageNo in
+                vm.isLoadingChatList.accept(true)
+                vm.crtPageNoObserver.accept(pageNo)
+            })
             .disposed(by: self.disposeBag)
         
         crtPageNoObserver
             .withUnretained(self)
             .bind { vm, pageNo in
-                vm.chatUseCase.getChatList(pageNo: 0)
-                    .bind(onNext: {
-                        print($0)
-                    }).disposed(by: vm.disposeBag)
+                if !self.isLoadingChatList.value {
+                    print("에러 발생으로 인한 crtPageNoObserver 값 수정은 처리 안 함")
+                    return
+                }
+                
+                let isLastPage = pageNo == 0
+                self.isLastPage.accept(isLastPage)
+                
+                if pageNo < 0 {
+                    self.isLoadingChatList.accept(false)
+                    return
+                }
+                
+                vm.chatUseCase.getChatList(pageNo: pageNo)
+                    .withUnretained(self)
+                    .subscribe(onNext: { vm, list in
+                        
+                        print("newList: \(list)")
+                        
+                        if list.isEmpty && vm.chatList.value.isEmpty {
+                            vm.showTodayDivider.accept(true)
+                        } else {
+                            vm.showTodayDivider.accept(false)
+                        }
+                        
+                        Task {
+                            var newList = await vm.loadChatProperties(chatList: list)
+                            newList.sort { first, second in
+                                if first.createAt == second.createAt {
+                                    return first.index < second.index
+                                } else {
+                                    return first.createAt < second.createAt
+                                }
+                            }
+                            vm.chatList.accept(
+                                newList + self.chatList.value
+                            )
+                            
+                            vm.isLoadingChatList.accept(false)
+                        }
+                    }, onError: { error in
+                        vm.isLoadingChatList.accept(false)
+                        vm.crtPageNoObserver.accept(vm.crtPageNoObserver.value + 1)
+                    })
+                    .disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
     }
     
@@ -135,15 +196,6 @@ final class ChatViewModel {
 //                    .bind(to: vm.crtPageNoObserver)
 //                    .disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
-        
-//        crtPageNoObserver
-//            .withUnretained(self)
-//            .bind { vm, pageNo in
-//                vm.chatUseCase.getChatList(pageNo: 0)
-//                    .bind(onNext: {
-//                        print($0)
-//                    }).disposed(by: vm.disposeBag)
-//            }.disposed(by: disposeBag)
         
         input.tapInputButton
             .withLatestFrom(inputMode)
@@ -196,6 +248,85 @@ final class ChatViewModel {
             }.disposed(by: disposeBag)
         
         return self.output
+    }
+    
+    func loadNextPageChatList() {
+        if self.isLastPage.value {
+            return
+        } else {
+            isLoadingChatList.accept(true)
+            crtPageNoObserver.accept(crtPageNoObserver.value - 1)
+        }
+    }
+    
+    func loadChatProperties(chatList: [Chat]) async -> [Chat] {
+        return await withTaskGroup(of: Chat.self, body: { [self] group in
+            for chat in chatList {
+                group.addTask {
+                    do {
+                        switch chat.type {
+                        case .addChallengeChatting,
+                                .challengeChatting,
+                                .completeChallengeChatting:
+                            var c = chat as! ChallengeChat
+                            c.challenge = try await self.loadChallenge(challengeIndex: c.challengeIndex)
+                            return c
+                        case .answerChatting,
+                                .questionChatting:
+                            var c = chat as! QuestionChat
+                            c.question = try await self.loadQuestion(questionIndex: c.questionIndex)
+                            return c
+                        case .voiceChatting:
+                            var c = chat as! VoiceChat
+                            c.voiceFile = try await self.loadVoiceData(url: c.voiceURL)
+                            return c
+                        case .imageChatting:
+                            var c = chat as! ImageChat
+                            c.uiImage = try await self.loadImage(url: c.imageURL)
+                            return c
+                        default:
+                            return chat
+                        }
+                    } catch {
+                        return chat
+                    }
+                }
+            }
+            
+            var newList: [Chat] = []
+            for await c in group {
+                newList.append(c)
+            }
+            return newList
+        })
+    }
+    
+    func loadQuestion(questionIndex: Int) async throws -> Question? {
+        for try await question in questionUseCase
+            .getQuestion(index: questionIndex)
+            .asObservable()
+            .values {
+            return question
+        }
+        return nil
+    }
+    
+    func loadChallenge(challengeIndex: Int) async throws -> Challenge? {
+        for try await challenge in challengeUseCase
+            .getChallenge(index: challengeIndex)
+            .asObservable()
+            .values {
+            return challenge
+        }
+        return nil
+    }
+    
+    func loadImage(url: String) async throws -> UIImage? {
+        return UIImage()
+    }
+    
+    func loadVoiceData(url: String) async throws -> Data? {
+        return Data()
     }
 
     
