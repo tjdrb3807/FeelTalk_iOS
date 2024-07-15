@@ -658,6 +658,7 @@
 		64C6E3B52C45480E005CF5EA /* QuestionChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B42C45480E005CF5EA /* QuestionChatItemView.swift */; };
 		64C6E3B72C4549B0005CF5EA /* ImageChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B62C4549B0005CF5EA /* ImageChatItemView.swift */; };
 		64C6E3B92C455E9A005CF5EA /* VoiceChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */; };
+		64C6E3BB2C456361005CF5EA /* DividerChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3BA2C456361005CF5EA /* DividerChatItemView.swift */; };
 		64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */; };
 /* End PBXBuildFile section */
 
@@ -1319,6 +1320,7 @@
 		64C6E3B42C45480E005CF5EA /* QuestionChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3B62C4549B0005CF5EA /* ImageChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceChatItemView.swift; sourceTree = "<group>"; };
+		64C6E3BA2C456361005CF5EA /* DividerChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DividerChatItemView.swift; sourceTree = "<group>"; };
 		64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatResponseDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -5481,6 +5483,7 @@
 				64C6E3B42C45480E005CF5EA /* QuestionChatItemView.swift */,
 				64C6E3B62C4549B0005CF5EA /* ImageChatItemView.swift */,
 				64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */,
+				64C6E3BA2C456361005CF5EA /* DividerChatItemView.swift */,
 			);
 			path = ChatItem;
 			sourceTree = "<group>";
@@ -6215,6 +6218,7 @@
 				45DBDE6E2AE96524006B8482 /* ChallengeAddButtonNameSpace.swift in Sources */,
 				45EB43562B6E27E50045D206 /* LockScreenViewModel.swift in Sources */,
 				457D97052AB2016100E7DCFE /* MyPageProfileButtonNameSpace.swift in Sources */,
+				64C6E3BB2C456361005CF5EA /* DividerChatItemView.swift in Sources */,
 				4512B4E92B68DD2E00AECF7F /* LockScreenSettingsViewModel.swift in Sources */,
 				4555A8B52B163A3000A84E56 /* NewsAgencyButtonNameSpace.swift in Sources */,
 				451E12B12ABC8FD2006D8132 /* WithdrawalViewController.swift in Sources */,

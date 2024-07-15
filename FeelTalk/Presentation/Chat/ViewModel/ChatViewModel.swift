@@ -300,7 +300,7 @@ let sampleChatList: [any Chat] = [
         type: .voiceChatting,
         isRead: false,
         isMine: true,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         voiceURL: ""
     ),
     VoiceChat(
@@ -308,7 +308,7 @@ let sampleChatList: [any Chat] = [
         type: .voiceChatting,
         isRead: false,
         isMine: false,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         voiceURL: ""
     ),
     
@@ -318,7 +318,7 @@ let sampleChatList: [any Chat] = [
         type: .imageChatting,
         isRead: false,
         isMine: true,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         imageURL: "",
         uiImage: UIImage(named: "test1")
     ),
@@ -327,7 +327,7 @@ let sampleChatList: [any Chat] = [
         type: .imageChatting,
         isRead: false,
         isMine: false,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         imageURL: "",
         uiImage: UIImage(named: "test2")
     ),
@@ -338,7 +338,7 @@ let sampleChatList: [any Chat] = [
         type: .challengeChatting,
         isRead: false,
         isMine: true,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         challengeIndex: 0,
         challengeTitle: "challenge title",
         challengeDeadline:"2024-01-01T12:00:00",
@@ -357,7 +357,7 @@ let sampleChatList: [any Chat] = [
         type: .challengeChatting,
         isRead: false,
         isMine: false,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         challengeIndex: 0,
         challengeTitle: "challenge title",
         challengeDeadline:"2024-01-01T12:00:00",
@@ -378,7 +378,7 @@ let sampleChatList: [any Chat] = [
         type: .addChallengeChatting,
         isRead: false,
         isMine: true,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         challengeIndex: 0,
         challengeTitle: "challenge title",
         challengeDeadline:"2024-01-01T12:00:00",
@@ -397,7 +397,7 @@ let sampleChatList: [any Chat] = [
         type: .addChallengeChatting,
         isRead: false,
         isMine: false,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         challengeIndex: 0,
         challengeTitle: "challenge title",
         challengeDeadline:"2024-01-01T12:00:00",
@@ -418,7 +418,7 @@ let sampleChatList: [any Chat] = [
         type: .completeChallengeChatting,
         isRead: false,
         isMine: true,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         challengeIndex: 0,
         challengeTitle: "challenge title",
         challengeDeadline:"2024-01-01T12:00:00",
@@ -437,7 +437,7 @@ let sampleChatList: [any Chat] = [
         type: .completeChallengeChatting,
         isRead: false,
         isMine: false,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-02T12:00:00",
         challengeIndex: 0,
         challengeTitle: "challenge title",
         challengeDeadline:"2024-01-01T12:00:00",
@@ -458,7 +458,7 @@ let sampleChatList: [any Chat] = [
         type: .questionChatting,
         isRead: false,
         isMine: true,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-03T12:00:00",
         questionIndex: 10,
         question: Question(
             index: 10,
@@ -479,7 +479,7 @@ let sampleChatList: [any Chat] = [
         type: .questionChatting,
         isRead: false,
         isMine: false,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-03T12:00:00",
         questionIndex: 10,
         question: Question(
             index: 10,
@@ -502,7 +502,7 @@ let sampleChatList: [any Chat] = [
         type: .answerChatting,
         isRead: false,
         isMine: true,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-03T12:00:00",
         questionIndex: 10,
         question: Question(
             index: 10,
@@ -523,7 +523,7 @@ let sampleChatList: [any Chat] = [
         type: .answerChatting,
         isRead: false,
         isMine: false,
-        createAt: "2024-01-01T12:00:00",
+        createAt: "2024-01-03T12:00:00",
         questionIndex: 10,
         question: Question(
             index: 10,
@@ -538,5 +538,23 @@ let sampleChatList: [any Chat] = [
             isPartnerAnswer: false,
             createAt: "2024-01-01T12:00:00"
         )
+    ),
+    
+    // long text chat
+    TextChat(
+        index: 22,
+        type: .textChatting,
+        isRead: false,
+        isMine: true,
+        createAt: "2024-01-03T12:00:00",
+        text: "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+    ),
+    TextChat(
+        index: 23,
+        type: .textChatting,
+        isRead: false,
+        isMine: false,
+        createAt: "2024-01-03T12:00:00",
+        text: "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
     )
 ]

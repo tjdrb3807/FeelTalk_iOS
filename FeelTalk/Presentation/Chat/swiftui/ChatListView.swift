@@ -29,9 +29,20 @@ struct ChatListView: View {
                         viewModel.outputs.chatList.indices,
                         id: \.self
                     ) { index in
+                        let currentItem = viewModel.outputs.chatList[index]
+                        let prevItem = getPrevChat(index: index)
+                        
+                        if prevItem == nil || getNoTimeDate(currentItem.createAt) != getNoTimeDate(prevItem?.createAt) {
+                            
+                            DividerChatItemView(
+                                date: currentItem.createAt
+                            )
+                            .padding(.top, 8)
+                        }
+                        
                         StateChatItem(
-                            item: viewModel.outputs.chatList[index],
-                            prevItem: getPrevChat(index: index),
+                            item: currentItem,
+                            prevItem: prevItem,
                             nextItem: getNextChat(index: index),
                             partnerNickname: viewModel.outputs.partnerNickname,
                             partnerSignal: viewModel.outputs.partnerSignal,
@@ -55,7 +66,7 @@ struct ChatListView: View {
                         .id(index)
                     }
                     Spacer()
-                        .frame(height: bottomOffset)
+                        .frame(height: 16)
                         .id(bottomID)
                 }
             }
@@ -94,6 +105,15 @@ struct ChatListView: View {
         } else {
             return viewModel.outputs.chatList[nextIndex]
         }
+    }
+    
+    func getNoTimeDate(_ date: String?) -> String? {
+        guard let date = date else { return date }
+        let startIndex = date.startIndex
+        guard let endIndex = date.lastIndex(of: "T") else {
+            return date
+        }
+        return String(date[startIndex..<endIndex])
     }
 }
 
