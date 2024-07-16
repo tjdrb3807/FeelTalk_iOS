@@ -9,7 +9,8 @@ import SwiftUI
 import RxSwift
 
 struct ChatListView: View {
-    @Namespace var bottomID
+//    @Namespace var bottomID
+    @State var bottomId = 0
     
     @State private var originalViewModel: ChatViewModel
     @ObservedObject private var viewModel: ObservableChatListViewModel
@@ -28,9 +29,9 @@ struct ChatListView: View {
         ScrollViewReader { proxy in
             ScrollView(.vertical) {
                 LazyVStack {
-//                    if !viewModel.outputs.isLastPage {
-//                        ProgressView()
-//                    }
+                    if !viewModel.outputs.isLastPage {
+                        ProgressView()
+                    }
                     
                     if viewModel.outputs.showTodayDivider {
                         DividerChatItemView(
@@ -83,7 +84,10 @@ struct ChatListView: View {
                     
                     Spacer()
                         .frame(height: 16)
-                        .id(bottomID)
+                        .id(bottomId)
+                        .onAppear {
+                            bottomId += 1
+                        }
                 }
                 .rotationEffect(Angle(degrees: 180))
                 .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
@@ -112,7 +116,7 @@ struct ChatListView: View {
                 if let idx = viewModel.outputs.chatList.last?.index {
                     proxy.scrollTo(viewModel.outputs.chatList[idx].index)
                 } else {
-                    proxy.scrollTo(bottomID)
+                    proxy.scrollTo(bottomId)
                 }
             }
         }

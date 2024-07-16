@@ -253,6 +253,8 @@ final class ChatViewModel {
     func loadNextPageChatList() {
         if self.isLastPage.value {
             return
+        } else if self.isLoadingChatList.value {
+            return
         } else {
             isLoadingChatList.accept(true)
             crtPageNoObserver.accept(crtPageNoObserver.value - 1)
