@@ -188,11 +188,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             break
         }
 
-        if aps["content-available"] as? Int == 1 {
-            FCMHandler.shared.handle(userInfo: userInfo)
-
-            completionHandler(UIBackgroundFetchResult.newData)
-        }
+//        if aps["content-available"] as? Int == 1 {
+//            FCMHandler.shared.handle(userInfo: userInfo)
+//
+//            completionHandler(UIBackgroundFetchResult.newData)
+//        }
+        
+        FCMHandler.shared.handle(userInfo: userInfo)
+        completionHandler(UIBackgroundFetchResult.newData)
 
 //        completionHandler(UIBackgroundFetchResult.noData)
     }

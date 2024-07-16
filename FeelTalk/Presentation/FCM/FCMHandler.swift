@@ -21,6 +21,8 @@ final class FCMHandler {
     let partnerChatRoomStatusObserver = PublishRelay<Bool>()
     
     func handle(userInfo: [AnyHashable: Any]) {
+        print("received fcm: \(userInfo)")
+        
         guard let type: String = userInfo["type"] as? String else {
             debugPrint("fcm으로 온 데이터에 type이 적혀있지 않습니다.")
             return
@@ -32,8 +34,6 @@ final class FCMHandler {
 //            userRepository: DefaultUserRepository())
 //        let challengeUseCase = DefaultChallengeUseCase(
 //            challengeRepository: DefaultChallengeRepository())
-        
-        print(userInfo)
         
         switch type {
         case "createCouple":

@@ -78,7 +78,9 @@ struct StateChatItem: View {
                     .frame(width: 250, height: 244, alignment: .top)
                 case .resetPartnerPasswordChatting:
                     ResetPartnerPasswordChatItemView {
-                        onClickReset()
+                        if !item.isMine {
+                            onClickReset()
+                        }
                     }
                     .frame(width: 250, height: 280, alignment: .top)
                 case .challengeChatting, .addChallengeChatting:

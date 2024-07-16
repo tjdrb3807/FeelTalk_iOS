@@ -83,7 +83,23 @@ final class LockNumberInitRequestViewController: UIViewController {
             dismissButtonTapObserver: navigationBar.leftButton.rx.tap,
             requestButtonTapObserver: requestButton.rx.tap)
         
-        let _ = viewModel.transfer(input: input)
+        let output = viewModel.transfer(input: input)
+        
+        output.popToastMessage
+            .withUnretained(self)
+            .bind { vc, message in
+                guard !vc.view.subviews.contains(where: { $0 is CustomToastMessage }) else { return }
+                let toastMessage = CustomToastMessage(message: message)
+                
+                vc.view.addSubview(toastMessage)
+                toastMessage.setConstraints()
+                vc.view.layoutIfNeeded()
+                
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                    toastMessage.show()
+                }
+                
+            }.disposed(by: disposeBag)
     }
     
     private func setProperties() {

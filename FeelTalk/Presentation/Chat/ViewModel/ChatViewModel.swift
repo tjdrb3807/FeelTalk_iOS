@@ -367,7 +367,45 @@ final class ChatViewModel {
             }
         })
     }
-
+    
+    
+    func resetPartnerPassword(chatIndex: Int) async throws -> Bool {
+        return try await withCheckedThrowingContinuation({ continuation in
+            Task {
+                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/chatting-room/reset-password") else {
+                    continuation.resume(throwing: NSError(domain: "URL parsing error", code: 200))
+                    return
+                }
+                
+                var request = URLRequest(url: url)
+                request.method = .post
+                request.headers = HTTPHeaders(["Content-Type": "application/json", "Accept": "application/json"])
+                guard let urlRequest = try? JSONEncoding().encode(request, with: ["chattingMessageIndex": chatIndex]) else {
+                    continuation.resume(throwing: NSError(domain: "Request json encoding error", code: 200))
+                    return
+                }
+                
+                AF.request(
+                    urlRequest,
+                    interceptor: DefaultRequestInterceptor()
+                )
+                .responseDecodable(of: BaseResponseDTO<ResetPartnerPasswordDTO?>.self) { response in
+                    print("resetPartnerPassword(): \(response)")
+                    switch response.result {
+                    case .success(let data):
+                        if let isExpired = data.data??.isExpired {
+                            continuation.resume(returning: isExpired)
+                        } else {
+                            continuation.resume(throwing: NSError(domain: "isExpired is nil", code: 200))
+                        }
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        })
+    }
+    
     
     func navigateToAnswer(questionIndex: Int) {
         print("미구현: navigateToAnswer()")
@@ -377,12 +415,8 @@ final class ChatViewModel {
         print("미구현: navigateToChallenge()")
     }
     
-    func resetPartnerPassword() {
-        
-    }
-    
     func navigateToImage(chat: ImageChat) {
-        
+        print("미구현: navigateToImage()")
     }
     
     func scrollToBottom() {

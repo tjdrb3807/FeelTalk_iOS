@@ -17,6 +17,8 @@ struct ChatListView: View {
     @State var bottomOffset: CGFloat
     
     @State private var scrollPosition: CGPoint = .zero
+    @State private var showAlert = false
+    @State private var alertType: AlertType = .empty
     
     
     init(viewModel: ChatViewModel, bottomOffset: CGFloat) {
@@ -73,7 +75,23 @@ struct ChatListView: View {
                                 )
                             },
                             onClickReset: {
-                                originalViewModel.resetPartnerPassword()
+                                Task {
+                                    do {
+                                        let isExpired = try await originalViewModel.resetPartnerPassword(chatIndex: currentItem.index)
+                                        
+                                        if isExpired {
+                                            self.alertType = .alreadyDone
+                                            self.showAlert = true
+                                        } else {
+                                            self.alertType = .success
+                                            self.showAlert = true
+                                        }
+                                    } catch {
+                                        print("resetPartnerPassword error: \(error)")
+                                        self.alertType = .failure
+                                        self.showAlert = true
+                                    }
+                                }
                             },
                             onClickImage: { imageChat in
                                 originalViewModel.navigateToImage(chat: imageChat)
@@ -120,6 +138,29 @@ struct ChatListView: View {
                 }
             }
         }
+        .alert(isPresented: $showAlert) {
+            switch alertType {
+            case .success:
+                return Alert(
+                    title: Text("연인 돕기 완료!"),
+                    message: Text("연인이 암호를 재설정하러 갔어요.\n곧 필로우톡에서 만나요!"),
+                    dismissButton: .default(Text("확인"))
+                )
+            case .alreadyDone:
+                return Alert(
+                    title: Text("이미 연인을 도왔어요"),
+                    message: Text("이전에 연인을 도와 준 경험이 있어요.\n한 번 요청할 때 한 번 도울 수 있어요."),
+                    dismissButton: .default(Text("확인"))
+                )
+            case .failure, .empty:
+                return Alert(
+                    title: Text("에러"),
+                    message: Text("연인의 암호를 해제하는데 실패했어요."),
+                    dismissButton: .default(Text("확인"))
+                )
+            }
+            
+        }
     }
     
     var todayDate: String {
@@ -156,6 +197,11 @@ struct ChatListView: View {
         }
         return String(date[startIndex..<endIndex])
     }
+}
+
+
+enum AlertType {
+    case success, alreadyDone, failure, empty
 }
 
 
