@@ -661,6 +661,7 @@
 		64C6E3BB2C456361005CF5EA /* DividerChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3BA2C456361005CF5EA /* DividerChatItemView.swift */; };
 		64C6E3BD2C45A002005CF5EA /* View+OnFirstAppearModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3BC2C45A002005CF5EA /* View+OnFirstAppearModifier.swift */; };
 		64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */; };
+		64F3B33D2C46CB0D0065C9BD /* VoicePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F3B33C2C46CB0D0065C9BD /* VoicePlayer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1324,6 +1325,7 @@
 		64C6E3BA2C456361005CF5EA /* DividerChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DividerChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3BC2C45A002005CF5EA /* View+OnFirstAppearModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+OnFirstAppearModifier.swift"; sourceTree = "<group>"; };
 		64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatResponseDTO.swift; sourceTree = "<group>"; };
+		64F3B33C2C46CB0D0065C9BD /* VoicePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoicePlayer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5452,6 +5454,7 @@
 				649320E12C42E64F0098DC80 /* ObservableViewModel.swift */,
 				64C6E3A62C441D10005CF5EA /* UIView+AddAction.swift */,
 				64C6E3BC2C45A002005CF5EA /* View+OnFirstAppearModifier.swift */,
+				64F3B33C2C46CB0D0065C9BD /* VoicePlayer.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -5803,6 +5806,7 @@
 				4573B8C32A7A47DA003C2E75 /* PartnerAnswerView.swift in Sources */,
 				45E3DAD82B6B75D900105BAD /* PasswordConfirmViewCell.swift in Sources */,
 				64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */,
+				64F3B33D2C46CB0D0065C9BD /* VoicePlayer.swift in Sources */,
 				45EBCE912ACEA38000918FB3 /* DefaultPartnerInfoCoordinator.swift in Sources */,
 				455560BB2AA4828400EDFFFA /* ChallengeCount.swift in Sources */,
 				45FAEBA92AC16692007DF1C5 /* CustomTextViewNameSpace.swift in Sources */,

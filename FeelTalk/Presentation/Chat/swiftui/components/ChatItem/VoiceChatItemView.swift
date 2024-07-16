@@ -6,16 +6,22 @@
 //
 
 import SwiftUI
+import AVFAudio
 
 struct VoiceChatItemView: View {
     @State var chat: VoiceChat
     @State var isPlaying = false
     @State var playTime = 0
+    @State var voicePlayer = VoicePlayer()
     
     var body: some View {
         HStack(alignment: .center, spacing: 5) {
             Button {
-                isPlaying.toggle()
+                if isPlaying {
+                    voicePlayer.pauseVoice()
+                } else {
+                    voicePlayer.playVoice()
+                }
             } label: {
                 HStack(alignment: .center, spacing: 0) {
                     if isPlaying {
@@ -36,12 +42,23 @@ struct VoiceChatItemView: View {
                   .weight(.semibold)
               )
               .foregroundColor(.black)
+              .frame(minWidth: 50, alignment: .center)
         }
         .padding(.leading, 4)
         .padding(.trailing, 16)
         .padding(.vertical, 12)
         .background(Color("gray_100"))
         .cornerRadius(16)
+        .onAppear {
+            voicePlayer.bind(
+                voiceData: chat.voiceFile,
+                isPlaying: $isPlaying,
+                playTime: $playTime
+            )
+        }
+        .onDisappear {
+            voicePlayer.stopVoice()
+        }
     }
     
     var playTimeText: String {
@@ -66,6 +83,7 @@ struct VoiceChatItemView: View {
             return "\(minutesString):\(secondsString)"
         }
     }
+    
 }
 
 struct VoiceChatItemView_Previews: PreviewProvider {

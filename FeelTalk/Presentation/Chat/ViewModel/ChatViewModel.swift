@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import RxKeyboard
+import Alamofire
 
 final class ChatViewModel {
     weak var coordinator: ChatCoordinator?
@@ -323,12 +324,48 @@ final class ChatViewModel {
         return nil
     }
     
-    func loadImage(url: String) async throws -> UIImage? {
-        return UIImage()
+    func loadImage(url: String) async throws -> UIImage {
+        return try await withCheckedThrowingContinuation({ continuation in
+            Task {
+                guard let url = URL(string: url) else {
+                    continuation.resume(returning: UIImage())
+                    return
+                }
+                let request = AF.request(url, method: .get)
+                request.responseData { response in
+                    switch response.result {
+                    case .success(let data):
+                        guard let image = UIImage(data: data) else {
+                            continuation.resume(returning: UIImage())
+                            return
+                        }
+                        continuation.resume(returning: image)
+                    case .failure(_):
+                        continuation.resume(returning: UIImage())
+                    }
+                }
+            }
+        })
     }
     
     func loadVoiceData(url: String) async throws -> Data? {
-        return Data()
+        return try await withCheckedThrowingContinuation({ continuation in
+            Task {
+                guard let url = URL(string: url) else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                let request = AF.request(url, method: .get)
+                request.responseData { response in
+                    switch response.result {
+                    case .success(let data):
+                        continuation.resume(returning: data)
+                    case .failure(_):
+                        continuation.resume(returning: nil)
+                    }
+                }
+            }
+        })
     }
 
     
