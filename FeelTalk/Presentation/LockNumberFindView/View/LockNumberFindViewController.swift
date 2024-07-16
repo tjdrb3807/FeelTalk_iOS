@@ -10,6 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import RxGesture
+import MessageUI
 
 enum LockNumberFindViewHiddenReasonType {
     case dismissButton
@@ -105,6 +106,24 @@ final class LockNumberFindViewController: UIViewController {
             hiddenReasonObserver: hiddenReasonObserver)
         
         let _ = viewModel.transfer(input: input)
+        
+        sendEmailButton.addAction { [weak self] in
+            self?.openEmail()
+        }
+    }
+    
+    func openEmail() {
+        let subject = "[필로우톡] 비밀번호를 재설정하고 싶어요!"
+        let body = ""
+        let coded = "mailto:pillowtalk.feedback@gmail.com?subject=\(subject)&body=\(body)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+
+        if let emailURL = NSURL(string: coded!) as? URL {
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(emailURL)
+            } else {
+                UIApplication.shared.openURL(emailURL)
+            }
+        }
     }
     
     private func setProperties() {
