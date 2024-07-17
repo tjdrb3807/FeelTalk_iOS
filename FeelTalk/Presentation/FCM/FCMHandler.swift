@@ -149,7 +149,7 @@ extension FCMHandler {
         }
         
         showNotification(identifier: identifier,
-                         title: "연인이",
+                         title: "연인",
                          body: "(질문 채팅)")
     }
     
@@ -182,7 +182,7 @@ extension FCMHandler {
         }
         
         showNotification(identifier: identifier,
-                         title: "연인이",
+                         title: "연인",
                          body: "(답변 채팅)")
     }
     
@@ -273,7 +273,7 @@ extension FCMHandler {
         
         showNotification(identifier: identifier,
                          title: "연인",
-                         body: "(챌린지 추가 채팅)")
+                         body: "(챌린지 채팅)")
     }
     
     func handleCompleteChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
