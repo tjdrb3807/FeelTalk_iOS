@@ -175,7 +175,8 @@ final class ChatViewController: UIViewController {
             viewWillAppear: self.rx.viewWillAppear.asObservable(),
             tapDimmiedView: dimmedView.rx.tapGesture().when(.recognized).map { _ in () }.asObservable(),
             tapChatRoomButton: chatRoomButton.rx.tap.asObservable(),
-            chatFuncMenuButtonTapObserver: navigationBar.menuButton.rx.tap.asObservable()
+            chatFuncMenuButtonTapObserver: navigationBar.menuButton.rx.tap.asObservable(),
+            viewWillDisappear: rx.viewWillDisappear.asObservable()
         )
         
         let output = viewModel.bind(input: input)

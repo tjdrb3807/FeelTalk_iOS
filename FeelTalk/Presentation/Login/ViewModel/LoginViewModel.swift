@@ -8,6 +8,8 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import FirebaseMessaging
+import Alamofire
 
 class LoginViewModel {
     private weak var coordinator: LoginCoordinator?
@@ -66,14 +68,33 @@ class LoginViewModel {
             .withUnretained(self)
             .bind { vm, data in
                 vm.loginUseCase.login(data)
-                    .bind(onNext: { state in
+                    .withUnretained(vm)
+                    .bind(onNext: { vm, state in
                         switch state {
                         case .couple:
-                            vm.coordinator?.finish()
+                            Task {
+                                do {
+                                    try await vm.updateFcmToken()
+                                    DispatchQueue.main.async {
+                                        vm.coordinator?.finish()
+                                    }
+                                } catch {
+                                    return
+                                }
+                            }
                         case .newbie:
                             vm.coordinator?.showSignUpFlow()
                         case .solo:
-                            vm.coordinator?.showInviteCodeFlow()
+                            Task {
+                                do {
+                                    try await vm.updateFcmToken()
+                                    DispatchQueue.main.async {
+                                        vm.coordinator?.showInviteCodeFlow()
+                                    }
+                                } catch {
+                                    return
+                                }
+                            }
                         }
                     }).disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
@@ -86,5 +107,44 @@ class LoginViewModel {
             }.disposed(by: disposeBag)
         
         return Output()
+    }
+    
+    func updateFcmToken() async throws {
+        return try await withCheckedThrowingContinuation({ continuation in
+            Task {
+                let fcmToken = KeychainRepository.getItem(key: "fcmToken") as? String ?? Messaging.messaging().fcmToken
+                
+                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/member/fcm-token") else {
+                    continuation.resume(throwing: NSError(domain: "URL parsing error", code: 400))
+                    return
+                }
+                
+                var request = URLRequest(url: url)
+                request.method = .put
+                request.headers = HTTPHeaders(["Content-Type": "application/json", "Accept": "application/json"])
+                guard let urlRequest = try? JSONEncoding().encode(request, with: ["fcmToken": fcmToken]) else {
+                    continuation.resume(throwing: NSError(domain: "Request json encoding error", code: 400))
+                    return
+                }
+                
+                AF.request(
+                    urlRequest,
+                    interceptor: DefaultRequestInterceptor()
+                )
+                .responseDecodable(of: BaseResponseDTO<LoginResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let data):
+                        if data.status == "success" {
+                            continuation.resume()
+                        } else {
+                            let message = data.message ?? "error occurred but no error message"
+                            continuation.resume(throwing: NSError(domain: message, code: 400))
+                        }
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        })
     }
 }

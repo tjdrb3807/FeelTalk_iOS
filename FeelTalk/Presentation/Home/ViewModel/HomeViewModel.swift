@@ -48,13 +48,6 @@ final class HomeViewModel {
     }
     
     func transfer(input: Input) -> Output {
-        
-        fcmHandeler.partnerSignalObservable
-            .withUnretained(self)
-            .bind { vm, signal in
-                vm.partnerSignal.accept(signal)
-            }.disposed(by: disposeBag)
-        
         reloadObservable
             .withUnretained(self)
             .bind { vm, type in

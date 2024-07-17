@@ -16,11 +16,22 @@ final class FCMHandler {
     static let shared = FCMHandler()
     let userNotificationCenter = UNUserNotificationCenter.current()
     
-    let createCoupleObservable = PublishRelay<Bool>()
-    let partnerSignalObservable = PublishRelay<Signal>()
-    let partnerChatRoomStatusObserver = PublishRelay<Bool>()
+    let partnerChatRoomStatusObservable = PublishRelay<Bool>()
     
-    func handle(userInfo: [AnyHashable: Any]) {
+    let createCoupleObservable = PublishRelay<Bool>()
+    let chatObservable = PublishRelay<Chat>()
+    let meIsInChatObsesrvable = BehaviorRelay<Bool>(value: false)
+    
+    
+    private let questionUseCase = DefaultQuestionUseCase(
+        questionRepository: DefaultQuestionRepository(),
+        userRepository: DefaultUserRepository()
+    )
+    private let challengeUseCase = DefaultChallengeUseCase(
+        challengeRepository: DefaultChallengeRepository()
+    )
+    
+    func handle(userInfo: [AnyHashable: Any], isBackground: Bool) {
         print("received fcm: \(userInfo)")
         
         guard let type: String = userInfo["type"] as? String else {
@@ -28,38 +39,39 @@ final class FCMHandler {
             return
         }
         
-        // MARK: 나중에 handler들에서 질문과 챌린지를 불러올 때 사용할 것
-//        let questionUseCase = DefaultQuestionUseCase(
-//            questionRepository: DefaultQuestionRepository(),
-//            userRepository: DefaultUserRepository())
-//        let challengeUseCase = DefaultChallengeUseCase(
-//            challengeRepository: DefaultChallengeRepository())
-        
         switch type {
         case "createCouple":
-            handleCreateCouple(userInfo)
-        case "todayQuestion":
-            handleTodayQuestion(userInfo)
-        case "questionChatting":
-            handleQuestionChatting(userInfo)
-        case "answerChatting":
-            handleAnswerChatting(userInfo)
-        case "addChallengeChatting":
-            handleAddChallenge(userInfo)
-        case "completeChallengeChatting":
-            handleCompleteChallenge(userInfo)
-        case "deleteChallenge":
-            handleDeleteChallenge(userInfo)
-        case "modifyChallenge":
-            handleDeleteChallenge(userInfo)
-            
-        case "signalChatting":
-            handleSignalChatting(userInfo)
+            handleCreateCouple(userInfo, isBackground)
         case "chatRoomStatusChange":
-            print(userInfo)
+            handlePartnerChatRoomStatus(userInfo, isBackground)
+        case "textChatting":
+            handleTextChatting(userInfo, isBackground)
+        case "voiceChatting":
+            handleVoiceChatting(userInfo, isBackground)
+        case "imageChatting":
+            handleImageChatting(userInfo, isBackground)
+        case "signalChatting":
+            handleSignalChatting(userInfo, isBackground)
+        case "questionChatting":
+            handleQuestionChatting(userInfo, isBackground)
+        case "answerChatting":
+            handleAnswerChatting(userInfo, isBackground)
+        case "addChallengeChatting":
+            handleAddChallenge(userInfo, isBackground)
+        case "completeChallengeChatting":
+            handleCompleteChallenge(userInfo, isBackground)
+        case "resetPartnerPasswordChatting":
+            handleResetPartnerPasswordChatting(userInfo, isBackground)
+        case "todayQuestion":
+            handleTodayQuestion(userInfo, isBackground)
         case "pressForAnswerChatting":
-            handlePressForAnswerChatting(userInfo)
-            
+            handlePressForAnswerChatting(userInfo, isBackground)
+        case "answerQuestion":
+            handleAnswerQuestionChatting(userInfo, isBackground)
+        case "deleteChallenge":
+            handleDeleteChallenge(userInfo, isBackground)
+        case "modifyChallenge":
+            handleModifyChallenge(userInfo, isBackground)
         default:
             print("fcm 타입에 매칭되는 타입이 존재하지 않습니다.")
         }
@@ -68,18 +80,22 @@ final class FCMHandler {
 
 // MARK: Chat
 extension FCMHandler {
-    func handlePartnerChatRoomStatus(_ data: [AnyHashable: Any]) {
+    func handlePartnerChatRoomStatus(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let status = data["isInChat"] as? Bool else { return }
-        
-        partnerChatRoomStatusObserver.accept(status)
+        partnerChatRoomStatusObservable.accept(status)
     }
 }
 
 // MARK: Couple
 extension FCMHandler {
-    func handleCreateCouple(_ data: [AnyHashable: Any]) {
-        let title = data["title"] as? String ?? "연인 등록을 완료했어요"
+    func handleCreateCouple(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         createCoupleObservable.accept(true)
+        
+        if !isBackground {
+            return
+        }
+        
+        let title = data["title"] as? String ?? "연인 등록을 완료했어요"
         showNotification(identifier: title,
                          title: title,
                          body: data["message"] as? String ?? "앱에 들어와서 확인해보세요")
@@ -88,130 +104,272 @@ extension FCMHandler {
 
 // MARK: Question
 extension FCMHandler {
-    func handleTodayQuestion(_ data: [AnyHashable: Any]) {
+    func handleTodayQuestion(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let title = data["title"] as? String else { return }
         guard let message = data["message"] as? String else { return }
-        guard let index  = data["index"] as? String else { return }
+//        guard let index  = data["index"] as? String else { return }
         
-        showNotification(identifier: index,
+        showNotification(identifier: UUID().uuidString,
                          title: title,
                          body: message)
     }
     
-    func handleQuestionChatting(_ data: [AnyHashable: Any]) {
-        guard let index  = data["index"] as? String else { return }
-        guard let pageIndex  = data["pageIndex"] as? Int else { return }
-        guard let isRead  = data["isRead"] as? Bool else { return }
-        guard let createAt  = data["createAt"] as? String else { return }
-        guard let coupleQuestionJson  = data["coupleQuestion"] as? String else { return }
-//        guard let questionIndex  = data[""] as? Int else { return }
+    func handleQuestionChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let coupleQuestionJsonStr  = data["coupleQuestion"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let isRead = Bool(isReadStr),
+              let index = Int(indexStr) else { return }
         
-        showNotification(identifier: index,
-                         title: "연인 모두 질문에 답변했어요",
-                         body: "앱에 들어와서 확인해보세요")
-    }
-    
-    func handleAnswerChatting(_ data: [AnyHashable: Any]) {
-        guard let index  = data["index"] as? String else { return }
-        guard let pageIndex  = data["pageIndex"] as? Int else { return }
-        guard let isRead  = data["isRead"] as? Bool else { return }
-        guard let createAt  = data["createAt"] as? String else { return }
-        guard let coupleQuestionJson  = data["coupleQuestion"] as? String else { return }
-//        guard let questionIndex  = data[""] as? Int else { return }
+        guard let coupleQuestionData = coupleQuestionJsonStr.data(using: .utf8, allowLossyConversion: false) else {
+            return
+        }
+        guard let coupleQuestion = try? JSONSerialization.jsonObject(with: coupleQuestionData, options: .mutableContainers) as? [String: Any] else {
+            return
+        }
+        guard let questionIndex = coupleQuestion["index"] as? Int else {
+            return
+        }
         
-        showNotification(identifier: index,
-                         title: "연인이 질문에 답변을 했어요",
-                         body: "앱에 들어와서 확인해보세요")
-    }
-    
-    func handlePressForAnswerChatting(_ data: [AnyHashable: Any]) {
-        guard let chatIndexStr = data["index"] as? String,
-              let chatPageIndexStr = data["pageIndex"] as? String,
-              let chatIsReadStr = data["isRead"] as? String,
-              let questionIndexStr = data["coupleQuestion"] as? String,
-        let identifier = data["gcm.message_id"] as? String else { return }
+        chatObservable.accept(
+            QuestionChat(
+                index: index,
+                type: .questionChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                questionIndex: questionIndex
+            )
+        )
         
-        print(chatIndexStr)
-        print(chatPageIndexStr)
-        print(chatIsReadStr)
-        print(questionIndexStr)
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
         
         showNotification(identifier: identifier,
-                         title: "쿡쿡👉👉답장해줘!😑",
-                         body: "오늘의 질문에 답변을 남겨주세요!")
+                         title: "연인이",
+                         body: "(질문 채팅)")
+    }
+    
+    func handleAnswerChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let coupleQuestionJsonStr  = data["coupleQuestion"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let isRead = Bool(isReadStr),
+              let index = Int(indexStr) else { return }
         
+        guard let coupleQuestionData = coupleQuestionJsonStr.data(using: .utf8, allowLossyConversion: false) else { return }
+        guard let coupleQuestion = try? JSONSerialization.jsonObject(with: coupleQuestionData, options: .mutableContainers) as? [String: Any] else { return }
+        guard let questionIndex = coupleQuestion["index"] as? Int else { return }
+        
+        chatObservable.accept(
+            QuestionChat(
+                index: index,
+                type: .answerChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                questionIndex: questionIndex
+            )
+        )
+        
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
+        
+        showNotification(identifier: identifier,
+                         title: "연인이",
+                         body: "(답변 채팅)")
+    }
+    
+    func handlePressForAnswerChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let chatIndexStr = data["index"] as? String,
+              let chatIsReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let questionIndexStr = data["coupleQuestion"] as? String,
+              let questionIndex = Int(questionIndexStr),
+              let identifier = data["gcm.message_id"] as? String,
+              let index = Int(chatIndexStr),
+              let isRead = Bool(chatIsReadStr) else { return }
+        
+        chatObservable.accept(
+            QuestionChat(
+                index: index,
+                type: .pressForAnswerChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                questionIndex: questionIndex
+            )
+        )
+        
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
+        
+        showNotification(identifier: identifier,
+                         title: "연인",
+                         body: "(콕찌르기 채팅)")
+        
+    }
+    
+    func handleAnswerQuestionChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let title = data["title"] as? String,
+              let message = data["message"] as? String,
+              let indexStr = data["index"] as? String else { return }
+        
+        showNotification(
+            identifier: UUID().uuidString,
+            title: title,
+            body: message
+        )
     }
 }
 
 // MARK: Challenge
 extension FCMHandler {
-    func handleAddChallenge(_ data: [AnyHashable: Any]) {
-        guard let index  = data["index"] as? String else { return }
-        guard let pageIndex  = data["pageIndex"] as? Int else { return }
-        guard let isRead  = data["isRead"] as? Bool else { return }
-        guard let createAt  = data["createAt"] as? String else { return }
-        guard let coupleChallengeJson  = data["coupleChallenge"] as? String
-        else { return }
-//        guard let challengeIndex  = data[""] as? Int else { return }
+    func handleAddChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let coupleChallengeJsonStr  = data["coupleChallenge"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let isRead = Bool(isReadStr),
+              let index = Int(indexStr) else { return }
         
-        showNotification(identifier: index,
-                         title: "연인이 챌린지를 추가했어요",
-                         body: "앱에 들어와서 확인해보세요")
-    }
-    
-    func handleCompleteChallenge(_ data: [AnyHashable: Any]) {
-        guard let index  = data["index"] as? String else { return }
-        guard let pageIndex  = data["pageIndex"] as? Int else { return }
-        guard let isRead  = data["isRead"] as? Bool else { return }
-        guard let createAt  = data["createAt"] as? String else { return }
-        guard let coupleChallengeJson  = data["coupleChallenge"] as? String
-        else { return }
-//        guard let challengeIndex  = data[""] as? Int else { return }
+        guard let coupleChallengeData = coupleChallengeJsonStr.data(
+                  using: .utf8,
+                  allowLossyConversion: false
+              ),
+              let coupleChallenge = try? JSONSerialization.jsonObject(
+                with: coupleChallengeData,
+                options: .mutableContainers
+              ) as? [String: Any],
+              let challengeIndex = coupleChallenge["index"] as? Int,
+              let challengeTitleStr = coupleChallenge["challengeTitle"] as? String,
+              let challengeDeadline = coupleChallenge["deadline"] as? String
+              else { return }
         
-        showNotification(identifier: index,
-                         title: "연인이 챌린지를 완료했어요",
-                         body: "앱에 들어와서 확인해보세요")
+        chatObservable.accept(
+            ChallengeChat(
+                index: index,
+                type: .addChallengeChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                challengeIndex: challengeIndex,
+                challengeTitle: challengeTitleStr,
+                challengeDeadline: challengeDeadline
+            )
+        )
+        
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
+        
+        showNotification(identifier: identifier,
+                         title: "연인",
+                         body: "(챌린지 추가 채팅)")
     }
     
-    func handleDeleteChallenge(_ data: [AnyHashable: Any]) {
+    func handleCompleteChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let coupleChallengeJsonStr  = data["coupleChallenge"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let isRead = Bool(isReadStr),
+              let index = Int(indexStr) else { return }
+        
+        guard let coupleChallengeData = coupleChallengeJsonStr.data(
+                  using: .utf8,
+                  allowLossyConversion: false
+              ),
+              let coupleChallenge = try? JSONSerialization.jsonObject(
+                with: coupleChallengeData,
+                options: .mutableContainers
+              ) as? [String: Any],
+              let challengeIndex = coupleChallenge["index"] as? Int,
+              let challengeTitleStr = coupleChallenge["challengeTitle"] as? String,
+              let challengeDeadline = coupleChallenge["deadline"] as? String
+              else { return }
+        
+        chatObservable.accept(
+            ChallengeChat(
+                index: index,
+                type: .completeChallengeChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                challengeIndex: challengeIndex,
+                challengeTitle: challengeTitleStr,
+                challengeDeadline: challengeDeadline
+            )
+        )
+        
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
+        
+        showNotification(identifier: identifier,
+                         title: "연인",
+                         body: "(챌린지 완료 채팅)")
+    }
+    
+    func handleDeleteChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let index  = data["index"] as? String else { return }
     }
     
-    func handleModifyChallenge(_ data: [AnyHashable: Any]) {
+    func handleModifyChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let index  = data["index"] as? String else { return }
         let title  = data["title"] as? String ?? "연인이 챌린지를 수정했어요"
         let message  = data["message"] as? String ?? "앱에 들어와서 확인해보세요"
         
-        showNotification(identifier: index,
-                         title: title,
-                         body: message)
+        showNotification(
+            identifier: UUID().uuidString,
+            title: title,
+            body: message
+        )
     }
     
 }
 
 // MARK: Signal
 extension FCMHandler {
-    func handleSignalChatting(_ data: [AnyHashable: Any]) {
+    func handleSignalChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let signalTypeStr = data["signal"] as? String,
-              let pageIndexStr = data["pageIndex"] as? String,
               let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,
               let identifier = data["gcm.message_id"] as? String,
               let signalType = mappingSignalType(signalTypeStr),
-              let pageIndex = Int(pageIndexStr),
+              let isRead = Bool(isReadStr),
               let index = Int(indexStr) else { return }
         
-        print(isReadStr)
-        print(createAtStr)
-        print(pageIndex)
-        print(index)
+        chatObservable.accept(
+            SignalChat(
+                index: index,
+                type: .signalChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                signal: signalType
+            )
+        )
         
-        partnerSignalObservable.accept(Signal(type: signalType))
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
         
-        showNotification(identifier: identifier,
-                         title: "오늘 내 시그널은 말야!💋",
-                         body: "OOO님이 은밀한 시그널을 보냈어요!")
+        showNotification(
+            identifier: identifier,
+            title: "연인",
+            body: "(시그널 채팅)"
+        )
     }
     
     func mappingSignalType(_ str: String) -> SignalType? {
@@ -234,6 +392,131 @@ extension FCMHandler {
     }
 }
 
+// chatting
+extension FCMHandler {
+    func handleTextChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let messageStr = data["message"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let isRead = Bool(isReadStr),
+              let index = Int(indexStr) else { return }
+        
+        chatObservable.accept(
+            TextChat(
+                index: index,
+                type: .textChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                text: messageStr
+            )
+        )
+        
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
+        
+        showNotification(
+            identifier: identifier,
+            title: "연인",
+            body: messageStr
+        )
+    }
+    
+    func handleVoiceChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let urlStr = data["url"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let isRead = Bool(isReadStr),
+              let index = Int(indexStr) else { return }
+        
+        chatObservable.accept(
+            VoiceChat(
+                index: index,
+                type: .voiceChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                voiceURL: urlStr
+            )
+        )
+        
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
+        
+        showNotification(
+            identifier: identifier,
+            title: "연인",
+            body: "(보이스 채팅)"
+        )
+    }
+    
+    func handleImageChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let urlStr = data["url"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let isRead = Bool(isReadStr),
+              let index = Int(indexStr) else { return }
+        
+        chatObservable.accept(
+            ImageChat(
+                index: index,
+                type: .imageChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                imageURL: urlStr
+            )
+        )
+        
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
+        
+        showNotification(
+            identifier: identifier,
+            title: "연인",
+            body: "(이미지 채팅)"
+        )
+    }
+    
+    func handleResetPartnerPasswordChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let isRead = Bool(isReadStr),
+              let index = Int(indexStr) else { return }
+        
+        chatObservable.accept(
+            ResetPartenrPasswordChat(
+                index: index,
+                type: .resetPartnerPasswordChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr
+            )
+        )
+        
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
+        
+        showNotification(
+            identifier: identifier,
+            title: "연인",
+            body: "(잠금 해제 요청 채팅)"
+        )
+    }
+}
+
 extension FCMHandler {
     func showNotification(identifier: String, title: String, body: String, userInfo: [AnyHashable: Any] = [:]) {
         let content = UNMutableNotificationContent()
@@ -246,9 +529,8 @@ extension FCMHandler {
                                             content: content,
                                             trigger: trigger)
         
-        UNUserNotificationCenter.current()
-            .add(request) { error in
-                if error != nil { print("알림 띄우기 에러: \(error!.localizedDescription)") }
-            }
+        userNotificationCenter.add(request) { error in
+            if error != nil { print("알림 띄우기 에러: \(error!.localizedDescription)") }
+        }
     }
 }

@@ -51,6 +51,7 @@ final class ChatViewModel {
         let tapDimmiedView: Observable<Void>
         let tapChatRoomButton: Observable<Void>
         let chatFuncMenuButtonTapObserver: Observable<Void>
+        let viewWillDisappear: Observable<Bool>
     }
     
     struct Output {
@@ -88,7 +89,8 @@ final class ChatViewModel {
             viewWillAppear: Observable<Bool>.empty(),
             tapDimmiedView: Observable<Void>.empty(),
             tapChatRoomButton: Observable<Void>.empty(),
-            chatFuncMenuButtonTapObserver: Observable<Void>.empty()
+            chatFuncMenuButtonTapObserver: Observable<Void>.empty(),
+            viewWillDisappear: Observable<Bool>.empty()
         )
         self.output = Output(
             keyboardHeight: self.keyboardHeight,
@@ -105,6 +107,17 @@ final class ChatViewModel {
         
         // initialize output values
         initOutputs()
+    }
+    
+    private let lock = NSLock()
+    func synchronize(action: () -> Void) {
+        if lock.lock(before: Date().addingTimeInterval(10)) {
+            action()
+            lock.unlock()
+        } else {
+            print("Took to long to lock, avoiding deadlock by ignoring the lock")
+            action()
+        }
     }
     
     private func initOutputs() {
@@ -147,9 +160,6 @@ final class ChatViewModel {
                 vm.chatUseCase.getChatList(pageNo: pageNo)
                     .withUnretained(self)
                     .subscribe(onNext: { vm, list in
-                        
-                        print("newList: \(list)")
-                        
                         if list.isEmpty && vm.chatList.value.isEmpty {
                             vm.showTodayDivider.accept(true)
                         } else {
@@ -165,9 +175,11 @@ final class ChatViewModel {
                                     return first.createAt < second.createAt
                                 }
                             }
-                            vm.chatList.accept(
-                                newList + self.chatList.value
-                            )
+                            vm.synchronize {
+                                vm.chatList.accept(
+                                    newList + self.chatList.value
+                                )
+                            }
                             
                             vm.isLoadingChatList.accept(false)
                         }
@@ -176,6 +188,20 @@ final class ChatViewModel {
                         vm.crtPageNoObserver.accept(vm.crtPageNoObserver.value + 1)
                     })
                     .disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
+        
+        FCMHandler.shared.chatObservable
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, chat in
+                Task {
+                    var newList: [Chat] = []
+                    newList.append(chat)
+                    let withProperties = await vm.loadChatProperties(chatList: newList)
+                    vm.synchronize {
+                        vm.chatList.accept(self.chatList.value + withProperties)
+                    }
+                }
             }.disposed(by: disposeBag)
     }
     
@@ -192,10 +218,14 @@ final class ChatViewModel {
         
         input.viewWillAppear
             .withUnretained(self)
-            .bind { vm, _ in
-//                vm.chatUseCase.getLastPageNo()
-//                    .bind(to: vm.crtPageNoObserver)
-//                    .disposed(by: vm.disposeBag)
+            .bind { vm, appear in
+                FCMHandler.shared.meIsInChatObsesrvable.accept(appear)
+            }.disposed(by: disposeBag)
+        
+        input.viewWillDisappear
+            .withUnretained(self)
+            .bind { vm, disappear in
+                FCMHandler.shared.meIsInChatObsesrvable.accept(!disappear)
             }.disposed(by: disposeBag)
         
         input.tapInputButton

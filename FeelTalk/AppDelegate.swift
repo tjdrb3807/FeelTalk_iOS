@@ -26,10 +26,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Firebase setting
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
+        Messaging.messaging().isAutoInitEnabled = false
+        
+        print("fcmToken: \(Messaging.messaging().fcmToken ?? "")")
+        // cRBB7cbPmki6nfs82_jZiE:APA91bGN_JrO__4sV2VT9D9wqeZZ0FW1m0YG-3YQOGmLYyUuA7U9QqCtpvqtg0NDsm1gpg-033EsBzaCUfydl7eJY74bC3GZyRk2VYh77unM_6OlEppQl8NB-Ogl5JwgqcI4TahEtfLY
         
         // UserNotification setting
         UNUserNotificationCenter.current().delegate = self
         registerForPushNotifications()
+        application.registerForRemoteNotifications()
         
         // mixpanel setting
         Mixpanel.initialize(
@@ -92,7 +97,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         UNUserNotificationCenter.current()
             .requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
                 guard granted else { return }
-                self.getNotificationSettings()
+//                self.getNotificationSettings()
             }
     }
     
@@ -116,88 +121,94 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Failed to register: \(error)")
     }
-    
-    /// Forground
+        
+    /// 앱이 포그라운드인 상태에서 fcm 처리
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
         
         completionHandler([.banner, .sound, .badge])
     }
+        
     
+    // 백그라운드와 포그라운드의 푸시 메시지를 받고 클릭했을 때 응답 처리
     /// Background / Kill or terminated
     /// https://eunjin3786.tistory.com/379
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
         let identifier = response.notification.request.identifier
-    
+        
         completionHandler()
     }
 
+    /// 백그라운드 작업 자동 처리 (content_available가 true인 fcm이 도착 했을 때)
     /// Silent Push Notifications
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        guard let aps = userInfo["aps"] as? [AnyHashable: Any] else { return }
 
-        print("")
-        print("=============================================")
-        print("[AppDelegate >> didReceiveRemoteNotification]")
-        print("---------------------------------------------")
-        print("설명 :: 리모트 푸시 알림 확인")
-        print("---------------------------------------------")
-        print("applicationState :: \(String(describing: UIApplication.shared.applicationState))")
-        print("=============================================")
+//        print("")
+//        print("=============================================")
+//        print("[AppDelegate >> didReceiveRemoteNotification]")
+//        print("---------------------------------------------")
+//        print("설명 :: 리모트 푸시 알림 확인")
+//        print("---------------------------------------------")
+//        print("applicationState :: \(String(describing: UIApplication.shared.applicationState))")
+//        print("=============================================")
+//
+//        switch UIApplication.shared.applicationState {
+//        case .active:
+//            print("")
+//            print("=============================================")
+//            print("[AppDelegate >> didReceiveRemoteNotification]")
+//            print("---------------------------------------------")
+//            print("설명 :: 포그라운드 상태에서 푸시알림 전달받음")
+//            print("---------------------------------------------")
+//            print("userInfo :: \(userInfo.description)")
+//            print("=============================================")
+//            print("")
+//        case .inactive:
+//            print("")
+//            print("=============================================")
+//            print("[AppDelegate >> didReceiveRemoteNotification]")
+//            print("---------------------------------------------")
+//            print("설명 :: 푸시 클릭 접속 확인")
+//            print("---------------------------------------------")
+//            print("userInfo :: \(userInfo.description)")
+//            print("=============================================")
+//            print("")
+//        case .background:
+//            print("")
+//            print("=============================================")
+//            print("[AppDelegate >> didReceiveRemoteNotification]")
+//            print("---------------------------------------------")
+//            print("설명 :: 백그라운드 상태에서 푸시알림 전달받음")
+//            print("---------------------------------------------")
+//            print("userInfo :: \(userInfo.description)")
+//            print("=============================================")
+//            print("")
+//        @unknown default:
+//            print("")
+//            print("=============================================")
+//            print("[AppDelegate >> didReceiveRemoteNotification]")
+//            print("---------------------------------------------")
+//            print("설명 :: default")
+//            print("=============================================")
+//            print("")
+//            break
+//        }
 
-        switch UIApplication.shared.applicationState {
-        case .active:
-            print("")
-            print("=============================================")
-            print("[AppDelegate >> didReceiveRemoteNotification]")
-            print("---------------------------------------------")
-            print("설명 :: 포그라운드 상태에서 푸시알림 전달받음")
-            print("---------------------------------------------")
-            print("userInfo :: \(userInfo.description)")
-            print("=============================================")
-            print("")
-        case .inactive:
-            print("")
-            print("=============================================")
-            print("[AppDelegate >> didReceiveRemoteNotification]")
-            print("---------------------------------------------")
-            print("설명 :: 푸시 클릭 접속 확인")
-            print("---------------------------------------------")
-            print("userInfo :: \(userInfo.description)")
-            print("=============================================")
-            print("")
-        case .background:
-            print("")
-            print("=============================================")
-            print("[AppDelegate >> didReceiveRemoteNotification]")
-            print("---------------------------------------------")
-            print("설명 :: 백그라운드 상태에서 푸시알림 전달받음")
-            print("---------------------------------------------")
-            print("userInfo :: \(userInfo.description)")
-            print("=============================================")
-            print("")
-        @unknown default:
-            print("")
-            print("=============================================")
-            print("[AppDelegate >> didReceiveRemoteNotification]")
-            print("---------------------------------------------")
-            print("설명 :: default")
-            print("=============================================")
-            print("")
-            break
+
+        guard let aps = userInfo["aps"] as? [AnyHashable: Any] else {
+            completionHandler(UIBackgroundFetchResult.noData)
+            return
         }
 
-//        if aps["content-available"] as? Int == 1 {
-//            FCMHandler.shared.handle(userInfo: userInfo)
-//
-//            completionHandler(UIBackgroundFetchResult.newData)
-//        }
-        
-        FCMHandler.shared.handle(userInfo: userInfo)
-        completionHandler(UIBackgroundFetchResult.newData)
+        if aps["content-available"] as? Int == 1 {
+            let isBackground = UIApplication.shared.applicationState != .active
+            FCMHandler.shared.handle(userInfo: userInfo, isBackground: isBackground)
+            completionHandler(UIBackgroundFetchResult.newData)
+            return
+        }
 
-//        completionHandler(UIBackgroundFetchResult.noData)
+        completionHandler(UIBackgroundFetchResult.noData)
     }
 }
 

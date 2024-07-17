@@ -1509,8 +1509,8 @@
 			isa = PBXGroup;
 			children = (
 				4572A8AD2A41B9DD00E69BF5 /* FeelTalk.entitlements */,
-				4572A8AB2A41A54D00E69BF5 /* GoogleService-Info.plist */,
 				450955F12A2F9CBE00BDAC8E /* Info.plist */,
+				4572A8AB2A41A54D00E69BF5 /* GoogleService-Info.plist */,
 				450955EC2A2F9CBE00BDAC8E /* Assets.xcassets */,
 				450955EE2A2F9CBE00BDAC8E /* LaunchScreen.storyboard */,
 				450955E32A2F9CBD00BDAC8E /* AppDelegate.swift */,
