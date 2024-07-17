@@ -22,6 +22,8 @@ final class FCMHandler {
     let chatObservable = PublishRelay<Chat>()
     let meIsInChatObsesrvable = BehaviorRelay<Bool>(value: false)
     
+    private let CHATTNING_NOTIFICATION_ID = "CHATTNING_NOTIFICATION_ID"
+    
     
     private let questionUseCase = DefaultQuestionUseCase(
         questionRepository: DefaultQuestionRepository(),
@@ -148,7 +150,7 @@ extension FCMHandler {
             return
         }
         
-        showNotification(identifier: identifier,
+        showNotification(identifier: CHATTNING_NOTIFICATION_ID,
                          title: "연인",
                          body: "(질문 채팅)")
     }
@@ -181,7 +183,7 @@ extension FCMHandler {
             return
         }
         
-        showNotification(identifier: identifier,
+        showNotification(identifier: CHATTNING_NOTIFICATION_ID,
                          title: "연인",
                          body: "(답변 채팅)")
     }
@@ -211,7 +213,7 @@ extension FCMHandler {
             return
         }
         
-        showNotification(identifier: identifier,
+        showNotification(identifier: CHATTNING_NOTIFICATION_ID,
                          title: "연인",
                          body: "(콕찌르기 채팅)")
         
@@ -271,7 +273,7 @@ extension FCMHandler {
             return
         }
         
-        showNotification(identifier: identifier,
+        showNotification(identifier: CHATTNING_NOTIFICATION_ID,
                          title: "연인",
                          body: "(챌린지 채팅)")
     }
@@ -315,7 +317,7 @@ extension FCMHandler {
             return
         }
         
-        showNotification(identifier: identifier,
+        showNotification(identifier: CHATTNING_NOTIFICATION_ID,
                          title: "연인",
                          body: "(챌린지 완료 채팅)")
     }
@@ -366,7 +368,7 @@ extension FCMHandler {
         }
         
         showNotification(
-            identifier: identifier,
+            identifier: CHATTNING_NOTIFICATION_ID,
             title: "연인",
             body: "(시그널 채팅)"
         )
@@ -419,7 +421,7 @@ extension FCMHandler {
         }
         
         showNotification(
-            identifier: identifier,
+            identifier: CHATTNING_NOTIFICATION_ID,
             title: "연인",
             body: messageStr
         )
@@ -450,7 +452,7 @@ extension FCMHandler {
         }
         
         showNotification(
-            identifier: identifier,
+            identifier: CHATTNING_NOTIFICATION_ID,
             title: "연인",
             body: "(보이스 채팅)"
         )
@@ -481,7 +483,7 @@ extension FCMHandler {
         }
         
         showNotification(
-            identifier: identifier,
+            identifier: CHATTNING_NOTIFICATION_ID,
             title: "연인",
             body: "(이미지 채팅)"
         )
@@ -510,7 +512,7 @@ extension FCMHandler {
         }
         
         showNotification(
-            identifier: identifier,
+            identifier: CHATTNING_NOTIFICATION_ID,
             title: "연인",
             body: "(잠금 해제 요청 채팅)"
         )
