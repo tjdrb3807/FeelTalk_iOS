@@ -21,13 +21,6 @@ struct TextChatItemView: View {
             .padding(.horizontal, 16)
             .background(backgroundColor)
             .cornerRadius(16)
-            .contextMenu {
-                Button(action: {
-                    UIPasteboard.general.string = text
-                }) {
-                    Label("Copy to clipboard", systemImage: "doc.on.doc")
-                }
-            }
     }
     
     var textColor: Color {

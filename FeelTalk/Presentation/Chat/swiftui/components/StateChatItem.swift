@@ -233,7 +233,7 @@ struct StateChatItem: View {
         get {
             // start, middle chat
             if isStart || isMiddle {
-                return 2.0
+                return 4.0
             }
             return 8.0
         }
@@ -273,7 +273,7 @@ struct StateChatItem: View {
 struct StateChatItem_Previews: PreviewProvider {
     static var previews: some View {
         StateChatItem(
-            item: sampleChatList[0],
+            item: sampleChatList[21],
             prevItem: nil,
             nextItem: nil,
             partnerNickname: "partner",

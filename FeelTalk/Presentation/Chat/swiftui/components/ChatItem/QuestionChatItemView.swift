@@ -68,10 +68,6 @@ struct QuestionChatItemView: View {
             .frame(maxWidth: .infinity, alignment: .topLeading)
             .background(Color.white)
             .cornerRadius(8)
-            
-            
-            
-
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 16)

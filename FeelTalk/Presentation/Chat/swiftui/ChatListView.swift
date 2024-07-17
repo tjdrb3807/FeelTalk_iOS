@@ -97,7 +97,7 @@ struct ChatListView: View {
                                 originalViewModel.navigateToImage(chat: imageChat)
                             }
                         )
-                        .id(currentItem.index)
+                        .id("\(currentItem.index)_\(currentItem.updateCount)")
                     }
                     
                     Spacer()
@@ -120,6 +120,7 @@ struct ChatListView: View {
                 .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
                     //https://saeedrz.medium.com/detect-scroll-position-in-swiftui-3d6e0d81fc6b
                     self.scrollPosition = value
+                    print("y: \(value.y)")
                     if !viewModel.outputs.isLoadingChatList && value.y >= -500.0 {
                         originalViewModel.loadNextPageChatList()
                     }

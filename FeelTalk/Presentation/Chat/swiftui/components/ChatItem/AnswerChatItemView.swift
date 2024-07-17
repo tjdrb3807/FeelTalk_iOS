@@ -27,6 +27,7 @@ struct AnswerChatItemView: View {
                 .multilineTextAlignment(.center)
                 .foregroundColor(.black)
                 .frame(width: 226, alignment: .bottom)
+                .fixedSize(horizontal: false, vertical: true)
                 
                 Text(formattedDate)
                   .font(
@@ -62,7 +63,6 @@ struct AnswerChatItemView: View {
                 .background(Color("main_500"))
                 .cornerRadius(50)
             }
-
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 16)

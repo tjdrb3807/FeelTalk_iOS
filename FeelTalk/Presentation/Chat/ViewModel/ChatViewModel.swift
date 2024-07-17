@@ -110,7 +110,7 @@ final class ChatViewModel {
     }
     
     private let lock = NSLock()
-    func synchronize(action: () -> Void) {
+    private func synchronize(action: () -> Void) {
         if lock.lock(before: Date().addingTimeInterval(10)) {
             action()
             lock.unlock()
@@ -118,6 +118,15 @@ final class ChatViewModel {
             print("Took to long to lock, avoiding deadlock by ignoring the lock")
             action()
         }
+    }
+    
+    private func getNoSecondDate(_ date: String?) -> String? {
+        guard let date = date else { return date }
+        let startIndex = date.startIndex
+        guard let endIndex = date.lastIndex(of: ":") else {
+            return date
+        }
+        return String(date[startIndex..<endIndex])
     }
     
     private func initOutputs() {
@@ -176,8 +185,17 @@ final class ChatViewModel {
                                 }
                             }
                             vm.synchronize {
+                                var updated = self.chatList.value
+                                if var first = updated.first {
+                                    let isBottomSame = first.isMine == newList.last?.isMine && vm.getNoSecondDate(first.createAt) == vm.getNoSecondDate(newList.last?.createAt)
+                                    
+                                    if isBottomSame {
+                                        first.updateCount += 1
+                                        updated[0] = first
+                                    }
+                                }
                                 vm.chatList.accept(
-                                    newList + self.chatList.value
+                                    newList + updated
                                 )
                             }
                             
@@ -193,13 +211,22 @@ final class ChatViewModel {
         FCMHandler.shared.chatObservable
             .asObservable()
             .withUnretained(self)
-            .bind { vm, chat in
+            .bind { vm, newChat in
                 Task {
                     var newList: [Chat] = []
-                    newList.append(chat)
+                    newList.append(newChat)
                     let withProperties = await vm.loadChatProperties(chatList: newList)
                     vm.synchronize {
-                        vm.chatList.accept(self.chatList.value + withProperties)
+                        var updated = self.chatList.value
+                        if var last = updated.last {
+                            let isTopSame = last.isMine == newChat.isMine && vm.getNoSecondDate(last.createAt) == vm.getNoSecondDate(newChat.createAt)
+                            
+                            if isTopSame {
+                                last.updateCount += 1
+                                updated[updated.count - 1] = last
+                            }
+                        }
+                        vm.chatList.accept(updated + withProperties)
                     }
                 }
             }.disposed(by: disposeBag)
@@ -250,6 +277,8 @@ final class ChatViewModel {
                 }
             }.disposed(by: disposeBag)
         
+        
+        // 텍스트 채팅은 최대 10000글자까지로 제한
         input.messageText
             .map { $0.isEmpty }
             .map { $0 ? ChatInputMode.basics : ChatInputMode.inputMessage }
