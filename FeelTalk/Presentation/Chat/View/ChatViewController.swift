@@ -140,6 +140,10 @@ final class ChatViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.openAndCloseActivity), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.openAndCloseActivity), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.openAndCloseActivity), name: UIApplication.willTerminateNotification, object: nil)
+        
         let sigleTapGestureRecognizer = UITapGestureRecognizer(
             target: self,
             action: #selector(myTapMethod)
@@ -156,6 +160,35 @@ final class ChatViewController: UIViewController {
         self.setConstraints()
         
         chatListView.didMove(toParent: self)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name:  UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name:  UIApplication.willTerminateNotification, object: nil)
+    }
+    
+    @objc func openAndCloseActivity(_ notification: Notification)  {
+        Task {
+            if notification.name == UIApplication.didBecomeActiveNotification {
+                // become active notifictaion
+                // onResume
+                let result = await viewModel.changeChatRoomStatus(isInChat: true)
+                print("onResume in chat: \(result)")
+            }
+            else if notification.name == UIApplication.willResignActiveNotification {
+                // willResignActiveNotification
+                // onBackground
+                let result = await viewModel.changeChatRoomStatus(isInChat: false)
+                print("onBackground in chat: \(result)")
+            }
+            else {
+                // willTerminateNotification
+                // onAppTerminated
+                let result = await viewModel.changeChatRoomStatus(isInChat: false)
+                print("onAppTerminate in chat: \(result)")
+            }
+        }
     }
     
     @objc private func myTapMethod(sender: UITapGestureRecognizer) {

@@ -46,7 +46,6 @@ final class DefaultChatRepository: ChatRepository {
                 case .success(let responseDTO):
                     if responseDTO.status == "success" {
                         guard let chatListResponseDTO = responseDTO.data! else { return }
-                        print(chatListResponseDTO)
                         observer(.success(
                             chatListResponseDTO.chatList
                                 .compactMap({ chatDTO in

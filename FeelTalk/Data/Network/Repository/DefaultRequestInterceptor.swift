@@ -12,7 +12,7 @@ final class DefaultRequestInterceptor: RequestInterceptor {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         print("[REQUEST]: \(urlRequest)")
         
-        
+//        accessToken 갱신됐을 때의 환경 재현
 //        var urlRequest = urlRequest
 //        urlRequest.setValue("", forHTTPHeaderField: "Authorization")
 //        completion(.success(urlRequest))

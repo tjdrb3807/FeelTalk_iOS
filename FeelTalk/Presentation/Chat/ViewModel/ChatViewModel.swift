@@ -243,6 +243,7 @@ final class ChatViewModel {
             }.disposed(by: disposeBag)
     }
     
+    
     func bind(input: Input) -> Output {
         self.input = input
         
@@ -257,13 +258,28 @@ final class ChatViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .bind { vm, appear in
+                print("isAppear: \(appear)")
                 FCMHandler.shared.meIsInChatObsesrvable.accept(appear)
+                if appear {
+                    Task {
+                        print("appear start")
+                        let result = await vm.changeChatRoomStatus(isInChat: true)
+                        print("appear end: \(result)")
+                    }
+                }
             }.disposed(by: disposeBag)
         
         input.viewWillDisappear
             .withUnretained(self)
             .bind { vm, disappear in
+                print("isDisappear: \(disappear)")
                 FCMHandler.shared.meIsInChatObsesrvable.accept(!disappear)
+                if disappear {
+                    Task {
+                        print("disappear start")
+                        let result = await vm.changeChatRoomStatus(isInChat: false)
+                        print("disappear end: \(result)")
+                    }                }
             }.disposed(by: disposeBag)
         
         input.tapInputButton
@@ -374,6 +390,28 @@ final class ChatViewModel {
         })
     }
     
+    func navigateToAnswer(questionIndex: Int) {
+        print("미구현: navigateToAnswer()")
+    }
+    
+    func navigateToChallenge(challengeIndex: Int) {
+        print("미구현: navigateToChallenge()")
+    }
+    
+    func navigateToImage(chat: ImageChat) {
+        print("미구현: navigateToImage()")
+    }
+    
+    func scrollToBottom() {
+        scrollToBottomCount.accept(
+            scrollToBottomCount.value + 1
+        )
+    }
+}
+
+
+// MARK: api implementations
+extension ChatViewModel {
     func loadQuestion(questionIndex: Int) async throws -> Question? {
         for try await question in questionUseCase
             .getQuestion(index: questionIndex)
@@ -438,7 +476,6 @@ final class ChatViewModel {
         })
     }
     
-    
     func resetPartnerPassword(chatIndex: Int) async throws -> Bool {
         return try await withCheckedThrowingContinuation({ continuation in
             Task {
@@ -476,26 +513,39 @@ final class ChatViewModel {
         })
     }
     
-    
-    func navigateToAnswer(questionIndex: Int) {
-        print("미구현: navigateToAnswer()")
+    func changeChatRoomStatus(isInChat: Bool) async -> Bool {
+        return await withCheckedContinuation({ continuation in
+            Task {
+                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/member/chatting-room-status") else {
+                    continuation.resume(returning: false)
+                    return
+                }
+                
+                var request = URLRequest(url: url)
+                request.method = .put
+                request.headers = HTTPHeaders(["Content-Type": "application/json", "Accept": "application/json"])
+                guard let urlRequest = try? JSONEncoding().encode(request, with: ["isInChat": isInChat]) else {
+                    continuation.resume(returning: false)
+                    return
+                }
+                
+                AF.request(
+                    urlRequest,
+                    interceptor: DefaultRequestInterceptor()
+                )
+                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(_):
+                        continuation.resume(returning: true)
+                    case .failure(_):
+                        continuation.resume(returning: false)
+                    }
+                }
+            }
+        })
     }
-    
-    func navigateToChallenge(challengeIndex: Int) {
-        print("미구현: navigateToChallenge()")
-    }
-    
-    func navigateToImage(chat: ImageChat) {
-        print("미구현: navigateToImage()")
-    }
-    
-    func scrollToBottom() {
-        scrollToBottomCount.accept(
-            scrollToBottomCount.value + 1
-        )
-    }
-    
 }
+
 
 let sampleChatList: [any Chat] = [
     // text chat

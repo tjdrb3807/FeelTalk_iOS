@@ -17,7 +17,7 @@ final class KeychainRepository {
         let result: Bool = {
             let status = SecItemAdd(addQuery as CFDictionary, nil)
             if status == errSecSuccess {
-                print("[SUCCESS]: Add \(key) item.")
+//                print("[SUCCESS]: Add \(key) item.")
                 return true
             } else if status == errSecDuplicateItem {
                 return updateItem(value: value, key: key)
@@ -42,7 +42,7 @@ final class KeychainRepository {
             if let existingItem = item as? [String: Any],
                let data = existingItem[kSecValueData as String] as? Data,
                let password = String(data: data, encoding: .utf8) {
-                print("[SUCCESS]: Get \(key) item.")
+//                print("[SUCCESS]: Get \(key) item.")
                 return password
             }
         }
@@ -58,7 +58,7 @@ final class KeychainRepository {
         let result: Bool = {
             let status = SecItemUpdate(prevQuery as CFDictionary, updateQuery as CFDictionary)
             if status == errSecSuccess {
-                print("[SUCCESS]: Update \(key) item.")
+//                print("[SUCCESS]: Update \(key) item.")
                 return true
             }
             
@@ -75,7 +75,7 @@ final class KeychainRepository {
         let status = SecItemDelete(deleteQuery as CFDictionary)
         
         if status == errSecSuccess {
-            print("[SUCCESS]: Delete \(key) item.")
+//            print("[SUCCESS]: Delete \(key) item.")
             return true
         }
         

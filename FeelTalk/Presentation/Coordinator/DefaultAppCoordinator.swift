@@ -32,29 +32,36 @@ final class DefaultAppCoordinator: AppCoordinator {
     func start() {
         // 앱을 처음 다운받아서 실행한 경우
         if DefaultAppCoordinator.isFirstRun() {
+            print("isFirstRun: Onboarding Page")
             showOnboardingFlow()
             return
         }
         
         guard let _ = KeychainRepository.getItem(key: "accessToken") as? String else {
             // 로그아웃 상태인 경우
+            print("No accessToken: Login Page")
             showLoginFlow()
             return
         }
         
         if UserState.solo.rawValue == KeychainRepository.getItem(key: "userState") as? String {
             // 솔로 상태면 초대코드 페이지로
+            print("UserState is solo: Invite Code Page")
             showInviteCodeFlow()
             return
         }
         
         if UserState.couple.rawValue != KeychainRepository.getItem(key: "userState") as? String {
             // 커플 상태가 아니면 모두 로그인 페이지로
+            print("UserState is NOT couple: Log In Page")
             showLoginFlow()
             return
         }
         
-        reissueToken()
+        
+        print("Other else: Main Page")
+        
+//        reissueToken()
         
         bindIsLockScreenObserver()
         
