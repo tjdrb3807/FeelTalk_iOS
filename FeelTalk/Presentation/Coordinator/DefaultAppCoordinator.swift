@@ -27,17 +27,21 @@ final class DefaultAppCoordinator: AppCoordinator {
     required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
         navigationController.setNavigationBarHidden(true, animated: true)
+        FCMHandler.shared.showNotification(identifier: "-1", title: "init", body: "init")
     }
     
     func start() {
+        FCMHandler.shared.showNotification(identifier: "0", title: "start", body: "start")
         // 앱을 처음 다운받아서 실행한 경우
         if DefaultAppCoordinator.isFirstRun() {
             print("isFirstRun: Onboarding Page")
+            FCMHandler.shared.showNotification(identifier: "1", title: "isFirstRun", body: "isFirstRun")
             showOnboardingFlow()
             return
         }
         
         guard let _ = KeychainRepository.getItem(key: "accessToken") as? String else {
+            FCMHandler.shared.showNotification(identifier: "2", title: "No accessToken", body: "No accessToken")
             // 로그아웃 상태인 경우
             print("No accessToken: Login Page")
             showLoginFlow()
@@ -45,6 +49,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         }
         
         if UserState.solo.rawValue == KeychainRepository.getItem(key: "userState") as? String {
+            FCMHandler.shared.showNotification(identifier: "3", title: "UserState is solo", body: "UserState is solo")
             // 솔로 상태면 초대코드 페이지로
             print("UserState is solo: Invite Code Page")
             showInviteCodeFlow()
@@ -52,6 +57,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         }
         
         if UserState.couple.rawValue != KeychainRepository.getItem(key: "userState") as? String {
+            FCMHandler.shared.showNotification(identifier: "4", title: "UserState is NOT couple", body: "UserState is NOT couple")
             // 커플 상태가 아니면 모두 로그인 페이지로
             print("UserState is NOT couple: Log In Page")
             showLoginFlow()
@@ -60,6 +66,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         
         
         print("Other else: Main Page")
+        FCMHandler.shared.showNotification(identifier: "5", title: "Main Page", body: "Main Page")
         
 //        reissueToken()
         
@@ -68,7 +75,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         DefaultAppCoordinator
             .isLockScreenObserver
             .map({ state in
-                print("isLockScreenObserver: \(state)")
+//                print("isLockScreenObserver: \(state)")
                 return state
             })
             .skip(1)

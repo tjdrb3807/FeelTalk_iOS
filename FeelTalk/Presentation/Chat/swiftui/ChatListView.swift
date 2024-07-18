@@ -98,7 +98,7 @@ struct ChatListView: View {
                                 originalViewModel.navigateToImage(chat: imageChat)
                             }
                         )
-                        .id("\(currentItem.index)_\(currentItem.updateCount)_\(viewModel.outputs.isPartnerInChat)")
+                        .id("\(currentItem.index)_\(currentItem.updateCount)")
                     }
                     
                     Spacer()
@@ -137,7 +137,7 @@ struct ChatListView: View {
                 of: viewModel.outputs.scrollToBottomCount
             ) { _ in
                 if let last = viewModel.outputs.chatList.last {
-                    let id = "\(last.index)_\(last.updateCount)_\(viewModel.outputs.isPartnerInChat)"
+                    let id = "\(last.index)_\(last.updateCount)"
 
                     proxy.scrollTo(id, anchor: UnitPoint(x: 0, y: 16))
                 } else {

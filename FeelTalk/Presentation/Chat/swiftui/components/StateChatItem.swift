@@ -217,7 +217,7 @@ struct StateChatItem: View {
     
     var readText: String {
         get {
-            if item.isMine || item.isRead || isStart || isMiddle {
+            if item.isRead || isStart || isMiddle {
                 return ""
             } else {
                 return "안읽음"

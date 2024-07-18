@@ -53,7 +53,7 @@ final class ChatMessageInputView: UIStackView {
 //                v.messageInputTextView.reloadInputViews()
 //                v.messageInputTextView.setNeedsUpdateConstraints()
             }.disposed(by: disposeBag)
-        
+                
         messageInputTextView.rx.didChange
             .withUnretained(self)
             .bind { v, _ in

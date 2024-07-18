@@ -239,7 +239,23 @@ final class ChatViewModel {
             .withUnretained(self)
             .bind { vm, isInChat in
                 print("isPartnerInChat: \(isInChat)")
+                if isInChat == vm.isPartnerInChat.value { return }
                 vm.isPartnerInChat.accept(isInChat)
+                if isInChat {
+                    Task {
+                        vm.synchronize {
+                            let updated = self.chatList.value.map {
+                                var chat: Chat = $0
+                                if chat.isMine && !chat.isRead {
+                                    chat.isRead = true
+                                    chat.updateCount += 1
+                                }
+                                return chat
+                            }
+                            vm.chatList.accept(updated)
+                        }
+                    }
+                }
             }.disposed(by: disposeBag)
     }
     

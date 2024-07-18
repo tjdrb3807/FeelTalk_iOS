@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // UserNotification setting
         UNUserNotificationCenter.current().delegate = self
         registerForPushNotifications()
-        application.registerForRemoteNotifications()
+//        application.registerForRemoteNotifications()
         
         // mixpanel setting
         Mixpanel.initialize(
@@ -97,7 +97,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         UNUserNotificationCenter.current()
             .requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
                 guard granted else { return }
-//                self.getNotificationSettings()
+                self.getNotificationSettings()
             }
     }
     
