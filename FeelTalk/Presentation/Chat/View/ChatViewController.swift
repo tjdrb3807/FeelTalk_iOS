@@ -229,18 +229,57 @@ final class ChatViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
+        // message가 입력될 때, isFunctionActive가 true라면
+        // 카메라/이미지 선택창 닫기 (set isFunctionActive to false)
         chatInputView.messageInputView.messageInputTextView.rx.didBeginEditing
             .withLatestFrom(output.isFunctionActive)
             .filter { $0 }
             .withUnretained(self)
             .bind { vc, _ in
-                // TODO: functionView 내리기
+                vc.viewModel.changeFunctionActive(isActive: false)
             }.disposed(by: disposeBag)
         
         output.isFunctionActive
             .bind(to: chatInputView.isFunctionActive)
             .disposed(by: disposeBag)
         
+        
+        // inputMode가 record 관련일 때, isFunctionActive가 false가 되면
+        // message 수에 따라 inputMode를 basics, inputMessage로 전환
+        // (refresh를 true 놓고 취소)
+        output.isFunctionActive
+            .filter { !$0 }
+            .withLatestFrom(output.inputMode)
+            .withUnretained(self)
+            .bind { vc, mode in
+                switch mode {
+                case .recordingDescription, .recording, .recorded:
+                    vc.chatInputView.refresh.accept(true)
+                    output.inputMode.accept(.basics)
+                default:
+                    break
+                }
+            }.disposed(by: disposeBag)
+        
+        // isFunctionActive가 false가 되면
+        // 카메라/이미지 선택창 닫기 (녹음창 닫는건 viewModel에서 수행)
+        output.isFunctionActive
+            .filter { !$0 }
+            .withUnretained(self)
+            .bind { vc, isActive in
+                guard vc.view.subviews.contains(where: { $0 is ChatFunctionView }) else { return }
+                
+                let functionView = vc.chatFucntionView
+                
+                functionView.showDismissAnimation()
+                vc.updateChatFunctionViewHeightDismiss()
+                
+                vc.view.willRemoveSubview(functionView)
+                functionView.removeFromSuperview()
+            }.disposed(by: disposeBag)
+        
+        // basic, inputMessage 모드일 때 isfunctionActive가 true가 되면
+        // 카메라/이미지 선택창 띄우기
         output.isFunctionActive
             .filter { $0 }
             .withLatestFrom(output.inputMode)
@@ -366,6 +405,20 @@ extension ChatViewController {
             delay: 0.0,
             options: .curveEaseInOut,
             animations: view.layoutIfNeeded)
+    }
+    
+    private func updateChatFunctionViewHeightDismiss() {
+        chatRoomView.snp.updateConstraints { $0.bottom.equalToSuperview() }
+        chatInputView.snp.updateConstraints {
+            $0.bottom.equalToSuperview().inset(Utils.safeAreaBottomInset())
+        }
+        
+        view.layoutIfNeeded()
+//        UIView.animate(
+//            withDuration: 0.3,
+//            delay: 0.0,
+//            options: .curveEaseInOut,
+//            animations: view.layoutIfNeeded)
     }
 }
 

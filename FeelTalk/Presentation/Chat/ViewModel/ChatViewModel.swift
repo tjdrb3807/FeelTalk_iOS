@@ -45,13 +45,13 @@ final class ChatViewModel {
     
     struct Input {
         let viewWillAppearObserver: Observable<Bool>
-        let tapInputButton: Observable<Void>
+        let tapInputButton: Observable<Void>    // 채팅 전송, 보이스 녹음 버튼
         let messageText: Observable<String>
-        let tapFunctionButton: Observable<Void>
+        let tapFunctionButton: Observable<Void> // +, X로 되어있는 이미지/카메라 뷰 표시 버튼
         let viewWillAppear: Observable<Bool>
-        let tapDimmiedView: Observable<Void>
-        let tapChatRoomButton: Observable<Void>
-        let chatFuncMenuButtonTapObserver: Observable<Void>
+        let tapDimmiedView: Observable<Void>    // 채팅 윗쪽 배경 회색 부분
+        let tapChatRoomButton: Observable<Void> // 채팅 입장/나가기 버튼
+        let chatFuncMenuButtonTapObserver: Observable<Void> // 질문/챌린지 공유 화면 이동 버튼
         let viewWillDisappear: Observable<Bool>
     }
     
@@ -258,13 +258,9 @@ final class ChatViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .bind { vm, appear in
-                print("isAppear: \(appear)")
-                FCMHandler.shared.meIsInChatObsesrvable.accept(appear)
                 if appear {
                     Task {
-                        print("appear start")
-                        let result = await vm.changeChatRoomStatus(isInChat: true)
-                        print("appear end: \(result)")
+                        await vm.changeChatRoomStatus(isInChat: true)
                     }
                 }
             }.disposed(by: disposeBag)
@@ -272,40 +268,73 @@ final class ChatViewModel {
         input.viewWillDisappear
             .withUnretained(self)
             .bind { vm, disappear in
-                print("isDisappear: \(disappear)")
                 FCMHandler.shared.meIsInChatObsesrvable.accept(!disappear)
                 if disappear {
                     Task {
-                        print("disappear start")
-                        let result = await vm.changeChatRoomStatus(isInChat: false)
-                        print("disappear end: \(result)")
+                        await vm.changeChatRoomStatus(isInChat: false)
                     }                }
             }.disposed(by: disposeBag)
         
+        // 전송/녹음 버튼
         input.tapInputButton
             .withLatestFrom(inputMode)
             .withUnretained(self)
             .bind { vm, mode in
                 switch mode {
-                case .basics:
+                case .basics:               // 기본 상태 (텍스트 입력칸 + 마이크 아이콘)
                     vm.inputMode.accept(.recordingDescription)
                     vm.isFunctionActive.accept(true)
-                case .recordingDescription:
+                case .recordingDescription: // 텍스트 입력칸 제한 + 음성 녹음 설명
                     vm.inputMode.accept(.recording)
                     vm.isFunctionActive.accept(true)
-                case .recording:
+                case .recording:            // 녹음 중 (Visualizer + 녹음 중지 버튼)
                     vm.inputMode.accept(.recorded)
                     vm.isFunctionActive.accept(true)
-                case .recorded:
+                case .recorded:             // 녹음 완료 (Visualizer + 보이스 채팅 전송 버튼)
                     vm.inputMode.accept(.basics)
                     vm.isFunctionActive.accept(false)
-                case .inputMessage:
+                    // TODO: send voice chat
+                case .inputMessage:         // 텍스트 채팅 전송 버튼 (텍스트 입력시)
+                    vm.inputMode.accept(.basics)
                     break
                 }
             }.disposed(by: disposeBag)
         
         
-        // 텍스트 채팅은 최대 10000글자까지로 제한
+//        // input button을 클릭했을 때, inputMode가 .inputMessage라면
+//        // 텍스트 채팅 전송
+//        input.tapInputButton
+//            .withLatestFrom(inputMode)
+//            .filter { $0 == .inputMessage }
+//            .withLatestFrom(input.messageText)
+//            .withUnretained(self)
+//            .bind { vm, message in
+//                Task {
+//                    guard let newChat = try? await vm.sendTextChat(message: message)
+//                    else { return }
+//                    
+//                    var newList: [Chat] = []
+//                    newList.append(newChat)
+//                    
+//                    vm.synchronize {
+//                        var updated = self.chatList.value
+//                        if var last = updated.last {
+//                            let isTopSame = last.isMine == newChat.isMine && vm.getNoSecondDate(last.createAt) == vm.getNoSecondDate(newChat.createAt)
+//                            
+//                            if isTopSame {
+//                                last.updateCount += 1
+//                                updated[updated.count - 1] = last
+//                            }
+//                        }
+//                        vm.chatList.accept(updated + newList)
+//                        
+//                        // scroll to bottom after some delay (ui update delay)
+//                    }
+//                }
+//            }.disposed(by: disposeBag)
+        
+        // 입력된 텍스트가 존재하면 inputMessage mode로 전환
+        // 없으면 basic mode로 전환
         input.messageText
             .map { $0.isEmpty }
             .map { $0 ? ChatInputMode.basics : ChatInputMode.inputMessage }
@@ -313,12 +342,21 @@ final class ChatViewModel {
             .bind(to: inputMode)
             .disposed(by: disposeBag)
         
+        
+        // 카메라/이미지 선택창
         input.tapFunctionButton
             .withLatestFrom(isFunctionActive)
-            .scan(false) { lastState, newState in !lastState }
-            .bind(to: isFunctionActive)
-            .disposed(by: disposeBag)
+            .withUnretained(self)
+            .bind { vm, isActive in
+                vm.isFunctionActive.accept(!isActive)
+            }.disposed(by: disposeBag)
+//        input.tapFunctionButton
+//            .withLatestFrom(isFunctionActive)
+//            .scan(false) { lastState, newState in !lastState }
+//            .bind(to: isFunctionActive)
+//            .disposed(by: disposeBag)
         
+        // 채팅 닫기
         Observable
             .merge(input.tapDimmiedView,
                    input.tapChatRoomButton)
@@ -327,6 +365,7 @@ final class ChatViewModel {
                 vm.coordinator?.finish()
             }.disposed(by: disposeBag)
         
+        // 질문/챌린지 공유 페이지 띄우기
         input.chatFuncMenuButtonTapObserver
             .asObservable()
             .withUnretained(self)
@@ -336,6 +375,13 @@ final class ChatViewModel {
         
         return self.output
     }
+    
+    func changeFunctionActive(isActive: Bool) {
+        self.isFunctionActive.accept(isActive)
+    }
+    
+    
+    
     
     func loadNextPageChatList() {
         if self.isLastPage.value {
@@ -412,6 +458,14 @@ final class ChatViewModel {
 
 // MARK: api implementations
 extension ChatViewModel {
+    func sendTextChat(message: String) async throws -> TextChat? {
+        for try await textChat in chatUseCase.sendTextChat(text: message)
+            .asObservable().values {
+            return textChat
+        }
+        return nil
+    }
+    
     func loadQuestion(questionIndex: Int) async throws -> Question? {
         for try await question in questionUseCase
             .getQuestion(index: questionIndex)

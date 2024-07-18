@@ -98,6 +98,20 @@ extension ChatFunctionView {
     public func showNoAnimation() {
         
     }
+    
+    public func showDismissAnimation() {
+        contentView.snp.remakeConstraints {
+            $0.top.equalTo(self.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(ChatFunctionViewNameSpace.height)
+        }
+        
+//        UIView.animate(
+//            withDuration: 0.3,
+//            delay: 0.0,
+//            options: .curveEaseInOut,
+//            animations: self.layoutIfNeeded)
+    }
 }
 
 #if DEBUG
