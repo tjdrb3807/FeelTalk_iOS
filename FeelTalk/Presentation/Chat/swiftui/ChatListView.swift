@@ -9,8 +9,8 @@ import SwiftUI
 import RxSwift
 
 struct ChatListView: View {
-//    @Namespace var bottomID
-    @State var bottomId = 0
+    @Namespace var bottomId
+    @State var bottomSpacerId = 0
     
     @State private var originalViewModel: ChatViewModel
     @ObservedObject private var viewModel: ObservableChatListViewModel
@@ -103,10 +103,14 @@ struct ChatListView: View {
                     
                     Spacer()
                         .frame(height: 16)
-                        .id(bottomId)
+                        .id(bottomSpacerId)
                         .onAppear {
-                            bottomId += 1
+                            bottomSpacerId += 1
                         }
+                    
+                    Spacer()
+                        .frame(height: 0)
+                        .id(bottomId)
                 }
                 .rotationEffect(Angle(degrees: 180))
                 .scaleEffect(x: -1.0, y: 1.0, anchor: .center)
@@ -132,8 +136,10 @@ struct ChatListView: View {
             .onChange(
                 of: viewModel.outputs.scrollToBottomCount
             ) { _ in
-                if let idx = viewModel.outputs.chatList.last?.index {
-                    proxy.scrollTo(viewModel.outputs.chatList[idx].index)
+                if let last = viewModel.outputs.chatList.last {
+                    let id = "\(last.index)_\(last.updateCount)_\(viewModel.outputs.isPartnerInChat)"
+
+                    proxy.scrollTo(id, anchor: UnitPoint(x: 0, y: 16))
                 } else {
                     proxy.scrollTo(bottomId)
                 }

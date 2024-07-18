@@ -258,6 +258,7 @@ final class ChatViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .bind { vm, appear in
+                FCMHandler.shared.meIsInChatObsesrvable.accept(true)
                 if appear {
                     Task {
                         await vm.changeChatRoomStatus(isInChat: true)
@@ -268,19 +269,21 @@ final class ChatViewModel {
         input.viewWillDisappear
             .withUnretained(self)
             .bind { vm, disappear in
-                FCMHandler.shared.meIsInChatObsesrvable.accept(!disappear)
+                FCMHandler.shared.meIsInChatObsesrvable.accept(false)
                 if disappear {
                     Task {
                         await vm.changeChatRoomStatus(isInChat: false)
                     }                }
             }.disposed(by: disposeBag)
         
-        // 전송/녹음 버튼
+        
+        // 전송/녹음 ui 전환 + 텍스트, 보이스 채팅 전송
         input.tapInputButton
             .withLatestFrom(inputMode)
+            .withLatestFrom(input.messageText) { (mode: $0, message: $1) }
             .withUnretained(self)
-            .bind { vm, mode in
-                switch mode {
+            .bind { vm, data in
+                switch data.mode {
                 case .basics:               // 기본 상태 (텍스트 입력칸 + 마이크 아이콘)
                     vm.inputMode.accept(.recordingDescription)
                     vm.isFunctionActive.accept(true)
@@ -296,42 +299,13 @@ final class ChatViewModel {
                     // TODO: send voice chat
                 case .inputMessage:         // 텍스트 채팅 전송 버튼 (텍스트 입력시)
                     vm.inputMode.accept(.basics)
+                    // 텍스트 채팅 전송
+                    vm.sendTextChat(message: data.message)
                     break
                 }
-            }.disposed(by: disposeBag)
+            }
+            .disposed(by: disposeBag)
         
-        
-//        // input button을 클릭했을 때, inputMode가 .inputMessage라면
-//        // 텍스트 채팅 전송
-//        input.tapInputButton
-//            .withLatestFrom(inputMode)
-//            .filter { $0 == .inputMessage }
-//            .withLatestFrom(input.messageText)
-//            .withUnretained(self)
-//            .bind { vm, message in
-//                Task {
-//                    guard let newChat = try? await vm.sendTextChat(message: message)
-//                    else { return }
-//                    
-//                    var newList: [Chat] = []
-//                    newList.append(newChat)
-//                    
-//                    vm.synchronize {
-//                        var updated = self.chatList.value
-//                        if var last = updated.last {
-//                            let isTopSame = last.isMine == newChat.isMine && vm.getNoSecondDate(last.createAt) == vm.getNoSecondDate(newChat.createAt)
-//                            
-//                            if isTopSame {
-//                                last.updateCount += 1
-//                                updated[updated.count - 1] = last
-//                            }
-//                        }
-//                        vm.chatList.accept(updated + newList)
-//                        
-//                        // scroll to bottom after some delay (ui update delay)
-//                    }
-//                }
-//            }.disposed(by: disposeBag)
         
         // 입력된 텍스트가 존재하면 inputMessage mode로 전환
         // 없으면 basic mode로 전환
@@ -456,16 +430,54 @@ final class ChatViewModel {
 }
 
 
-// MARK: api implementations
+// MARK: Send chat
 extension ChatViewModel {
-    func sendTextChat(message: String) async throws -> TextChat? {
+    func sendTextChat(message: String) {
+        Task {
+            guard let newChat = try? await self.sendTextChatByObservable(message: message)
+            else { return }
+            
+            var newList: [Chat] = []
+            newList.append(newChat)
+            
+            // Lock
+            self.synchronize {
+                
+                // 맨 아래로 스크롤
+                // ui에 새 채팅을 추가하기도 전에 스크롤 하는 이유는
+                // 기본적으로 아이템이 추가되면 그 ui만큼 자동으로 스크롤 되서
+                // 추가하기 전에 내려가 있어도 됨
+                self.scrollToBottomCount.accept(
+                    self.scrollToBottomCount.value + 1
+                )
+                
+                // 이전 채팅 Ui 업데이트 (continuous or not)
+                var updated = self.chatList.value
+                if var last = updated.last {
+                    let isTopSame = last.isMine == newChat.isMine && self.getNoSecondDate(last.createAt) == self.getNoSecondDate(newChat.createAt)
+                    
+                    if isTopSame {
+                        last.updateCount += 1
+                        updated[updated.count - 1] = last
+                    }
+                }
+                self.chatList.accept(updated + newList)
+            }
+        }
+    }
+    
+    func sendTextChatByObservable(message: String) async throws -> TextChat? {
         for try await textChat in chatUseCase.sendTextChat(text: message)
             .asObservable().values {
             return textChat
         }
         return nil
     }
-    
+}
+
+
+// MARK: api implementations
+extension ChatViewModel {
     func loadQuestion(questionIndex: Int) async throws -> Question? {
         for try await question in questionUseCase
             .getQuestion(index: questionIndex)

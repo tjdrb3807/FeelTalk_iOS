@@ -47,6 +47,11 @@ final class ChatMessageInputView: UIStackView {
             .withUnretained(self)
             .bind { v, _ in
                 v.messageInputTextView.rx.text.onNext(nil)
+//                v.messageInputTextView.rx.isScrollEnabled.onNext(false)
+//                v.messageInputTextView.snp.removeConstraints()
+//
+//                v.messageInputTextView.reloadInputViews()
+//                v.messageInputTextView.setNeedsUpdateConstraints()
             }.disposed(by: disposeBag)
         
         messageInputTextView.rx.didChange

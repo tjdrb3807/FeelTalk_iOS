@@ -65,11 +65,14 @@ final class DefaultChatRepository: ChatRepository {
     }
     
     func sendTextChat(text: String) -> Single<TextChat> {
-        Single.create { observer -> Disposable in
+        print("request: \(ChatAPI.sendTextChat(text: text))")
+        return Single.create { observer -> Disposable in
             AF.request(
                 ChatAPI.sendTextChat(text: text),
                 interceptor: DefaultRequestInterceptor()
             ).responseDecodable(of: BaseResponseDTO<SendChatResponseDTO?>.self) { response in
+                print("response: \(response.debugDescription)")
+                
                 switch response.result {
                 case .success(let responseDTO):
                     if responseDTO.status == "success" {
@@ -86,7 +89,7 @@ final class DefaultChatRepository: ChatRepository {
                         ))
                     } else {
                         guard let message = responseDTO.message else { return }
-                        
+
                     }
                 case .failure(let error):
                     observer(.failure(error))
