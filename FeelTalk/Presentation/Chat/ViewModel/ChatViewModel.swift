@@ -36,6 +36,7 @@ final class ChatViewModel {
     private let chatList = BehaviorRelay<[Chat]>(value: [])
     private let scrollToBottomCount = BehaviorRelay<Int>(value: 0)
     private let showTodayDivider = BehaviorRelay<Bool>(value: false)
+    private let isPartnerInChat = BehaviorRelay<Bool>(value: false)
     
     private let isLoadingChatList = BehaviorRelay<Bool>(value: true)
     
@@ -65,6 +66,7 @@ final class ChatViewModel {
         let showTodayDivider: BehaviorRelay<Bool>
         let isLastPage: BehaviorRelay<Bool>
         let isLoadingChatList: BehaviorRelay<Bool>
+        let isPartnerInChat: BehaviorRelay<Bool>
     }
     
     init(
@@ -102,7 +104,8 @@ final class ChatViewModel {
             scrollToBottomCount: self.scrollToBottomCount,
             showTodayDivider: self.showTodayDivider,
             isLastPage: self.isLastPage,
-            isLoadingChatList: self.isLoadingChatList
+            isLoadingChatList: self.isLoadingChatList,
+            isPartnerInChat: self.isPartnerInChat
         )
         
         // initialize output values
@@ -229,6 +232,14 @@ final class ChatViewModel {
                         vm.chatList.accept(updated + withProperties)
                     }
                 }
+            }.disposed(by: disposeBag)
+        
+        FCMHandler.shared.partnerChatRoomStatusObservable
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, isInChat in
+                print("isPartnerInChat: \(isInChat)")
+                vm.isPartnerInChat.accept(isInChat)
             }.disposed(by: disposeBag)
     }
     

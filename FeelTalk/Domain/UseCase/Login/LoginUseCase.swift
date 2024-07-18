@@ -104,6 +104,8 @@ final class DefaultLoginUseCase: LoginUseCase {
                 }.map { _ -> Void in }
                 .subscribe(onNext: {
                     observer.onNext(())
+                }, onError: { error in
+                    observer.onError(error)
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()

@@ -13,6 +13,7 @@ struct StateChatItem: View {
     @State var nextItem: Chat?
     @State var partnerNickname: String
     @State var partnerSignal: Signal
+    @State var isPartnerInChat: Bool
     @State var onClickAnswer: (Int) -> Void
     @State var onClickChallenge: (Int) -> Void
     @State var onClickReset: () -> Void
@@ -124,9 +125,6 @@ struct StateChatItem: View {
                 if !item.isMine {
                     VStack() {
                         Spacer()
-                        if showReadText {
-                            Text("안읽음")
-                        }
                         if showDate {
                             Text("\(formattedDate)")
                         }
@@ -193,7 +191,15 @@ struct StateChatItem: View {
     
     var showReadText: Bool {
         get {
-            item.isMine && !item.isRead && !isStart && !isMiddle
+            if isPartnerInChat {
+                return false
+            }
+            else if item.isRead {
+                return false
+            }
+            else {
+                return !isStart && !isMiddle
+            }
         }
     }
     
@@ -278,6 +284,7 @@ struct StateChatItem_Previews: PreviewProvider {
             nextItem: nil,
             partnerNickname: "partner",
             partnerSignal: .init(type: .sexy),
+            isPartnerInChat: false,
             onClickAnswer: { _ in },
             onClickChallenge: { _ in },
             onClickReset: { },

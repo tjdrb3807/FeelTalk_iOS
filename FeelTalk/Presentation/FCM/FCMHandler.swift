@@ -82,15 +82,16 @@ final class FCMHandler {
 
 // MARK: Chat
 extension FCMHandler {
-    func handlePartnerChatRoomStatus(_ data: [AnyHashable: Any], _ isBackground: Bool) {
-        guard let status = data["isInChat"] as? Bool else { return }
+    private func handlePartnerChatRoomStatus(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let statusStr = data["isInChat"] as? String,
+              let status = Bool(statusStr) else { return }
         partnerChatRoomStatusObservable.accept(status)
     }
 }
 
 // MARK: Couple
 extension FCMHandler {
-    func handleCreateCouple(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleCreateCouple(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         createCoupleObservable.accept(true)
         
         if !isBackground {
@@ -106,7 +107,7 @@ extension FCMHandler {
 
 // MARK: Question
 extension FCMHandler {
-    func handleTodayQuestion(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleTodayQuestion(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let title = data["title"] as? String else { return }
         guard let message = data["message"] as? String else { return }
 //        guard let index  = data["index"] as? String else { return }
@@ -116,7 +117,7 @@ extension FCMHandler {
                          body: message)
     }
     
-    func handleQuestionChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleQuestionChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,
@@ -155,7 +156,7 @@ extension FCMHandler {
                          body: "(질문 채팅)")
     }
     
-    func handleAnswerChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleAnswerChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,
@@ -188,7 +189,7 @@ extension FCMHandler {
                          body: "(답변 채팅)")
     }
     
-    func handlePressForAnswerChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handlePressForAnswerChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let chatIndexStr = data["index"] as? String,
               let chatIsReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,
@@ -219,7 +220,7 @@ extension FCMHandler {
         
     }
     
-    func handleAnswerQuestionChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleAnswerQuestionChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let title = data["title"] as? String,
               let message = data["message"] as? String,
               let indexStr = data["index"] as? String else { return }
@@ -234,7 +235,7 @@ extension FCMHandler {
 
 // MARK: Challenge
 extension FCMHandler {
-    func handleAddChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleAddChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,
@@ -278,7 +279,7 @@ extension FCMHandler {
                          body: "(챌린지 채팅)")
     }
     
-    func handleCompleteChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleCompleteChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,
@@ -322,11 +323,11 @@ extension FCMHandler {
                          body: "(챌린지 완료 채팅)")
     }
     
-    func handleDeleteChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleDeleteChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let index  = data["index"] as? String else { return }
     }
     
-    func handleModifyChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleModifyChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let index  = data["index"] as? String else { return }
         let title  = data["title"] as? String ?? "연인이 챌린지를 수정했어요"
         let message  = data["message"] as? String ?? "앱에 들어와서 확인해보세요"
@@ -342,7 +343,7 @@ extension FCMHandler {
 
 // MARK: Signal
 extension FCMHandler {
-    func handleSignalChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleSignalChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let signalTypeStr = data["signal"] as? String,
               let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
@@ -374,7 +375,7 @@ extension FCMHandler {
         )
     }
     
-    func mappingSignalType(_ str: String) -> SignalType? {
+    private func mappingSignalType(_ str: String) -> SignalType? {
         switch str {
         case "100":
             return SignalType.sexy
@@ -396,7 +397,7 @@ extension FCMHandler {
 
 // chatting
 extension FCMHandler {
-    func handleTextChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleTextChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,
@@ -427,7 +428,7 @@ extension FCMHandler {
         )
     }
     
-    func handleVoiceChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleVoiceChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,
@@ -458,7 +459,7 @@ extension FCMHandler {
         )
     }
     
-    func handleImageChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleImageChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,
@@ -489,7 +490,7 @@ extension FCMHandler {
         )
     }
     
-    func handleResetPartnerPasswordChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+    private func handleResetPartnerPasswordChatting(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
               let createAtStr = data["createAt"] as? String,

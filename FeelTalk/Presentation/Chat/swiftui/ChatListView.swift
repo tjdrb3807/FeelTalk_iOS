@@ -64,6 +64,7 @@ struct ChatListView: View {
                             nextItem: getNextChat(index: index),
                             partnerNickname: viewModel.outputs.partnerNickname,
                             partnerSignal: viewModel.outputs.partnerSignal,
+                            isPartnerInChat: viewModel.outputs.isPartnerInChat,
                             onClickAnswer: { questionIndex in
                                 originalViewModel.navigateToAnswer(
                                     questionIndex: questionIndex
@@ -97,7 +98,7 @@ struct ChatListView: View {
                                 originalViewModel.navigateToImage(chat: imageChat)
                             }
                         )
-                        .id("\(currentItem.index)_\(currentItem.updateCount)")
+                        .id("\(currentItem.index)_\(currentItem.updateCount)_\(viewModel.outputs.isPartnerInChat)")
                     }
                     
                     Spacer()
@@ -120,7 +121,6 @@ struct ChatListView: View {
                 .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
                     //https://saeedrz.medium.com/detect-scroll-position-in-swiftui-3d6e0d81fc6b
                     self.scrollPosition = value
-                    print("y: \(value.y)")
                     if !viewModel.outputs.isLoadingChatList && value.y >= -500.0 {
                         originalViewModel.loadNextPageChatList()
                     }
@@ -218,6 +218,7 @@ extension ObservableChatListViewModel {
         outputs.bind(\.showTodayDivider, value: false)
         outputs.bind(\.isLastPage, value: false)
         outputs.bind(\.isLoadingChatList, value: true)
+        outputs.bind(\.isPartnerInChat, value: false)
     }
 }
 

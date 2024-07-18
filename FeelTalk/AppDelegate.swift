@@ -134,8 +134,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     /// Background / Kill or terminated
     /// https://eunjin3786.tistory.com/379
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        let userInfo = response.notification.request.content.userInfo
-        let identifier = response.notification.request.identifier
+//        let userInfo = response.notification.request.content.userInfo
+//        let identifier = response.notification.request.identifier
         
         completionHandler()
     }

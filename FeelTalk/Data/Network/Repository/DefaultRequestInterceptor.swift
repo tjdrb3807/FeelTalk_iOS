@@ -12,6 +12,12 @@ final class DefaultRequestInterceptor: RequestInterceptor {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         print("[REQUEST]: \(urlRequest)")
         
+        
+//        var urlRequest = urlRequest
+//        urlRequest.setValue("", forHTTPHeaderField: "Authorization")
+//        completion(.success(urlRequest))
+//        return
+        
         let crtDateStr = Date.toString(Date())
         guard let crtAccessToken = KeychainRepository.getItem(key: "accessToken") as? String,
               let crtExpiredTime = KeychainRepository.getItem(key: "expiredTime") as? String,

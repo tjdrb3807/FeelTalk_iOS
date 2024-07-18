@@ -70,11 +70,14 @@ final class DefaultLoginRepository: NSObject, LoginRepository {
                 switch response.result {
                 case .success(let responseDTO):
                     if responseDTO.status == "success" {
-                        guard let loginResponseDTO = responseDTO.data! else { return }
+                        guard let loginResponseDTO = responseDTO.data! else {
+//                            observer(.failure(NSError(domain: "null data in resposne", code: 400)))
+                            return
+                        }
                         observer(.success(loginResponseDTO.toDomain()))
                     } else {
-                        guard let message = responseDTO.message else { return }
-                        print(message)
+                        print(responseDTO.message ?? "\(response.debugDescription)")
+//                        observer(.failure(NSError(domain: "sever error", code: 400)))
                     }
                 case .failure(let error):
                     observer(.failure(error))
