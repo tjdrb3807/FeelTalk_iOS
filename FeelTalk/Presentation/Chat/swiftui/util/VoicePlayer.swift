@@ -67,6 +67,7 @@ class VoicePlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
         do {
             if audioPlayer == nil {
                 audioPlayer = try AVAudioPlayer(data: voiceData)
+                audioPlayer?.volume = 1.0
                 audioPlayer?.delegate = self
                 audioPlayer?.prepareToPlay()
             }

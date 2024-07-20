@@ -446,6 +446,7 @@ final class ChatViewModel {
                             if c.uiImage == nil {
                                 c.uiImage = try await self.loadImage(url: c.imageURL)
                             }
+                            c.uiImage = c.uiImage?.makeFixOrientation()
                             return c
                         default:
                             return chat
@@ -678,7 +679,6 @@ extension ChatViewModel {
         })
     }
 }
-
 
 let sampleChatList: [any Chat] = [
     // text chat
