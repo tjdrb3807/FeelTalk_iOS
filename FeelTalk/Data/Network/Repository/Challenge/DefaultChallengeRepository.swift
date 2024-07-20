@@ -70,8 +70,9 @@ final class DefaultChallengeRepository: ChallengeRepository {
                         guard let challengeBaseResponseDTO = responseDTO.data! else { return }
                         observer(.success(challengeBaseResponseDTO.toDomain()))
                     } else {
-                        guard let message = responseDTO.message else { return }
+                        let message = responseDTO.message
                         debugPrint(message)
+                        observer(.failure(NSError(domain: message ?? "서버 에러", code: 400)))
                     }
                 case .failure(let error):
                     observer(.failure(error))

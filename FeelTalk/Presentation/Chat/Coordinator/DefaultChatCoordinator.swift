@@ -58,6 +58,30 @@ final class DefaultChatCooridnator: ChatCoordinator {
         childCoordinators.append(chatFuncMenuCN)
     }
     
+    func showAnswerSheetFlow(question: Question) {
+        finish()
+        
+        let answerCoordinator = DefaultAnswerCoordinator(self.navigationController)
+        childCoordinators.append(answerCoordinator)
+        answerCoordinator.finishDelegate = self.finishDelegate
+        answerCoordinator.start()
+        
+        answerCoordinator.model.accept(question)
+    }
+    
+    func showChallengeDetailFlow(challenge: Challenge) {
+        let challengeDetailCoordinator = DefaultChallengeDetailCoordinator(chatViewNC)
+        challengeDetailCoordinator.start()
+        childCoordinators.append(challengeDetailCoordinator)
+        
+        challengeDetailCoordinator.challengeModel.accept(challenge)
+    }
+    
+    func showImageDeatilFlow(imageChat: ImageChat) {
+        
+    }
+    
+    
     func finish() {
         self.childCoordinators.removeAll()
         self.navigationController.dismiss(animated: false)

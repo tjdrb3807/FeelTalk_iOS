@@ -42,6 +42,7 @@ final class DefaultChatRepository: ChatRepository {
                 ChatAPI.getChatList(pnageNo: pageNo),
                 interceptor: DefaultRequestInterceptor()
             ).responseDecodable(of: BaseResponseDTO<ChatListResponseDTO?>.self) { response in
+                print(response.debugDescription)
                 switch response.result {
                 case .success(let responseDTO):
                     if responseDTO.status == "success" {

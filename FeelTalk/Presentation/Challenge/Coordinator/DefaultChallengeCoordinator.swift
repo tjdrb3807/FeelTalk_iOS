@@ -55,6 +55,8 @@ extension DefaultChallengeCoordinator: CoordinatorFinishDelegate {
         switch childCoordinator.type {
         case .challengeDetail:
             break
+        case .chatFromBottomSheet:
+            showChatFlow()
         default:
             break
         }

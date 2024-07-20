@@ -51,7 +51,7 @@ final class DefaultQuestionCoordinator: QuestionCoordinator {
         chatCoordinator.start()
     }
     
-    func reloadQuestionPage() {
+    func reloadTodayQuestion() {
         questionViewController.viewModel.reloadTodayQuestion()
     }
 }
@@ -61,8 +61,8 @@ extension DefaultQuestionCoordinator: CoordinatorFinishDelegate {
         switch childCoordinator.type {
 //        case .answer:
 //            showChatFlow()
-        case .answered:
-            reloadQuestionPage()
+        case .answer, .answered,:
+            reloadTodayQuestion()
         case .chatFromBottomSheet:
             showChatFlow()
         default:

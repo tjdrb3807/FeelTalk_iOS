@@ -261,6 +261,7 @@ final class ChallengeDetailViewModel {
                 vm.challengeUseCase.completeChallenge(index: index)
                     .bind { challengeChat in
                         print(challengeChat)
+                        FCMHandler.shared.chatObservable.accept(challengeChat)
                         ChallengeViewModel.reloadObserver.accept(.completedChallenge)
                         output.popUpBottomSheetObserver.accept(())
                     }.disposed(by: vm.disposeBag)

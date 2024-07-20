@@ -27,7 +27,7 @@ struct CompleteChallengeResponseDTO: Decodable {
 extension CompleteChallengeResponseDTO {
     func toDomain() -> ChallengeChat {
         .init(index: chatIndex,
-              type: .addChallengeChatting,
+              type: .completeChallengeChatting,
               isRead: isChatRead,
               isMine: true,
               createAt: createAt,

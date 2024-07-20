@@ -67,7 +67,7 @@ extension DefaultHomeCoordinator: CoordinatorFinishDelegate {
         switch childCoordinator.type {
         case .signal:
             homeViewController.viewModel.reloadObservable.accept(.signal)
-        case .answer:
+        case .answer, .answered:
             homeViewController.viewModel.reloadObservable.accept(.todayQuestion)
 //            showChatFlow()
         case .chatFromBottomSheet:

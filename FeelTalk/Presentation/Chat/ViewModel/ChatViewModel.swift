@@ -447,21 +447,24 @@ final class ChatViewModel {
     }
     
     func navigateToAnswer(questionIndex: Int) {
-        print("미구현: navigateToAnswer()")
+        Task {
+            guard let question = try? await loadQuestion(questionIndex: questionIndex) else { return }
+            DispatchQueue.main.async {
+                self.coordinator?.showAnswerSheetFlow(question: question)
+            }
+        }
     }
     
-    func navigateToChallenge(challengeIndex: Int) {
-        print("미구현: navigateToChallenge()")
+    func navigateToChallenge(challengeIndex: Int) async -> Bool {
+        guard let challenge = try? await self.loadChallenge(challengeIndex: challengeIndex) else { return false }
+        DispatchQueue.main.async {
+            self.coordinator?.showChallengeDetailFlow(challenge: challenge)
+        }
+        return true
     }
     
     func navigateToImage(chat: ImageChat) {
-        print("미구현: navigateToImage()")
-    }
-    
-    func scrollToBottom() {
-        scrollToBottomCount.accept(
-            scrollToBottomCount.value + 1
-        )
+        self.coordinator?.showImageDeatilFlow(imageChat: chat)
     }
 }
 

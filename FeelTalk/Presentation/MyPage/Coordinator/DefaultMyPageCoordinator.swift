@@ -79,6 +79,8 @@ extension DefaultMyPageCoordinator: CoordinatorFinishDelegate {
         case .settingList:
             self.childCoordinators.removeAll()
             finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        case .chatFromBottomSheet:
+            showChatFlow()
         default:
             break
         }

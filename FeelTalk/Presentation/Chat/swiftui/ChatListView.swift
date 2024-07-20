@@ -71,9 +71,16 @@ struct ChatListView: View {
                                 )
                             },
                             onClickChallenge: { challengeIndex in
-                                originalViewModel.navigateToChallenge(
-                                    challengeIndex: challengeIndex
-                                )
+                                Task {
+                                    let isSuccessful =
+                                    await originalViewModel.navigateToChallenge(
+                                        challengeIndex: challengeIndex
+                                    )
+                                    if !isSuccessful {
+                                        self.alertType = .deletedChallenge
+                                        self.showAlert = true
+                                    }
+                                }
                             },
                             onClickReset: {
                                 Task {
@@ -165,8 +172,13 @@ struct ChatListView: View {
                     message: Text("연인의 암호를 해제하는데 실패했어요."),
                     dismissButton: .default(Text("확인"))
                 )
+            case .deletedChallenge:
+                return Alert(
+                    title: Text("앗! 챌린지를 찾을 수 없어요😅"),
+                    message: Text("이미 삭제된 챌린지예요."),
+                    dismissButton: .default(Text("확인"))
+                )
             }
-            
         }
     }
     
@@ -208,7 +220,7 @@ struct ChatListView: View {
 
 
 enum AlertType {
-    case success, alreadyDone, failure, empty
+    case success, alreadyDone, failure, empty, deletedChallenge
 }
 
 

@@ -54,7 +54,6 @@ final class QuestionViewModel {
             }.disposed(by: disposeBag)
         
         input.viewWillAppear
-            .take(1)
             .withUnretained(self)
             .bind { vm, _ in
                 vm.questionUseCase.getTodayQuestion()

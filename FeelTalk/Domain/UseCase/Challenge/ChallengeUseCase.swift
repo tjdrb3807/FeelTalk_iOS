@@ -83,8 +83,10 @@ final class DefaultChallengeUseCase: ChallengeUseCase {
             self.challengeRepository
                 .getChallenge(index: index)
                 .asObservable()
-                .bind(onNext: { challenge in
+                .subscribe(onNext: { challenge in
                     observer.onNext(challenge)
+                }, onError: { error in
+                    observer.onError(error)
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()

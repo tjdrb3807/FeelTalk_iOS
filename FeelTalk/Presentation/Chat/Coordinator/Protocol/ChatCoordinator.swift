@@ -13,4 +13,10 @@ protocol ChatCoordinator: Coordinator {
     var chatViewNC: UINavigationController { get set }
     
     func showChatFuncMenuFlow()
+    
+    func showAnswerSheetFlow(question: Question)
+    
+    func showChallengeDetailFlow(challenge: Challenge)
+    
+    func showImageDeatilFlow(imageChat: ImageChat)
 }
