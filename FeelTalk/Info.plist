@@ -51,17 +51,14 @@
 	<string>b2e92652651b8321288757cbb1f7ce8b</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>kakaokompassauth</string>
-		<string>kakaolink</string>
-		<string>naversearchapp</string>
-		<string>naversearchthirdlogin</string>
+		<string>mailto</string>
 	</array>
 	<key>MixpanelToken</key>
 	<string>e7341c990703953973ddb05e871b4929</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<false/>
+		<true/>
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
@@ -97,9 +94,9 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>mailto</string>
-    </array>
+    <key>NSCameraUsageDescription</key>
+    <string>카메라에 대한 권한이 필요합니다.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>사진에 대한 권한이 필요합니다.</string>
 </dict>
 </plist>

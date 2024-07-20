@@ -15,9 +15,12 @@ import FirebaseCore
 import FirebaseMessaging
 import UserNotifications
 import Mixpanel
+import RxSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    private let disposeBag = DisposeBag()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // SNS setting
         setKakaoNativeAppKey()
@@ -147,11 +150,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
         configurationUseCase
             .getLockNubmer()
-            .map { $0?.count == 4 }
             .bind(onNext: { _ in
                 completionHandler()
             })
-            .dispose()
+            .disposed(by: disposeBag)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             completionHandler()

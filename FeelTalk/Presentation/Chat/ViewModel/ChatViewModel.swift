@@ -31,7 +31,7 @@ final class ChatViewModel {
     private let pageNo = PublishSubject<Int>()
     private let isLastPage = BehaviorRelay<Bool>(value: false)
     
-    private let partnerNickname = PublishRelay<String>()
+    private let partnerNickname = BehaviorRelay<String>(value: "")
     private let partnerSignal = BehaviorRelay<Signal>(value: .init(type: .sexy))
     private let chatList = BehaviorRelay<[Chat]>(value: [])
     private let scrollToBottomCount = BehaviorRelay<Int>(value: 0)
@@ -59,7 +59,7 @@ final class ChatViewModel {
         let keyboardHeight: PublishRelay<CGFloat>
         let inputMode: BehaviorRelay<ChatInputMode>
         let isFunctionActive: BehaviorRelay<Bool>
-        let partnerNickname: PublishRelay<String>
+        let partnerNickname: BehaviorRelay<String>
         let partnerSignal: BehaviorRelay<Signal>
         let chatList: BehaviorRelay<[Chat]>
         let scrollToBottomCount: BehaviorRelay<Int>
@@ -463,8 +463,38 @@ final class ChatViewModel {
         return true
     }
     
-    func navigateToImage(chat: ImageChat) {
-        self.coordinator?.showImageDeatilFlow(imageChat: chat)
+    func navigateToImageDetail(chat: ImageChat) {
+        Task {
+            let ownerNickname: String
+            let ownerSignal: Signal
+            
+            if chat.isMine {
+                guard let myNickname = try? await loadMyNickname() else { return }
+                guard let mySignal = try? await loadMySignal() else { return }
+                ownerNickname = myNickname
+                ownerSignal = mySignal
+            }
+            else {
+                ownerNickname = self.partnerNickname.value
+                ownerSignal = self.partnerSignal.value
+            }
+            
+            DispatchQueue.main.async {
+                self.coordinator?.showImageDeatilFlow(
+                    chat: chat,
+                    ownerNickname: ownerNickname,
+                    ownerSignal: ownerSignal
+                )
+            }
+        }
+    }
+    
+    func navigateToImageShare(image: UIImage) {
+        self.coordinator?.showImageShareFlow(image: image)
+    }
+    
+    func disableFunctionActive() {
+        self.isFunctionActive.accept(false)
     }
 }
 
@@ -483,6 +513,20 @@ extension ChatViewModel {
 
 // MARK: api implementations
 extension ChatViewModel {
+    func loadMyNickname() async throws -> String? {
+        for try await userInfo in userUseCase.getMyInfo().values {
+            return userInfo.nickname
+        }
+        return nil
+    }
+    
+    func loadMySignal() async throws -> Signal? {
+        for try await signal in signalUseCase.getMySignal().values {
+            return signal
+        }
+        return nil
+    }
+    
     func loadQuestion(questionIndex: Int) async throws -> Question? {
         for try await question in questionUseCase
             .getQuestion(index: questionIndex)

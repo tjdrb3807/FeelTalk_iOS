@@ -18,5 +18,7 @@ protocol ChatCoordinator: Coordinator {
     
     func showChallengeDetailFlow(challenge: Challenge)
     
-    func showImageDeatilFlow(imageChat: ImageChat)
+    func showImageDeatilFlow(chat: ImageChat, ownerNickname: String, ownerSignal: Signal)
+    
+    func showImageShareFlow(image: UIImage)
 }

@@ -61,7 +61,7 @@ extension DefaultQuestionCoordinator: CoordinatorFinishDelegate {
         switch childCoordinator.type {
 //        case .answer:
 //            showChatFlow()
-        case .answer, .answered,:
+        case .answer, .answered:
             reloadTodayQuestion()
         case .chatFromBottomSheet:
             showChatFlow()

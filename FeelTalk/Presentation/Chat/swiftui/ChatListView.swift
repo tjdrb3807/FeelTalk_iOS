@@ -102,7 +102,7 @@ struct ChatListView: View {
                                 }
                             },
                             onClickImage: { imageChat in
-                                originalViewModel.navigateToImage(chat: imageChat)
+                                originalViewModel.navigateToImageDetail(chat: imageChat)
                             }
                         )
                         .id("\(currentItem.index)_\(currentItem.updateCount)")
@@ -229,7 +229,7 @@ extension ObservableChatListViewModel {
     convenience init(_ viewModel: ChatViewModel) {
         self.init(inputs: viewModel.input, outputs: viewModel.output)
         
-        outputs.bind(\.partnerNickname, value: "partner")
+        outputs.bind(\.partnerNickname, value: "")
         outputs.bind(\.partnerSignal, value: .init(type: .sexy))
         outputs.bind(\.chatList, value: [])
         outputs.bind(\.scrollToBottomCount, value: 0)

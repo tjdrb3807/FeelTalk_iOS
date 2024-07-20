@@ -26,7 +26,7 @@ extension ChatSectionModel: SectionModelType {
     }
 }
 
-final class ChatViewController: UIViewController {
+final class ChatViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var viewModel: ChatViewModel!
     
     let modelObserver = BehaviorRelay<[ChatSectionModel]>(
@@ -137,6 +137,9 @@ final class ChatViewController: UIViewController {
     
     private lazy var chatFucntionView: ChatFunctionView = { ChatFunctionView() }()
     
+    private lazy var imagePicker: UIImagePickerController = { UIImagePickerController() }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -154,12 +157,20 @@ final class ChatViewController: UIViewController {
 //        collectionView.addGestureRecognizer(sigleTapGestureRecognizer)
         chatListView.view.addGestureRecognizer(sigleTapGestureRecognizer)
         
+        
         self.bind(to: viewModel!)
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
         
         chatListView.didMove(toParent: self)
+        
+        chatFucntionView.cameraFunctionButton.addAction { [weak self] in
+            self?.showCameraImagePicker()
+        }
+        chatFucntionView.albumFunctionButton.addAction { [weak self] in
+            self?.showAlbumImagePicker()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -167,6 +178,37 @@ final class ChatViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name:  UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name:  UIApplication.willTerminateNotification, object: nil)
     }
+    
+    func showCameraImagePicker() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            viewModel.disableFunctionActive()
+            imagePicker.delegate = self
+            imagePicker.sourceType = .camera
+            present(imagePicker, animated: true, completion: nil)
+        }
+    }
+    
+    func showAlbumImagePicker() {
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            viewModel.disableFunctionActive()
+            imagePicker.delegate = self
+            imagePicker.sourceType = .photoLibrary
+            present(imagePicker, animated: true)
+        }
+    }
+    
+    // https://stackoverflow.com/a/51172065/25162070
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        imagePicker.dismiss(animated: true, completion: nil)
+        guard let image = info[.originalImage] as? UIImage else {
+            print("Expected a dictionary containing an image, but was provided the following: \(info)")
+            return
+        }
+        
+        viewModel.navigateToImageShare(image: image)
+    }
+    
     
     @objc func openAndCloseActivity(_ notification: Notification)  {
         Task {

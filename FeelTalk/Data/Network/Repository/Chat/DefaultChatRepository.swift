@@ -108,7 +108,7 @@ final class DefaultChatRepository: ChatRepository {
                     multipart.append(
                         image.pngData()!,
                         withName: "imageFile",
-                        fileName: nil,
+                        fileName: "image.png",
                         mimeType: "image/png"
                     )
                 },
@@ -128,11 +128,13 @@ final class DefaultChatRepository: ChatRepository {
                                 isRead: sendChatDTO.isRead,
                                 isMine: true,
                                 createAt: sendChatDTO.createAt,
-                                imageURL: "url 서버에서 안 보내주는데 이거 어캄 망함")
+                                imageURL: "",
+                                uiImage: image
+                            )
                         ))
                     } else {
-                        guard let message = responseDTO.message else { return }
-                        
+                        let message = responseDTO.message
+                        observer(.failure(NSError(domain: message ?? "서버 에러", code: 400)))
                     }
                 case .failure(let error):
                     observer(.failure(error))
@@ -150,7 +152,7 @@ final class DefaultChatRepository: ChatRepository {
                         multipart.append(
                             audio,
                             withName: "voiceFile",
-                            fileName: nil,
+                            fileName: "audio.wav",
                             mimeType: "audio/*"
                         )
                     },
@@ -170,7 +172,9 @@ final class DefaultChatRepository: ChatRepository {
                                     isRead: sendChatDTO.isRead,
                                     isMine: true,
                                     createAt: sendChatDTO.createAt,
-                                    voiceURL: "url 서버에서 안 보내주는데 이거 어캄 망함2")
+                                    voiceURL: "",
+                                    voiceFile: audio
+                                )
                             ))
                         } else {
                             guard let message = responseDTO.message else { return }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class DefaultChatCooridnator: ChatCoordinator {
     var chatViewController: ChatViewController
@@ -77,10 +78,39 @@ final class DefaultChatCooridnator: ChatCoordinator {
         challengeDetailCoordinator.challengeModel.accept(challenge)
     }
     
-    func showImageDeatilFlow(imageChat: ImageChat) {
+    func showImageDeatilFlow(chat: ImageChat, ownerNickname: String, ownerSignal: Signal) {
+        let imageDetailController = UIHostingController(
+            rootView: ImageDetailView(
+                chat: chat,
+                ownerNickname: ownerNickname,
+                ownerSignal: ownerSignal,
+                onBack: { [weak self] in
+                    self?.chatViewNC.popViewController(animated: true)
+                }
+            )
+        )
         
+        chatViewNC.pushViewController(imageDetailController, animated: true)
     }
     
+    func showImageShareFlow(image: UIImage) {
+        if chatViewNC.viewControllers.contains(
+            where:{ $0 is UIHostingController<ImageShareView> }
+        ) {
+            return
+        }
+        
+        let imageShareController = UIHostingController(
+            rootView: ImageShareView(
+                image: image,
+                onBack: { [weak self] in
+                    self?.chatViewNC.popViewController(animated: true)
+                }
+            )
+        )
+        
+        chatViewNC.pushViewController(imageShareController, animated: true)
+    }
     
     func finish() {
         self.childCoordinators.removeAll()

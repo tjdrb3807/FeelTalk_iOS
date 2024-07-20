@@ -93,7 +93,7 @@ extension ChatAPI: Router, URLRequestConvertible {
         
         request.method = method
         request.headers = HTTPHeaders(header)
-        
+
         if let encoding = encoding {
             return try encoding.encode(request, with: parameters)
         }

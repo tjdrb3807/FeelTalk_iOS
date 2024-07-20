@@ -86,10 +86,12 @@ final class DefaultChatUseCase: ChatUseCase {
             self.chatRepository
                 .sendImageChat(image: image)
                 .asObservable()
-                .bind(onNext: { data in
-                    print(data)
-                    observer.onNext(data)
-                }).disposed(by: self.disposeBag)
+                .subscribe(onNext: { imageChat in
+                    observer.onNext(imageChat)
+                }, onError: { error in
+                    observer.onError(error)
+                })
+                .disposed(by: self.disposeBag)
             
             return Disposables.create()
         }
