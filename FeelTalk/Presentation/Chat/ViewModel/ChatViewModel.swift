@@ -53,6 +53,7 @@ final class ChatViewModel {
         let tapChatRoomButton: Observable<Void> // 채팅 입장/나가기 버튼
         let chatFuncMenuButtonTapObserver: Observable<Void> // 질문/챌린지 공유 화면 이동 버튼
         let viewWillDisappear: Observable<Bool>
+        let recordedVoiceURL: Observable<URL>        // 녹음 완료 후 inputButton을 누르면, 녹음 파일 url을 내보냄
     }
     
     struct Output {
@@ -92,7 +93,8 @@ final class ChatViewModel {
             tapDimmiedView: Observable<Void>.empty(),
             tapChatRoomButton: Observable<Void>.empty(),
             chatFuncMenuButtonTapObserver: Observable<Void>.empty(),
-            viewWillDisappear: Observable<Bool>.empty()
+            viewWillDisappear: Observable<Bool>.empty(),
+            recordedVoiceURL: Observable<URL>.empty()
         )
         self.output = Output(
             keyboardHeight: self.keyboardHeight,
@@ -301,7 +303,9 @@ final class ChatViewModel {
                 if disappear {
                     Task {
                         await vm.changeChatRoomStatus(isInChat: false)
-                    }                }
+                    }
+                    vm.isFunctionActive.accept(false)
+                }
             }.disposed(by: disposeBag)
         
         
@@ -324,7 +328,6 @@ final class ChatViewModel {
                 case .recorded:             // 녹음 완료 (Visualizer + 보이스 채팅 전송 버튼)
                     vm.inputMode.accept(.basics)
                     vm.isFunctionActive.accept(false)
-                    // TODO: send voice chat
                 case .inputMessage:         // 텍스트 채팅 전송 버튼 (텍스트 입력시)
                     vm.inputMode.accept(.basics)
                     // 텍스트 채팅 전송
@@ -334,6 +337,21 @@ final class ChatViewModel {
             }
             .disposed(by: disposeBag)
         
+        input.recordedVoiceURL
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, url in
+                guard let voiceData = try? Data(contentsOf: url) else {
+                    print("Fail to convert url to data (when sending voice chat)")
+                    return
+                }
+                
+                vm.chatUseCase.sendVoiceChat(audio: voiceData)
+                    .asObservable()
+                    .bind { voiceChat in
+                        FCMHandler.shared.chatObservable.accept(voiceChat)
+                    }.disposed(by: vm.disposeBag)
+            }.disposed(by: disposeBag)
         
         // 입력된 텍스트가 존재하면 inputMessage mode로 전환
         // 없으면 basic mode로 전환

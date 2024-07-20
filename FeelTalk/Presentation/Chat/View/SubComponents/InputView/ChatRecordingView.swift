@@ -14,12 +14,16 @@ import AVFoundation
 final class ChatRecordingView: UIStackView {
     let mode = PublishRelay<ChatInputMode>()
     let isRecord = PublishRelay<Bool>()
+    let isPlaying = BehaviorRelay<Bool>(value: false)
     private let disposeBag = DisposeBag()
     
     private var audioRecoder = AVAudioRecorder()
-    private var audioPlayer = AVAudioPlayer()
+    private var audioPlayer: AVAudioPlayer? = nil
     
-    private lazy var recordURL: URL = {
+    private var recorderTimer: Timer? = nil
+    private var playerTimer: Timer? = nil
+    
+    public lazy var recordURL: URL = {
         var documentsURL: URL = {
             let pahts = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             
@@ -62,14 +66,14 @@ final class ChatRecordingView: UIStackView {
         stackView.spacing = ChatRecordingViewNameSpace.equlizerViewSpacing
         stackView.backgroundColor = .clear
         
-        for _ in ChatRecordingViewNameSpace.equlizerBarZeroCount..<ChatRecordingViewNameSpace.recordingEqulizerBarCount {
-            let bar = ChatRecordingEqualizerBar()
-            stackView.addArrangedSubview(bar)
-            bar.snp.makeConstraints {
-                $0.width.equalTo(ChatRecordingEqulizerBarNameSpace.width)
-                $0.height.equalTo(ChatRecordingEqulizerBarNameSpace.defaultHeight)
-            }
-        }
+//        for _ in ChatRecordingViewNameSpace.equlizerBarZeroCount..<ChatRecordingViewNameSpace.recordingEqulizerBarCount {
+//            let bar = ChatRecordingEqualizerBar()
+//            stackView.addArrangedSubview(bar)
+//            bar.snp.makeConstraints {
+//                $0.width.equalTo(ChatRecordingEqulizerBarNameSpace.width)
+//                $0.height.equalTo(ChatRecordingEqulizerBarNameSpace.defaultHeight)
+//            }
+//        }
         
         return stackView
     }()
@@ -82,14 +86,14 @@ final class ChatRecordingView: UIStackView {
         stackView.spacing = ChatRecordingViewNameSpace.equlizerViewSpacing
         stackView.backgroundColor = .clear
         
-        for _ in ChatRecordingViewNameSpace.equlizerBarZeroCount..<ChatRecordingViewNameSpace.playEqulizerBarCount {
-            let bar = ChatRecordingEqualizerBar()
-            stackView.addArrangedSubview(bar)
-            bar.snp.makeConstraints {
-                $0.width.equalTo(ChatRecordingEqulizerBarNameSpace.width)
-                $0.height.equalTo(ChatRecordingEqulizerBarNameSpace.defaultHeight)
-            }
-        }
+//        for _ in ChatRecordingViewNameSpace.equlizerBarZeroCount..<ChatRecordingViewNameSpace.playEqulizerBarCount {
+//            let bar = ChatRecordingEqualizerBar()
+//            stackView.addArrangedSubview(bar)
+//            bar.snp.makeConstraints {
+//                $0.width.equalTo(ChatRecordingEqulizerBarNameSpace.width)
+//                $0.height.equalTo(ChatRecordingEqulizerBarNameSpace.defaultHeight)
+//            }
+//        }
         
         return stackView
     }()
@@ -118,6 +122,10 @@ final class ChatRecordingView: UIStackView {
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
+        
+        self.playButton.addAction {
+            self.isPlaying.accept(!self.isPlaying.value)
+        }
     }
     
     required init(coder: NSCoder) {
@@ -136,15 +144,11 @@ final class ChatRecordingView: UIStackView {
             .filter { $0 }
             .withUnretained(self)
             .bind { v, _ in
-                print("녹음 시작")
+                print("녹음 시작 in chatRecordingView")
                 v.record()
-                Observable<Int>
-                    .interval(.milliseconds(300), scheduler: MainScheduler.asyncInstance)
-                    .compactMap { _ in v.audioRecoder.currentTime }
-                    .bind {
-                        v.updateTimeLabel(v.convertNSTimeInterval12String($0))
-                        v.updateEqulizerBar(v.convertdBFS())
-                    }.disposed(by: v.disposeBag)
+                v.updateTimeLabel("00:00")
+                v.startRecoderTimer()
+                v.switchContent(with: .inputMessage)
             }.disposed(by: disposeBag)
         
         // 녹음 중지
@@ -152,10 +156,25 @@ final class ChatRecordingView: UIStackView {
             .filter { !$0 }
             .withUnretained(self)
             .bind { v, _ in
-                print("녹음 중지")
+                print("녹음 중지 in chatRecordingView")
                 v.stop()
+                v.cancelRecorderTimer()
+                v.switchContent(with: .recorded)
+            }.disposed(by: disposeBag)
+        
+        isPlaying
+            .withUnretained(self)
+            .bind { v, isPlaying in
+                if isPlaying {
+                    v.playVoice()
+                    v.playButton.setImage(UIImage(named: "icon_recording_pause_white"), for: .normal)
+                } else {
+                    v.playButton.setImage(UIImage(named: "icon_recording_play_white"), for: .normal)
+                    v.pauseVoice()
+                }
             }.disposed(by: disposeBag)
     }
+    
     
     private func setProperties() {
         axis = .vertical
@@ -176,6 +195,108 @@ final class ChatRecordingView: UIStackView {
         makeRecordingEqulizerViewConstratins()
         makeMiddleSpacingConstraints()
         makeTrailingSpacingConstraints()
+    }
+}
+
+// MARK: Player
+extension ChatRecordingView: AVAudioPlayerDelegate {
+    func playVoice() {
+        do {
+            guard let voiceData = try? Data(contentsOf: recordURL) else {
+                print("Fail to convert url to data (when playing recorded voice)")
+                return
+            }
+            
+            if audioPlayer == nil {
+                audioPlayer = try AVAudioPlayer(data: voiceData)
+                audioPlayer?.delegate = self
+                audioPlayer?.prepareToPlay()
+            }
+            
+            audioPlayer?.play()
+            startPlayerTimer()
+        } catch {
+            stopVoice()
+        }
+    }
+    
+    func pauseVoice() {
+        audioPlayer?.pause()
+        cancelPlayerTimer()
+    }
+    
+    func stopVoice() {
+        audioPlayer?.stop()
+        audioPlayer = nil
+        cancelPlayerTimer()
+        
+        updateTimeLabel("00:00")
+        self.isPlaying.accept(false)
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        self.isPlaying.accept(false)
+    }
+    
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        self.isPlaying.accept(false)
+    }
+}
+
+// MARK: Timer
+extension ChatRecordingView {
+    func startRecoderTimer() {
+        cancelRecorderTimer()
+        recorderTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
+            
+            print("recording timer works")
+            guard let currentTime =  self?.audioRecoder.currentTime,
+                  let interval = self?.convertNSTimeInterval12String(currentTime),
+                  let bfs = self?.convertdBFS()
+            else { return }
+            
+            self?.updateTimeLabel(interval)
+//            self?.updateEqulizerBar(bfs)
+        }
+    }
+    
+    func cancelRecorderTimer() {
+        recorderTimer?.invalidate()
+        recorderTimer = nil
+    }
+    
+    func startPlayerTimer() {
+        cancelPlayerTimer()
+        playerTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
+            
+            print("player timer works")
+            
+            guard let audioPlayer = self?.audioPlayer else {
+                self?.cancelPlayerTimer()
+                return
+            }
+            
+            if audioPlayer.isPlaying {
+                let currentTime = audioPlayer.currentTime
+                if let interval = self?.convertNSTimeInterval12String(currentTime) {
+//                    ,let bfs = self?.convertdBFS() {
+                    
+                    self?.updateTimeLabel(interval)
+        //            self?.updateEqulizerBar(bfs)
+                }
+            }
+            
+            let remainingTime = audioPlayer.duration - audioPlayer.currentTime
+            if remainingTime <= 0 {
+                self?.cancelPlayerTimer()
+                return
+            }
+        }
+    }
+    
+    func cancelPlayerTimer() {
+        playerTimer?.invalidate()
+        playerTimer = nil
     }
 }
 
@@ -234,14 +355,16 @@ extension ChatRecordingView {
             contentStackView.insertArrangedSubview(playButton, at: ChatRecordingViewNameSpace.contentStackViewFirstSubViewIndex)
             contentStackView.insertArrangedSubview(playEqulizerView, at: ChatRecordingViewNameSpace.contentStackViewSecondSubViewIndex)
             
-            makeRecordingEqulizerViewConstratins()
             makePlayButtonConstraints()
+//            makeRecordingEqulizerViewConstratins()
+            makePlayEqulizerViewConstraints()
         } else if mode == .inputMessage {
             contentStackView.insertArrangedSubview(leadingSpacing, at: ChatRecordingViewNameSpace.contentStackViewFirstSubViewIndex)
             contentStackView.insertArrangedSubview(recordingEqualizerView, at: ChatRecordingViewNameSpace.contentStackViewSecondSubViewIndex)
             
-            makePlayButtonConstraints()
+//            makePlayButtonConstraints()
             makeLeadingSpacingConstraints()
+            makeRecordingEqulizerViewConstratins()
         }
     }
     
@@ -262,15 +385,17 @@ extension ChatRecordingView {
     
     private func updateTimeLabel(_ time: String) {
         timeLabel.rx.text.onNext(time)
-        timeLabel.snp.remakeConstraints { $0.width.equalTo(timeLabel.intrinsicContentSize) }
+        timeLabel.snp.remakeConstraints {
+            $0.width.equalTo(timeLabel.intrinsicContentSize)
+        }
     }
 }
 
-extension ChatRecordingView {
+extension ChatRecordingView: AVAudioRecorderDelegate {
     private func record() {
-        let fileName = UUID().uuidString + ".m4a"
-        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            .appendingPathComponent(fileName)
+//        let fileName = UUID().uuidString + ".m4a"
+//        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+//            .appendingPathComponent(fileName)
         let settings: [String: Any] = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 12000,
@@ -285,7 +410,7 @@ extension ChatRecordingView {
         }
         
         do {
-            audioRecoder = try AVAudioRecorder(url: fileURL, settings: settings)
+            audioRecoder = try AVAudioRecorder(url: recordURL, settings: settings)
             audioRecoder.isMeteringEnabled = true
             audioRecoder.delegate = self
             audioRecoder.record()
@@ -313,18 +438,16 @@ extension ChatRecordingView {
         
         return Int(dBFS)
     }
-}
-
-extension ChatRecordingView: AVAudioRecorderDelegate {
+    
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
         self.stop()
     }
     
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         self.stop()
     }
+    
 }
-
 #if DEBUG
 
 import SwiftUI

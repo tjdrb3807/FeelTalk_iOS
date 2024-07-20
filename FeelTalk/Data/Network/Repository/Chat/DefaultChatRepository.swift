@@ -152,7 +152,7 @@ final class DefaultChatRepository: ChatRepository {
                         multipart.append(
                             audio,
                             withName: "voiceFile",
-                            fileName: "audio.wav",
+                            fileName: "audio.m4a",
                             mimeType: "audio/*"
                         )
                     },
@@ -168,7 +168,7 @@ final class DefaultChatRepository: ChatRepository {
                             observer(.success(
                                 VoiceChat(
                                     index: sendChatDTO.index,
-                                    type: .imageChatting,
+                                    type: .voiceChatting,
                                     isRead: sendChatDTO.isRead,
                                     isMine: true,
                                     createAt: sendChatDTO.createAt,

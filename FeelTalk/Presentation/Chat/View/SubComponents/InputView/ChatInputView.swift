@@ -22,6 +22,7 @@ final class ChatInputView: UIStackView {
     let mode = PublishRelay<ChatInputMode>()
     let refresh = BehaviorRelay(value: false)
     let isFunctionActive = PublishRelay<Bool>()
+    let recordedVoiceURL = PublishRelay<URL>()
     private let disposeBag = DisposeBag()
     
     private lazy var topSpacing: UIView = { UIView() }()
@@ -113,8 +114,8 @@ final class ChatInputView: UIStackView {
             .filter { $0 == .recordingDescription }
             .withUnretained(self)
             .bind { v, _ in
-                print("녹음 시작")
-//                v.recordingView.isRecord.accept(true)
+                print("녹음 시작 in chatInputView")
+                v.recordingView.isRecord.accept(true)
             }.disposed(by: disposeBag)
         
         inputButton.rx.tap
@@ -122,14 +123,29 @@ final class ChatInputView: UIStackView {
             .filter { $0 == .recording }
             .withUnretained(self)
             .bind { v, _ in
-                print("녹음 중지")
-//                v.recordingView.isRecord.accept(false)
+                print("녹음 중지 in chatInputView")
+                v.recordingView.isRecord.accept(false)
+            }.disposed(by: disposeBag)
+        
+        inputButton.rx.tap
+            .withLatestFrom(mode)
+            .filter { $0 == .recorded }
+            .withUnretained(self)
+            .bind { v, _ in
+                // send voice chat
+                let url = v.recordingView.recordURL
+                v.recordedVoiceURL.accept(url)
             }.disposed(by: disposeBag)
         
         isFunctionActive
             .withUnretained(self)
             .bind { v, state in
                 v.switchFunctionButton(with: state)
+                if !state {
+                    v.recordingView.isRecord.accept(false)
+                    v.recordingView.isPlaying.accept(false)
+                    v.recordingView.stopVoice()
+                }
             }.disposed(by: disposeBag)
     }
     

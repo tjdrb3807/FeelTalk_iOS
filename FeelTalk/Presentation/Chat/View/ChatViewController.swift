@@ -223,12 +223,14 @@ final class ChatViewController: UIViewController, UIImagePickerControllerDelegat
                 // onBackground
                 let result = await viewModel.changeChatRoomStatus(isInChat: false)
                 print("onBackground in chat: \(result)")
+                viewModel.disableFunctionActive()
             }
             else {
                 // willTerminateNotification
                 // onAppTerminated
                 let result = await viewModel.changeChatRoomStatus(isInChat: false)
                 print("onAppTerminate in chat: \(result)")
+                viewModel.disableFunctionActive()
             }
         }
     }
@@ -251,7 +253,8 @@ final class ChatViewController: UIViewController, UIImagePickerControllerDelegat
             tapDimmiedView: dimmedView.rx.tapGesture().when(.recognized).map { _ in () }.asObservable(),
             tapChatRoomButton: chatRoomButton.rx.tap.asObservable(),
             chatFuncMenuButtonTapObserver: navigationBar.menuButton.rx.tap.asObservable(),
-            viewWillDisappear: rx.viewWillDisappear.asObservable()
+            viewWillDisappear: rx.viewWillDisappear.asObservable(),
+            recordedVoiceURL: chatInputView.recordedVoiceURL.asObservable()
         )
         
         let output = viewModel.bind(input: input)
