@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window?.makeKeyAndVisible()
         self.window?.backgroundColor = .white
         
-        FCMHandler.shared.showNotification(identifier: "-2", title: "SceneDelegate", body: "SceneDelegate")
+//        FCMHandler.shared.showNotification(identifier: "-2", title: "SceneDelegate", body: "SceneDelegate")
         
         self.appCoordinator = DefaultAppCoordinator(navigationController)
         self.appCoordinator?.start()

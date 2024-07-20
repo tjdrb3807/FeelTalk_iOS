@@ -137,7 +137,25 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 //        let userInfo = response.notification.request.content.userInfo
 //        let identifier = response.notification.request.identifier
         
-        completionHandler()
+//        completionHandler()
+        
+        /// MARK: AppDelegate 실행 자체는 알림이 도착했을 때 이루어지므로
+        /// MARK: 알림이 온지 1시간이 지났을 경우 accessToken이 만료되어 있을 것임
+        /// MARK: 그러므로 알림을 클릭해서 앱을 실행시킨다면
+        /// MARK: accessToken을 다시 갱신 시켜야 됨
+        let configurationUseCase = DefaultConfigurationUseCase(configurationRepository: DefaultConfigurationRepository())
+
+        configurationUseCase
+            .getLockNubmer()
+            .map { $0?.count == 4 }
+            .bind(onNext: { _ in
+                completionHandler()
+            })
+            .dispose()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            completionHandler()
+        }
     }
 
     /// 백그라운드 작업 자동 처리 (content_available가 true인 fcm이 도착 했을 때)

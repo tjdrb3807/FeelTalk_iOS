@@ -25,6 +25,8 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.openAndCloseActivity), name: UIApplication.didBecomeActiveNotification, object: nil)
+        
         self.bind(to: viewModel)
         self.setProperties()
         self.addSubComponents()
@@ -32,6 +34,25 @@ final class HomeViewController: UIViewController {
         
         // MARK: Mixpanel Navigate Page
         MixpanelRepository.shared.navigatePage()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+    
+    @objc func openAndCloseActivity(_ notification: Notification)  {
+        Task {
+            if notification.name == UIApplication.didBecomeActiveNotification {
+                // become active notifictaion
+                // onResume
+                viewModel.reloadObservable.accept(.signal)
+                viewModel.reloadObservable.accept(.todayQuestion)
+                print("onResume in Home")
+                
+//                FCMHandler.shared.showNotification(identifier: "onResumeHome", title: "onResumeHome", body: "onResumeHome")
+//                FCMHandler.shared.showNotification(identifier: "onResumeHome", title: "onResumeHome", body: "onResumeHome")
+            }
+        }
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .darkContent }

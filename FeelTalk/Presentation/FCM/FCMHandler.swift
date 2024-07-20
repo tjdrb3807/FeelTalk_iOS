@@ -58,6 +58,8 @@ final class FCMHandler {
             handleQuestionChatting(userInfo, isBackground)
         case "answerChatting":
             handleAnswerChatting(userInfo, isBackground)
+        case "challengeChatting":
+            handleChallenge(userInfo, isBackground)
         case "addChallengeChatting":
             handleAddChallenge(userInfo, isBackground)
         case "completeChallengeChatting":
@@ -235,6 +237,50 @@ extension FCMHandler {
 
 // MARK: Challenge
 extension FCMHandler {
+    private func handleChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
+        guard let indexStr = data["index"] as? String,
+              let isReadStr = data["isRead"] as? String,
+              let createAtStr = data["createAt"] as? String,
+              let coupleChallengeJsonStr  = data["coupleChallenge"] as? String,
+              let identifier = data["gcm.message_id"] as? String,
+              let isRead = Bool(isReadStr),
+              let index = Int(indexStr) else { return }
+        
+        guard let coupleChallengeData = coupleChallengeJsonStr.data(
+                  using: .utf8,
+                  allowLossyConversion: false
+              ),
+              let coupleChallenge = try? JSONSerialization.jsonObject(
+                with: coupleChallengeData,
+                options: .mutableContainers
+              ) as? [String: Any],
+              let challengeIndex = coupleChallenge["index"] as? Int,
+              let challengeTitleStr = coupleChallenge["challengeTitle"] as? String,
+              let challengeDeadline = coupleChallenge["deadline"] as? String
+              else { return }
+        
+        chatObservable.accept(
+            ChallengeChat(
+                index: index,
+                type: .challengeChatting,
+                isRead: isRead,
+                isMine: false,
+                createAt: createAtStr,
+                challengeIndex: challengeIndex,
+                challengeTitle: challengeTitleStr,
+                challengeDeadline: challengeDeadline
+            )
+        )
+        
+        if (!isBackground && meIsInChatObsesrvable.value) {
+            return
+        }
+        
+        showNotification(identifier: CHATTNING_NOTIFICATION_ID,
+                         title: "연인",
+                         body: "(챌린지 채팅)")
+    }
+    
     private func handleAddChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {
         guard let indexStr = data["index"] as? String,
               let isReadStr = data["isRead"] as? String,
@@ -276,7 +322,7 @@ extension FCMHandler {
         
         showNotification(identifier: CHATTNING_NOTIFICATION_ID,
                          title: "연인",
-                         body: "(챌린지 채팅)")
+                         body: "(챌린지 추가 채팅)")
     }
     
     private func handleCompleteChallenge(_ data: [AnyHashable: Any], _ isBackground: Bool) {

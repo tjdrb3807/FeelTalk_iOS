@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import Alamofire
 
 final class ChatFuncMenuViewModel {
     weak var coordinator: ChatFuncMenuCoordinator?
@@ -250,9 +251,27 @@ final class ChatFuncMenuViewModel {
                 case 0:
                     guard let question = ChatFuncMenuViewModel.selectedQuestionModelObserver.value else { return }
                     print(question)
+                    Task {
+                        let questionChat = await vm.sendQuestionChat(question: question)
+                        if questionChat != nil {
+                            FCMHandler.shared.chatObservable.accept(questionChat!)
+                            DispatchQueue.main.async {
+                                vm.coordinator?.dismiss()
+                            }
+                        }
+                    }
                 case 1:
                     guard let challenge = ChatFuncMenuViewModel.selectedChallengeModelObserver.value else { return }
                     print(challenge)
+                    Task {
+                        let challengeChat = await vm.sendChallengeChat(challenge: challenge)
+                        if challengeChat != nil {
+                            FCMHandler.shared.chatObservable.accept(challengeChat!)
+                            DispatchQueue.main.async {
+                                vm.coordinator?.dismiss()
+                            }
+                        }
+                    }
                 default:
                     break
                 }
@@ -266,5 +285,140 @@ final class ChatFuncMenuViewModel {
             }.disposed(by: disposeBag)
         
         return output
+    }
+}
+
+extension ChatFuncMenuViewModel {
+    func sendQuestionChat(question: Question) async -> QuestionChat? {
+        return try? await withCheckedThrowingContinuation { continuation in
+            Task {
+                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/chatting-message/question") else {
+                    continuation.resume(throwing: NSError(domain: "URL parsing error", code: 400))
+                    return
+                }
+                
+                var request = URLRequest(url: url)
+                request.method = .post
+                request.headers = HTTPHeaders(["Content-Type": "application/json", "Accept": "application/json"])
+                guard let urlRequest = try? JSONEncoding().encode(request, with: ["index": question.index]) else {
+                    continuation.resume(throwing: NSError(domain: "Request json encoding error", code: 200))
+                    return
+                }
+                
+                AF.request(
+                    urlRequest,
+                    interceptor: DefaultRequestInterceptor()
+                )
+                .responseDecodable(of: BaseResponseDTO<SendQuestionChatResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let result):
+                        if result.status == "success" {
+                            guard let data = result.data! else {
+                                continuation.resume(throwing: NSError(domain: "Response data is nil", code: 400))
+                                return
+                            }
+                            
+                            let chatType: ChatType
+                            if data.coupleQuestion.partnerAnswer != nil
+                                && data.coupleQuestion.selfAnswer != nil {
+                                chatType = .questionChatting
+                            } else {
+                                chatType = .answerChatting
+                            }
+                            
+                            continuation.resume(
+                                returning: QuestionChat(
+                                    index: data.index,
+                                    type: chatType,
+                                    isRead: data.isRead,
+                                    isMine: true,
+                                    createAt: data.createAt,
+                                    questionIndex: data.coupleQuestion.index,
+                                    question: Question(
+                                        index: question.index,
+                                        pageNo: question.pageNo,
+                                        title: question.title,
+                                        header: question.header,
+                                        body: question.body,
+                                        highlight: question.highlight,
+                                        myAnser: data.coupleQuestion.selfAnswer,
+                                        partnerAnser: data.coupleQuestion.partnerAnswer,
+                                        isMyAnswer: data.coupleQuestion.selfAnswer != nil,
+                                        isPartnerAnswer: data.coupleQuestion.partnerAnswer != nil,
+                                        createAt: question.title
+                                    )
+                                )
+                            )
+                        } else {
+                            continuation.resume(throwing: NSError(domain: "server error", code: 400))
+                        }
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        }
+    }
+    
+    func sendChallengeChat(challenge: Challenge) async -> ChallengeChat? {
+        return try? await withCheckedThrowingContinuation { continuation in
+            Task {
+                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/chatting-message/challenge") else {
+                    continuation.resume(throwing: NSError(domain: "URL parsing error", code: 400))
+                    return
+                }
+                
+                var request = URLRequest(url: url)
+                request.method = .post
+                request.headers = HTTPHeaders(["Content-Type": "application/json", "Accept": "application/json"])
+                guard let urlRequest = try? JSONEncoding().encode(request, with: ["index": challenge.index]) else {
+                    continuation.resume(throwing: NSError(domain: "Request json encoding error", code: 200))
+                    return
+                }
+                
+                AF.request(
+                    urlRequest,
+                    interceptor: DefaultRequestInterceptor()
+                )
+                .responseDecodable(of: BaseResponseDTO<SendChallengeChatResponseDTO?>.self) { response in
+                    switch response.result {
+                    case .success(let result):
+                        if result.status == "success" {
+                            guard let data = result.data! else {
+                                continuation.resume(throwing: NSError(domain: "Response data is nil", code: 400))
+                                return
+                            }
+                            
+                            continuation.resume(
+                                returning: ChallengeChat(
+                                    index: data.index,
+                                    type: .challengeChatting,
+                                    isRead: data.isRead,
+                                    isMine: true,
+                                    createAt: data.createAt,
+                                    challengeIndex: data.coupleChallenge.index,
+                                    challengeTitle: data.coupleChallenge.title,
+                                    challengeDeadline: data.coupleChallenge.deadline,
+                                    challenge: Challenge(
+                                        index: data.coupleChallenge.index,
+                                        pageNo: challenge.pageNo,
+                                        title: data.coupleChallenge.title,
+                                        deadline: data.coupleChallenge.deadline,
+                                        content: data.coupleChallenge.content,
+                                        creator: data.coupleChallenge.creator,
+                                        isCompleted: challenge.isCompleted,
+                                        completeDate: challenge.completeDate
+                                    )
+                                )
+                            )
+                        } else {
+                            continuation.resume(throwing: NSError(domain: "server error", code: 400))
+                        }
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        }
     }
 }

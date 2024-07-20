@@ -663,6 +663,8 @@
 		64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */; };
 		64F3B33D2C46CB0D0065C9BD /* VoicePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F3B33C2C46CB0D0065C9BD /* VoicePlayer.swift */; };
 		64F3B33F2C46D4EF0065C9BD /* ResetPartnerPasswordDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F3B33E2C46D4EF0065C9BD /* ResetPartnerPasswordDTO.swift */; };
+		64F3B3432C4BB0FB0065C9BD /* SendQuestionChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F3B3422C4BB0FB0065C9BD /* SendQuestionChatResponseDTO.swift */; };
+		64F3B3452C4BB7E10065C9BD /* SendChallengeChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F3B3442C4BB7E10065C9BD /* SendChallengeChatResponseDTO.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1328,6 +1330,8 @@
 		64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatResponseDTO.swift; sourceTree = "<group>"; };
 		64F3B33C2C46CB0D0065C9BD /* VoicePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoicePlayer.swift; sourceTree = "<group>"; };
 		64F3B33E2C46D4EF0065C9BD /* ResetPartnerPasswordDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPartnerPasswordDTO.swift; sourceTree = "<group>"; };
+		64F3B3422C4BB0FB0065C9BD /* SendQuestionChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendQuestionChatResponseDTO.swift; sourceTree = "<group>"; };
+		64F3B3442C4BB7E10065C9BD /* SendChallengeChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChallengeChatResponseDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4134,6 +4138,8 @@
 				459CFA522AE0FE3B0076DD8A /* ChatListResponseDTO.swift */,
 				45405C2E2B037DEC00980F0F /* ChatPageNoResponseDTO.swift */,
 				64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */,
+				64F3B3422C4BB0FB0065C9BD /* SendQuestionChatResponseDTO.swift */,
+				64F3B3442C4BB7E10065C9BD /* SendChallengeChatResponseDTO.swift */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -5648,6 +5654,7 @@
 				451DC2642AC2D595003648A7 /* SuggestionsDescriptionViewNameSpace.swift in Sources */,
 				45BCBC0A2B0B407100EDB9F5 /* ChatModel.swift in Sources */,
 				451DC2582AC2D2FD003648A7 /* SuggestionsCoordinator.swift in Sources */,
+				64F3B3432C4BB0FB0065C9BD /* SendQuestionChatResponseDTO.swift in Sources */,
 				455349672B347C1200DB04ED /* SplashViewModel.swift in Sources */,
 				45AE81372A68AC2C00DEC4E2 /* RenewAccessTokenRequestDTO.swift in Sources */,
 				45878DD22B6A94AD004D1B3C /* WithdrawalDetailDescriptionView.swift in Sources */,
@@ -5806,6 +5813,7 @@
 				456C13E12AC00CA600EEB433 /* InquiryContentInputView.swift in Sources */,
 				4597E9F32B6FFCC000E407D3 /* LockNumberHintCoordinator.swift in Sources */,
 				45A73A5F2AE67415000EB045 /* SignalDialView.swift in Sources */,
+				64F3B3452C4BB7E10065C9BD /* SendChallengeChatResponseDTO.swift in Sources */,
 				4573B8C32A7A47DA003C2E75 /* PartnerAnswerView.swift in Sources */,
 				45E3DAD82B6B75D900105BAD /* PasswordConfirmViewCell.swift in Sources */,
 				64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */,

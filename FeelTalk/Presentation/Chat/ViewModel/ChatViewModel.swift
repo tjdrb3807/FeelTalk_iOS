@@ -178,6 +178,8 @@ final class ChatViewModel {
                             vm.showTodayDivider.accept(false)
                         }
                         
+                        print("new chat list:\n\(list)")
+                        
                         Task {
                             var newList = await vm.loadChatProperties(chatList: list)
                             newList.sort { first, second in
@@ -220,6 +222,16 @@ final class ChatViewModel {
                     newList.append(newChat)
                     let withProperties = await vm.loadChatProperties(chatList: newList)
                     vm.synchronize {
+                        // 맨 아래로 스크롤
+                        // ui에 새 채팅을 추가하기도 전에 스크롤 하는 이유는
+                        // 기본적으로 아이템이 추가되면 그 ui만큼 자동으로 스크롤 되서
+                        // 추가하기 전에 내려가 있어도 됨
+                        if newChat.isMine {
+                            self.scrollToBottomCount.accept(
+                                self.scrollToBottomCount.value + 1
+                            )
+                        }
+                        
                         var updated = self.chatList.value
                         if var last = updated.last {
                             let isTopSame = last.isMine == newChat.isMine && vm.getNoSecondDate(last.createAt) == vm.getNoSecondDate(newChat.createAt)
@@ -394,20 +406,28 @@ final class ChatViewModel {
                                 .challengeChatting,
                                 .completeChallengeChatting:
                             var c = chat as! ChallengeChat
-                            c.challenge = try await self.loadChallenge(challengeIndex: c.challengeIndex)
+                            if c.challenge == nil {
+                                c.challenge = try await self.loadChallenge(challengeIndex: c.challengeIndex)
+                            }
                             return c
                         case .answerChatting,
                                 .questionChatting:
                             var c = chat as! QuestionChat
-                            c.question = try await self.loadQuestion(questionIndex: c.questionIndex)
+                            if c.question == nil {
+                                c.question = try await self.loadQuestion(questionIndex: c.questionIndex)
+                            }
                             return c
                         case .voiceChatting:
                             var c = chat as! VoiceChat
-                            c.voiceFile = try await self.loadVoiceData(url: c.voiceURL)
+                            if c.voiceFile == nil {
+                                c.voiceFile = try await self.loadVoiceData(url: c.voiceURL)
+                            }
                             return c
                         case .imageChatting:
                             var c = chat as! ImageChat
-                            c.uiImage = try await self.loadImage(url: c.imageURL)
+                            if c.uiImage == nil {
+                                c.uiImage = try await self.loadImage(url: c.imageURL)
+                            }
                             return c
                         default:
                             return chat
@@ -449,45 +469,11 @@ final class ChatViewModel {
 // MARK: Send chat
 extension ChatViewModel {
     func sendTextChat(message: String) {
-        Task {
-            guard let newChat = try? await self.sendTextChatByObservable(message: message)
-            else { return }
-            
-            var newList: [Chat] = []
-            newList.append(newChat)
-            
-            // Lock
-            self.synchronize {
-                
-                // 맨 아래로 스크롤
-                // ui에 새 채팅을 추가하기도 전에 스크롤 하는 이유는
-                // 기본적으로 아이템이 추가되면 그 ui만큼 자동으로 스크롤 되서
-                // 추가하기 전에 내려가 있어도 됨
-                self.scrollToBottomCount.accept(
-                    self.scrollToBottomCount.value + 1
-                )
-                
-                // 이전 채팅 Ui 업데이트 (continuous or not)
-                var updated = self.chatList.value
-                if var last = updated.last {
-                    let isTopSame = last.isMine == newChat.isMine && self.getNoSecondDate(last.createAt) == self.getNoSecondDate(newChat.createAt)
-                    
-                    if isTopSame {
-                        last.updateCount += 1
-                        updated[updated.count - 1] = last
-                    }
-                }
-                self.chatList.accept(updated + newList)
-            }
-        }
-    }
-    
-    func sendTextChatByObservable(message: String) async throws -> TextChat? {
-        for try await textChat in chatUseCase.sendTextChat(text: message)
-            .asObservable().values {
-            return textChat
-        }
-        return nil
+        chatUseCase.sendTextChat(text: message)
+            .asObservable()
+            .bind { textChat in
+                FCMHandler.shared.chatObservable.accept(textChat)
+            }.disposed(by: disposeBag)
     }
 }
 
@@ -562,7 +548,7 @@ extension ChatViewModel {
         return try await withCheckedThrowingContinuation({ continuation in
             Task {
                 guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/chatting-room/reset-password") else {
-                    continuation.resume(throwing: NSError(domain: "URL parsing error", code: 200))
+                    continuation.resume(throwing: NSError(domain: "URL parsing error", code: 400))
                     return
                 }
                 
@@ -570,7 +556,7 @@ extension ChatViewModel {
                 request.method = .post
                 request.headers = HTTPHeaders(["Content-Type": "application/json", "Accept": "application/json"])
                 guard let urlRequest = try? JSONEncoding().encode(request, with: ["chattingMessageIndex": chatIndex]) else {
-                    continuation.resume(throwing: NSError(domain: "Request json encoding error", code: 200))
+                    continuation.resume(throwing: NSError(domain: "Request json encoding error", code: 400))
                     return
                 }
                 
@@ -585,7 +571,7 @@ extension ChatViewModel {
                         if let isExpired = data.data??.isExpired {
                             continuation.resume(returning: isExpired)
                         } else {
-                            continuation.resume(throwing: NSError(domain: "isExpired is nil", code: 200))
+                            continuation.resume(throwing: NSError(domain: "isExpired is nil", code: 400))
                         }
                     case .failure(let error):
                         continuation.resume(throwing: error)
