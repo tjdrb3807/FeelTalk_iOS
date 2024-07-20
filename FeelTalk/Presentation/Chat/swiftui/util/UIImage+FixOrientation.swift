@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+// https://stackoverflow.com/a/59818090/25162070
 extension UIImage {
     func makeFixOrientation() -> UIImage {
         if self.imageOrientation == UIImage.Orientation.up {

@@ -67,10 +67,11 @@ final class AnswerViewModel {
         
         input.tapPressForAnswerButton
             .asObservable()
+            .withLatestFrom(model)
             .withUnretained(self)
-            .bind { vm, _ in
-                vm.userUserCase.getPartnerInfo()
-                    .map { $0.nickname }
+            .bind { vm, question in
+                vm.questionUseCase.pressForAnswer(index: question.index)
+                    .asObservable()
                     .bind(to: output.popUpPressForAnswerToastMessage)
                     .disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
