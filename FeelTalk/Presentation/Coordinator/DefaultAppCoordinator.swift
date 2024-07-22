@@ -205,7 +205,7 @@ extension DefaultAppCoordinator: CoordinatorFinishDelegate {
             self.showLoginFlow()
         case .tab:
             self.showLoginFlow()
-        case .login:
+        case .login, .inviteCode, .inviteCodeBottomSheet:
             self.childCoordinators.removeAll()
             self.bindIsLockScreenObserver()
             self.showTabBarFlow()
