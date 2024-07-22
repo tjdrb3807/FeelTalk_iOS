@@ -88,9 +88,13 @@ class LoginViewModel {
                             vm.coordinator?.showSignUpFlow()
                         case .solo:
                             Task {
-                                try? await vm.updateFcmToken()
-                                DispatchQueue.main.async {
-                                    vm.coordinator?.showInviteCodeFlow()
+                                do {
+                                    try await vm.updateFcmToken()
+                                    DispatchQueue.main.async {
+                                        vm.coordinator?.showInviteCodeFlow()
+                                    }
+                                } catch {
+                                    return
                                 }
                             }
                         }
