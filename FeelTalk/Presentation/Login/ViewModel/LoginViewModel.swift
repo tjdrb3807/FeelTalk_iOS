@@ -83,29 +83,11 @@ class LoginViewModel {
                     .bind(onNext: { vm, state in
                         switch state {
                         case .couple:
-                            Task {
-                                do {
-                                    try await vm.updateFcmToken()
-                                    DispatchQueue.main.async {
-                                        vm.navigateToMain()
-                                    }
-                                } catch {
-                                    return
-                                }
-                            }
+                            vm.navigateToMain()
                         case .newbie:
                             vm.coordinator?.showSignUpFlow()
                         case .solo:
-                            Task {
-                                do {
-                                    try await vm.updateFcmToken()
-                                    DispatchQueue.main.async {
-                                        vm.coordinator?.showInviteCodeFlow()
-                                    }
-                                } catch {
-                                    return
-                                }
-                            }
+                            vm.coordinator?.showInviteCodeFlow()
                         }
                     }).disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
@@ -120,10 +102,26 @@ class LoginViewModel {
         return Output()
     }
     
+    func getFcmToken() async throws -> String? {
+        return try await withCheckedThrowingContinuation { continuation in
+            Messaging.messaging().token { token, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    print("getFcmToken: \(token)")
+                    continuation.resume(returning: token)
+                }
+            }
+        }
+    }
+    
     func updateFcmToken() async throws {
         return try await withCheckedThrowingContinuation({ continuation in
             Task {
-                let fcmToken = KeychainRepository.getItem(key: "fcmToken") as? String ?? Messaging.messaging().fcmToken
+                guard let fcmToken = try? await getFcmToken() else {
+                    continuation.resume(throwing: NSError(domain: "FCM token is null", code: 400))
+                    return
+                }
                 
                 guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/member/fcm-token") else {
                     continuation.resume(throwing: NSError(domain: "URL parsing error", code: 400))
@@ -160,26 +158,37 @@ class LoginViewModel {
     }
     
     func navigateToMain() {
-        // accessToken 체크
-        guard let _ = KeychainRepository.getItem(key: "accessToken") as? String else {
-            return
-        }
+        Task {
+            do {
+                // accessToken 체크
+                guard let _ = KeychainRepository.getItem(key: "accessToken") as? String else {
+                    return
+                }
 
-        // 커플 체크
-        if UserState.couple.rawValue != KeychainRepository.getItem(key: "userState") as? String {
-            return
-        }
-
-        configurationUseCase
-            .getLockNubmer()
-            .map { $0?.count == 4 }
-            .withUnretained(self)
-            .bind { vm, isLocked in
-                DefaultAppCoordinator.isLockScreenObserver.accept(isLocked)
+                // 커플 체크
+                if UserState.couple.rawValue != KeychainRepository.getItem(key: "userState") as? String {
+                    return
+                }
                 
-                isLocked ? vm.coordinator?.showLockNumberPadFlow() : vm.coordinator?.showTabBarFlow()
-                print("navigate to \(isLocked ? "LockNumberPad" : "MainTabBar")")
+                // update fcm token
+                try await self.updateFcmToken()
+                
+                DispatchQueue.main.async {
+                    self.configurationUseCase
+                        .getLockNubmer()
+                        .map { $0?.count == 4 }
+                        .withUnretained(self)
+                        .bind { vm, isLocked in
+                            DefaultAppCoordinator.isLockScreenObserver.accept(isLocked)
+                            isLocked ? vm.coordinator?.showLockNumberPadFlow() : vm.coordinator?.showTabBarFlow()
+                            print("navigate to \(isLocked ? "LockNumberPad" : "MainTabBar")")
+                        }
+                        .disposed(by: self.disposeBag)
+                }
+            } catch {
+                print("[error] navigateToMain(): \(error)")
+                return
             }
-            .disposed(by: disposeBag)
+        }
     }
 }

@@ -16,6 +16,7 @@ import FirebaseMessaging
 import UserNotifications
 import Mixpanel
 import RxSwift
+import Alamofire
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -30,9 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         Messaging.messaging().isAutoInitEnabled = false
-        
-        print("fcmToken: \(Messaging.messaging().fcmToken ?? "")")
-        // cRBB7cbPmki6nfs82_jZiE:APA91bGN_JrO__4sV2VT9D9wqeZZ0FW1m0YG-3YQOGmLYyUuA7U9QqCtpvqtg0NDsm1gpg-033EsBzaCUfydl7eJY74bC3GZyRk2VYh77unM_6OlEppQl8NB-Ogl5JwgqcI4TahEtfLY
         
         // UserNotification setting
         UNUserNotificationCenter.current().delegate = self
@@ -237,6 +235,6 @@ extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         guard let fcmToken = fcmToken else { return }
         guard KeychainRepository.addItem(value: fcmToken, key: "fcmToken") else { return }
-        print("FCM Token: \(fcmToken)")
+        print("New FCM Token: \(fcmToken)")
     }
 }
