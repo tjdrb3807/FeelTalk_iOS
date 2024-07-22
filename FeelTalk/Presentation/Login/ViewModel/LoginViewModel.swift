@@ -87,7 +87,12 @@ class LoginViewModel {
                         case .newbie:
                             vm.coordinator?.showSignUpFlow()
                         case .solo:
-                            vm.coordinator?.showInviteCodeFlow()
+                            Task {
+                                try? await vm.updateFcmToken()
+                                DispatchQueue.main.async {
+                                    vm.coordinator?.showInviteCodeFlow()
+                                }
+                            }
                         }
                     }).disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
