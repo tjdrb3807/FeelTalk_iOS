@@ -14,6 +14,7 @@ import RxCocoa
 
 final class FCMHandler {
     static let shared = FCMHandler()
+    
     let userNotificationCenter = UNUserNotificationCenter.current()
     
     let partnerChatRoomStatusObservable = PublishRelay<Bool>()

@@ -14,11 +14,13 @@ import Alamofire
 class LoginViewModel {
     private weak var coordinator: LoginCoordinator?
     private let loginUseCase: LoginUseCase
+    private let configurationUseCase: ConfigurationUseCase
     private let disposeBag = DisposeBag()
     
     private let snsLogin = PublishRelay<SNSLogin01>()
 
     struct Input {
+        let viewWillAppear: ControlEvent<Bool>
         let tapAppleLoginButton: ControlEvent<Void>
         let tapGoogleLoginButton: ControlEvent<Void>
         let tapKakaoLoginButton: ControlEvent<Void>
@@ -28,12 +30,21 @@ class LoginViewModel {
     
     struct Output { }
 
-    init(coordinator: LoginCoordinator?, loginUseCase: LoginUseCase) {
+    init(coordinator: LoginCoordinator?, loginUseCase: LoginUseCase, configurationUseCase: ConfigurationUseCase) {
         self.coordinator = coordinator
         self.loginUseCase = loginUseCase
+        self.configurationUseCase = configurationUseCase
     }
     
     func transfer(input: Input) -> Output {
+        input.viewWillAppear
+            .asObservable()
+            .withUnretained(self)
+            .bind { vm, isAppear in
+                print("isLogInAppear: \(isAppear)")
+                vm.navigateToMain()
+            }.disposed(by: disposeBag)
+        
         Observable
             .merge([
                 input.tapAppleLoginButton.map { SNSType.apple },
@@ -76,7 +87,7 @@ class LoginViewModel {
                                 do {
                                     try await vm.updateFcmToken()
                                     DispatchQueue.main.async {
-                                        vm.coordinator?.finish()
+                                        vm.navigateToMain()
                                     }
                                 } catch {
                                     return
@@ -146,5 +157,29 @@ class LoginViewModel {
                 }
             }
         })
+    }
+    
+    func navigateToMain() {
+        // accessToken 체크
+        guard let _ = KeychainRepository.getItem(key: "accessToken") as? String else {
+            return
+        }
+
+        // 커플 체크
+        if UserState.couple.rawValue != KeychainRepository.getItem(key: "userState") as? String {
+            return
+        }
+
+        configurationUseCase
+            .getLockNubmer()
+            .map { $0?.count == 4 }
+            .withUnretained(self)
+            .bind { vm, isLocked in
+                DefaultAppCoordinator.isLockScreenObserver.accept(isLocked)
+                
+                isLocked ? vm.coordinator?.showLockNumberPadFlow() : vm.coordinator?.showTabBarFlow()
+                print("navigate to \(isLocked ? "LockNumberPad" : "MainTabBar")")
+            }
+            .disposed(by: disposeBag)
     }
 }

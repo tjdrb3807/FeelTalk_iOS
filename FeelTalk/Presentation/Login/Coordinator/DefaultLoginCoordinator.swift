@@ -13,6 +13,10 @@ protocol LoginCoordinator: Coordinator {
     func showInquiryFlow()
     
     func showInviteCodeFlow()
+    
+    func showTabBarFlow()
+    
+    func showLockNumberPadFlow()
 }
 
 final class DefaultLoginCoordinator: LoginCoordinator {
@@ -28,13 +32,19 @@ final class DefaultLoginCoordinator: LoginCoordinator {
     }
     
     func start() {
-        self.loginViewController.viewModel = LoginViewModel(coordinator: self,
-                                                            loginUseCase: DefaultLoginUseCase(loginRepository: DefaultLoginRepository(),
-                                                                                              appleRepository: DefaultAppleRepository(),
-                                                                                              googleRepositroy: DefaultGoogleRepository(),
-                                                                                              naverRepository: DefaultNaverLoginRepository(),
-                                                                                              kakaoRepository: DefaultKakaoRepository(),
-                                                                                              userRepository: DefaultUserRepository()))
+        self.loginViewController.viewModel = LoginViewModel(
+            coordinator: self,
+            loginUseCase: DefaultLoginUseCase(
+                loginRepository: DefaultLoginRepository(),
+                appleRepository: DefaultAppleRepository(),
+                googleRepositroy: DefaultGoogleRepository(),
+                naverRepository: DefaultNaverLoginRepository(),
+                kakaoRepository: DefaultKakaoRepository(),
+                userRepository: DefaultUserRepository()),
+            configurationUseCase: DefaultConfigurationUseCase(
+                configurationRepository: DefaultConfigurationRepository()
+            )
+        )
         
         self.navigationController.viewControllers = [self.loginViewController]
     }
@@ -60,6 +70,30 @@ final class DefaultLoginCoordinator: LoginCoordinator {
         self.childCoordinators.append(inviteCodeCoordinator)
     }
     
+    func showTabBarFlow() {
+        if self.childCoordinators.contains(where: { $0 is MainTabBarCoordinator }) {
+            return
+        }
+        
+        let tabBarCoordinator = DefaultMainTabBarCoordinator(self.navigationController)
+        tabBarCoordinator.finishDelegate = self
+        tabBarCoordinator.start()
+        self.childCoordinators.append(tabBarCoordinator)
+    }
+    
+    func showLockNumberPadFlow() {
+        if self.childCoordinators.contains(where: { $0 is LockNumberPadCoordinator }) {
+            return
+        }
+        
+        let lockNumberPadCoordinator = DefaultLockNumberPadCoordinator(self.navigationController)
+        lockNumberPadCoordinator.start()
+        lockNumberPadCoordinator.viewType.accept(.access)
+        lockNumberPadCoordinator.finishDelegate = self
+        
+        childCoordinators.append(lockNumberPadCoordinator)
+    }
+    
     func finish() {
         self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
     }
@@ -75,6 +109,8 @@ extension DefaultLoginCoordinator: CoordinatorFinishDelegate {
             self.showInviteCodeFlow()
         case .inviteCode:
             self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        case .lockNumberPad:
+            self.showTabBarFlow()
         default:
             break
         }

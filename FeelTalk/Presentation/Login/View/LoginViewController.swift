@@ -60,18 +60,39 @@ final class LoginViewController: UIViewController {
         self.setAttribute()
         self.addSubComponent()
         self.setConfiguration()
+        
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.openAndCloseActivity), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name:  UIApplication.didBecomeActiveNotification, object: nil)
+    }
+    
+    @objc func openAndCloseActivity(_ notification: Notification)  {
+        Task {
+            if notification.name == UIApplication.didBecomeActiveNotification {
+                // become active notifictaion
+                // onResume
+                print("onResume in login")
+                viewModel.navigateToMain()
+            }
+        }
+    }
+    
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .darkContent
     }
     
     private func bind(to viewModel: LoginViewModel) {
-        let input = LoginViewModel.Input(tapAppleLoginButton: appleLoginButton.rx.tap,
-                                         tapGoogleLoginButton: googleLoginButton.rx.tap,
-                                         tapKakaoLoginButton: kakaoLoginButton.rx.tap,
-                                         tapNaverLoginButton: naverLoginButton.rx.tap,
-                                         tapInquiryButton: inquiryButton.rx.tap)
+        let input = LoginViewModel.Input(
+            viewWillAppear: rx.viewWillAppear,
+            tapAppleLoginButton: appleLoginButton.rx.tap,
+            tapGoogleLoginButton: googleLoginButton.rx.tap,
+            tapKakaoLoginButton: kakaoLoginButton.rx.tap,
+            tapNaverLoginButton: naverLoginButton.rx.tap,
+            tapInquiryButton: inquiryButton.rx.tap)
         
         _ = viewModel.transfer(input: input)
     }
@@ -165,13 +186,19 @@ struct LoginViewController_Previews: PreviewProvider {
     struct LoginViewController_Presentable: UIViewControllerRepresentable {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = LoginViewController()
-            let vm = LoginViewModel(coordinator: DefaultLoginCoordinator(UINavigationController()),
-                                    loginUseCase: DefaultLoginUseCase(loginRepository: DefaultLoginRepository(),
-                                                                      appleRepository: DefaultAppleRepository(),
-                                                                      googleRepositroy: DefaultGoogleRepository(),
-                                                                      naverRepository: DefaultNaverLoginRepository(),
-                                                                      kakaoRepository: DefaultKakaoRepository(),
-                                                                      userRepository: DefaultUserRepository()))
+            let vm = LoginViewModel(
+                coordinator: DefaultLoginCoordinator(UINavigationController()),
+                loginUseCase: DefaultLoginUseCase(
+                    loginRepository: DefaultLoginRepository(),
+                    appleRepository: DefaultAppleRepository(),
+                    googleRepositroy: DefaultGoogleRepository(),
+                    naverRepository: DefaultNaverLoginRepository(),
+                    kakaoRepository: DefaultKakaoRepository(),
+                    userRepository: DefaultUserRepository()),
+                configurationUseCase: DefaultConfigurationUseCase(
+                    configurationRepository: DefaultConfigurationRepository()
+                )
+            )
             vc.viewModel = vm
             
             return vc
