@@ -181,7 +181,6 @@ class LoginViewModel {
                 
                 // update fcm token
                 try await self.updateFcmToken()
-                
                 DispatchQueue.main.async {
                     self.configurationUseCase
                         .getLockNubmer()

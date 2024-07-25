@@ -37,6 +37,10 @@ final class DefaultAppCoordinator: AppCoordinator {
         if DefaultAppCoordinator.isFirstRun() {
             print("isFirstRun: Onboarding Page")
 //            FCMHandler.shared.showNotification(identifier: "1", title: "isFirstRun", body: "isFirstRun")
+            KeychainRepository.deleteItem(key: "accessToken")
+            KeychainRepository.deleteItem(key: "refreshToken")
+            KeychainRepository.deleteItem(key: "expiredTime")
+            KeychainRepository.deleteItem(key: "userState")
             showOnboardingFlow()
             return
         }
@@ -204,6 +208,8 @@ extension DefaultAppCoordinator: CoordinatorFinishDelegate {
         case .onboarding:
             self.showLoginFlow()
         case .tab:
+            self.showLoginFlow()
+        case .loginFromLogout:
             self.showLoginFlow()
         case .login, .inviteCode, .inviteCodeBottomSheet:
             self.childCoordinators.removeAll()

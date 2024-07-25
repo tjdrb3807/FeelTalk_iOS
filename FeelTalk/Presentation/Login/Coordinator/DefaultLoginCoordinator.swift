@@ -111,6 +111,10 @@ extension DefaultLoginCoordinator: CoordinatorFinishDelegate {
             self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)
         case .lockNumberPad:
             self.showTabBarFlow()
+        case .tab:
+            self.type = .loginFromLogout
+            self.childCoordinators.removeAll()
+            finishDelegate?.coordinatorDidFinish(childCoordinator: self)
         default:
             break
         }

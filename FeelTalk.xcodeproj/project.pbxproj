@@ -652,7 +652,6 @@
 		64C6E3A72C441D10005CF5EA /* UIView+AddAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A62C441D10005CF5EA /* UIView+AddAction.swift */; };
 		64C6E3A92C441D9B005CF5EA /* PressForAnswerChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3A82C441D9B005CF5EA /* PressForAnswerChatItemView.swift */; };
 		64C6E3AB2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3AA2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift */; };
-		64C6E3AD2C442929005CF5EA /* ChallengeChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3AC2C442929005CF5EA /* ChallengeChatItemView.swift */; };
 		64C6E3B12C4431DB005CF5EA /* CompleteChallengeChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B02C4431DB005CF5EA /* CompleteChallengeChatItemView.swift */; };
 		64C6E3B32C454141005CF5EA /* AnswerChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B22C454141005CF5EA /* AnswerChatItemView.swift */; };
 		64C6E3B52C45480E005CF5EA /* QuestionChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B42C45480E005CF5EA /* QuestionChatItemView.swift */; };
@@ -660,6 +659,7 @@
 		64C6E3B92C455E9A005CF5EA /* VoiceChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */; };
 		64C6E3BB2C456361005CF5EA /* DividerChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3BA2C456361005CF5EA /* DividerChatItemView.swift */; };
 		64C6E3BD2C45A002005CF5EA /* View+OnFirstAppearModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C6E3BC2C45A002005CF5EA /* View+OnFirstAppearModifier.swift */; };
+		64C7C7F52C529BE1008B5046 /* ChallengeChatItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C7C7F42C529BE1008B5046 /* ChallengeChatItemView.swift */; };
 		64D0A2BF2B9B3F4C00D8839B /* SendChatResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */; };
 		64F3B33D2C46CB0D0065C9BD /* VoicePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F3B33C2C46CB0D0065C9BD /* VoicePlayer.swift */; };
 		64F3B33F2C46D4EF0065C9BD /* ResetPartnerPasswordDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F3B33E2C46D4EF0065C9BD /* ResetPartnerPasswordDTO.swift */; };
@@ -1324,7 +1324,6 @@
 		64C6E3A62C441D10005CF5EA /* UIView+AddAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AddAction.swift"; sourceTree = "<group>"; };
 		64C6E3A82C441D9B005CF5EA /* PressForAnswerChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressForAnswerChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3AA2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPartnerPasswordChatItemView.swift; sourceTree = "<group>"; };
-		64C6E3AC2C442929005CF5EA /* ChallengeChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChallengeChatItemView.swift; path = ../../../../../../../../Downloads/ChallengeChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3B02C4431DB005CF5EA /* CompleteChallengeChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteChallengeChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3B22C454141005CF5EA /* AnswerChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3B42C45480E005CF5EA /* QuestionChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionChatItemView.swift; sourceTree = "<group>"; };
@@ -1332,6 +1331,7 @@
 		64C6E3B82C455E9A005CF5EA /* VoiceChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3BA2C456361005CF5EA /* DividerChatItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DividerChatItemView.swift; sourceTree = "<group>"; };
 		64C6E3BC2C45A002005CF5EA /* View+OnFirstAppearModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+OnFirstAppearModifier.swift"; sourceTree = "<group>"; };
+		64C7C7F42C529BE1008B5046 /* ChallengeChatItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChallengeChatItemView.swift; sourceTree = "<group>"; };
 		64D0A2BE2B9B3F4C00D8839B /* SendChatResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendChatResponseDTO.swift; sourceTree = "<group>"; };
 		64F3B33C2C46CB0D0065C9BD /* VoicePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoicePlayer.swift; sourceTree = "<group>"; };
 		64F3B33E2C46D4EF0065C9BD /* ResetPartnerPasswordDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPartnerPasswordDTO.swift; sourceTree = "<group>"; };
@@ -5502,11 +5502,11 @@
 		64C6E39F2C43FD27005CF5EA /* ChatItem */ = {
 			isa = PBXGroup;
 			children = (
+				64C7C7F42C529BE1008B5046 /* ChallengeChatItemView.swift */,
 				64C6E3A22C440DFF005CF5EA /* TextChatItemView.swift */,
 				64C6E3A42C441626005CF5EA /* SignalChatItemView.swift */,
 				64C6E3A82C441D9B005CF5EA /* PressForAnswerChatItemView.swift */,
 				64C6E3AA2C442371005CF5EA /* ResetPartnerPasswordChatItemView.swift */,
-				64C6E3AC2C442929005CF5EA /* ChallengeChatItemView.swift */,
 				64C6E3B02C4431DB005CF5EA /* CompleteChallengeChatItemView.swift */,
 				64C6E3B22C454141005CF5EA /* AnswerChatItemView.swift */,
 				64C6E3B42C45480E005CF5EA /* QuestionChatItemView.swift */,
@@ -5971,7 +5971,6 @@
 				45E85D3E2A583997004B558C /* LoginViewNameSpace.swift in Sources */,
 				4554F7022AEAD063006F994D /* ChallengeCollectionViewCellNameSpace.swift in Sources */,
 				459CFA5A2AE12C5F0076DD8A /* TextChatCellNameSpcae.swift in Sources */,
-				64C6E3AD2C442929005CF5EA /* ChallengeChatItemView.swift in Sources */,
 				4586360F2A714C5600047ECF /* QuestionBaseResponseDTO.swift in Sources */,
 				4554F6FC2AEAC371006F994D /* ChallengeListModel.swift in Sources */,
 				457DC6CA2B0F5A0900E47538 /* AdutlAuthStatus.swift in Sources */,
@@ -6309,6 +6308,7 @@
 				64F3B3512C4BFB440065C9BD /* ImageSaver.swift in Sources */,
 				4570163E2A77AE5E0006CB1D /* NicknameCoordinator.swift in Sources */,
 				45878C402B0BB8ED0090D533 /* LoginLogoViewNameSpace.swift in Sources */,
+				64C7C7F52C529BE1008B5046 /* ChallengeChatItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
