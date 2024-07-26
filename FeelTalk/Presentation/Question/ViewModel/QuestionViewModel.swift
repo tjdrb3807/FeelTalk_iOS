@@ -64,14 +64,16 @@ final class QuestionViewModel {
         
         currentQuestionPage
             .withUnretained(self)
-            .bind { vm, questionPage in
-                vm.questionUseCase.getQuestionList(questionPage: questionPage)
+            .bind { vm, pageNo in
+                vm.questionUseCase
+                    .getQuestionList(questionPage: pageNo)
                     .withLatestFrom(vm.questionList) { newFetchQuestionList, currentQuestionList -> [Question] in
-                        var questionList: [Question] = currentQuestionList
-                        questionList.append(contentsOf: newFetchQuestionList)
-                        if !questionList.isEmpty {
-                            questionList.remove(at: 0)
+                        var newList = newFetchQuestionList
+                        if currentQuestionList.isEmpty && !newList.isEmpty {
+                            newList.remove(at: 0)
                         }
+                        var questionList: [Question] = currentQuestionList
+                        questionList.append(contentsOf: newList)
                         return questionList
                     }.bind(to: vm.questionList)
                     .disposed(by: vm.disposeBag)

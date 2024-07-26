@@ -101,7 +101,7 @@ final class DefaultConfigurationUseCase: ConfigurationUseCase {
                     return Observable.just("-1")
                         .asObservable()
                         .delay(
-                            .seconds(3),
+                            .seconds(1),
                             scheduler: ConcurrentDispatchQueueScheduler(queue: DispatchQueue.main)
                         ).concat(
                             self.getLockNubmer()
