@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import RxKeyboard
 import Alamofire
+import FirebaseMessaging
 
 final class WithdrawalDetailViewModel {
     private weak var coordinator: WithdrawalDetailCoordinator?
@@ -186,12 +187,16 @@ final class WithdrawalDetailViewModel {
                     )
 
                     if (isSuccessful) {
-                        KeychainRepository.deleteItem(key: "accessToken")
-                        KeychainRepository.deleteItem(key: "refreshToken")
-                        KeychainRepository.deleteItem(key: "expiredTime")
-                        KeychainRepository.deleteItem(key: "userState")
-                        DispatchQueue.main.async {
-                            vm.coordinator?.finish()
+                        Messaging.messaging().deleteToken { error in
+                            if error != nil {
+                                KeychainRepository.deleteItem(key: "accessToken")
+                                KeychainRepository.deleteItem(key: "refreshToken")
+                                KeychainRepository.deleteItem(key: "expiredTime")
+                                KeychainRepository.deleteItem(key: "userState")
+                                DispatchQueue.main.async {
+                                    vm.coordinator?.finish()
+                                }
+                            }
                         }
                     }
                 }

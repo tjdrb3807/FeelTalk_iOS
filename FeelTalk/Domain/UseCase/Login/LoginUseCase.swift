@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import FirebaseMessaging
 
 protocol LoginUseCase {
     func login(_ data: SNSLogin01) -> Observable<UserState>
@@ -127,7 +128,9 @@ final class DefaultLoginUseCase: LoginUseCase {
                     KeychainRepository.deleteItem(key: "userState")
                 }.map { _ -> Void in }
                 .subscribe(onNext: {
-                    observer.onNext(())
+                    Messaging.messaging().deleteToken { _ in
+                        observer.onNext(())
+                    }
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()

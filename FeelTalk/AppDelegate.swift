@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Firebase setting
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
-        Messaging.messaging().isAutoInitEnabled = false
+//        Messaging.messaging().isAutoInitEnabled = false
         
         // UserNotification setting
         UNUserNotificationCenter.current().delegate = self
