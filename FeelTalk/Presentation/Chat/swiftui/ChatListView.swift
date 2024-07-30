@@ -40,6 +40,7 @@ struct ChatListView: View {
                             date: todayDate
                         )
                         .padding(.top, 8)
+                        .id(viewModel.outputs.showTodayDivider)
                     }
                     
                     ForEach(
