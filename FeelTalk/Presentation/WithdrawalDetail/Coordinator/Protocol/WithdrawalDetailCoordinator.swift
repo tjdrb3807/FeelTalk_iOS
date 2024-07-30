@@ -11,4 +11,6 @@ protocol WithdrawalDetailCoordinator: Coordinator {
     var withdrawalDetailViewController: WithdrawalDetailViewController { get set }
     
     func pop()
+    
+    func finish()
 }

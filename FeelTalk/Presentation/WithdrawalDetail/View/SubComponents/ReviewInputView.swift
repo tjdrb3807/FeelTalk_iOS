@@ -11,6 +11,9 @@ import RxSwift
 import RxCocoa
 
 final class ReviewInputView: UIStackView {
+    let deleteReason = BehaviorRelay<String?>(value: nil)
+    private let disposeBag = DisposeBag()
+    
     private lazy var leadingSpacing: UIView = { UIView() }()
     
     private lazy var trailingSpacing: UIView = { UIView() }()
@@ -47,6 +50,14 @@ final class ReviewInputView: UIStackView {
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
+        
+        self.reviewInputTextView.textView.rx.value
+            .filter{
+                $0 != ReviewInputViewNameSpace.reviewInputTextViewPlaceholder
+            }
+            .bind(to: self.deleteReason)
+            .disposed(by: self.disposeBag)
+        
     }
     
     required init(coder: NSCoder) {

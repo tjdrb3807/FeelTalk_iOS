@@ -669,8 +669,12 @@ extension ChatViewModel {
                 )
                 .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
                     switch response.result {
-                    case .success(_):
-                        continuation.resume(returning: true)
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            continuation.resume(returning: true)
+                        } else {
+                            continuation.resume(returning: false)
+                        }
                     case .failure(_):
                         continuation.resume(returning: false)
                     }

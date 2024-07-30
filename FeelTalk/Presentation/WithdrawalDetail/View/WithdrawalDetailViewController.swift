@@ -78,13 +78,17 @@ final class WithdrawalDetailViewController: UIViewController {
     }
     
     private func bind(to viewModel: WithdrawalDetailViewModel) {
-        let alertRightButtonTapObserver = PublishRelay<CustomAlertType>()
+        let alertRightButtonTapObserver = PublishRelay<Bool>()
         
         let input = WithdrawalDetailViewModel.Input(
             viewWillAppear: rx.viewWillAppear,
             cellTapObserver: reasonsSelectionView.cellTapObserver.asObservable(),
             popButtonTapObserver: navigationBar.leftButton.rx.tap,
-            withdrawalButtonTapObserver: withdrawalButton.rx.tap)
+            withdrawalButtonTapObserver: withdrawalButton.rx.tap,
+            tapAlertConfirm: alertRightButtonTapObserver,
+            etcReason: reasonsSelectionView.etcReason,
+            deleteReason: reviewInputView.deleteReason
+        )
 
         let output = viewModel.transfer(input: input)
         
@@ -112,9 +116,9 @@ final class WithdrawalDetailViewController: UIViewController {
                 guard !vc.view.subviews.contains(where: { $0 is CustomAlertView }) else { return }
                 let alertView = CustomAlertView(type: type)
                 alertView.rightButton.rx.tap
-                    .map { type }
+//                    .map { type }
                     .bind { type in
-                        alertRightButtonTapObserver.accept(type)
+                        alertRightButtonTapObserver.accept(true)
                         alertView.hide()
                     }.disposed(by: vc.disposeBag)
                 

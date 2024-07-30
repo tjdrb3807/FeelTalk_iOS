@@ -15,6 +15,7 @@ final class WithdrawalReasonsSelectionView: UIStackView {
     let modelList = PublishRelay<[WithdrawalReasonsType]>()
     let cellTapObserver = PublishRelay<WithdrawalReasonsType>()
     let selectedCell = PublishRelay<WithdrawalReasonsType>()
+    let etcReason = BehaviorRelay<String?>(value: nil)
     private let disposeBag = DisposeBag()
     
     private lazy var leadingSpacing: UIView = { UIView() }()
@@ -96,6 +97,10 @@ final class WithdrawalReasonsSelectionView: UIStackView {
                             v.cellTapObserver.accept(model)
                         }.disposed(by: v.disposeBag)
                     v.cellStackView.addArrangedSubview(cell)
+                    
+                    cell.etcReason
+                        .bind(to: v.etcReason)
+                        .disposed(by: v.disposeBag)
                     
                     if model == .etc {
                         cell.snp.makeConstraints { $0.bottom.equalTo(cell.snp.top).offset(WithdrawalReasonCellNameSpace.defaultHeight) }

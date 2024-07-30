@@ -26,6 +26,7 @@ final class DefaultAccountInfoSettingsCoordinator: AccountInfoSettingsCoordinato
     
     func showWithdrawalFlow() {
         let withdrawalCoordinator = DefaultWithdrawalCoordinator(self.navigationController)
+        withdrawalCoordinator.finishDelegate = self
         childCoordinators.append(withdrawalCoordinator)
         withdrawalCoordinator.start()
     }
@@ -33,5 +34,17 @@ final class DefaultAccountInfoSettingsCoordinator: AccountInfoSettingsCoordinato
     func pop() {
         childCoordinators.removeAll()
         navigationController.popViewController(animated: true)
+    }
+}
+
+extension DefaultAccountInfoSettingsCoordinator: CoordinatorFinishDelegate {
+    func coordinatorDidFinish(childCoordinator: Coordinator) {
+        switch childCoordinator.type {
+        case .withdrawal:
+            self.childCoordinators.removeAll()
+            finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        default:
+            break
+        }
     }
 }

@@ -30,6 +30,7 @@ final class DefaultWithdrawalCoordinator: WithdrawalCoordiantor {
     
     func showWithdrawalDetailFlow() {
         let withdrawalDetailCoordinator = DefaultWithdrawalDetailCoordinator(withdrawalNavigationController)
+        withdrawalDetailCoordinator.finishDelegate = self
         withdrawalDetailCoordinator.start()
         childCoordinators.append(withdrawalDetailCoordinator)
     }
@@ -37,5 +38,17 @@ final class DefaultWithdrawalCoordinator: WithdrawalCoordiantor {
     func dismiss() {
         childCoordinators.removeAll()
         navigationController.dismiss(animated: true)
+    }
+}
+
+extension DefaultWithdrawalCoordinator: CoordinatorFinishDelegate {
+    func coordinatorDidFinish(childCoordinator: Coordinator) {
+        switch childCoordinator.type {
+        case .withdrawalDetail:
+            self.childCoordinators.removeAll()
+            finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        default:
+            break
+        }
     }
 }

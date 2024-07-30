@@ -46,6 +46,7 @@ final class DefaultSettingsCoordinator: SettingsCoordinator {
     func showAccountInfoSettingsFlow() {
         let accountInfoSettingsCoordinator = DefaultAccountInfoSettingsCoordinator(self.navigationController)
         
+        accountInfoSettingsCoordinator.finishDelegate = self
         accountInfoSettingsCoordinator.start()
         childCoordinators.append(accountInfoSettingsCoordinator)
     }
@@ -64,6 +65,12 @@ final class DefaultSettingsCoordinator: SettingsCoordinator {
 
 extension DefaultSettingsCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
-        
+        switch childCoordinator.type {
+        case .accountInfoSettings:
+            self.childCoordinators.removeAll()
+            finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        default:
+            break
+        }
     }
 }

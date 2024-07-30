@@ -28,4 +28,10 @@ final class DefaultWithdrawalDetailCoordinator: WithdrawalDetailCoordinator {
         childCoordinators.removeAll()
         navigationController.popViewController(animated: true)
     }
+    
+    func finish() {
+        childCoordinators.removeAll()
+        finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        self.navigationController.dismiss(animated: true)
+    }
 }

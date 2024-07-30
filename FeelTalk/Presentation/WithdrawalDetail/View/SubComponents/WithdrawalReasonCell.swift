@@ -14,6 +14,7 @@ import RxGesture
 final class WithdrawalReasonCell: UIView {
     let type = BehaviorRelay<WithdrawalReasonsType>(value: .none)
     let isSelected = BehaviorRelay<Bool>(value: false)
+    let etcReason = BehaviorRelay<String?>(value: nil)
     private let disposeBag = DisposeBag()
     
     private lazy var contentStackView: UIStackView = {
@@ -60,6 +61,13 @@ final class WithdrawalReasonCell: UIView {
         self.setProperties()
         self.addSubComponents()
         self.setConstraints()
+        
+        self.reasonInputTextView.textView.rx.text
+            .filter {
+                $0 != WithdrawalReasonCellNameSpace.reasonInputTextViewPlaceholder
+            }
+            .bind(to: self.etcReason)
+            .disposed(by: disposeBag)
     }
     
     required init?(coder: NSCoder) {
