@@ -42,7 +42,6 @@ final class BreakUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.bind()
         self.bind(to: viewModel)
         self.setConfigurations()
         self.addSubComponents()
@@ -51,7 +50,11 @@ final class BreakUpViewController: UIViewController {
         // MARK: Mixpanel Navigate Page
         MixpanelRepository.shared.navigatePage()
     }
-    private func bind() {
+    
+    
+    private func bind(to viewModel: BreakUpViewModel) {
+        let onTapConfirmBreakUpButton = PublishRelay<Bool>()
+        
         terminationStatementView.isConfirmButtonCheked
             .withUnretained(self)
             .bind { vc, state in
@@ -63,18 +66,24 @@ final class BreakUpViewController: UIViewController {
             .bind { vc, _ in
                 guard !vc.view.subviews.contains(where: { $0 is CustomAlertView }) else { return }
                 let alertView = vc.alertView
+                alertView.rightButton.rx.tap
+                    .bind { _ in
+                        onTapConfirmBreakUpButton.accept(true)
+                        alertView.hide()
+                    }.disposed(by: vc.disposeBag)
+                
                 vc.view.addSubview(alertView)
                 alertView.snp.makeConstraints { $0.edges.equalToSuperview() }
                 vc.view.layoutIfNeeded()
                 
                 alertView.show()
             }.disposed(by: disposeBag)
-    }
-    
-    
-    private func bind(to viewModel: BreakUpViewModel) {
-        let input = BreakUpViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
-                                           navigationBarLeftButtonTapObserver: navigationBar.leftButton.rx.tap)
+        
+        let input = BreakUpViewModel.Input(
+            viewWillAppear: self.rx.viewWillAppear,
+            navigationBarLeftButtonTapObserver: navigationBar.leftButton.rx.tap,
+            onTapBreakUp: onTapConfirmBreakUpButton
+        )
         
         let output = viewModel.transfer(input: input)
         

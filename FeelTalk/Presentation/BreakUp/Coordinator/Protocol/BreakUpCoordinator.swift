@@ -11,4 +11,6 @@ protocol BreakUpCoordinator: Coordinator {
     var breakUpViewController: BreakUpViewController { get set }
     
     func dismiss()
+    
+    func finish()
 }

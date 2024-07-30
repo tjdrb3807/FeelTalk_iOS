@@ -31,7 +31,7 @@ final class DefaultWithdrawalDetailCoordinator: WithdrawalDetailCoordinator {
     
     func finish() {
         childCoordinators.removeAll()
-        finishDelegate?.coordinatorDidFinish(childCoordinator: self)
         self.navigationController.dismiss(animated: true)
+        finishDelegate?.coordinatorDidFinish(childCoordinator: self)
     }
 }

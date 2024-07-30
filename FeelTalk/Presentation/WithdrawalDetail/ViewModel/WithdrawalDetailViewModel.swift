@@ -188,14 +188,12 @@ final class WithdrawalDetailViewModel {
 
                     if (isSuccessful) {
                         Messaging.messaging().deleteToken { error in
-                            if error != nil {
-                                KeychainRepository.deleteItem(key: "accessToken")
-                                KeychainRepository.deleteItem(key: "refreshToken")
-                                KeychainRepository.deleteItem(key: "expiredTime")
-                                KeychainRepository.deleteItem(key: "userState")
-                                DispatchQueue.main.async {
-                                    vm.coordinator?.finish()
-                                }
+                            KeychainRepository.deleteItem(key: "accessToken")
+                            KeychainRepository.deleteItem(key: "refreshToken")
+                            KeychainRepository.deleteItem(key: "expiredTime")
+                            KeychainRepository.deleteItem(key: "userState")
+                            DispatchQueue.main.async {
+                                vm.coordinator?.finish()
                             }
                         }
                     }
@@ -233,7 +231,6 @@ extension WithdrawalDetailViewModel {
                     interceptor: DefaultRequestInterceptor()
                 )
                 .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
-                    print("response: \(response.debugDescription)")
                     switch response.result {
                     case .success(let responseDTO):
                         if responseDTO.status == "success" {

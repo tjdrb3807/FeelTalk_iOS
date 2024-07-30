@@ -32,4 +32,10 @@ final class DefaultBreakUpCoordinator: BreakUpCoordinator {
         childCoordinators.removeAll()
         navigationController.dismiss(animated: true)
     }
+    
+    func finish() {
+        childCoordinators.removeAll()
+        self.navigationController.dismiss(animated: true)
+        finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+    }
 }

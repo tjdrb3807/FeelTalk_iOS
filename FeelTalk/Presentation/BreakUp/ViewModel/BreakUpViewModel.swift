@@ -8,6 +8,8 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import Alamofire
+import FirebaseMessaging
 
 final class BreakUpViewModel {
     weak var coordinator: BreakUpCoordinator?
@@ -21,6 +23,7 @@ final class BreakUpViewModel {
     struct Input {
         let viewWillAppear: ControlEvent<Bool>
         let navigationBarLeftButtonTapObserver: ControlEvent<Void>
+        let onTapBreakUp: PublishRelay<Bool>
     }
     
     struct Output {
@@ -53,8 +56,62 @@ final class BreakUpViewModel {
                 vm.coordinator?.dismiss()
             }.disposed(by: disposeBag)
         
+        input.onTapBreakUp
+            .withUnretained(self)
+            .bind { vm, isBreakUp in
+                Task {
+                    let isSuccessful = await vm.breakUp()
+                    if (isSuccessful) {
+                        Messaging.messaging().deleteToken { error in
+                            KeychainRepository.deleteItem(key: "accessToken")
+                            KeychainRepository.deleteItem(key: "refreshToken")
+                            KeychainRepository.deleteItem(key: "expiredTime")
+                            KeychainRepository.deleteItem(key: "userState")
+                            DispatchQueue.main.async {
+                                vm.coordinator?.finish()
+                            }
+                        }
+                    }
+                }
+            }.disposed(by: disposeBag)
+        
         return Output(questionCount: self.questionCount,
                       challengeCount: self.challengeCount,
                       terminationType: self.terminationType)
+    }
+}
+
+extension BreakUpViewModel {
+    func breakUp() async -> Bool {
+        return await withCheckedContinuation { continuation in
+            Task {
+                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/couple/breakup") else {
+                    continuation.resume(returning: false)
+                    return
+                }
+                
+                var request = URLRequest(url: url)
+                request.method = .post
+                request.headers = HTTPHeaders(["Content-Type": "application/json", "Accept": "application/json"])
+                
+                AF.request(
+                    request,
+                    interceptor: DefaultRequestInterceptor()
+                )
+                .responseDecodable(of: BaseResponseDTO<NoDataResponseDTO?>.self) { response in
+                    print("response: \(response.debugDescription)")
+                    switch response.result {
+                    case .success(let responseDTO):
+                        if responseDTO.status == "success" {
+                            continuation.resume(returning: true)
+                        } else {
+                            continuation.resume(returning: false)
+                        }
+                    case .failure(_):
+                        continuation.resume(returning: false)
+                    }
+                }
+            }
+        }
     }
 }

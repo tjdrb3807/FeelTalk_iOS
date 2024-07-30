@@ -118,8 +118,8 @@ final class WithdrawalDetailViewController: UIViewController {
                 alertView.rightButton.rx.tap
 //                    .map { type }
                     .bind { type in
-                        alertRightButtonTapObserver.accept(true)
                         alertView.hide()
+                        alertRightButtonTapObserver.accept(true)
                     }.disposed(by: vc.disposeBag)
                 
                 vc.view.addSubview(alertView)

@@ -46,6 +46,13 @@ final class DefaultPartnerInfoCoordinator: PartnerInfoCoordinator {
 
 extension DefaultPartnerInfoCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) {
-        
+        switch childCoordinator.type {
+        case .breakUp:
+            type = .settingList
+            self.childCoordinators.removeAll()
+            finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+        default:
+            break
+        }
     }
 }
