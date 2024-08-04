@@ -201,9 +201,7 @@ final class ChatViewModel {
                                         updated[0] = first
                                     }
                                 }
-                                vm.chatList.accept(
-                                    newList + updated
-                                )
+                                vm.chatList.accept(newList + updated)
                             }
                             
                             vm.isLoadingChatList.accept(false)
@@ -243,6 +241,7 @@ final class ChatViewModel {
                                 updated[updated.count - 1] = last
                             }
                         }
+                        vm.showTodayDivider.accept(false)
                         vm.chatList.accept(updated + withProperties)
                     }
                 }
