@@ -17,6 +17,18 @@ final class QuestionViewModel {
     private let currentQuestionPage = PublishSubject<QuestionPage>()
     private let todayQuestion = PublishRelay<Question>()
     private let questionList = BehaviorRelay<[Question]>(value: [])
+    private var isFirstQuestionLoading = true
+    
+    private let lock = NSLock()
+    private func synchronize(action: () -> Void) {
+        if lock.lock(before: Date().addingTimeInterval(10)) {
+            action()
+            lock.unlock()
+        } else {
+            print("Took to long to lock, avoiding deadlock by ignoring the lock")
+            action()
+        }
+    }
     
     struct Input {
         let viewWillAppear: ControlEvent<Bool>
@@ -67,15 +79,22 @@ final class QuestionViewModel {
             .bind { vm, pageNo in
                 vm.questionUseCase
                     .getQuestionList(questionPage: pageNo)
-                    .withLatestFrom(vm.questionList) { newFetchQuestionList, currentQuestionList -> [Question] in
-                        var newList = newFetchQuestionList
-                        if currentQuestionList.isEmpty && !newList.isEmpty {
-                            newList.remove(at: 0)
+                    .withLatestFrom(vm.questionList) {
+                        (newFetchQuestionList: $0, currentQuestionList: $1)
+                    }
+                    .bind(onNext: { data in
+                        var newList = data.newFetchQuestionList
+                        if vm.isFirstQuestionLoading && data.currentQuestionList.isEmpty {
+                            vm.isFirstQuestionLoading = false
+                            let removed = newList.remove(at: 0)
                         }
-                        var questionList: [Question] = currentQuestionList
+                        var questionList: [Question] = data.currentQuestionList
                         questionList.append(contentsOf: newList)
-                        return questionList
-                    }.bind(to: vm.questionList)
+                        let sorted = questionList.sorted(by: { first, second in
+                            first.index > second.index
+                        })
+                        vm.questionList.accept(sorted)
+                    })
                     .disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
         

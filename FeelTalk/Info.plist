@@ -94,9 +94,9 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
-    <key>NSCameraUsageDescription</key>
-    <string>카메라에 대한 권한이 필요합니다.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>사진에 대한 권한이 필요합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>필로우톡이 이미지 채팅을 보내려면 카메라로 사진을 찍고 저장할 권한이 필요합니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>필로우톡이 이미지 채팅을 보내려면 사진을 받아오고 저장할 권한이 필요합니다.</string>
 </dict>
 </plist>

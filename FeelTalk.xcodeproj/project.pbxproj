@@ -6456,7 +6456,7 @@
 				INFOPLIST_FILE = FeelTalk/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "필로우톡";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "마이크 이용 권한 요청 메세지";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "필로우톡이 보이스 채팅을 보내기 위해 음성을 녹음하고 저장할 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -6497,7 +6497,7 @@
 				INFOPLIST_FILE = FeelTalk/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "필로우톡";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "마이크 이용 권한 요청 메세지";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "필로우톡이 보이스 채팅을 보내기 위해 음성을 녹음하고 저장할 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
