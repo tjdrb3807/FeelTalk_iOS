@@ -86,7 +86,7 @@ final class QuestionViewModel {
                         var newList = data.newFetchQuestionList
                         if vm.isFirstQuestionLoading && data.currentQuestionList.isEmpty {
                             vm.isFirstQuestionLoading = false
-                            let removed = newList.remove(at: 0)
+                            newList.remove(at: 0)
                         }
                         var questionList: [Question] = data.currentQuestionList
                         questionList.append(contentsOf: newList)
@@ -99,10 +99,10 @@ final class QuestionViewModel {
             }.disposed(by: disposeBag)
         
         questionList
-            .filter { $0.count <= 5 }
+            .filter { $0.count <= 12 }
             .withLatestFrom(currentQuestionPage) { (list: $0, page: $1) }
             .filter { $0.page.pageNo > 0 }
-            .element(at: 0)
+            .take(3)
             .withUnretained(self)
             .bind { vm, data in
                 let nextQuestionPage = QuestionPage(pageNo: data.page.pageNo - 1)
