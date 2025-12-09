@@ -1,9 +1,8 @@
 # 필로우톡(FeelTalk)
 ![FeelTalk_ProfileImage](./image/FeelTalk_Profile.png)
 ## Teck Stack
-Swift, UIKit, Alamofire, 
 
-## 1. Architecture (![Static Badge](https://img.shields.io/badge/Clean_Architecture-red), ![Static Badge](https://img.shields.io/badge/MVVM-RxSwift-red), ![Static Badge](https://img.shields.io/badge/Coordinator-red))
+## 1. Architecture 
 
 ### 1.1 Clean Architecture
 Clean Architecture 원칙과 MVVM 패턴을 따릅니다.
@@ -19,8 +18,8 @@ Clean Architecture 원칙과 MVVM 패턴을 따릅니다.
 RxSwift는 이러한 이슈를 해결하기 위해 이벤트를 단일한 스트림 기반으로 통합하고, View와 ViewModel 간의 바인딩을 일관될 방식으로 구성할 수 있게 해줍니다. 이에 따라 본 프로젝트는 MVVM 아키텍처의 완성도를 높이고 비동기 호름을 명확하게 관리하기 위해 RxSwift를 도입했습니다. 
 
 #### How?
-#### 1. MVVM Input/Output 패턴 적용
-데이터 흐름을 명확히 정의하고, ViewModel의 역할을 "입력을 받아 출력을 만드는 순수 함수"로 규정하기 위해 Input/Output 패턴을 도입했습니다.
+#### 1. Input/Output 패턴 적용
+데이터 흐름을 명확히 정의하고, ViewModel의 역할을 입력을 받아 출력을 만드는 순수 함수로 규정하기 위해 Input/Output 패턴을 도입했습니다.
 
 프로젝트 내 모든 ViewModel은 다음과 같은 표준화된 구조를 따릅니다.
 * Input: View(사용자)로부터 ViewModel로 흘러 들어가는 이벤트 스트림
@@ -84,6 +83,95 @@ final class ChallengeDetailViewModel {
         return output
     }
 }
+```
+
+#### 2. Reactive Extension
+프로젝트에서는 UIViewController의 생명주기(Lifecycle)를 Rx 기반으로 다룰 수 있도록 Reactive Extension을 직접 구현하여 사용하고 있습니다. 기존의 viewViewDidLoad, viewWillAppear 등의 생명주기 이벤트는 보통 override를 통해 처리하게 됩니다. 하지만 이러한 방식은 ViewController 내부 로직을 비대하게 만들고, 여러 ViewModel 또는 외부 객체에서 해당 이벤트를 구독해야 할 때 구조가 복잡해지는 문제가 있습니다.
+
+이를 해결하게 위해 UIViewController의 생명주기 메서드를 Rx의 ControlEvent로 래핑하는 Reactive Extension을 도입했습니다 이 접근 방식은 다음과 같은 장점을 제공합니다.
+1. 생명주기를 스트림 형태로 동작시켜 ViewModel 또는 다른 레이어에서 쉽게 구동 가능
+2. ViewController의 책임을 줄여 Massive ViewController 문제 완화
+3. 동일한 패턴을 여러 화면에 반복 적용 가능
+
+```swift
+extension Reactive where Base: UIViewController {
+    var viewDidLoad: ControlEvent<Void> {
+        let source = methodInvoked(#selector(Base.viewDidLoad)).map { _ in }
+
+        return ControlEvent(events: source)
+    }
+    
+    var viewWillAppear: ControlEvent<Bool> {
+        let source = methodInvoked(#selector(Base.viewWillAppear)).map { $0.first as? Bool ?? false }
+
+        return ControlEvent(events: source)
+    }
+    
+    var viewDidAppear: ControlEvent<Bool> {
+        let source = methodInvoked(#selector(Base.viewDidAppear)).map { $0.first as? Bool ?? false }
+
+        return ControlEvent(events: source)
+    }
+    
+    var viewWillDisappear: ControlEvent<Bool> {
+        let source = methodInvoked(#selector(Base.viewWillDisappear)).map { $0.first as? Bool ?? false }
+
+        return ControlEvent(events: source)
+    }
+    
+    var viewDidDisappear: ControlEvent<Bool> {
+        let source = methodInvoked(#selector(Base.viewDidDisappear)).map { $0.first as? Bool ?? false }
+
+        return ControlEvent(events: source)
+    }
+}
+```
+
+#### 3. 메모리 관리 및 DisposeBag 사용
+RxSwift에서 Observable 시퀀스에 subscribe() 하여 작업을 시작하면, 명시적으로 구독을 중지하거나 완료 이벤트를 받기 전까지 계속 활성화 상태로 유지됩니다. 이는 메모리 누수(Memory Leak)이어질 수 있습니다. disposeBag은 이러한 구독을 담아두는 구독 취소 컨테이너 역할을 합니다.
+
+본 프로젝트는 주로 ViewController나 ViewModel과 같은 클래스 내부에 다음과 같은 형태로 인스턴스를 선언합니다.
+
+```Swift
+import RxSwift
+
+final class ChallengeViewModel {
+    private let disposeBag = DisposeBag()
+
+    func transform(input: Input) -> Output {
+        input.isPagination
+            .distinctUntilChanged()
+            .filter { $0 }
+            .withLatestFrom(currentDisplayCell)
+            .filter { $0 == .ongoing }
+            .withLatestFrom(currentOngoingChallengePageNo)
+            .filter { $0 > 0 }
+            .map { $0 - 1 }
+            .bind(to: currentOngoingChallengePageNo)
+            .disposed(by: disposeBag)
+    }
+}
+```
+
+위와 같은 설계는 인스턴스(ChallengeViewModel)가 메모리에서 해제될 때, 프로퍼티로 선어된 disposeBag도 함께 해제되며, disposeBag이 해제되는 순간, 그 안에 추가되었던 모든 활성 구독이자동으로 .dispose()되어 메모리 관리를 안전하고 효율적으로 유지할 수 있습니다.
+
+#### 4. 순환 참조 방지 및 withUnretained 사용
+RxSwift를 사용할 때 클래스 내부에서 자신의 메소드를 Observable 클로저 내부에 참조할 때 강한 순환 참조가 자주 발생합니다. 이 문제를 해결하기 위해 Swift에서는 [weak self] 또는 [unowned self]를 사용하지만, RxSwift를 도입한 본 프로젝트에서는 이보다 더 안전하고 간결한 방법인 withUnretained 연산자를 지향합니다.
+
+withUnretained 연산자는 다음 두 가지 이점을 제공합니다.
+1. 자동 약한 참조: 대상 객체(self)를 자동으로 weak 로 캡처합니다.
+2. 안전한 언래핑 및 스트림 중단
+   1. 클로저 실행 시점에 객체가 메모리에 존재하면 (Unretained<Self>, Element) 튜플로 반환되어 안전하게 접근할 수 있습니다.
+   2. 만약 객체가 이미 해제되었다면, 해당 Observable 스트림 이벤트가 자동으로 무시(필터링)되어 크래시를 방지합니다.
+
+```Swift
+currentOngoingChallengePageNo
+    .withUnretained(self)
+    .bind { vm, pageNo in
+        vm.challengeUseCase.getChallengeList(type: .ongoing, pageNo: pageNo)
+            .bind(to: vm.ongoingChallengeModelList)
+            .disposed(by: vm.disposeBag)
+    }.disposed(by: disposeBag)
 ```
 
 ### 1.3. Coordinator Pattern
