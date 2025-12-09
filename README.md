@@ -1,7 +1,10 @@
 # 필로우톡(FeelTalk)
 ![FeelTalk_ProfileImage](./image/FeelTalk_Profile.png)
 ## Teck Stack
-## 1. Architecture
+Swift, UIKit, Alamofire, 
+
+## 1. Architecture (![Static Badge](https://img.shields.io/badge/Clean_Architecture-red), ![Static Badge](https://img.shields.io/badge/MVVM-RxSwift-red), ![Static Badge](https://img.shields.io/badge/Coordinator-red))
+
 ### 1.1 Clean Architecture
 Clean Architecture 원칙과 MVVM 패턴을 따릅니다.
 ![FeelTalk_CleanArchitecture](./image/FeelTalk_CleanArchitecture.png)
@@ -9,12 +12,79 @@ Clean Architecture 원칙과 MVVM 패턴을 따릅니다.
 
 ### 1.2 MVVM with RxSwift
 #### Why? 
-기존 UIKit 기반 구조에서는 ViewController가 지나치게 비대(Massive ViewController)해지는 경향이 반복적으로 발생했습니다. 이는 단일 클래스(ViewController)에 너무 많은 책임이 모여 가독성과 유지보수성이 떨어지고, UI로직과 비즈니스 로직이 강하게 결함되어 재사용성이 저하되는 문제가 있었습니다. 이러한 문제를 해결하고 확장성, 유지보수성을 극대화화기 위해, 필로우톡 프로젝트에 MVVM 패턴을 도입했습니다.
+기존 UIKit 기반 구조에서는 ViewController가 지나치게 비대(Massive ViewController)해지는 문제가 반복적으로 발생했습니다. 단일 클래스에 UI로직과 비즈니스 로직이 모두 집중되면서 가독성와 유지보수성이 저하되고, 강한 결합으로 인해 재사용성 또한 떨어졌습니다. 이러한 문제를 해결하고 책임을 명확히 분리하기 위해 MVVM 패턴을 도입했습니다.
+
+하지만 UIKit 환경은 사용자 입력, UI 업데이트, 네트워크 응답 등 서로 다른 성격의 비동기 이벤트를 Delegate, Closure, Notification 등 여러 방식으로 처리해야 한다는 구조적 한계가 있었습니다. 이로 인해 이벤트 흐름을 일관된 패턴으로 유지하기 어렵고, 데이터 바인딩 로직이 다시 ViewController로 모여 Massive ViewController로 회귀할 가능성이 있다고 판단했습니다.
+
+RxSwift는 이러한 이슈를 해결하기 위해 이벤트를 단일한 스트림 기반으로 통합하고, View와 ViewModel 간의 바인딩을 일관될 방식으로 구성할 수 있게 해줍니다. 이에 따라 본 프로젝트는 MVVM 아키텍처의 완성도를 높이고 비동기 호름을 명확하게 관리하기 위해 RxSwift를 도입했습니다. 
 
 #### How?
-MVVM 패턴에서 데이터 바인딩 방식에 있어 아래와 같은 방법을 고려했습니다.
-1. Closure나 Delegate 패턴을 활용한 데이터 바인딩
-2. RxSwift를 활용한 데이터 바인딩
+#### 1. MVVM Input/Output 패턴 적용
+데이터 흐름을 명확히 정의하고, ViewModel의 역할을 "입력을 받아 출력을 만드는 순수 함수"로 규정하기 위해 Input/Output 패턴을 도입했습니다.
+
+프로젝트 내 모든 ViewModel은 다음과 같은 표준화된 구조를 따릅니다.
+* Input: View(사용자)로부터 ViewModel로 흘러 들어가는 이벤트 스트림
+* Output: ViewModel에서 비즈니스 로직 처리 후 View로 다시 흘러나와 UI를 업데이트하는 상태 스트림
+* transform(input:) 메서드: Input을 받아서 Output으로 변환하는 핵심 비즈니스 로직이 구현된 메서드
+
+```Swift
+import RxSwift
+import RxCocoa
+
+final class ChallengeDetailViewModel {
+    let modelObserver = ReplayRelay<Callenge>.create(bufferSize: 1)
+    ...
+
+    private let viewTypeObserver = PublishRelay<ChallengeDetailViewType>()
+    private let title = BehaviorRelay<String>(value: "")
+    private let disposeBag = DisposeBag()
+    ...
+
+    struct Input {
+        let viewWillAppear: Observable<Bool>
+        ...
+    }
+
+    struct Output {
+        let titleModel = PublishRelay<String>()
+        let deadlineModel = PublishRelay<String>()
+        let contentModel = PublishRelay<String>()
+        ...
+    }
+
+    func transfrom(input: Input) -> Output {
+        let output = Output()
+
+        // 초기 화면 설정
+        input.viewWillAppear
+            .take(1)
+            .asObservable()
+            .withLatestFrom(modelObserver) {  
+                title: $1.title, 
+                deadline: $1.deadline,
+                content: $1.content,
+                isCompleted: $1.isCompleted
+            }.withUnretained(self)
+            .bind { vm, model in
+                guard let title = model.title,
+                      let deadline = model.deadline,
+                      let content = model.content,
+                      let isCompleted = model.isCompleted else { return vm.viewTypeObserver.accept(.new) }  // model이 없으면 등록 화면 랜더링
+
+                isCompleted ? vm.viewTypeObserver.accept(.completed) : vm.typeObserver.accept(.ongoing) // isCompleted 상태에 따른 완료, 진행 화면 랜더링
+
+                vm.title.accept(title)
+                output.titleModel.accept(title)
+                output.deadlineModel.accept(deadline)
+                output.contentModel.accept(content)
+            }.disposed(by: disposeBag)
+
+        ...
+
+        return output
+    }
+}
+```
 
 ### 1.3. Coordinator Pattern
 #### Why?
@@ -318,6 +388,8 @@ final class DefaultRequestInterceptor: RequestInterceptor {
     }
 }
 ```
+## Screen
+
 
 ## ETC
 ### 1. Screen Save
