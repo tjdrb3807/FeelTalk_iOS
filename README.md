@@ -18,7 +18,7 @@ Clean Architecture 원칙과 MVVM 패턴을 따릅니다.
 RxSwift는 이러한 이슈를 해결하기 위해 이벤트를 단일한 스트림 기반으로 통합하고, View와 ViewModel 간의 바인딩을 일관될 방식으로 구성할 수 있게 해줍니다. 이에 따라 본 프로젝트는 MVVM 아키텍처의 완성도를 높이고 비동기 호름을 명확하게 관리하기 위해 RxSwift를 도입했습니다. 
 
 #### How?
-#### 1. Input/Output 패턴 적용
+#### 1.2.1 Input/Output 패턴 적용
 데이터 흐름을 명확히 정의하고, ViewModel의 역할을 입력을 받아 출력을 만드는 순수 함수로 규정하기 위해 Input/Output 패턴을 도입했습니다.
 
 프로젝트 내 모든 ViewModel은 다음과 같은 표준화된 구조를 따릅니다.
@@ -27,9 +27,6 @@ RxSwift는 이러한 이슈를 해결하기 위해 이벤트를 단일한 스트
 * transform(input:) 메서드: Input을 받아서 Output으로 변환하는 핵심 비즈니스 로직이 구현된 메서드
 
 ```Swift
-import RxSwift
-import RxCocoa
-
 final class ChallengeDetailViewModel {
     let modelObserver = ReplayRelay<Callenge>.create(bufferSize: 1)
     ...
@@ -85,7 +82,7 @@ final class ChallengeDetailViewModel {
 }
 ```
 
-#### 2. Reactive Extension
+#### 1.2.2 Reactive Extension
 프로젝트에서는 UIViewController의 생명주기(Lifecycle)를 Rx 기반으로 다룰 수 있도록 Reactive Extension을 직접 구현하여 사용하고 있습니다. 기존의 viewViewDidLoad, viewWillAppear 등의 생명주기 이벤트는 보통 override를 통해 처리하게 됩니다. 하지만 이러한 방식은 ViewController 내부 로직을 비대하게 만들고, 여러 ViewModel 또는 외부 객체에서 해당 이벤트를 구독해야 할 때 구조가 복잡해지는 문제가 있습니다.
 
 이를 해결하게 위해 UIViewController의 생명주기 메서드를 Rx의 ControlEvent로 래핑하는 Reactive Extension을 도입했습니다 이 접근 방식은 다음과 같은 장점을 제공합니다.
@@ -127,7 +124,7 @@ extension Reactive where Base: UIViewController {
 }
 ```
 
-#### 3. 메모리 관리 및 DisposeBag 사용
+#### 1.2.3 메모리 관리 및 DisposeBag 사용
 RxSwift에서 Observable 시퀀스에 subscribe() 하여 작업을 시작하면, 명시적으로 구독을 중지하거나 완료 이벤트를 받기 전까지 계속 활성화 상태로 유지됩니다. 이는 메모리 누수(Memory Leak)이어질 수 있습니다. disposeBag은 이러한 구독을 담아두는 구독 취소 컨테이너 역할을 합니다.
 
 본 프로젝트는 주로 ViewController나 ViewModel과 같은 클래스 내부에 다음과 같은 형태로 인스턴스를 선언합니다.
@@ -153,9 +150,9 @@ final class ChallengeViewModel {
 }
 ```
 
-위와 같은 설계는 인스턴스(ChallengeViewModel)가 메모리에서 해제될 때, 프로퍼티로 선어된 disposeBag도 함께 해제되며, disposeBag이 해제되는 순간, 그 안에 추가되었던 모든 활성 구독이자동으로 .dispose()되어 메모리 관리를 안전하고 효율적으로 유지할 수 있습니다.
+위와 같은 설계는 인스턴스(ChallengeViewModel)가 메모리에서 해제될 때, 프로퍼티로 선언된 disposeBag도 함께 해제되며, disposeBag이 해제되는 순간, 그 안에 추가되었던 모든 활성 구독이자동으로 .dispose()되어 메모리 관리를 안전하고 효율적으로 유지할 수 있습니다.
 
-#### 4. 순환 참조 방지 및 withUnretained 사용
+#### 1.2.4 순환 참조 방지 및 withUnretained 사용
 RxSwift를 사용할 때 클래스 내부에서 자신의 메소드를 Observable 클로저 내부에 참조할 때 강한 순환 참조가 자주 발생합니다. 이 문제를 해결하기 위해 Swift에서는 [weak self] 또는 [unowned self]를 사용하지만, RxSwift를 도입한 본 프로젝트에서는 이보다 더 안전하고 간결한 방법인 withUnretained 연산자를 지향합니다.
 
 withUnretained 연산자는 다음 두 가지 이점을 제공합니다.
@@ -176,10 +173,9 @@ currentOngoingChallengePageNo
 
 ### 1.3. Coordinator Pattern
 #### Why?
-필로우톡은 Massive ViewController 문제를 해결하기 위해 MVVM 아키텍처를 도입했습니다.   
-그러나 여전히 화면(View)을 담당하는 ViewController에 화면 전환(Flow) 로직이 포함되어, Massive ViewController 문제를 완전히 해소하지는 못했습니다.   
-또한 ParentViewController가 ChildViewController를 직접 참조하며 화면 전환을 수행하는 구조로 인해, 두 ViewController 간의 의존성이 높아지는 문제가 존재했습니다.   
-이러한 문제를 해결하기 위해, 화면 전환(Flow) 로직을 ViewController로부터 분리할 수 있는 Coordiantor Pattern 을 적용했습니다.
+필로우톡은 Massive ViewController 문제를 해결하기 위해 MVVM 아키텍처를 도입했습니다. 그러나 여전히 화면(View)을 담당하는 ViewController에 화면 전환(Flow) 로직이 포함되어, Massive ViewController 문제를 완전히 해소하지는 못했습니다.   
+
+또한 ParentViewController가 ChildViewController를 직접 참조하며 화면 전환을 수행하는 구조로 인해, 두 ViewController 간의 의존성이 높아지는 문제가 존재했습니다. 이러한 문제를 해결하기 위해, 화면 전환(Flow) 로직을 ViewController로부터 분리할 수 있는 Coordiantor Pattern 을 적용했습니다.
 
 #### How?
 #### 1.3.1 시스템 플로우 관리
@@ -187,7 +183,72 @@ currentOngoingChallengePageNo
 필로우톡의 화면 전환에는 크게 두 가지(<font color= "green">로그인, 회원가입</font>, <font color= "red">FeelTalk 메인 서비스</font>) 플로우가 존재합니다.</br>
 각각의 플로우 RootViewController가 UINavigationController에 Push 되는 시점은 첫 실행, AccessToken 유/무, 커플 여부에 따라 다르므로 각 케이스를 분기처리 하여 사용자 상태에 따른 화면 전환을 구현했습니다.
 
+#### 1.3.2 TabBarCoordinator
+프로젝트에서는 전체 화면 구조의 중심이 되는 탭 기반 UI를 구현하기 위해 TabbarCoordinator 패턴을 도입했습니다. 기존의 방식처럼 UITabBarController에서 탭 전환 로직을 직접 처리하는 방식은 화면 전환 책임이 UITabBarController 내부로 몰리며 유지보수가 어려워지는 문제가 있었습니다. 특히, 탭 구성 요소가 여러 모듈로 나뉘어지고, 각 탭마다 독립적인 네비게이션 흐름을 갖는 경우 이러한 문제는 더욱 심각해집니다.
 
+이를 해결하기 위해 TabBarCoordinator를 도입하여 탭 구조 관리, 초기 화면 설정, 탭 간 독립적인 Navigation 흐름 구성 등을 UITabBarController에서 완전히 분리했습니다.
+
+* 탭은 TabBarPage enum으로 정의되며, 각 탭은 아래 정보를 하나의 타입으로 보관합니다. 이를 통해 TabBar의 UI 정보가 분산되지 않고 단일 구조(enum)안에서 관리되며 확장성도 확보합니다.
+```Swift
+enum TabBarPage: String, CaseIterable {
+    case home, question, challenge, myPage
+    
+    func toTitle() -> String { ... }                // 탭 타이틀
+    func pageOfNumber() -> Int { ... }              // 탭별 인덱스
+    func toIconName() -> String { ... }             // 기본 아이콘
+    func toSelectedIconName() -> String { ... }     // 선택 아이콘
+}
+```
+
+* Coordiantor는 앱 최초 구동시 start() 메서드를 통해 모든 탭의 NavigationController를 생성하고 TabBarController에 주입합니다. Coodiantor가 TabBarController 생성과 화면 초기 설정을 관리함으로써 ViewController는 UI로직만 담당하게 됩니다.
+
+```Swift
+func start() {
+    let pages = TabBarPage.allCases
+    let controllers = pages.map { self.createTabNavigationController(of: $0) }
+    self.configureTabBarController(with: controllers)
+}
+```
+
+* 탭 전환 시 기존 화면 상태가 유지되며, 탭마다 별도의 흐름(Stack)을 갖도록 각 탭은 독립적인 UINavigationController를 사용하도록 설계했습니다. 
+
+```Swift
+private func createTabNavigationController(of page: TabBarPage) -> UINavigationController {
+    let tabNavigationController = UINavigationController()
+    tabNavigationController.tabBarItem = self.configureTabBarItem(of: page)
+    self.startTabCoordinator(of: page, to: tabNavigationController)
+    return tabNavigationController
+}
+```
+
+* 탭에 대응하는 Coordinator를 생성하고 각 Coordiantor가 해당 탭의 rootViewController를 관리하도록 설계했습니다.
+
+```Swift
+private func startTabCoordinator(of page: TabBarPage, to tabNavigationController: UINavigationController) {
+    switch page {
+    case .home:
+        let homeCoordinator = DefaultHomeCoordinator(tabNavigationController)
+        homeCoordinator.start()
+        childCoordinators.append(homeCoordinator)
+
+    case .question:
+        let questionCoordinator = DefaultQuestionCoordinator(tabNavigationController)
+        questionCoordinator.start()
+        childCoordinators.append(questionCoordinator)
+
+    case .challenge:
+        let challengeCoordinator = DefaultChallengeCoordinator(tabNavigationController)
+        challengeCoordinator.start()
+        childCoordinators.append(challengeCoordinator)
+
+    case .myPage:
+        let myPageCoordinator = DefaultMyPageCoordinator(tabNavigationController)
+        myPageCoordinator.start()
+        childCoordinators.append(myPageCoordinator)
+    }
+}
+```
+  
 #### 1.3.2 Navigation Stack 관리
 회원가입 화면(SignUpViewController)에서 ‘인증 완료’ 버튼을 탭하면 서버에 회원가입 요청을 보낸 후, 커플 매칭을 위한 커플 코드 화면(InviteCodeViewController) 으로 전환됩니다.
 이때 스와이프 백(Swipe Back) 제스처나 네비게이션 바의 Back 버튼으로 이전 화면으로 돌아갈 경우, 이미 회원가입이 완료되었음에도 불구하고 사용자가 입력한 정보가 남아 있는 SignUpViewController가 다시 표시되는 문제가 발생했습니다.
