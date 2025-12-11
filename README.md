@@ -9,167 +9,81 @@ Clean Architecture 원칙과 MVVM 패턴을 따릅니다.
 ![FeelTalk_CleanArchitecture](./image/FeelTalk_CleanArchitecture.png)
 * 실제 폴더 구조가 아닌 Xcode 그룹 사용으로 프로젝트 구성을 관리합니다.
 
+---
+
 ### 1.2 MVVM with RxSwift
 #### Why? 
-기존 UIKit 기반 구조에서는 ViewController가 지나치게 비대(Massive ViewController)해지는 문제가 반복적으로 발생했습니다. 단일 클래스에 UI로직과 비즈니스 로직이 모두 집중되면서 가독성와 유지보수성이 저하되고, 강한 결합으로 인해 재사용성 또한 떨어졌습니다. 이러한 문제를 해결하고 책임을 명확히 분리하기 위해 MVVM 패턴을 도입했습니다.
+UIKit 기반 MVC 구조에서는 화면이 복잡해질수록 UI 로직과 비즈니스 로직이 ViewController에 집중되며 Massive ViewController 현상이 반복적으로 발생합니다. 프로젝트 초기 단계에서 필로우톡 역시 화면 수 증가와 다양한 비동기 이벤트 처리가 빈번할 것으로 예상되었기 때문에, 이러한 구조적 문제가 충분히 발생할 수 있다고 판단했습니다. 이를 예방하고 책임을 명확히 분리하기 위해 설계 단계에서 MVVM 패턴을 도입했습니다.
 
-하지만 UIKit 환경은 사용자 입력, UI 업데이트, 네트워크 응답 등 서로 다른 성격의 비동기 이벤트를 Delegate, Closure, Notification 등 여러 방식으로 처리해야 한다는 구조적 한계가 있었습니다. 이로 인해 이벤트 흐름을 일관된 패턴으로 유지하기 어렵고, 데이터 바인딩 로직이 다시 ViewController로 모여 Massive ViewController로 회귀할 가능성이 있다고 판단했습니다.
+또한 UIKit은 사용자 입력, UI 업데이트, 네트워크 응답 등 서로 다른 비동기 이벤트를 Delegate, Closure, Notification 등 다양한 방식으로 처리하도록 설계되어 있어 이벤트 흐름을 일관되게 유지하기 어렵습니다. 이러한 특성이 반복되면 데이터 바인딩 로직이 다시 ViewController로 집중될 가능성이 높아, MVVM만으로는 Massive ViewController를 완전히 방지하기 어렵다고 판단했습니다.
 
-RxSwift는 이러한 이슈를 해결하기 위해 이벤트를 단일한 스트림 기반으로 통합하고, View와 ViewModel 간의 바인딩을 일관될 방식으로 구성할 수 있게 해줍니다. 이에 따라 본 프로젝트는 MVVM 아키텍처의 완성도를 높이고 비동기 호름을 명확하게 관리하기 위해 RxSwift를 도입했습니다. 
+RxSwift는 이러한 한계를 해결하기 위해 비동기 이벤트를 단일 스트림 기반으로 통합하고, View와 ViewModel 간 바인딩을 일관된 방식으로 유지할 수 있도록 지원합니다. 이에 따라 본 프로젝트는 아키텍처 설계 단계에서 RxSwift를 함께 도입해 MVVM 구조의 완성도를 높이고, 복잡한 비동기 흐름을 안정적으로 관리할 수 있는 기반을 마련했습니다.
 
 #### How?
-#### 1.2.1 Input/Output 패턴 적용
-데이터 흐름을 명확히 정의하고, ViewModel의 역할을 입력을 받아 출력을 만드는 순수 함수로 규정하기 위해 Input/Output 패턴을 도입했습니다.
+#### 1.2.1 Input/Output Pattern
+RxSwift 기반 MVVM을 단순 Relay 조합으로만 구성하면 입력 이벤트와 출력 상태가 여러 스트림으로 분산되기 쉽습니다. 화면의 복잡도가 증가할수록 이러한 스트림은 ViewModel 내부에 산발적으로 흩어지며, View와 ViewModel 사이의 데이터 흐름도 일관성을 잃습니다. 이 구조는 시간이 지나면서 ViewModel 전역에 비즈니스 로직이 퍼지고, View가 ViewModel의 여러 프로퍼티를 직접 참조하게 되면서 결합도가 높아지는 문제가 있습니다.
 
-프로젝트 내 모든 ViewModel은 다음과 같은 표준화된 구조를 따릅니다.
-* Input: View(사용자)로부터 ViewModel로 흘러 들어가는 이벤트 스트림
-* Output: ViewModel에서 비즈니스 로직 처리 후 View로 다시 흘러나와 UI를 업데이트하는 상태 스트림
-* transform(input:) 메서드: Input을 받아서 Output으로 변환하는 핵심 비즈니스 로직이 구현된 메서드
+이를 방지하기 위해 본 프로젝트는 Input/Output 패턴을 도입하여 ViewModel의 이벤트 흐름을 단일 구조로 통합했습니다.
 
-```Swift
-final class ChallengeDetailViewModel {
-    let modelObserver = ReplayRelay<Callenge>.create(bufferSize: 1)
-    ...
+* __Input__: View에서 발생하는 모든 사용자 이벤트를 하나의 구조체로 모아 ViewModel의 단일 진입점으로 전달합니다. 
 
-    private let viewTypeObserver = PublishRelay<ChallengeDetailViewType>()
-    private let title = BehaviorRelay<String>(value: "")
-    private let disposeBag = DisposeBag()
-    ...
+  Input에 포함된 모든 이벤트를 `Observable`로 선언한 이유는 ViewModel이 이벤트 생성 시점을 직접 통제하고, View는 단순히 사용자 행동을 방출하는 역할만 수행하는 구조를 명확히 분리하기 위함입니다.
 
+  Input은 View가 ViewModel에 전달해야 하는 이벤트의 인터페이스(Contract)를 정의하며, ViewModel은 해당 스트림을 생성하거나 수정하지 않고 읽기만 합니다. 이를 통해 View -> ViewModel 단방향 이벤트 흐름이 보장됩니다.
+    ```Swift
     struct Input {
-        let viewWillAppear: Observable<Bool>
-        ...
+        let viewWillAppear: Observable<Void>
+        let tapAnswerButton: Observable<Void>
+        let tabMySignalButton: Observable<Void>
+        let tapChatRoomButton: Observable<Void>
     }
+    ```
+* __Output__: ViewModel이 생성하는 UI 상태를 구조체로 묶어 View에 제공합니다.
+  
+  Output을 `Observable`로 노출하는 이유는 ViewModel이 내부 상태를 어떤 방식(PublishRelay, BehaviorRelay 등)으로 관리하는지 외부에서 알 수 없도록 캡슐화를 보장하기 위함입니다.  
+
+    View는 Output에 정의된 Observable만 구독할 수 있으며, ViewModel의 내부 Relay에 직접 접근하거나 상태를 변경할 수 없습니다.  
+    이 구조는 단방향 데이터 흐름을 유지할 뿐만 아니라, ViewModel 내부 구현이 변경되더라도 Output 인터페이스가 유지되어 유지보수성과 확장성을 크게 높여줍니다.
+
+    ```Swift
+    private let todayQuestion = PublishRelay<Question>()
+    private let mySignal = PublishRelay<Signal>()
+    private let partnerSignal = PublishRelay<Signal>()
 
     struct Output {
-        let titleModel = PublishRelay<String>()
-        let deadlineModel = PublishRelay<String>()
-        let contentModel = PublishRelay<String>()
-        ...
+        let todayQuestion: Observable<Question>
+        let mySignal: Observable<Signal>
+        let partnerSignal: Observable<Signal>
     }
-
-    func transfrom(input: Input) -> Output {
-        let output = Output()
-
-        // 초기 화면 설정
+    ```
+* __transform(input:)__: 모든 비즈니스 로직을 처리하는 메서드로, Input -> Logic -> Output의 흐름이 명확하게 고정됩니다.
+    ```Swift
+    func transform(input: Input) -> Output {
         input.viewWillAppear
             .take(1)
-            .asObservable()
-            .withLatestFrom(modelObserver) {  
-                title: $1.title, 
-                deadline: $1.deadline,
-                content: $1.content,
-                isCompleted: $1.isCompleted
-            }.withUnretained(self)
-            .bind { vm, model in
-                guard let title = model.title,
-                      let deadline = model.deadline,
-                      let content = model.content,
-                      let isCompleted = model.isCompleted else { return vm.viewTypeObserver.accept(.new) }  // model이 없으면 등록 화면 랜더링
+            .withUnretained(self)
+            .bind { vm, _ in
+                vm.questionUseCase.getTodayQuestion()
+                    .asObservable()
+                    .bind(to: vm.todayQuestion)
+                    .disposed(by: disposeBag)
+                
+                vm.signalUseCase.getMySignal()
+                    .bind(to: vm.mySignal)
+                    .disposed(by: disposeBag)
+ 
+                vm.signalUseCase.getPartnerSignal()
+                    .bind(to: vm.partnerSignal)
+                    .disposed(by: disposeBag)
+            }
 
-                isCompleted ? vm.viewTypeObserver.accept(.completed) : vm.typeObserver.accept(.ongoing) // isCompleted 상태에 따른 완료, 진행 화면 랜더링
-
-                vm.title.accept(title)
-                output.titleModel.accept(title)
-                output.deadlineModel.accept(deadline)
-                output.contentModel.accept(content)
-            }.disposed(by: disposeBag)
-
-        ...
-
-        return output
+        return Output(todayQuestion: self.todayQuestion.asObservable(),
+                        mySignal: self.mySignal.asObservable(),
+                        partnerSignal: self.partnerSignal.asObservable())
     }
-}
-```
+    ```
 
-#### 1.2.2 Reactive Extension
-프로젝트에서는 UIViewController의 생명주기(Lifecycle)를 Rx 기반으로 다룰 수 있도록 Reactive Extension을 직접 구현하여 사용하고 있습니다. 기존의 viewViewDidLoad, viewWillAppear 등의 생명주기 이벤트는 보통 override를 통해 처리하게 됩니다. 하지만 이러한 방식은 ViewController 내부 로직을 비대하게 만들고, 여러 ViewModel 또는 외부 객체에서 해당 이벤트를 구독해야 할 때 구조가 복잡해지는 문제가 있습니다.
-
-이를 해결하게 위해 UIViewController의 생명주기 메서드를 Rx의 ControlEvent로 래핑하는 Reactive Extension을 도입했습니다 이 접근 방식은 다음과 같은 장점을 제공합니다.
-1. 생명주기를 스트림 형태로 동작시켜 ViewModel 또는 다른 레이어에서 쉽게 구동 가능
-2. ViewController의 책임을 줄여 Massive ViewController 문제 완화
-3. 동일한 패턴을 여러 화면에 반복 적용 가능
-
-```swift
-extension Reactive where Base: UIViewController {
-    var viewDidLoad: ControlEvent<Void> {
-        let source = methodInvoked(#selector(Base.viewDidLoad)).map { _ in }
-
-        return ControlEvent(events: source)
-    }
-    
-    var viewWillAppear: ControlEvent<Bool> {
-        let source = methodInvoked(#selector(Base.viewWillAppear)).map { $0.first as? Bool ?? false }
-
-        return ControlEvent(events: source)
-    }
-    
-    var viewDidAppear: ControlEvent<Bool> {
-        let source = methodInvoked(#selector(Base.viewDidAppear)).map { $0.first as? Bool ?? false }
-
-        return ControlEvent(events: source)
-    }
-    
-    var viewWillDisappear: ControlEvent<Bool> {
-        let source = methodInvoked(#selector(Base.viewWillDisappear)).map { $0.first as? Bool ?? false }
-
-        return ControlEvent(events: source)
-    }
-    
-    var viewDidDisappear: ControlEvent<Bool> {
-        let source = methodInvoked(#selector(Base.viewDidDisappear)).map { $0.first as? Bool ?? false }
-
-        return ControlEvent(events: source)
-    }
-}
-```
-
-#### 1.2.3 메모리 관리 및 DisposeBag 사용
-RxSwift에서 Observable 시퀀스에 subscribe() 하여 작업을 시작하면, 명시적으로 구독을 중지하거나 완료 이벤트를 받기 전까지 계속 활성화 상태로 유지됩니다. 이는 메모리 누수(Memory Leak)이어질 수 있습니다. disposeBag은 이러한 구독을 담아두는 구독 취소 컨테이너 역할을 합니다.
-
-본 프로젝트는 주로 ViewController나 ViewModel과 같은 클래스 내부에 다음과 같은 형태로 인스턴스를 선언합니다.
-
-```Swift
-import RxSwift
-
-final class ChallengeViewModel {
-    private let disposeBag = DisposeBag()
-
-    func transform(input: Input) -> Output {
-        input.isPagination
-            .distinctUntilChanged()
-            .filter { $0 }
-            .withLatestFrom(currentDisplayCell)
-            .filter { $0 == .ongoing }
-            .withLatestFrom(currentOngoingChallengePageNo)
-            .filter { $0 > 0 }
-            .map { $0 - 1 }
-            .bind(to: currentOngoingChallengePageNo)
-            .disposed(by: disposeBag)
-    }
-}
-```
-
-위와 같은 설계는 인스턴스(ChallengeViewModel)가 메모리에서 해제될 때, 프로퍼티로 선언된 disposeBag도 함께 해제되며, disposeBag이 해제되는 순간, 그 안에 추가되었던 모든 활성 구독이자동으로 .dispose()되어 메모리 관리를 안전하고 효율적으로 유지할 수 있습니다.
-
-#### 1.2.4 순환 참조 방지 및 withUnretained 사용
-RxSwift를 사용할 때 클래스 내부에서 자신의 메소드를 Observable 클로저 내부에 참조할 때 강한 순환 참조가 자주 발생합니다. 이 문제를 해결하기 위해 Swift에서는 [weak self] 또는 [unowned self]를 사용하지만, RxSwift를 도입한 본 프로젝트에서는 이보다 더 안전하고 간결한 방법인 withUnretained 연산자를 지향합니다.
-
-withUnretained 연산자는 다음 두 가지 이점을 제공합니다.
-1. 자동 약한 참조: 대상 객체(self)를 자동으로 weak 로 캡처합니다.
-2. 안전한 언래핑 및 스트림 중단
-   1. 클로저 실행 시점에 객체가 메모리에 존재하면 (Unretained<Self>, Element) 튜플로 반환되어 안전하게 접근할 수 있습니다.
-   2. 만약 객체가 이미 해제되었다면, 해당 Observable 스트림 이벤트가 자동으로 무시(필터링)되어 크래시를 방지합니다.
-
-```Swift
-currentOngoingChallengePageNo
-    .withUnretained(self)
-    .bind { vm, pageNo in
-        vm.challengeUseCase.getChallengeList(type: .ongoing, pageNo: pageNo)
-            .bind(to: vm.ongoingChallengeModelList)
-            .disposed(by: vm.disposeBag)
-    }.disposed(by: disposeBag)
-```
+---
 
 ### 1.3. Coordinator Pattern
 #### Why?
@@ -248,16 +162,6 @@ private func startTabCoordinator(of page: TabBarPage, to tabNavigationController
     }
 }
 ```
-  
-#### 1.3.2 Navigation Stack 관리
-회원가입 화면(SignUpViewController)에서 ‘인증 완료’ 버튼을 탭하면 서버에 회원가입 요청을 보낸 후, 커플 매칭을 위한 커플 코드 화면(InviteCodeViewController) 으로 전환됩니다.
-이때 스와이프 백(Swipe Back) 제스처나 네비게이션 바의 Back 버튼으로 이전 화면으로 돌아갈 경우, 이미 회원가입이 완료되었음에도 불구하고 사용자가 입력한 정보가 남아 있는 SignUpViewController가 다시 표시되는 문제가 발생했습니다.
-![Coordinator FlowChart](./image/FeelTalk_Coordinator_SignUp.png)
-
-
-이는 회원가입 완료 후 불필요한 화면 복귀로 인한 UX 저하와, 이미 사용이 끝난 ViewController 및 ViewModel 인스턴스가 Heap 영역에 잔존하면서 발생할 수 있는 메모리 누수(Memory Leak) 문제를 유발할 수 있었습니다.
-이를 방지하기 위해, UINavigationController의 Navigation Stack을 제어하는 로직을 추가하여 회원가입 완료 시 이전 화면을 Stack에서 제거하도록 구현했습니다.
-![Coordinator FlowChart](./image/FeelTalk_Coordinator_Navigation_Stack.png)
 
 #### 1.3.3 Child -> Parent 데이터 동기화 Trigger
 ChildViewController에서 사용자가 서버 요청을 완료한 뒤 ParentViewController로 전환(Pop)될 때, 해당 작업의 결과가 ParentViewController에 제대로 동기화되지 않는 문제가 있었습니다.
@@ -362,6 +266,8 @@ extension DefaultHomeCoordinator: CoordinatorFinishDelegate {
 }
 ```
 
+---
+
 ## 2. Network
 ### 2.1 Router Pattern
 #### Why?
@@ -462,14 +368,9 @@ extension ChallengeAPI: Router, URLRequestConvertible {
 }
 ```
 
-#### Result!
-이와 같은 구조를 적용하면 Repository 계층은 Request를 매번 수동으로 구성할 필요 없이, 각 API가 제공하는 URLRequestConvertible을 그대로 Alamofire(AF.request)에 전달하기만 하면 됩니다.<br>이는 네트워크 레이어의 중복 코드 제거와 Request 정의의 일관성 확보에 크게 기여했습니다.
-
 ### 2. Request Interaction
 #### Why? 
-필로우톡은 JWT기반 인증을 사용하며, Access Token에는 유효 기간이 존재합니다. 이 유효 기간이 짧기 떄문에 네트워크 요청 시점에 Access Token이 만료되거나 만료 직적인 경우가 빈번하게 발생합니다. 
-
-기존 구조에서는 각 API 호출부마다 토큰 만료 여부를 체크하고 재발급 요청을 수행해야 했기 때문에 중복 코드 발생, 유지보수성 저사, 재발급 타이밍 불일치로 인한 불안전성의 문제가 있었습니다.
+필로우톡은 JWT기반 인증을 사용하며, Access Token에는 유효 기간이 존재합니다. 이 유효 기간이 짧기 떄문에 네트워크 요청 시점에 Access Token이 만료되거나 만료 직적인 경우가 빈번하게 발생합니다. 기존 구조에서는 각 API 호출부마다 토큰 만료 여부를 체크하고 재발급 요청을 수행해야 했기 때문에 중복 코드 발생, 유지보수성 저사, 재발급 타이밍 불일치로 인한 불안전성의 문제가 있었습니다.
 
 이를 해결하기 위해 Alamofire RequestInterceptor를 활용하여 모든 네트워크 요청 전에 토큰 상태를 자동으로 점검하고 필요한 경우 안전하게 재발급 받아 반영하는 구조를 구축했습니다.
 
@@ -479,6 +380,7 @@ extension ChallengeAPI: Router, URLRequestConvertible {
   * 만료 시간이 1분 이하로 남았을 경우, 토큰을 재발급하는 API(LoginAPI.reissuanceAccessToken)을 호출합니다.
   * 재발급 성공시 Keychain 값을 갱신하고, 새로운 Access Token을 URLRequest의 Header에 설정합니다
   * 만료 시간이 충분하면 기존 Access Token을 그대로 사용합니다.
+
 ```Swift
 final class DefaultRequestInterceptor: RequestInterceptor {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
@@ -537,8 +439,6 @@ final class DefaultRequestInterceptor: RequestInterceptor {
     }
 }
 ```
-## Screen
-
 
 ## ETC
 ### 1. Screen Save
