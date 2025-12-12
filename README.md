@@ -1,5 +1,47 @@
 # 필로우톡(FeelTalk)
 ![FeelTalk_ProfileImage](./image/FeelTalk_Profile.png)
+
+## 📌 Table of Contents
+
+### 1. Architecture
+- [필로우톡(FeelTalk)](#필로우톡feeltalk)
+  - [📌 Table of Contents](#-table-of-contents)
+    - [1. Architecture](#1-architecture)
+    - [2. Network](#2-network)
+    - [3. ETC](#3-etc)
+  - [Teck Stack](#teck-stack)
+  - [1. Architecture](#1-architecture-1)
+    - [1.1 Clean Architecture](#11-clean-architecture)
+    - [1.2 MVVM with RxSwift](#12-mvvm-with-rxswift)
+      - [Why?](#why)
+      - [How?](#how)
+      - [1.2.1 Input/Output Pattern](#121-inputoutput-pattern)
+      - [Reactive Extension for UIViewController](#reactive-extension-for-uiviewcontroller)
+    - [1.3. Coordinator Pattern](#13-coordinator-pattern)
+      - [Why?](#why-1)
+      - [How?](#how-1)
+      - [1.3.1 시스템 플로우 관리](#131-시스템-플로우-관리)
+      - [1.3.2 TabBarCoordinator](#132-tabbarcoordinator)
+      - [1.3.3 Child -\> Parent 데이터 동기화 Trigger](#133-child---parent-데이터-동기화-trigger)
+  - [2. Network](#2-network-1)
+    - [2.1 Router Pattern](#21-router-pattern)
+      - [Why?](#why-2)
+      - [How?](#how-2)
+    - [2. Request Interaction](#2-request-interaction)
+      - [Why?](#why-3)
+      - [How?](#how-3)
+  - [ETC](#etc)
+    - [1. Screen Save](#1-screen-save)
+    - [2. FCM Handler](#2-fcm-handler)
+
+### 2. Network
+- [2.1 Router Pattern](#21-router-pattern)
+- [2.2 Request Interaction](#22-request-interaction)
+
+### 3. ETC
+- [Screen Save](#1-screen-save)
+- [FCM Handler](#2-fcm-handler)
+
 ## Teck Stack
 
 ## 1. Architecture 
@@ -84,6 +126,33 @@ RxSwift 기반 MVVM을 단순 Relay 조합으로만 구성하면 입력 이벤�
     ```
 
 ---
+
+#### Reactive Extension for UIViewController
+UIKit은 ViewController의 생명주기 이벤트를 `override`방식으로만 제공하기 때문에, MVVM 구조에서 해당 이벤트들을 ViewModel로 전달하기 위해 별도의 delegate 코드가 필요했습니다.
+
+이를 개선하기 위해 본 프로젝트에서는 UIViewController의 생명주기를 Rx 기반 스트림으로 변환하는 Reactive Extension을 직접 구현했습니다.
+
+아래 코드와 같이 UIKit의 methodInvoked(_:)를 사용해 시스템이 호출하는 Lifecycle 메서드를 Observable 스트림으로 변환합니다.
+
+```Swift
+extension Reactive where Base: UIViewController {
+    var viewWillAppear: ControlEvent<Bool> {
+        let source = methodInvoked(#selector(Base.viewWillAppear)).map { $0.first as? Bool ?? false }
+
+        return ControlEvent
+    }
+}
+```
+
+이러한 설계로 인한 장점은 다음과 같습니다.
+* View -> ViewModel 이벤트 흐름의 일관성 확보
+  * UI 이벤트뿐 아니라 새영주기 이벤트도 동일한 Observable 스트림으로 처리할 수 있습니다.
+* ViewController 내부 로직 감소
+  * 생명주기를 처리하기 위해 override한 코드가 필요 없어집니다.
+* ViewModel이 화면 로딩 / 갱신 시점을 직접 제어
+  * viewWillAppear.take(1) -> 최초 진입 시 API 호출
+  * viewDidAppear.skip(1) -> 화면이 다시 보여질 떄마다 UI 갱신
+  * viewWillDisappear -> 키보드 / 타이머 종료 처리
 
 ### 1.3. Coordinator Pattern
 #### Why?
