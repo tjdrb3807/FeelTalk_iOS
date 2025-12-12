@@ -1,6 +1,12 @@
 # 필로우톡(FeelTalk)
 ![FeelTalk_ProfileImage](./image/FeelTalk_Profile.png)
 
+## 📱 Screen
+### SignUp Flow
+|**Login**|**Adult Auth**|**Input Info**|**Agree Info**|**Nickname**|**InviteCode**|
+|--|--|--|--|--|--|
+|![FeelTalk_ProfileImage](./image/SignUp01.png)|![FeelTalk_ProfileImage](./image/SignUp04.png)|![FeelTalk_ProfileImage](./image/SignUp05.png)|![FeelTalk_ProfileImage](./image/SignUp06.png)|![FeelTalk_ProfileImage](./image/SignUp08.png)|![FeelTalk_ProfileImage](./image/SignUp09.png)|
+
 ## 📌 Table of Contents
 
 ## 🛠️ Teck Stack
