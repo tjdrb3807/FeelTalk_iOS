@@ -73,9 +73,9 @@ final class AccountInfoSettingsViewController: UIViewController {
         })
 
         let input = AccountInfoSettingsViewModel.Input(
-            viewWillAppear: rx.viewWillAppear,
-            popButtonTapObserver: navigationBar.leftButton.rx.tap,
-            selectedCellObserver: tableView.rx.modelSelected(AccountInfoSettingsSection.Item.self))
+            viewWillAppear: rx.viewWillAppear.asObservable(),
+            popButtonTapObserver: navigationBar.leftButton.rx.tap.asObservable(),
+            selectedCellObserver: tableView.rx.modelSelected(AccountInfoSettingsSection.Item.self).asObservable())
         
         let output = viewModel.transfer(input: input)
         

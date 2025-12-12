@@ -150,7 +150,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         let splashCoordinator = DefaultSplashCoordinator(self.navigationController)
         
         childCoordinators.append(splashCoordinator)
-        splashCoordinator.finishDelegate = self
+//        splashCoordinator.finishDelegate = self
         splashCoordinator.start()
     }
     
@@ -158,7 +158,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         let onboardingCoordinator = DefaultOnboardingCoordinator(self.navigationController)
         
         childCoordinators.append(onboardingCoordinator)
-        onboardingCoordinator.finishDelegate = self
+//        onboardingCoordinator.finishDelegate = self
         onboardingCoordinator.start()
     }
     
@@ -166,7 +166,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         let loginCoordinator = DefaultLoginCoordinator(self.navigationController)
         
         childCoordinators.append(loginCoordinator)
-        loginCoordinator.finishDelegate = self
+//        loginCoordinator.finishDelegate = self
         loginCoordinator.start()
     }
     
@@ -174,7 +174,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         let inviteCodeCoordinator = DefaultInviteCodeCoordinator(self.navigationController)
         
         childCoordinators.append(inviteCodeCoordinator)
-        inviteCodeCoordinator.finishDelegate = self
+//        inviteCodeCoordinator.finishDelegate = self
         inviteCodeCoordinator.start()
     }
     
@@ -182,7 +182,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         let tabBarCoordinator = DefaultMainTabBarCoordinator(self.navigationController)
         
         childCoordinators.append(tabBarCoordinator)
-        tabBarCoordinator.finishDelegate = self
+//        tabBarCoordinator.finishDelegate = self
         tabBarCoordinator.start()
     }
     
@@ -191,7 +191,7 @@ final class DefaultAppCoordinator: AppCoordinator {
         
         lockNumberPadCoordinator.start()
         lockNumberPadCoordinator.viewType.accept(.access)
-        lockNumberPadCoordinator.finishDelegate = self
+//        lockNumberPadCoordinator.finishDelegate = self
         
         childCoordinators.append(lockNumberPadCoordinator)
     }
@@ -216,31 +216,5 @@ extension DefaultAppCoordinator {
             .map { $0?.count == 4 }
             .bind(to: DefaultAppCoordinator.isLockScreenObserver)
             .disposed(by: disposeBag)
-    }
-}
-
-extension DefaultAppCoordinator: CoordinatorFinishDelegate {
-    func coordinatorDidFinish(childCoordinator: Coordinator) {
-        self.childCoordinators = self.childCoordinators.filter({ $0.type != childCoordinator.type })
-        
-        self.navigationController.view.backgroundColor = .systemBackground
-        self.navigationController.viewControllers.removeAll()
-        
-        switch childCoordinator.type {
-        case .onboarding:
-            self.showLoginFlow()
-        case .tab:
-            self.showLoginFlow()
-        case .loginFromLogout:
-            self.showLoginFlow()
-        case .login, .inviteCode, .inviteCodeBottomSheet:
-            self.childCoordinators.removeAll()
-            self.bindIsLockScreenObserver()
-            self.showTabBarFlow()
-        case .lockNumberPad:
-            self.showTabBarFlow()
-        default:
-            break
-        }
     }
 }

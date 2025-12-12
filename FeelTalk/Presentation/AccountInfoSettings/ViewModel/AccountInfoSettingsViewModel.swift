@@ -5,22 +5,21 @@
 //  Created by 전성규 on 2024/01/30.
 //
 
-import Foundation
 import RxSwift
-import RxCocoa
+import RxRelay
 
 final class AccountInfoSettingsViewModel {
     private weak var coordinator: AccountInfoSettingsCoordinator?
     private let disposeBag = DisposeBag()
     
-    let sections = BehaviorRelay<[AccountInfoSettingsSection]>(value: [
+    private let sections = BehaviorRelay<[AccountInfoSettingsSection]>(value: [
         AccountInfoSettingsSection(items: [SettingsModel(category: .withdrawal, state: nil, isArrowIconHidden: true)])
     ])
     
     struct Input {
-        let viewWillAppear: ControlEvent<Bool>
-        let popButtonTapObserver: ControlEvent<Void>
-        let selectedCellObserver: ControlEvent<AccountInfoSettingsSection.Item>
+        let viewWillAppear: Observable<Bool>
+        let popButtonTapObserver: Observable<Void>
+        let selectedCellObserver: Observable<AccountInfoSettingsSection.Item>
     }
     
     struct Output {

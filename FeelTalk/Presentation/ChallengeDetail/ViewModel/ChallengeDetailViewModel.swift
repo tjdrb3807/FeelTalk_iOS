@@ -22,7 +22,7 @@ final class ChallengeDetailViewModel {
     private let content = BehaviorRelay<String>(value: ChallengeContentViewNameSpace.contentInputViewPlaceholder)
     
     struct Input {
-        let viewWillAppear: ControlEvent<Bool>
+        let viewWillAppear: Observable<Bool>
         let tapNavigationButton: Observable<ChallengeDetailNavigationBarButtonType>
         let titleObserver: ControlProperty<String>
         let deadlineObserver: BehaviorRelay<Date>
@@ -68,7 +68,6 @@ final class ChallengeDetailViewModel {
         // 초기 화면 설정
         input.viewWillAppear
             .take(1)
-            .asObservable()
             .withLatestFrom(modelObserver) { (title: $1.title,
                                               deadline: $1.deadline,
                                               content: $1.content,

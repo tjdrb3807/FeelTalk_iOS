@@ -75,7 +75,7 @@ final class ChallengeDetailViewController: UIViewController {
                    contentInputView.toolBarButtonTapObserver.asObservable())
         
         
-        let input = ChallengeDetailViewModel.Input(viewWillAppear: rx.viewWillAppear,
+        let input = ChallengeDetailViewModel.Input(viewWillAppear: rx.viewWillAppear.asObservable(),
                                                    tapNavigationButton: navigationBar.tapButtonObserver.asObservable(),
                                                    titleObserver: titleInputView.titleInputView.rx.text.orEmpty,
                                                    deadlineObserver: deadlineInputView.deadlineObserver,

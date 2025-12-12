@@ -25,7 +25,7 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.openAndCloseActivity), name: UIApplication.didBecomeActiveNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.openAndCloseActivity), name: UIApplication.didBecomeActiveNotification, object: nil)
         
         self.bind(to: viewModel)
         self.setProperties()
@@ -33,37 +33,37 @@ final class HomeViewController: UIViewController {
         self.setConstraints()
         
         // MARK: Mixpanel Navigate Page
-        MixpanelRepository.shared.navigatePage()
+//        MixpanelRepository.shared.navigatePage()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
     }
     
-    @objc func openAndCloseActivity(_ notification: Notification)  {
-        Task {
-            if notification.name == UIApplication.didBecomeActiveNotification {
-                // become active notifictaion
-                // onResume
-                viewModel.reloadObservable.accept(.signal)
-                viewModel.reloadObservable.accept(.todayQuestion)
-                print("onResume in Home")
-                
+//    @objc func openAndCloseActivity(_ notification: Notification)  {
+//        Task {
+//            if notification.name == UIApplication.didBecomeActiveNotification {
+//                // become active notifictaion
+//                // onResume
+//                viewModel.reloadObservable.accept(.signal)
+//                viewModel.reloadObservable.accept(.todayQuestion)
+//                print("onResume in Home")
+//                
 //                FCMHandler.shared.showNotification(identifier: "onResumeHome", title: "onResumeHome", body: "onResumeHome")
 //                FCMHandler.shared.showNotification(identifier: "onResumeHome", title: "onResumeHome", body: "onResumeHome")
-            }
-        }
-    }
+//            }
+//        }
+//    }
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .darkContent }
     
     private func bind(to viewModel: HomeViewModel) {
-        let input = HomeViewModel.Input(viewWillAppear: self.rx.viewWillAppear,
-                                        tapAnswerButton: todayQuestionView.answerButton.rx.tap,
-                                        tapMySignalButton: todaySignalView.mySignalButton.rx.tap,
-                                        tapChatRoomButton: navigationBar.chatRoomButton.rx.tap)
+        let input = HomeViewModel.Input(viewWillAppear: self.rx.viewWillAppear.asObservable(),
+                                        tapAnswerButton: todayQuestionView.answerButton.rx.tap.asObservable(),
+                                        tapMySignalButton: todaySignalView.mySignalButton.rx.tap.asObservable(),
+                                        tapChatRoomButton: navigationBar.chatRoomButton.rx.tap.asObservable())
         
-        let output = viewModel.transfer(input: input)
+        let output = viewModel.transform(input: input)
         
         output.todayQuestion
             .bind(to: todayQuestionView.todayQuestion)
@@ -76,17 +76,17 @@ final class HomeViewController: UIViewController {
         output.partnerSignal
             .bind(to: todaySignalView.partnerSignalButton.model)
             .disposed(by: disposeBag)
-        
-//        output.showBottomSheet
-//            .withUnretained(self)
-//            .bind { vc, _ in
-//                guard !vc.view.subviews.contains(where: { $0 is HomeBottomSheetView }) else { return }
-//                let bottomSheet = vc.bottomSheet
-//                vc.view.addSubview(bottomSheet)
-//                bottomSheet.snp.makeConstraints { $0.edges.equalToSuperview() }
-//                vc.view.layoutIfNeeded()
-//                bottomSheet.isHidden(false)
-//            }.disposed(by: disposeBag)
+            
+        output.showBottomSheet
+            .withUnretained(self)
+            .bind { vc, _ in
+                guard !vc.view.subviews.contains(where: { $0 is HomeBottomSheetView }) else { return }
+                let bottomSheet = vc.bottomSheet
+                vc.view.addSubview(bottomSheet)
+                bottomSheet.snp.makeConstraints { $0.edges.equalToSuperview() }
+                vc.view.layoutIfNeeded()
+                bottomSheet.isHidden(false)
+            }.disposed(by: disposeBag)
         
         bottomSheet.confirmButton.rx.tap
             .delay(RxTimeInterval.milliseconds(300), scheduler: MainScheduler.instance)
@@ -138,6 +138,7 @@ extension HomeViewController {
 #if DEBUG
 
 import SwiftUI
+import RxSwift
 
 struct HomeViewController_Previews: PreviewProvider {
     static var previews: some View {
@@ -162,8 +163,8 @@ struct HomeViewController_Previews: PreviewProvider {
                                                             isMyAnswer: true,
                                                             isPartnerAnswer: false,
                                                             createAt: "2023-02-33"))
-            vc.todaySignalView.mySignalButton.model.accept(.init(type: .ambiguous))
-            vc.todaySignalView.partnerSignalButton.model.accept(.init(type: .refuse))
+            vc.todaySignalView.mySignalButton.model.accept(.init(type: .love))
+            vc.todaySignalView.partnerSignalButton.model.accept(.init(type: .ambiguous))
             
             vc.viewModel = vm
             

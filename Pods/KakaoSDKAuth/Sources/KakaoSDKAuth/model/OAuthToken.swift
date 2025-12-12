@@ -14,41 +14,58 @@
 
 import Foundation
 
-/// 카카오 로그인을 통해 발급 받은 토큰입니다.
-///
-/// 이 토큰을 이용하여 로그인 기반 API를 호출할 수 있습니다. 카카오 SDK를 이용하여 로그인에 성공하면 발급된 토큰을 SDK 내부에 설정된 `TokenManagable` 구현체를 통해 저장합니다. 이후 로그인 기반 API(ex. 사용자관리)를 호출하면 해당 토큰을 읽어오며 API 요청 Authorization 헤더에 자동 입력됩니다.
+/// 카카오 로그인으로 발급받은 토큰 \
+/// Tokens issued with Kakao Login
 public struct OAuthToken: Codable {
     
     // MARK: Fields
     
-    /// :nodoc: 토큰 타입. 현재는 "Bearer" 타입만 사용됩니다.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    /// 토큰 타입. 현재는 "Bearer" 타입만 사용됩니다.
     public let tokenType: String
 
-    /// 액세스 토큰
+    /// 액세스 토큰 \
+    /// Access token
     public let accessToken: String
     
-    /// :nodoc: 액세스 토큰의 남은 만료시간 (단위: 초)
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    /// 액세스 토큰의 남은 만료시간 (단위: 초)
     public let expiresIn: TimeInterval
     
-    /// 액세스 토큰의 만료 시각
+    /// 액세스 토큰 만료시각 \
+    /// The expiration time of the access token
     public let expiredAt: Date
     
-    /// 리프레시 토큰
+    /// 리프레시 토큰 \
+    /// Refresh token
     public let refreshToken: String
     
-    /// :nodoc: 리프레시 토큰의 남은 만료시간 (단위: 초)
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    /// 리프레시 토큰의 남은 만료시간 (단위: 초)
     public let refreshTokenExpiresIn: TimeInterval
     
-    /// 리프레시 토큰의 만료 시각
+    /// 리프레시 토큰 만료시각 \
+    /// The expiration time of the refresh token
     public let refreshTokenExpiredAt: Date
     
-    /// :nodoc:
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public let scope: String? //space delimited string
     
-    /// 현재까지 사용자로부터 획득에 성공한 scope (동의항목) 목록. 인증코드를 통한 토큰 신규 발급 시점에만 저장되며 이후 같은 값으로 유지됩니다. 토큰 갱신으로는 최신정보로 업데이트되지 않습니다.
+    // 인가 코드를 사용한 토큰 신규 발급 시점에만 저장되고 이후 같은 값으로 유지, 토큰 갱신으로는 최신정보로 업데이트되지 않음
+    /// 인가된 동의항목 \
+    /// Authorized scopes
     public let scopes: [String]?
     
-    /// OpenID Connect 확장 기능을 통해 발급되는 ID 토큰, Base64 인코딩된 사용자 인증 정보 포함
+    /// ID 토큰 \
+    /// ID token
     public let idToken: String?
     
     enum CodingKeys: String, CodingKey {
@@ -57,7 +74,9 @@ public struct OAuthToken: Codable {
     
     
     // MARK: Initializers
-    /// :nodoc:
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
@@ -73,7 +92,9 @@ public struct OAuthToken: Codable {
         self.idToken = try? values.decode(String.self, forKey: .idToken)
     }
     
-    /// :nodoc:
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public init(accessToken: String,
                 expiresIn: TimeInterval? = nil,
                 expiredAt: Date? = nil,
@@ -156,7 +177,9 @@ public struct OAuthToken: Codable {
 //    }
 }
 
-/// :nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 public struct Token: Codable {
     public let accessToken: String
     public let expiresIn: TimeInterval
@@ -186,7 +209,10 @@ public struct Token: Codable {
 }
 
 
-/// :nodoc: internal use only
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+/// internal use only
 public struct CertOAuthToken: Codable {
     public let tokenType: String
     public let accessToken: String
@@ -225,18 +251,57 @@ public struct CertOAuthToken: Codable {
     }
 }
 
-/// 카카오톡 인증 로그인을 통해 발급 받은 토큰 및 전자서명 접수번호 입니다.
+/// 토큰 정보와 전자서명 접수번호 \
+/// Token information and transaction ID
 public struct CertTokenInfo: Codable {
-    ///토큰 정보
+    /// 토큰 정보 \
+    /// Token information
     public let token: OAuthToken
     
-    ///전자서명 접수번호
+    /// 전자서명 접수번호 \
+    /// Transaction ID
     public let txId: String
     
-    /// :nodoc:
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public init(token:OAuthToken,
                 txId:String) {
         self.token = token
         self.txId = txId
     }
+}
+
+/// 상품 종류 \
+/// Product type
+public enum CertType: String {
+    
+    /// K2100, 카카오톡 인증 로그인 \
+    /// K2100, Kakao Talk Certification Login
+    case K2100 = "k2100"
+    
+    /// K2220, 카카오톡 축약서명 \
+    /// K2220, Kakao Talk Abbreviated signature
+    case K2220 = "k2220"
+    
+    /// K3220, 축약서명 \
+    /// K3220, Abbreviated signature
+    case K3220 = "k3220"
+}
+
+/// 확인할 서명자 정보 \
+/// Signer information to verify
+public enum IdentifyItem: String {
+    /// 전화번호 \
+    /// Phone number
+    case PhoneNumber = "phone_number"
+    /// 연계 정보 \
+    ///  Connecting Information (CI)
+    case CI = "ci"
+    /// 이름 \
+    ///  Name
+    case Name = "name"
+    /// 생일 \
+    /// Birthday
+    case Birthday = "birthday"
 }

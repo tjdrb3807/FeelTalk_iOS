@@ -14,22 +14,22 @@
 
 import Foundation
 
-///:nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 extension Dictionary {
     public var queryParameters: String {
         var parts: [String] = []
         for (key, value) in self {
             let part = String(format: "%@=%@",
-                              // ! optional unwrapping [ ]
-                              String(describing: key).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!,
-                              // ! optional unwrapping [ ]
-                              String(describing: value).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
+                              String(describing: key).addingPercentEncoding(withAllowedCharacters: CharacterSet.fixedUrlQueryAllowed())!,
+                              String(describing: value).addingPercentEncoding(withAllowedCharacters: CharacterSet.fixedUrlQueryAllowed())!)
             parts.append(part as String)
         }
         return parts.joined(separator: "&")
     }
     
-    public var urlQueryItems: [URLQueryItem]? {        
+    public var urlQueryItems: [URLQueryItem]? {
         let queryItems = self.map { (key, value) in
             URLQueryItem(name: String(describing: key),
                          value: String(describing: value))
@@ -38,7 +38,21 @@ extension Dictionary {
     }
 }
 
-///:nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+extension CharacterSet {
+    public static func fixedUrlQueryAllowed() -> CharacterSet {
+        let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
+        let subDelimitersToEncode = "!$&'()*+,;="
+        let encodableDelimiters = CharacterSet(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
+        return CharacterSet.urlQueryAllowed.subtracting(encodableDelimiters)
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 extension Dictionary where Key == String, Value == Any? {
     public func filterNil() -> [String:Any]? {
         let filteredNil = self.filter({ $0.value != nil }).mapValues({ $0! })
@@ -46,7 +60,9 @@ extension Dictionary where Key == String, Value == Any? {
     }
 }
 
-///:nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 extension Dictionary where Key == String, Value: Any {
     public func toJsonString() -> String? {
         if let data = try? JSONSerialization.data(withJSONObject: self, options:[]) {
@@ -58,7 +74,9 @@ extension Dictionary where Key == String, Value: Any {
     }
 }
 
-///:nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 public extension Dictionary {
     mutating func merge(_ dictionary: [Key: Value]) {
         for (key, value) in dictionary {

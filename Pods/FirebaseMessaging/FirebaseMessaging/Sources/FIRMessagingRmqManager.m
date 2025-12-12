@@ -277,17 +277,24 @@ NSString *_Nonnull FIRMessagingStringFromSQLiteResult(int result) {
 - (FIRMessagingPersistentSyncMessage *)querySyncMessageWithRmqID:(NSString *)rmqID {
   __block FIRMessagingPersistentSyncMessage *persistentMessage;
   dispatch_sync(_databaseOperationQueue, ^{
-    NSString *queryFormat = @"SELECT %@ FROM %@ WHERE %@ = '%@'";
+    NSString *queryFormat = @"SELECT %@ FROM %@ WHERE %@ = ?";
     NSString *query =
         [NSString stringWithFormat:queryFormat,
                                    kSyncMessagesColumns,  // SELECT (rmq_id, expiration_ts,
                                                           // apns_recv, mcs_recv)
                                    kTableSyncMessages,    // FROM sync_rmq
-                                   kRmqIdColumn,          // WHERE rmq_id
-                                   rmqID];
+                                   kRmqIdColumn           // WHERE rmq_id
+    ];
 
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(self->_database, [query UTF8String], -1, &stmt, NULL) != SQLITE_OK) {
+      [self logError];
+      sqlite3_finalize(stmt);
+      return;
+    }
+
+    if (sqlite3_bind_text(stmt, 1, [rmqID UTF8String], (int)[rmqID length], SQLITE_STATIC) !=
+        SQLITE_OK) {
       [self logError];
       sqlite3_finalize(stmt);
       return;
@@ -489,10 +496,12 @@ NSString *_Nonnull FIRMessagingStringFromSQLiteResult(int result) {
 
     BOOL didOpenDatabase = YES;
     if (![fileManager fileExistsAtPath:path]) {
-      // We've to separate between different versions here because of backwards compatbility issues.
-      int result = sqlite3_open_v2(
-          [path UTF8String], &self -> _database,
-          SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FILEPROTECTION_NONE, NULL);
+      // We've to separate between different versions here because of backward compatibility issues.
+      int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+#ifdef SQLITE_OPEN_FILEPROTECTION_NONE
+      flags |= SQLITE_OPEN_FILEPROTECTION_NONE;
+#endif
+      int result = sqlite3_open_v2([path UTF8String], &self -> _database, flags, NULL);
       if (result != SQLITE_OK) {
         NSString *errorString = FIRMessagingStringFromSQLiteResult(result);
         NSString *errorMessage = [NSString
@@ -509,9 +518,11 @@ NSString *_Nonnull FIRMessagingStringFromSQLiteResult(int result) {
       [self createTableWithName:kTableS2DRmqIds command:kCreateTableS2DRmqIds];
     } else {
       // Calling sqlite3_open should create the database, since the file doesn't exist.
-      int result = sqlite3_open_v2(
-          [path UTF8String], &self -> _database,
-          SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FILEPROTECTION_NONE, NULL);
+      int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+#ifdef SQLITE_OPEN_FILEPROTECTION_NONE
+      flags |= SQLITE_OPEN_FILEPROTECTION_NONE;
+#endif
+      int result = sqlite3_open_v2([path UTF8String], &self -> _database, flags, NULL);
       if (result != SQLITE_OK) {
         NSString *errorString = FIRMessagingStringFromSQLiteResult(result);
         NSString *errorMessage =

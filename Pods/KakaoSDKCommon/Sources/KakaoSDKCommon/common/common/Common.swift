@@ -15,7 +15,9 @@
 import Foundation
 import UIKit
 
-///:nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 public class Constants {
     static public let responseType = "code"
     
@@ -39,14 +41,20 @@ public class Constants {
         let countryCode = Locale.current.regionCode
         
         let lang = "\(langCode ?? "")-\(countryCode ?? "")"
+        
+        #if !os(visionOS)
         let resX = "\(Int(UIScreen.main.bounds.width))"
-        let resY = "\(Int(UIScreen.main.bounds.height))"
+        let resY = "\(Int(UIScreen.main.bounds.height))"        
+        let res = "\(resX)x\(resY)"
+        #else
+        let res = "_"
+        #endif
         let device = UIDevice.current.model.replacingOccurrences(of: " ", with: "_")
         let appBundleId = Bundle.main.bundleIdentifier
         let appVersion = self.appVersion()
         let customIdentifier = KakaoSDK.shared.sdkIdentifier()?.customIdentifier
         
-        let ka = "sdk/\(sdkVersion) sdk_type/\(sdkType) os/ios-\(osVersion) lang/\(lang) res/\(resX)x\(resY) device/\(device) origin/\(appBundleId ?? "") app_ver/\(appVersion ?? "")"
+        let ka = "sdk/\(sdkVersion) sdk_type/\(sdkType) os/ios-\(osVersion) lang/\(lang) res/\(res) device/\(device) origin/\(appBundleId ?? "") app_ver/\(appVersion ?? "")"
         
         return customIdentifier != nil ? "\(ka) \(customIdentifier!)":ka
     }
@@ -61,13 +69,17 @@ public class Constants {
     }
 }
 
-///:nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 public enum SdkType : String {
     case Swift = "swift"
     case RxSwift = "rx_swift"
 }
 
-///:nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 public class ApprovalType {
     public static let shared = ApprovalType()
     public var type : String?
@@ -77,13 +89,18 @@ public class ApprovalType {
     }
 }
 
-///:nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 public enum ApiType {
     case KApi
     case KAuth
+    case Apps
 }
 
-///:nodoc:
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 public class SdkIdentifier {
     public let customIdentifier : String?
     
@@ -92,12 +109,15 @@ public class SdkIdentifier {
     }
 }
 
-/// 톡 간편로그인 호출 방식
+/// 카카오 로그인 시 앱 전환 방식 \
+/// Method to switch apps for Kakao Login
 public enum LaunchMethod: String {
     
-    /// 커스텀 스킴
-    case CustomScheme
+    /// 커스텀 URL 스킴 \
+    /// Custom URL scheme
+    case CustomScheme = "uri_scheme"
     
-    /// 유니버셜 링크
-    case UniversalLink
+    /// 유니버설 링크 \
+    /// Universal link
+    case UniversalLink = "universal_link"
 }

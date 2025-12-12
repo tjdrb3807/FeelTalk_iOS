@@ -14,27 +14,20 @@
 
 import Foundation
 
-/// 카카오 SDK 공통의 환경변수 설정을 위한 클래스입니다.
-///
-/// 싱글톤으로 제공되는 인스턴스를 사용해야 하며 다음과 같이 초기화할 수 있습니다.
-///
-///     // AppDelegate.swift
-///     func application(_ application: UIApplication,
-///                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-///
-///         KakaoSDK.initSDK(appKey: "<#Your App Key#>")
-///
-///         return true
-///     }
-/// - important: SDK 초기화가 수행되지 않으면 SDK 내 모든 기능을 사용할 수 없습니다. 반드시 가장 먼저 실행되어야 합니다.
+/// 주요 설정 및 초기화 클래스 \
+/// Class for major settings and initializing
+///## SeeAlso
+///- [초기화](https://developers.kakao.com/docs/latest/ko/ios/getting-started#init) \
+///  [Initialize](https://developers.kakao.com/docs/latest/en/ios/getting-started#init)
 final public class KakaoSDK {
     
     // MARK: Fields
     
     //static 라이브러리용 버전.
-    private let _version = "2.15.0"
+    private let _version = "2.22.7"
     
-    /// 카카오 SDK의 싱글톤 객체입니다. SDK를 사용할 때 반드시 이 객체가 가장 먼저 초기화되어야 합니다.
+    /// 카카오 SDK 싱글톤 객체 \
+    /// A singleton object for Kakao SDK
     public static let shared = KakaoSDK()
     
     private var _appKey : String? = nil
@@ -46,20 +39,23 @@ final public class KakaoSDK {
     private var _approvalType : ApprovalType? = nil
     
     private var _sdkType : SdkType!
-
+    
     private var _sdkIdentifier : SdkIdentifier? = nil
     
     public init() {
         _appKey = nil
         _customScheme = nil
     }
-        
+    
     // MARK: Initializers
     
-    /// SDK 초기화를 수행합니다.
+    /// Kakao SDK 초기화 \
+    /// Initializes Kakao SDK
     /// - parameters:
-    ///   - appKey: [카카오 디벨로퍼스](https://developers.kakao.com)에서 발급 받은 NATIVE_APP_KEY
-    ///   - loggingEnable: SDK에서 디버그 로깅를 사용 여부
+    ///   - appKey: 앱 키 \
+    ///             App key
+    ///   - loggingEnable: Kakao SDK 내부 로그 기능 활성화 여부 \
+    ///                    Whether to enable the internal log of the Kakao SDK
     
     public static func initSDK(appKey: String,
                                customScheme: String? = nil,
@@ -75,8 +71,10 @@ final public class KakaoSDK {
                                    sdkIdentifier: sdkIdentifier,
                                    sdkType: .Swift)
     }
-
-    /// :nodoc:
+    
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public func initialize(appKey: String,
                            customScheme: String? = nil,
                            loggingEnable: Bool = false,
@@ -95,33 +93,44 @@ final public class KakaoSDK {
         SdkLog.shared.clearLog()        
     }
     
-    /// 현재 SDK의 버전을 조회합니다.
+    /// Kakao SDK 버전 조회 \
+    /// Returns the version of Kakao SDK
     public func sdkVersion() -> String {
         return _version
     }
     
-    /// 초기화 시 지정한 loggingEnable
-    /// - seealso: `SdkLog`
+    /// 초기화 시 설정된 로깅 여부 조회 \
+    /// Returns whether logging is enabled
+    /// ## SeeAlso
+    /// - ``SdkLog``
     public func isLoggingEnable() -> Bool {
         return _loggingEnable
     }
     
-    /// :nodoc:
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public func hosts() -> Hosts {
         return _hosts != nil ? _hosts! : Hosts.shared
     }
     
-    /// :nodoc:
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public func approvalType() -> ApprovalType {
         return _approvalType != nil ? _approvalType! : ApprovalType.shared
     }
     
-    /// :nodoc:
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public func sdkType() -> SdkType {
         return _sdkType != nil ? _sdkType : .Swift
     }
     
-    /// :nodoc:
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public func scheme() throws -> String {
         guard _appKey != nil else {
             throw SdkError(reason: .MustInitAppKey)
@@ -129,15 +138,18 @@ final public class KakaoSDK {
         return _customScheme ?? "kakao\(_appKey!)"
     }
     
-    /// :nodoc:
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
     public func sdkIdentifier() -> SdkIdentifier? {
         return _sdkIdentifier
     }
 }
 
 extension KakaoSDK {
-    /// 설정된 앱키를 가져옵니다.
-    /// - throws: `SdkError.ClientFailureReason.MustInitAppKey`: SDK가 초기화되지 않았습니다. 앱키를 가져오기 전에 initSDK를 이용하여 먼저 싱글톤 인스턴스를 초기화해야 합니다.
+    /// 초기화 시 설정된 앱 키 조회 \
+    /// Returns the app key used to initialize
+    /// - throws: ``ClientFailureReason/MustInitAppKey``: SDK가 초기화되지 않았습니다. 앱키를 가져오기 전에 initSDK를 이용하여 먼저 싱글톤 인스턴스를 초기화해야 합니다.
     public func appKey() throws -> String {
         guard _appKey != nil else {
             throw SdkError(reason: .MustInitAppKey)
@@ -145,12 +157,14 @@ extension KakaoSDK {
         return _appKey!
     }
     
-    /// KA Header를 가져옵니다.
+    /// KA 헤더 조회 \
+    /// Returns KA header
     public func kaHeader() -> String {
         return Constants.kaHeader
     }
     
-    /// redirectUri를 가져옵니다.
+    /// 리다이렉트 URI 조회 \
+    /// Returns the redirect URI
     public func redirectUri() -> String {
         return "\(try! self.scheme())://oauth"
     }
