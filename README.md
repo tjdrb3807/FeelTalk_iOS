@@ -3,46 +3,20 @@
 
 ## 📌 Table of Contents
 
-### 1. Architecture
-- [필로우톡(FeelTalk)](#필로우톡feeltalk)
-  - [📌 Table of Contents](#-table-of-contents)
-    - [1. Architecture](#1-architecture)
-    - [2. Network](#2-network)
-    - [3. ETC](#3-etc)
-  - [Teck Stack](#teck-stack)
-  - [1. Architecture](#1-architecture-1)
-    - [1.1 Clean Architecture](#11-clean-architecture)
-    - [1.2 MVVM with RxSwift](#12-mvvm-with-rxswift)
-      - [Why?](#why)
-      - [How?](#how)
-      - [1.2.1 Input/Output Pattern](#121-inputoutput-pattern)
-      - [Reactive Extension for UIViewController](#reactive-extension-for-uiviewcontroller)
-    - [1.3. Coordinator Pattern](#13-coordinator-pattern)
-      - [Why?](#why-1)
-      - [How?](#how-1)
-      - [1.3.1 시스템 플로우 관리](#131-시스템-플로우-관리)
-      - [1.3.2 TabBarCoordinator](#132-tabbarcoordinator)
-      - [1.3.3 Child -\> Parent 데이터 동기화 Trigger](#133-child---parent-데이터-동기화-trigger)
-  - [2. Network](#2-network-1)
-    - [2.1 Router Pattern](#21-router-pattern)
-      - [Why?](#why-2)
-      - [How?](#how-2)
-    - [2. Request Interaction](#2-request-interaction)
-      - [Why?](#why-3)
-      - [How?](#how-3)
-  - [ETC](#etc)
-    - [1. Screen Save](#1-screen-save)
-    - [2. FCM Handler](#2-fcm-handler)
-
-### 2. Network
-- [2.1 Router Pattern](#21-router-pattern)
-- [2.2 Request Interaction](#22-request-interaction)
-
-### 3. ETC
-- [Screen Save](#1-screen-save)
-- [FCM Handler](#2-fcm-handler)
-
-## Teck Stack
+## 🛠️ Teck Stack
+| **category** | **techStack** |
+| --- | --- |
+| **language** | ![Badge](https://img.shields.io/badge/swift5.x-F05138?style=for-the-badge&logo=swift&logoColor=white) |
+| **dependencyManagement** | ![Badge](https://img.shields.io/badge/cocoaPods-FA2B59?style=for-the-badge&logo=cocoapods&logoColor=white) |
+| **versionControl** | ![Badge](https://img.shields.io/badge/gitHub-181717?style=for-the-badge&logo=github&logoColor=white), ![Badge](https://img.shields.io/badge/git-F05033?style=for-the-badge&logo=git&logoColor=white) |
+| **architecture** | ![Badge](https://img.shields.io/badge/cleanArchitecture-FFD93D?style=for-the-badge), ![Badge](https://img.shields.io/badge/mvvm-4CAF50?style=for-the-badge), ![Badge](https://img.shields.io/badge/coordinator-0066FF?style=for-the-badge) |
+| **uiFramework** | ![Badge](https://img.shields.io/badge/uiKit-2396F3?style=for-the-badge&logo=apple&logoColor=white) |
+| **reactiveProgramming** | ![Badge](https://img.shields.io/badge/rxSwift-B7178C?style=for-the-badge), ![Badge](https://img.shields.io/badge/rxDataSources-FF006E?style=for-the-badge), ![Badge](https://img.shields.io/badge/rxKeyboard-9B5DE5?style=for-the-badge), ![Badge](https://img.shields.io/badge/rxGesture-FF6F00?style=for-the-badge) |
+| **layout** | ![Badge](https://img.shields.io/badge/snapKit-0E8E9A?style=for-the-badge) |
+| **networking** | ![Badge](https://img.shields.io/badge/alamofire-FF5733?style=for-the-badge) |
+| **oauthProviders** | ![Badge](https://img.shields.io/badge/kakao-FFEB00?style=for-the-badge), ![Badge](https://img.shields.io/badge/naver-03C75A?style=for-the-badge), ![Badge](https://img.shields.io/badge/google-4285F4?style=for-the-badge&logo=google&logoColor=white), ![Badge](https://img.shields.io/badge/apple-000000?style=for-the-badge&logo=apple&logoColor=white) |
+| **pushNotification** | ![Badge](https://img.shields.io/badge/fcm-F57C00?style=for-the-badge&logo=firebase&logoColor=white) |
+| **secureStorage** | ![Badge](https://img.shields.io/badge/keychain-005BBB?style=for-the-badge) |
 
 ## 1. Architecture 
 
@@ -127,12 +101,12 @@ RxSwift 기반 MVVM을 단순 Relay 조합으로만 구성하면 입력 이벤�
 
 ---
 
-#### Reactive Extension for UIViewController
+#### 1.2.2 Reactive Extension for UIViewController
 UIKit은 ViewController의 생명주기 이벤트를 `override`방식으로만 제공하기 때문에, MVVM 구조에서 해당 이벤트들을 ViewModel로 전달하기 위해 별도의 delegate 코드가 필요했습니다.
 
 이를 개선하기 위해 본 프로젝트에서는 UIViewController의 생명주기를 Rx 기반 스트림으로 변환하는 Reactive Extension을 직접 구현했습니다.
 
-아래 코드와 같이 UIKit의 methodInvoked(_:)를 사용해 시스템이 호출하는 Lifecycle 메서드를 Observable 스트림으로 변환합니다.
+아래 코드와 같이 UIKit의 `methodInvoked(_:)`를 사용해 시스템이 호출하는 Lifecycle 메서드를 Observable 스트림으로 변환합니다.
 
 ```Swift
 extension Reactive where Base: UIViewController {
