@@ -98,8 +98,8 @@ final class LoginViewController: UIViewController {
     }
     
     private func setAttribute() {
-//        view.backgroundColor = UIColor(named: CommonColorNameSpace.main500)
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: CommonColorNameSpace.main500)
+//        view.backgroundColor = .white
         navigationController?.navigationBar.isHidden = true
     }
     

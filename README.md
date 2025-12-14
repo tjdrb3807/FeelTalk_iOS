@@ -2,12 +2,18 @@
 ![FeelTalk_ProfileImage](./image/FeelTalk_Profile.png)
 
 ## 📱 Screen
-### SignUp Flow
-|**Login**|**Adult Auth**|**Input Info**|**Agree Info**|**Nickname**|**InviteCode**|
-|--|--|--|--|--|--|
-|![FeelTalk_ProfileImage](./image/SignUp01.png)|![FeelTalk_ProfileImage](./image/SignUp04.png)|![FeelTalk_ProfileImage](./image/SignUp05.png)|![FeelTalk_ProfileImage](./image/SignUp06.png)|![FeelTalk_ProfileImage](./image/SignUp08.png)|![FeelTalk_ProfileImage](./image/SignUp09.png)|
-
-## 📌 Table of Contents
+### 회원가입
+![FeelTalk_screen_image_login_signUp](./image/Login&SignUp.png)
+### 시그널 전송
+![FeelTalk_ProfileImage](./image/Signal.png)
+### 오늘의 질문
+![FeelTalk_ProfileImage](./image/Question.png)
+### 첼린지
+![FeelTalk_ProfileImage](./image/Challenge.png)
+### 화면잠금
+![FeelTalk_ProfileImage](./image/LockScreen.png)
+### 탈퇴 & 연인 끊기
+![FeelTalk_ProfileImage](./image/Break.png)
 
 ## 🛠️ Teck Stack
 | **category** | **techStack** |
