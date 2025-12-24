@@ -75,6 +75,8 @@
 * 화면 로직과 비즈니스 로직 분리를 위해 MVVM 패턴을 적용했습니다.
 * View는 사용자 이벤트를 전달하고, ViewModel은 상태를 생성하여 단방향 데이터 흐름을 유지합니다.
 * RxSwift를 활용해 비동기 이벤트를 단일 스트림 기반으로 관리하고, UI 상태 변경을 일관될 방식으로 처리했습니다.
+* 기술 블로그
+  * 🔗 [FeelTalk-MVVM 도입기(with RxSwift)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM/)
 
 ### Coordinator Pattern
 * 화면 전환(Flow) 로직을 ViewController에서 분리하기 위해 Coordinator 패턴을 적용했습니다.
