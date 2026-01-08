@@ -31,12 +31,13 @@ final class AnswerViewModel {
     }
     
     struct Output {
-        let model = PublishRelay<Question>()
-        let keyboardHeight = BehaviorRelay<CGFloat>(value: 0.0)
-        let isActiveAnswerCompletedButton = BehaviorRelay<Bool>(value: false)
-        let bottomSheetHiddenObserver = PublishRelay<Void>()
-        let popUpAlertObserver = PublishRelay<CustomAlertType>()
-        let popUpPressForAnswerToastMessage = PublishRelay<String>()
+        let model: Driver<Question>
+        let keyboardHeight: Driver<CGFloat>
+        let isActiveAnswerCompletedButton: Driver<Bool>
+        
+        let bottomSheetHidden: RxCocoa.Signal<Void>
+        let popUpAlert: RxCocoa.Signal<CustomAlertType>
+        let popUpPressForAnswerToastMessage: RxCocoa.Signal<String>
     }
     
     init(coordinator: AnswerCoordinator, questionUseCase: QuestionUseCase, userUseCase: UserUseCase) {
@@ -45,24 +46,30 @@ final class AnswerViewModel {
         self.userUserCase = userUseCase
     }
     
-    func transfer(input: Input) -> Output {
-        let output = Output()
+    func transform(input: Input) -> Output {
+        let modelRelay = PublishRelay<Question>()
+        let keyboardHeightRelay = BehaviorRelay<CGFloat>(value: 0.0)
+        let isActiveButtonRelay = BehaviorRelay<Bool>(value: false)
+        
+        let bottomSheetHiddenRelay = PublishRelay<Void>()
+        let popUpAlertRelay = PublishRelay<CustomAlertType>()
+        let toastMessageRelay = PublishRelay<String>()
 
         RxKeyboard.instance.visibleHeight
             .asObservable()
             .filter { 0 <= $0 }
-            .bind(to: output.keyboardHeight)
+            .bind(to: keyboardHeightRelay)
             .disposed(by: disposeBag)
         
         input.viewWillAppear
             .withLatestFrom(model)
-            .bind(to: output.model)
+            .bind(to: modelRelay)
             .disposed(by: disposeBag)
         
         input.myAnswerObserver
             .asObservable()
             .map { $0 == MyAnswerViewNameSpace.answerInputViewPlaceholder ? false : $0.count > 0 ? true : false }
-            .bind(to: output.isActiveAnswerCompletedButton)
+            .bind(to: isActiveButtonRelay)
             .disposed(by: disposeBag)
         
         input.tapPressForAnswerButton
@@ -72,14 +79,14 @@ final class AnswerViewModel {
             .bind { vm, question in
                 vm.questionUseCase.pressForAnswer(index: question.index)
                     .asObservable()
-                    .bind(to: output.popUpPressForAnswerToastMessage)
+                    .bind(to: toastMessageRelay)
                     .disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
             
         input.tapAnswerCompletedButton
             .asObservable()
             .map { CustomAlertType.sendAnswer }
-            .bind(to: output.popUpAlertObserver)
+            .bind(to: popUpAlertRelay)
             .disposed(by: disposeBag)
         
         input.tapPopButton
@@ -94,16 +101,16 @@ final class AnswerViewModel {
             }.withUnretained(self)
             .bind { vm, event in
                 if event {
-                    output.popUpAlertObserver.accept(.popAnswer)
+                    popUpAlertRelay.accept(.popAnswer)
                 } else {
-                    output.bottomSheetHiddenObserver.accept(())
+                    bottomSheetHiddenRelay.accept(())
                 }
             }.disposed(by: disposeBag)
         
         input.tapAlertRightButton
             .filter { $0 == .popAnswer }
             .map { _ in () }
-            .bind(to: output.bottomSheetHiddenObserver)
+            .bind(to: bottomSheetHiddenRelay)
             .disposed(by: disposeBag)
         
         input.tapAlertRightButton
@@ -115,14 +122,15 @@ final class AnswerViewModel {
                 vm.questionUseCase.answerQuestion(entity: Answer(index: event.index, myAnswer: event.myAnswer))
                     .filter { $0 }
                     .bind { _ in
-                        output.bottomSheetHiddenObserver.accept(())
+                        bottomSheetHiddenRelay.accept(())
+                        
                         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                             vm.coordinator?.finish()
                         }
                     }.disposed(by: vm.disposeBag)
             }.disposed(by: disposeBag)
         
-        output.bottomSheetHiddenObserver
+        bottomSheetHiddenRelay
             .delay(RxTimeInterval.milliseconds(500), scheduler: MainScheduler.instance)
             .withUnretained(self)
             .bind { vm, _ in
@@ -136,6 +144,12 @@ final class AnswerViewModel {
                 vm.coordinator?.dismissAndShowChatFlow()
             }.disposed(by: disposeBag)
         
-        return output
+        return Output(
+            model: modelRelay.asDriver(onErrorDriveWith: .empty()),
+            keyboardHeight: keyboardHeightRelay.asDriver(onErrorJustReturn: 0.0),
+            isActiveAnswerCompletedButton: isActiveButtonRelay.asDriver(onErrorJustReturn: false),
+            bottomSheetHidden: bottomSheetHiddenRelay.asSignal(),
+            popUpAlert: popUpAlertRelay.asSignal(),
+            popUpPressForAnswerToastMessage: toastMessageRelay.asSignal())
     }
 }

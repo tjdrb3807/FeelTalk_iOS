@@ -117,11 +117,10 @@ final class AnswerViewController: UIViewController {
             tapAnswerCompletedButton: answerCompletedButton.rx.tap,
             tapChatRoomButton: chatRoomButton.rx.tap)
         
-        let output = viewModel.transfer(input: input)
+        let output = viewModel.transform(input: input)
             
         output.model
-            .withUnretained(self)
-            .bind { vc, model in
+            .drive(with: self) { vc, model in
                 vc.questionTitleView.model.accept(model)
                 vc.myAnswerView.model.accept(model)
                 vc.partnerAnswerView.model.accept(model)
@@ -129,30 +128,26 @@ final class AnswerViewController: UIViewController {
             }.disposed(by: disposeBag)
         
         output.isActiveAnswerCompletedButton
-            .withUnretained(self)
-            .bind { vc, state in
+            .drive(with: self) { vc, state in
                 vc.updateAnswerCompletedButtonProperties(with: state)
             }.disposed(by: disposeBag)
         
         output.keyboardHeight
             .skip(1)
-            .withUnretained(self)
-            .bind { vc, keyboardHeight in
+            .drive(with: self) { vc, keyboardHeight in
                 let keyboardHeight = keyboardHeight > 0 ? keyboardHeight - vc.view.safeAreaInsets.bottom : 0
                 vc.updateScrollViewConstraints(with: keyboardHeight)
                 vc.updateAnswerCompletedButtonConstraints(with: keyboardHeight)
                 vc.updateAnswerCompletedButtonCornerRadius(with: keyboardHeight)
             }.disposed(by: disposeBag)
         
-        output.bottomSheetHiddenObserver
-            .withUnretained(self)
-            .bind { vc, _ in
+        output.bottomSheetHidden
+            .emit(with: self) { vc, _ in
                 vc.hidden()
             }.disposed(by: disposeBag)
         
-        output.popUpAlertObserver
-            .withUnretained(self)
-            .bind { vc, alertType in
+        output.popUpAlert
+            .emit(with: self) { vc, alertType in
                 guard !vc.view.subviews.contains(where: { $0 is CustomAlertView }) else { return }
                 let alertView = CustomAlertView(type: alertType)
                 
@@ -171,8 +166,7 @@ final class AnswerViewController: UIViewController {
             }.disposed(by: disposeBag)
         
         output.popUpPressForAnswerToastMessage
-            .withUnretained(self)
-            .bind { vc, partnerName in
+            .emit(with: self) { vc, partnerName in
                 guard !vc.view.subviews.contains(where: { $0 is CustomToastMessage}) else { return }
                 let toastMessage = CustomToastMessage(message: "\(partnerName)님을 콕 찔렀어요!")
                 
