@@ -78,11 +78,15 @@
 * 기술 블로그
   * 🔗 [FeelTalk-MVVM 패턴 도입기(with RxSwift)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM01/)
   * 🔗 [FeelTalk-MVVM 패턴 설계 전략(Input-Output)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM02/)
-  * 🔗 [FeelTalk-MVVM 패턴 리팩토링)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM03/)
+  * 🔗 [FeelTalk-MVVM 패턴 리팩토링](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM03/)
 
 ### Coordinator Pattern
 * 화면 전환(Flow) 로직을 ViewController에서 분리하기 위해 Coordinator 패턴을 적용했습니다.
 * 인증 플로우와 메인 서비스 플로우를 분리하여 사용자 상태에 따른 화면 전환을 관리합니다.
 * 각 기능 흐름은 독립적인 Coordinator에서 관리되어 ViewController 간 의존성을 최소화했습니다.
 
+### Router Pattern
+* 네트워크 요청을 별도의 책임 단위로 분리하기 위해 Router 패턴을 적용했습니다.
+* 기존의 방식처럼 Repository 내부에서 URL, HTTP Method, Header, Parameter를 직접 구성하는 구조는 엔드포인트가 증가할수록 중복 코드와 수정 비용을 급격히 증가시켰습니다.
+* 이를 해결하기 위해,각 API 엔드포인트를 하나의 Router 타입(enum)으로 정의하고 요청에 필요한 모든 정보(URL, Method, Parameter)를 Router가 책임지도록 설계했습니다.
 
