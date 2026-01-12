@@ -76,12 +76,13 @@
 * View는 사용자 이벤트를 전달하고, ViewModel은 상태를 생성하여 단방향 데이터 흐름을 유지합니다.
 * RxSwift를 활용해 비동기 이벤트를 단일 스트림 기반으로 관리하고, UI 상태 변경을 일관될 방식으로 처리했습니다.
 * 기술 블로그
-  * 🔗 [FeelTalk-MVVM 패턴 도입기(with RxSwift)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM/)
+  * 🔗 [FeelTalk-MVVM 패턴 도입기(with RxSwift)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM01/)
   * 🔗 [FeelTalk-MVVM 패턴 설계 전략(Input-Output)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM02/)
-  * 🔗 [FeelTalk-MVVM 패턴 리팩토링](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM03/)
+  * 🔗 [FeelTalk-MVVM 패턴 리팩토링)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM03/)
 
 ### Coordinator Pattern
 * 화면 전환(Flow) 로직을 ViewController에서 분리하기 위해 Coordinator 패턴을 적용했습니다.
 * 인증 플로우와 메인 서비스 플로우를 분리하여 사용자 상태에 따른 화면 전환을 관리합니다.
 * 각 기능 흐름은 독립적인 Coordinator에서 관리되어 ViewController 간 의존성을 최소화했습니다.
+
 
