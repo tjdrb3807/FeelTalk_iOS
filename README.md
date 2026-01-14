@@ -72,13 +72,13 @@
 * Repository는 Domain 계층에서 프로토콜로 정의하고, Data 계층에서 구현함으로써 의존성 역적을 적용했습니다.
 
 ### MVVM + RxSwift
-* 화면 로직과 비즈니스 로직 분리를 위해 MVVM 패턴을 적용했습니다.
-* View는 사용자 이벤트를 전달하고, ViewModel은 상태를 생성하여 단방향 데이터 흐름을 유지합니다.
-* RxSwift를 활용해 비동기 이벤트를 단일 스트림 기반으로 관리하고, UI 상태 변경을 일관될 방식으로 처리했습니다.
+* Massive ViewController 현상을 방지하고, 역할 분리를 명확히 하기 위해 MVVM 패턴을 채택했습니다.
+* View와 ViewModel 사이의 데이터 바인딩을 구현하고, 비동기 이벤트를 단일 스트림으로 제어하고자 RxSwift를 활용했습니다.
+* ViewModel의 인터페이스를 규격화하여 데이터 흐름의 예측 가능성을 높이고, View와의 상호작용을 명확히 정의하고자 Input-Output 패턴을 도입했습니다.
 * 기술 블로그
-  * 🔗 [FeelTalk-MVVM 패턴 도입기(with RxSwift)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM01/)
-  * 🔗 [FeelTalk-MVVM 패턴 설계 전략(Input-Output)](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM02/)
-  * 🔗 [FeelTalk-MVVM 패턴 리팩토링](https://tjdrb3807.github.io/study/ios/2025-12-23-iOS_FeelTalk_MVVM03/)
+  * 🔗 [FeelTalk-MVVM 패턴 도입기(with RxSwift)](https://tjdrb3807.github.io/study/ios/2026-01-01-iOS_FeelTalk_MVVM01/)
+  * 🔗 [FeelTalk-MVVM 패턴 설계 전략(Input-Output)](https://tjdrb3807.github.io/study/ios/2026-01-01-iOS_FeelTalk_MVVM02/)
+  * 🔗 [FeelTalk-MVVM 패턴 리팩토링](https://tjdrb3807.github.io/study/ios/2026-01-03-iOS_FeelTalk_MVVM03/)
 
 ### Coordinator Pattern
 * 화면 전환(Flow) 로직을 ViewController에서 분리하기 위해 Coordinator 패턴을 적용했습니다.
