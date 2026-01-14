@@ -73,7 +73,7 @@
 
 ### MVVM + RxSwift
 * Massive ViewController 현상을 방지하고, 역할 분리를 명확히 하기 위해 MVVM 패턴을 채택했습니다.
-* View와 ViewModel 사이의 데이터 바인딩을 구현하고, 비동기 이벤트를 단일 스트림으로 제어하고자 RxSwift를 활용했습니다.
+* View와 ViewModel 사이의 데이터 바인딩을 구현하고, 비동기 이벤트를 단일 스트림으로 제어하고자 RxSwift를 활용했습니다.
 * ViewModel의 인터페이스를 규격화하여 데이터 흐름의 예측 가능성을 높이고, View와의 상호작용을 명확히 정의하고자 Input-Output 패턴을 도입했습니다.
 * 기술 블로그
   * 🔗 [FeelTalk-MVVM 패턴 도입기(with RxSwift)](https://tjdrb3807.github.io/study/ios/2026-01-01-iOS_FeelTalk_MVVM01/)
