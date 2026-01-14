@@ -89,4 +89,6 @@
 * 네트워크 요청을 별도의 책임 단위로 분리하기 위해 Router 패턴을 적용했습니다.
 * 기존의 방식처럼 Repository 내부에서 URL, HTTP Method, Header, Parameter를 직접 구성하는 구조는 엔드포인트가 증가할수록 중복 코드와 수정 비용을 급격히 증가시켰습니다.
 * 이를 해결하기 위해,각 API 엔드포인트를 하나의 Router 타입(enum)으로 정의하고 요청에 필요한 모든 정보(URL, Method, Parameter)를 Router가 책임지도록 설계했습니다.
+* 기술 블로그
+  * 🔗 [FeelTalk - Router 패턴 (with Alamofire)](https://tjdrb3807.github.io/study/ios/2026-01-04-iOS_FeelTalk_Network_Router/)
 
