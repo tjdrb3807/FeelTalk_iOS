@@ -1,10 +1,20 @@
 # 필로우톡(FeelTalk)
+> 커플 간 감정 신호와 질문 기반 대화를 중심으로 한 iOS 커뮤니케이션 앱
+
 ![FeelTalk_ProfileImage](./image/FeelTalk_Profile.png)
 
+## ⚠️ Project Status
+현재 백엔드 서버가 종료되어 실제 네트워크 기능은 실행할 수 없습니다.   
+앱스토어 배포도 종료된 상태입니다.   
+본 저장소는 네트워크/아키텍처 설계와 구현 방식을 확인할 수 있도록 코드와 기술 문서를 공개합니다.   
+  
+<br>
+
 ## 👋 Introduce
-💞 “자기는 이런게 좋아?”, “저런게 좋아?” 여러분은 연인과 이런 대화를 자주 나누시나요?   
-가장 가까운 사이이지만, 깊은 대화를 나누기 어려워하는 연인들이 많다고 합니다.   
-우리 앱은 **연인들이 스킨십에 대한 속깊은 이야기를 나눌 수 있도록 돕는 서비스** 입니다.
+💞 “자기는 이런게 좋아?”, “저런게 좋아?”  
+연인 사이에서 이런 질문을 자연스럽게 나누기란 생각보다 쉽지 않습니다.
+
+FeelTalk는 **연인들이 스킨십을 포함한 민감한 주제에 대해부담 없이 대화를 나눌 수 있도록 돕는 커플 커뮤니케이션 서비스**입니다.
 
 <br>
 
@@ -63,13 +73,56 @@
 
 <br>
 
+## 🙋‍♂️ My Role
+- iOS 클라이언트 단독 개발
+- Clean Architecture 기반 프로젝트 구조 설계 및 구현
+- MVVM + RxSwift(Input–Output) 패턴을 적용한 화면 단위 설계
+- Coordinator 패턴을 활용한 인증/메인 플로우 분리
+- Router 패턴을 도입하여 네트워크 요청 책임 분리
+
+<br>
+
 ## 📐 Architecture
 ![아키텍처 다이어그램](./image/FeelTalk_Architecture.png)
+
+## 📂 Project Structure
+
+```
+FeelTalk
+├── Presentation
+│   ├── Challenge
+│   │       ├── ChallengeViewController
+│   │       ├── ChallengeViewModel
+│   │       ├── ChallengeSubView
+│   │       └── ChallengeCoordinator
+│   ├── Chat
+│   ├── Login
+│   ├── Question
+│   ├── Signal
+│   ├── FCM
+│   └── ...
+│
+├── Domain
+│   ├── Entity
+│   ├── Interface
+│   │      └── Repositroy 
+│   ├── UseCase
+│   └── ...
+│
+├── Data
+│   ├── Network
+│   │   ├── Router
+│   │   ├── DTO
+│   │   └── APIService
+│   └── Repository
+├── Coordinator
+└── App
+```
 
 ### Clean Architecture
 * Presentation / Domain / Data 계층을 분리하여 책임을 명확히 구분했습니다.
 * 비즈니스 규칙은 Domain 계층에 위치하며, UI 및 네트워크 변경에 영향을 받지 않도록 설계했습니다.
-* Repository는 Domain 계층에서 프로토콜로 정의하고, Data 계층에서 구현함으로써 의존성 역적을 적용했습니다.
+* Repository는 Domain 계층에서 프로토콜로 정의하고, Data 계층에서 구현함으로써 의존성 역전을 적용했습니다.
 
 ### MVVM + RxSwift
 * Massive ViewController 현상을 방지하고, 역할 분리를 명확히 하기 위해 MVVM 패턴을 채택했습니다.
@@ -88,7 +141,8 @@
 ### Router Pattern
 * 네트워크 요청을 별도의 책임 단위로 분리하기 위해 Router 패턴을 적용했습니다.
 * 기존의 방식처럼 Repository 내부에서 URL, HTTP Method, Header, Parameter를 직접 구성하는 구조는 엔드포인트가 증가할수록 중복 코드와 수정 비용을 급격히 증가시켰습니다.
-* 이를 해결하기 위해,각 API 엔드포인트를 하나의 Router 타입(enum)으로 정의하고 요청에 필요한 모든 정보(URL, Method, Parameter)를 Router가 책임지도록 설계했습니다.
+* 이를 해결하기 위해, 각 API 엔드포인트를 하나의 Router 타입(enum)으로 정의하고 요청에 필요한 모든 정보(URL, Method, Parameter)를 Router가 책임지도록 설계했습니다.
 * 기술 블로그
   * 🔗 [FeelTalk - Router 패턴 (with Alamofire)](https://tjdrb3807.github.io/study/ios/2026-01-04-iOS_FeelTalk_Network_Router/)
+
 
