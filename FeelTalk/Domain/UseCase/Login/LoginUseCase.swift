@@ -86,11 +86,11 @@ final class DefaultLoginUseCase: LoginUseCase {
                             self.tokenStore.saveUserState(state.rawValue)
                             observer.onNext(state)
                         }, onError: { error in
-                            let state = KeychainRepository.getItem(key: "userState") as? String
-                            if state == nil {
-                                observer.onError(error)
+                            let stateRawValue = self.tokenStore.loadUserStateRawValue()
+                            if let stateRawValue, let state = UserState(rawValue: stateRawValue) {
+                                observer.onNext(state)
                             } else {
-                                observer.onNext(UserState(rawValue: state!)!)
+                                observer.onError(error)
                             }
                         }).disposed(by: self.disposeBag)
                 }).disposed(by: self.disposeBag)
@@ -156,7 +156,7 @@ final class DefaultLoginUseCase: LoginUseCase {
     }
 }
 
-// MARK: SNS login busniess logic.
+// MARK: - SNS login busniess logic.
 extension DefaultLoginUseCase {
     func appleLogin() -> Observable<SNSLogin01> {
         debugPrint("[CALL]: LoginUseCase - appleLogin")
@@ -206,5 +206,3 @@ extension DefaultLoginUseCase {
         }
     }
 }
-
-
