@@ -15,7 +15,7 @@ enum SignalAPI {
 }
 
 extension SignalAPI: Router, URLRequestConvertible {
-    var baseURL: String { ClonectAPI.BASE_URL }
+    var baseURL: String { NetworkContextHolder.shared.environment.baseURL }
     
     var path: String {
         switch self {

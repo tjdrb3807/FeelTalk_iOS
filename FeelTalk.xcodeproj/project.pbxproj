@@ -435,6 +435,7 @@
 		45B17C102B518021002A3239 /* ChallengeTitleInputViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B17C0F2B518021002A3239 /* ChallengeTitleInputViewNameSpace.swift */; };
 		45B2AF7D2B4F7CC800DD7944 /* AnswerQuestionRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B2AF7C2B4F7CC800DD7944 /* AnswerQuestionRequestDTO.swift */; };
 		45B2AF802B4F7FCB00DD7944 /* Answer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B2AF7F2B4F7FCB00DD7944 /* Answer.swift */; };
+		45B347532F19DF1B0081E76B /* NetworkContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B347522F19DF1B0081E76B /* NetworkContext.swift */; };
 		45B508AD2A34E68B00DBAF92 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B508AC2A34E68B00DBAF92 /* HomeViewController.swift */; };
 		45B538BC2ACFE44500610C9E /* ServiceTerminationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B538BB2ACFE44500610C9E /* ServiceTerminationButton.swift */; };
 		45B538C02ACFE9AA00610C9E /* ServiceTerminationStateTitleViewNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B538BF2ACFE9AA00610C9E /* ServiceTerminationStateTitleViewNameSpace.swift */; };
@@ -1104,6 +1105,7 @@
 		45B17C0F2B518021002A3239 /* ChallengeTitleInputViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeTitleInputViewNameSpace.swift; sourceTree = "<group>"; };
 		45B2AF7C2B4F7CC800DD7944 /* AnswerQuestionRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerQuestionRequestDTO.swift; sourceTree = "<group>"; };
 		45B2AF7F2B4F7FCB00DD7944 /* Answer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Answer.swift; sourceTree = "<group>"; };
+		45B347522F19DF1B0081E76B /* NetworkContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkContext.swift; sourceTree = "<group>"; };
 		45B508AC2A34E68B00DBAF92 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		45B538BB2ACFE44500610C9E /* ServiceTerminationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTerminationButton.swift; sourceTree = "<group>"; };
 		45B538BF2ACFE9AA00610C9E /* ServiceTerminationStateTitleViewNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTerminationStateTitleViewNameSpace.swift; sourceTree = "<group>"; };
@@ -2711,6 +2713,7 @@
 				456247452A4B90620053B3F4 /* API */,
 				4562473C2A4B8D0B0053B3F4 /* DTO */,
 				45AF0D652A4D7C8A0041AE81 /* Repository */,
+				45B347522F19DF1B0081E76B /* NetworkContext.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -5642,9 +5645,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FeelTalk/Pods-FeelTalk-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FeelTalk/Pods-FeelTalk-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6200,6 +6207,7 @@
 				453523012B1441A100B80EDE /* AdultAuthViewModel.swift in Sources */,
 				451073CA2B53BAB600B393D3 /* ChallengeButton.swift in Sources */,
 				45EBCEA82ACECC9C00918FB3 /* GetServiceDataTotalCountResponseDTO.swift in Sources */,
+				45B347532F19DF1B0081E76B /* NetworkContext.swift in Sources */,
 				45E426D32B4575CC0082F5C1 /* DefaultSignalRepository.swift in Sources */,
 				45400D022AB429C50055141F /* MyPageTableViewCellType.swift in Sources */,
 				456BD9802B67F15900184A7A /* LockScreenSettingsCell.swift in Sources */,

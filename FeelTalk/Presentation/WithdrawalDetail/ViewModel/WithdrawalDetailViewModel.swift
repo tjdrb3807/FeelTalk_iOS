@@ -212,8 +212,8 @@ extension WithdrawalDetailViewModel {
         deleteReason: String
     ) async -> Bool {
         return await withCheckedContinuation { continuation in
-            Task {
-                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/withdraw") else {
+            Task {        
+                guard let url = URL(string: NetworkContextHolder.shared.environment.baseURL + "/api/v1/withdraw") else {
                     continuation.resume(returning: false)
                     return
                 }

@@ -132,7 +132,7 @@ class LoginViewModel {
                     return
                 }
                 
-                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/member/fcm-token") else {
+                guard let url = URL(string: NetworkContextHolder.shared.environment.baseURL + "/api/v1/member/fcm-token") else {
                     continuation.resume(throwing: NSError(domain: "URL parsing error", code: 400))
                     return
                 }

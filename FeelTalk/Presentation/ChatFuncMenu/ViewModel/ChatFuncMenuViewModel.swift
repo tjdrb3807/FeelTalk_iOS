@@ -292,7 +292,7 @@ extension ChatFuncMenuViewModel {
     func sendQuestionChat(question: Question) async -> QuestionChat? {
         return try? await withCheckedThrowingContinuation { continuation in
             Task {
-                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/chatting-message/question") else {
+                guard let url = URL(string: NetworkContextHolder.shared.environment.baseURL + "/api/v1/chatting-message/question") else {
                     continuation.resume(throwing: NSError(domain: "URL parsing error", code: 400))
                     return
                 }
@@ -363,7 +363,7 @@ extension ChatFuncMenuViewModel {
     func sendChallengeChat(challenge: Challenge) async -> ChallengeChat? {
         return try? await withCheckedThrowingContinuation { continuation in
             Task {
-                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/chatting-message/challenge") else {
+                guard let url = URL(string: NetworkContextHolder.shared.environment.baseURL + "/api/v1/chatting-message/challenge") else {
                     continuation.resume(throwing: NSError(domain: "URL parsing error", code: 400))
                     return
                 }

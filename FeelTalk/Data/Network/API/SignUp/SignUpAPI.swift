@@ -16,7 +16,7 @@ enum SignUpAPI {
 }
 
 extension SignUpAPI: Router, URLRequestConvertible {
-    var baseURL: String { ClonectAPI.BASE_URL }
+    var baseURL: String { NetworkContextHolder.shared.environment.baseURL }
     
     var path: String {
         switch self {

@@ -61,7 +61,7 @@ final class LockNumberInitRequestViewModel {
     private func sendResetPartnerPasswordChat() async -> Bool {
         return await withCheckedContinuation({ continuation in
             Task {
-                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/chatting-message/reset-partner-password") else {
+                guard let url = URL(string: NetworkContextHolder.shared.environment.baseURL + "/api/v1/chatting-message/reset-partner-password") else {
                     continuation.resume(returning: false)
                     return
                 }

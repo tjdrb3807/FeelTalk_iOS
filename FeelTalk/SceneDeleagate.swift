@@ -18,6 +18,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
+    
+       #if DEBUG
+       let environment = ProdAPIEnvironment() // 필요 시 DevAPIEnvironment로 교체
+       #else
+       let environment = ProdAPIEnvironment()
+       #endif
+
+        NetworkContextHolder.configure(NetworkContext(environment: environment))
+        
         let navigationController = UINavigationController()
         
         self.window = UIWindow(windowScene: windowScene)

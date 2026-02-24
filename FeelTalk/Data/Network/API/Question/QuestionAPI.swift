@@ -18,7 +18,8 @@ enum QuestionAPI {
 }
 
 extension QuestionAPI: Router, URLRequestConvertible {
-    var baseURL: String { ClonectAPI.BASE_URL }
+//    var baseURL: String { ClonectAPI.BASE_URL }
+    var baseURL: String { NetworkContextHolder.shared.environment.baseURL }
     
     var path: String {
         switch self {
@@ -49,16 +50,8 @@ extension QuestionAPI: Router, URLRequestConvertible {
     }
     
     var header: [String : String] {
-        switch self {
-        case .answerQuestion,
-                .getLatestQuestionPageNo,
-                .getQuestion,
-                .getQuestionList,
-                .getTodayQuestion,
-                .pressForAnswer:
-            return ["Content-Type": "application/json",
-                    "Accept": "application/json"]
-        }
+        ["Content-Type": "application/json",
+        "Accept": "application/json"]
     }
     
     var parameters: [String : Any]? {
@@ -75,17 +68,7 @@ extension QuestionAPI: Router, URLRequestConvertible {
         }
     }
     
-    var encoding: Alamofire.ParameterEncoding? {
-        switch self {
-        case .answerQuestion,
-                .getLatestQuestionPageNo,
-                .getQuestion,
-                .getQuestionList,
-                .getTodayQuestion,
-                .pressForAnswer:
-            return JSONEncoding.default
-        }
-    }
+    var encoding: Alamofire.ParameterEncoding? { JSONEncoding.default }
     
     func asURLRequest() throws -> URLRequest {
         let url = URL(string: baseURL + path)
@@ -94,10 +77,6 @@ extension QuestionAPI: Router, URLRequestConvertible {
         request.method = method
         request.headers = HTTPHeaders(header)
         
-        if let encoding = encoding {
-            return try encoding.encode(request, with: parameters)
-        }
-        
-        return request
+        return try encoding?.encode(request, with: parameters) ?? request
     }
 }

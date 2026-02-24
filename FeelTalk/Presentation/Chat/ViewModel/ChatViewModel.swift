@@ -612,7 +612,7 @@ extension ChatViewModel {
     func resetPartnerPassword(chatIndex: Int) async throws -> Bool {
         return try await withCheckedThrowingContinuation({ continuation in
             Task {
-                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/chatting-room/reset-password") else {
+                guard let url = URL(string: NetworkContextHolder.shared.environment.baseURL + "/api/v1/chatting-room/reset-password") else {
                     continuation.resume(throwing: NSError(domain: "URL parsing error", code: 400))
                     return
                 }
@@ -649,7 +649,7 @@ extension ChatViewModel {
     func changeChatRoomStatus(isInChat: Bool) async -> Bool {
         return await withCheckedContinuation({ continuation in
             Task {
-                guard let url = URL(string: ClonectAPI.BASE_URL + "/api/v1/member/chatting-room-status") else {
+                guard let url = URL(string: NetworkContextHolder.shared.environment.baseURL + "/api/v1/member/chatting-room-status") else {
                     continuation.resume(returning: false)
                     return
                 }
