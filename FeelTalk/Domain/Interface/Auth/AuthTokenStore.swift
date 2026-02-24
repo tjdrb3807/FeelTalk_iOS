@@ -18,7 +18,7 @@ protocol AuthTokenStore {
     
     // Example: "2026-02-24 12:34:56" (existing code stores String)
     @discardableResult
-    func saveExpiredTime(_ expiredTime: String) -> String
+    func saveExpiredTime(_ expiredTime: String) -> Bool
     
     @discardableResult
     func saveUserState(_ stateRawValue: String) -> Bool

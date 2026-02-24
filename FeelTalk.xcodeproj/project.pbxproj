@@ -193,6 +193,8 @@
 		45405C3C2B03873000980F0F /* ChatStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45405C3B2B03873000980F0F /* ChatStateView.swift */; };
 		45423D3D2F4D79420082EDCA /* AuthTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45423D3C2F4D79420082EDCA /* AuthTokenStore.swift */; };
 		45423D3F2F4D7A9A0082EDCA /* PushTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45423D3E2F4D7A9A0082EDCA /* PushTokenProvider.swift */; };
+		45423D432F4D7D8A0082EDCA /* KeychainAuthTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45423D422F4D7D8A0082EDCA /* KeychainAuthTokenStore.swift */; };
+		45423D462F4D81510082EDCA /* FirebasePushTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45423D452F4D81510082EDCA /* FirebasePushTokenProvider.swift */; };
 		454360F02A740ABB002F8EF7 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454360EF2A740ABB002F8EF7 /* Question.swift */; };
 		45445A5C2A986A7900FD039D /* ChallengeToolbarType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45445A5B2A986A7900FD039D /* ChallengeToolbarType.swift */; };
 		45445A5E2A986D4100FD039D /* ChallengeDetailToolbarNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45445A5D2A986D4100FD039D /* ChallengeDetailToolbarNameSpace.swift */; };
@@ -863,6 +865,8 @@
 		45405C3B2B03873000980F0F /* ChatStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStateView.swift; sourceTree = "<group>"; };
 		45423D3C2F4D79420082EDCA /* AuthTokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthTokenStore.swift; sourceTree = "<group>"; };
 		45423D3E2F4D7A9A0082EDCA /* PushTokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushTokenProvider.swift; sourceTree = "<group>"; };
+		45423D422F4D7D8A0082EDCA /* KeychainAuthTokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAuthTokenStore.swift; sourceTree = "<group>"; };
+		45423D452F4D81510082EDCA /* FirebasePushTokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebasePushTokenProvider.swift; sourceTree = "<group>"; };
 		454360EF2A740ABB002F8EF7 /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		45445A5B2A986A7900FD039D /* ChallengeToolbarType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeToolbarType.swift; sourceTree = "<group>"; };
 		45445A5D2A986D4100FD039D /* ChallengeDetailToolbarNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailToolbarNameSpace.swift; sourceTree = "<group>"; };
@@ -2451,6 +2455,30 @@
 				45423D3E2F4D7A9A0082EDCA /* PushTokenProvider.swift */,
 			);
 			path = Auth;
+			sourceTree = "<group>";
+		};
+		45423D402F4D7D700082EDCA /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				45423D412F4D7D790082EDCA /* Auth */,
+			);
+			path = Local;
+			sourceTree = "<group>";
+		};
+		45423D412F4D7D790082EDCA /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				45423D422F4D7D8A0082EDCA /* KeychainAuthTokenStore.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		45423D442F4D81400082EDCA /* Push */ = {
+			isa = PBXGroup;
+			children = (
+				45423D452F4D81510082EDCA /* FirebasePushTokenProvider.swift */,
+			);
+			path = Push;
 			sourceTree = "<group>";
 		};
 		45445A612A98739F00FD039D /* Toolbar */ = {
@@ -4265,6 +4293,8 @@
 		45C169402A37AD7000B5506E /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				45423D442F4D81400082EDCA /* Push */,
+				45423D402F4D7D700082EDCA /* Local */,
 				456247392A4B8CE20053B3F4 /* Network */,
 			);
 			path = Data;
@@ -5750,6 +5780,7 @@
 				45878DDB2B6AAC89004D1B3C /* ReviewInputViewNameSpace.swift in Sources */,
 				45005BCB2B7EAC93007A7E62 /* LockNumberInitRequestViewController.swift in Sources */,
 				4555A2182AE2F9700048D2AB /* CALayer.swift in Sources */,
+				45423D432F4D7D8A0082EDCA /* KeychainAuthTokenStore.swift in Sources */,
 				453A9F612B2AE213003CD815 /* AdultAuthTimerViewNameSpace.swift in Sources */,
 				45FBC25B2AC8696900E6B5DA /* InquiryOrSuggestions.swift in Sources */,
 				458BCD512B87984D00C06FA0 /* ChatChallengeCVCell.swift in Sources */,
@@ -5845,6 +5876,7 @@
 				45FBC25E2AC86A5C00E6B5DA /* CommentRequestDTO.swift in Sources */,
 				452FECFF2B6775D70069AB0D /* SettingsViewNameSpace.swift in Sources */,
 				4512B4ED2B68DDE700AECF7F /* DefaultLockScreenSettingsCoordinator.swift in Sources */,
+				45423D462F4D81510082EDCA /* FirebasePushTokenProvider.swift in Sources */,
 				454623562A8CA35700FEFEC6 /* ChallengeBaseResponseDTO.swift in Sources */,
 				64F3B3492C4BF0530065C9BD /* ZoomableScrollView.swift in Sources */,
 				45B93B432B4A8BD900ACAB83 /* MainNavigationBarNameSpace.swift in Sources */,
