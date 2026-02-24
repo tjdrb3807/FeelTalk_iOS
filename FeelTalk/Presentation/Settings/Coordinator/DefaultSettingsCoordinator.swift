@@ -31,7 +31,10 @@ final class DefaultSettingsCoordinator: SettingsCoordinator {
                 googleRepositroy: DefaultGoogleRepository(),
                 naverRepository: DefaultNaverLoginRepository(),
                 kakaoRepository: DefaultKakaoRepository(),
-                userRepository: DefaultUserRepository()))
+                userRepository: DefaultUserRepository(),
+                tokenStore: KeychainAuthTokenStore(),
+                pushTokenProvider: FirebasePushTokenProvider()
+            ))
         self.navigationController.tabBarController?.tabBar.isHidden = true
         self.navigationController.pushViewController(settingsViewController, animated: true)
     }

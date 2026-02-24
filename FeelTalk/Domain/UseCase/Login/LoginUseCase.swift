@@ -7,8 +7,6 @@
 
 import Foundation
 import RxSwift
-import RxCocoa
-import FirebaseMessaging
 
 protocol LoginUseCase {
     func login(_ data: SNSLogin01) -> Observable<UserState>
@@ -34,16 +32,28 @@ final class DefaultLoginUseCase: LoginUseCase {
     private let naverRepository: NaverRepository
     private let kakaoRepository: KakaoRepository
     private let userRepository: UserRepository
+    private let tokenStore: AuthTokenStore
+    private let pushTokenProvider: PushTokenProvider
     
     private let disposeBag = DisposeBag()
     
-    init(loginRepository: LoginRepository, appleRepository: AppleRepository, googleRepositroy: GoogleRepository, naverRepository: NaverRepository, kakaoRepository: KakaoRepository, userRepository: UserRepository) {
+    init(loginRepository: LoginRepository,
+         appleRepository: AppleRepository,
+         googleRepositroy: GoogleRepository,
+         naverRepository: NaverRepository,
+         kakaoRepository: KakaoRepository,
+         userRepository: UserRepository,
+         tokenStore: AuthTokenStore,
+         pushTokenProvider: PushTokenProvider
+    ) {
         self.loginRepository = loginRepository
         self.appleRepository = appleRepository
         self.googleRepository = googleRepositroy
         self.naverRepository = naverRepository
         self.kakaoRepository = kakaoRepository
         self.userRepository = userRepository
+        self.tokenStore = tokenStore
+        self.pushTokenProvider = pushTokenProvider
     }
     
     func login(_ data: SNSLogin01) -> Observable<UserState> {
@@ -53,17 +63,19 @@ final class DefaultLoginUseCase: LoginUseCase {
             self.loginRepository
                 .login(data)
                 .asObservable()
-                .filter {
-                    KeychainRepository.addItem(value: $0.accessToken, key: "accessToken") &&
-                    KeychainRepository.addItem(value: $0.refreshToken, key: "refreshToken") &&
-                    KeychainRepository.addItem(value: KeychainRepository.setExpiredTime(), key: "expiredTime")
-                }.compactMap { _ in KeychainRepository.getItem(key: "accessToken") as? String }
-                .subscribe(onNext: { accessToken in
+                .filter { [weak self] in
+                    guard let self else { return false }
+                    return self.tokenStore.saveAccessToken($0.accessToken)
+                        && self.tokenStore.saveRefreshToken($0.refreshToken)
+                        && self.tokenStore.saveExpiredTime(KeychainRepository.setExpiredTime())
+                }.compactMap { [weak self] _ in
+                    guard let self else { return nil }
+                    return self.tokenStore.loadAccessToken()
+                }.subscribe(onNext: { accessToken in
                     self.getUserState(accessToken)
                         .asObservable()
                         .catch({ error in
-                            print("Fail to get user state: \(error)")
-                            let state = KeychainRepository.getItem(key: "userState") as? String
+                            let state = self.tokenStore.loadUserStateRawValue()
                             if state == nil {
                                 return Observable.error(error)
                             } else {
@@ -71,11 +83,9 @@ final class DefaultLoginUseCase: LoginUseCase {
                             }
                         })
                         .subscribe(onNext: { state in
-                            print("Success to get user state: \(state)")
-                            KeychainRepository.addItem(value: state.rawValue, key: "userState")
+                            self.tokenStore.saveUserState(state.rawValue)
                             observer.onNext(state)
                         }, onError: { error in
-                            print("Fail to get user state: \(error)")
                             let state = KeychainRepository.getItem(key: "userState") as? String
                             if state == nil {
                                 observer.onError(error)
@@ -98,10 +108,12 @@ final class DefaultLoginUseCase: LoginUseCase {
                     accessToken: accessToken,
                     refreshToken: refreshToken)
                 .asObservable()
-                .filter { event in
-                    KeychainRepository.addItem(value: event.accessToken, key: "accessToken") &&
-                    KeychainRepository.addItem(value: event.refreshToken, key: "refreshToken") &&
-                    KeychainRepository.addItem(value: KeychainRepository.setExpiredTime(), key: "expiredTime")
+                .filter { [weak self] event in
+                    guard let self = self else { return false }
+                    
+                    return self.tokenStore.saveAccessToken(event.accessToken) &&
+                        self.tokenStore.saveRefreshToken(event.refreshToken) &&
+                        self.tokenStore.saveExpiredTime(KeychainRepository.setExpiredTime())
                 }.map { _ -> Void in }
                 .subscribe(onNext: {
                     observer.onNext(())
@@ -121,16 +133,22 @@ final class DefaultLoginUseCase: LoginUseCase {
                 .logout()
                 .asObservable()
                 .filter { $0 }
-                .filter { _ in
-                    KeychainRepository.deleteItem(key: "accessToken") &&
-                    KeychainRepository.deleteItem(key: "refreshToken") &&
-                    KeychainRepository.deleteItem(key: "expiredTime") && 
-                    KeychainRepository.deleteItem(key: "userState")
+                .filter { [weak self] _ in
+                    guard let self = self else { return false }
+                    
+                    return self.tokenStore.clearTokens()
                 }.map { _ -> Void in }
-                .subscribe(onNext: {
-                    Messaging.messaging().deleteToken { _ in
-                        observer.onNext(())
-                    }
+                .subscribe(onNext: { [weak self] in
+                    guard let self = self else { return }
+                    
+                    self.pushTokenProvider.deleteToken()
+                        .subscribe(onSuccess: { _ in
+                            observer.onNext(())
+                        }, onFailure: { error in
+                            /// 푸시 토큰 삭제 실패해도 로그아웃 완료는 진행(UX)
+                            print("Failed to delete push token: \(error)")
+                            observer.onNext(())
+                        }).disposed(by: self.disposeBag)
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()
@@ -173,17 +191,16 @@ extension DefaultLoginUseCase {
             self.userRepository
                 .getUserState()
                 .asObservable()
-                .bind(onNext: { state in
+                .subscribe(onNext: { state in
                     observer.onNext(state)
-                    
-                    // MARK: Mixpanel Log In
+
                     if state != UserState.newbie {
                         self.userRepository.getMyInfo()
-                            .subscribe(onSuccess: {myInfo in
-                                MixpanelRepository.shared.logIn(id: myInfo.id)
-                            }).disposed(by: self.disposeBag)
+                            .subscribe(onSuccess: { myInfo in MixpanelRepository.shared.logIn(id: myInfo.id) })
+                            .disposed(by: self.disposeBag)
                     }
-                }).disposed(by: self.disposeBag)
+                }, onError: { error in observer.onError(error) })
+                .disposed(by: self.disposeBag)
             
             return Disposables.create()
         }

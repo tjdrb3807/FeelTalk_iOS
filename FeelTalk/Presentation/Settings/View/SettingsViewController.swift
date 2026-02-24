@@ -187,7 +187,10 @@ struct SettingsViewController_Previews: PreviewProvider {
                     googleRepositroy: DefaultGoogleRepository(),
                     naverRepository: DefaultNaverLoginRepository(),
                     kakaoRepository: DefaultKakaoRepository(),
-                    userRepository: DefaultUserRepository()))
+                    userRepository: DefaultUserRepository(),
+                    tokenStore: KeychainAuthTokenStore(),
+                    pushTokenProvider: FirebasePushTokenProvider()
+                ))
             
             vc.viewModel = vm
             

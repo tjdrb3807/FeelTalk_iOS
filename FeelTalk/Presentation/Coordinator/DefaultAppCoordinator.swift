@@ -21,7 +21,9 @@ final class DefaultAppCoordinator: AppCoordinator {
                                            googleRepositroy: DefaultGoogleRepository(),
                                            naverRepository: DefaultNaverLoginRepository(),
                                            kakaoRepository: DefaultKakaoRepository(),
-                                           userRepository: DefaultUserRepository())
+                                           userRepository: DefaultUserRepository(),
+                                           tokenStore: KeychainAuthTokenStore(),
+                                           pushTokenProvider: FirebasePushTokenProvider())
     private let disposeBag = DisposeBag()
     
     required init(_ navigationController: UINavigationController) {
