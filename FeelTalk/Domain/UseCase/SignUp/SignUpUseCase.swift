@@ -34,16 +34,16 @@ final class DefaultSignUpUseCase: SignUpUseCase {
     
     func getAuthNumber(_ entity: UserAuthInfo) -> Observable<String> {
         Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let requestDTO = entity.convertAuthNumberRequestDTO() else { return Disposables.create() }
+            guard let self = self else { return Disposables.create() }
             
-            self.signUpRepository.getAuthNumber(requestDTO)
+            self.signUpRepository.getAuthNumber(entity)
                 .asObservable()
-                .catch({ error in
-                    return Observable.just("")
-                })
-                .subscribe(onNext: { state in
-                    observer.onNext(state)
+                .catch({ error in Observable.just("") })
+                .subscribe(onNext: { sessionUuid in
+                    observer.onNext(sessionUuid)
+                    observer.onCompleted()
+                }, onError: { error in
+                    observer.onError(error)
                 }).disposed(by: self.disposeBag)
             
             return Disposables.create()

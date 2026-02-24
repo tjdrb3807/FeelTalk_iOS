@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 protocol SignUpRepository {
-    func getAuthNumber(_ requestDTO: AuthNumberRequestDTO) -> Single<String>
+    func getAuthNumber(_ entity: UserAuthInfo) -> Single<String>
     
     func getReAuthNumber(_ requestDTO: ReAuthNumberRequestDTO) -> Single<Bool>
     

@@ -195,6 +195,7 @@
 		45423D3F2F4D7A9A0082EDCA /* PushTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45423D3E2F4D7A9A0082EDCA /* PushTokenProvider.swift */; };
 		45423D432F4D7D8A0082EDCA /* KeychainAuthTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45423D422F4D7D8A0082EDCA /* KeychainAuthTokenStore.swift */; };
 		45423D462F4D81510082EDCA /* FirebasePushTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45423D452F4D81510082EDCA /* FirebasePushTokenProvider.swift */; };
+		45423D4A2F4D96C00082EDCA /* UserAuthInfoMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45423D492F4D96C00082EDCA /* UserAuthInfoMapper.swift */; };
 		454360F02A740ABB002F8EF7 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454360EF2A740ABB002F8EF7 /* Question.swift */; };
 		45445A5C2A986A7900FD039D /* ChallengeToolbarType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45445A5B2A986A7900FD039D /* ChallengeToolbarType.swift */; };
 		45445A5E2A986D4100FD039D /* ChallengeDetailToolbarNameSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45445A5D2A986D4100FD039D /* ChallengeDetailToolbarNameSpace.swift */; };
@@ -867,6 +868,7 @@
 		45423D3E2F4D7A9A0082EDCA /* PushTokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushTokenProvider.swift; sourceTree = "<group>"; };
 		45423D422F4D7D8A0082EDCA /* KeychainAuthTokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAuthTokenStore.swift; sourceTree = "<group>"; };
 		45423D452F4D81510082EDCA /* FirebasePushTokenProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebasePushTokenProvider.swift; sourceTree = "<group>"; };
+		45423D492F4D96C00082EDCA /* UserAuthInfoMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthInfoMapper.swift; sourceTree = "<group>"; };
 		454360EF2A740ABB002F8EF7 /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		45445A5B2A986A7900FD039D /* ChallengeToolbarType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeToolbarType.swift; sourceTree = "<group>"; };
 		45445A5D2A986D4100FD039D /* ChallengeDetailToolbarNameSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDetailToolbarNameSpace.swift; sourceTree = "<group>"; };
@@ -2481,6 +2483,22 @@
 			path = Push;
 			sourceTree = "<group>";
 		};
+		45423D472F4D969E0082EDCA /* Mapper */ = {
+			isa = PBXGroup;
+			children = (
+				45423D482F4D96A70082EDCA /* Auth */,
+			);
+			path = Mapper;
+			sourceTree = "<group>";
+		};
+		45423D482F4D96A70082EDCA /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				45423D492F4D96C00082EDCA /* UserAuthInfoMapper.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
 		45445A612A98739F00FD039D /* Toolbar */ = {
 			isa = PBXGroup;
 			children = (
@@ -2751,6 +2769,7 @@
 		456247392A4B8CE20053B3F4 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				45423D472F4D969E0082EDCA /* Mapper */,
 				456247452A4B90620053B3F4 /* API */,
 				4562473C2A4B8D0B0053B3F4 /* DTO */,
 				45AF0D652A4D7C8A0041AE81 /* Repository */,
@@ -6251,6 +6270,7 @@
 				453FA77E2A62785400558AD0 /* SceneDeleagate.swift in Sources */,
 				45158BA12AD530C2007A8DFD /* ChatViewController.swift in Sources */,
 				450565232B1F34AB00ED13BE /* AdultAuthWarningViewNameSpace.swift in Sources */,
+				45423D4A2F4D96C00082EDCA /* UserAuthInfoMapper.swift in Sources */,
 				453523012B1441A100B80EDE /* AdultAuthViewModel.swift in Sources */,
 				451073CA2B53BAB600B393D3 /* ChallengeButton.swift in Sources */,
 				45EBCEA82ACECC9C00918FB3 /* GetServiceDataTotalCountResponseDTO.swift in Sources */,

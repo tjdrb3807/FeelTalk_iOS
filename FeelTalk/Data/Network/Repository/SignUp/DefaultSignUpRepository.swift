@@ -11,13 +11,14 @@ import RxSwift
 import RxCocoa
 
 final class DefaultSignUpRepository: SignUpRepository {
+    struct AdultCodeResponseDTO: Decodable { let sessionUuid: String }
     
-    struct AdultCodeResponseDTO: Decodable {
-        let sessionUuid: String
-    }
-    
-    func getAuthNumber(_ requestDTO: AuthNumberRequestDTO) -> Single<String> {
-        Single.create { observer -> Disposable in
+    func getAuthNumber(_ entity: UserAuthInfo) -> Single<String> {
+        guard let requestDTO = UserAuthInfoMapper.toAuthNumberRequestDTO(from: entity) else {
+            return Single.error(NSError(domain: "AuthMapping", code: -1))
+        }
+        
+        return Single.create { observer -> Disposable in
             AF.request(SignUpAPI.getAuthNumber(requestDTO))
                 .responseDecodable(of: BaseResponseDTO<AdultCodeResponseDTO>.self) { response in
                     switch response.result {
@@ -27,14 +28,6 @@ final class DefaultSignUpRepository: SignUpRepository {
                         } else {
                             observer(.failure(NSError()))
                         }
-                        
-//                        if responseDTO.status == "success" {
-//                            observer(.success(responseDTO.data?.sessionUuid))
-//                        } else {
-//                            guard let message = responseDTO.message else { return }
-//                            print(message)
-//                            observer(.success(false))
-//                        }
                     case .failure(let error):
                         observer(.failure(error))
                     }
