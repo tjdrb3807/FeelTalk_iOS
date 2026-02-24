@@ -92,13 +92,9 @@ final class DefaultSignUpUseCase: SignUpUseCase {
                 .flatMap { token -> Observable<Bool> in
                     guard let token else { return Observable.just(false) }
 
-                    let requestDTO = SignUpRequestDTO(
-                        accessToken: accessToken,
-                        nickname: model.nickname,
-                        marketingConsent: model.marketingConsent,
-                        fcmToken: token)
-
-                    return self.signUpRepository.signUp(requestDTO).asObservable()
+                    return self.signUpRepository
+                        .signUp(model, accessToken: accessToken, fcmToken: token)
+                        .asObservable()
                 }.subscribe(onNext: { state in
                     observer.onNext(state)
                     observer.onCompleted()

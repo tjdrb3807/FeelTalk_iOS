@@ -16,5 +16,5 @@ protocol SignUpRepository {
     
     func verifyAnAdult(_ requestDTO: VerificationRequestDTO) -> Single<Bool>
     
-    func signUp(_ requestDTO: SignUpRequestDTO) -> Single<Bool>
+    func signUp(_ entity: SignUpInfo, accessToken: String, fcmToken: String) ->Single<Bool>
 }

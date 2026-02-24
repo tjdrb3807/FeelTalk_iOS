@@ -84,25 +84,49 @@ final class DefaultSignUpRepository: SignUpRepository {
         }
     }
     
-    func signUp(_ requestDTO: SignUpRequestDTO) -> Single<Bool> {
-        Single.create { observer -> Disposable in
+    func signUp(_ entity: SignUpInfo, accessToken: String, fcmToken: String) -> Single<Bool> {
+
+        let requestDTO = SignUpRequestDTO(
+            accessToken: accessToken,
+            nickname: entity.nickname,
+            marketingConsent: entity.marketingConsent,
+            fcmToken: fcmToken
+        )
+
+        return Single.create { observer -> Disposable in
             AF.request(SignUpAPI.signUp(requestDTO))
                 .responseDecodable(of: BaseResponseDTO<SignUpResponseDTO?>.self) { response in
                     switch response.result {
                     case .success(let responseDTO):
-                        if responseDTO.status == "success" {
-                            observer(.success(true))
-                        } else {
-                            guard let message = responseDTO.message else { return }
-                            observer(.success(false))
-                            print(message)
-                        }
+                        observer(.success(responseDTO.status == "success"))
                     case .failure(let error):
                         observer(.failure(error))
                     }
                 }
-            
+
             return Disposables.create()
         }
     }
+    
+//    func signUp(_ requestDTO: SignUpRequestDTO) -> Single<Bool> {
+//        Single.create { observer -> Disposable in
+//            AF.request(SignUpAPI.signUp(requestDTO))
+//                .responseDecodable(of: BaseResponseDTO<SignUpResponseDTO?>.self) { response in
+//                    switch response.result {
+//                    case .success(let responseDTO):
+//                        if responseDTO.status == "success" {
+//                            observer(.success(true))
+//                        } else {
+//                            guard let message = responseDTO.message else { return }
+//                            observer(.success(false))
+//                            print(message)
+//                        }
+//                    case .failure(let error):
+//                        observer(.failure(error))
+//                    }
+//                }
+//            
+//            return Disposables.create()
+//        }
+//    }
 }
