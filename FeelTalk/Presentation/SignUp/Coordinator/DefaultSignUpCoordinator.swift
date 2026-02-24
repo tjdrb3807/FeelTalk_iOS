@@ -26,8 +26,12 @@ final class DefaultSignUpCoordinator: SignUpCoordinator {
     }
     
     func start() {
-        self.signUpViewController.viewModel = SignUpViewModel(coordinator: self,
-                                                              signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
+        self.signUpViewController.viewModel = SignUpViewModel(
+            coordinator: self,
+            signUpUseCase: DefaultSignUpUseCase(
+                signUpRepository: DefaultSignUpRepository(),
+                tokenStore: KeychainAuthTokenStore(),
+                pushTokenProvider: FirebasePushTokenProvider()))
         
         self.navigationController.pushViewController(signUpViewController, animated: true)
     }

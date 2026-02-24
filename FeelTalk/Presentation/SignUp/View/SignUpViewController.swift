@@ -196,7 +196,10 @@ struct SignUpViewController_Previews: PreviewProvider {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = SignUpViewController()
             let vm = SignUpViewModel(coordinator: DefaultSignUpCoordinator(UINavigationController()),
-                                     signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
+                                     signUpUseCase: DefaultSignUpUseCase(
+                                        signUpRepository: DefaultSignUpRepository(),
+                                        tokenStore: KeychainAuthTokenStore(),
+                                        pushTokenProvider: FirebasePushTokenProvider()))
             vc.viewModel = vm
             
             return vc

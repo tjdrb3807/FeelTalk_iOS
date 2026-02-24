@@ -475,7 +475,10 @@ struct AdultAuthViewController_Previews: PreviewProvider {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = AdultAuthViewController()
             let vm = AdultAuthViewModel(coordiantor: DefaultAdultAuthCoordiantor(UINavigationController()),
-                                        signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
+                                        signUpUseCase: DefaultSignUpUseCase(
+                                            signUpRepository: DefaultSignUpRepository(),
+                                            tokenStore: KeychainAuthTokenStore(),
+                                            pushTokenProvider: FirebasePushTokenProvider()))
             
             vc.viewModel = vm
             

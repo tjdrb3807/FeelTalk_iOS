@@ -25,8 +25,13 @@ final class DefaultAdultAuthCoordiantor: AdultAuthCoordinator {
     }
     
     func start() {
-        self.adultAuthViewController.viewModel = AdultAuthViewModel(coordiantor: self,
-                                                                    signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
+        self.adultAuthViewController.viewModel = AdultAuthViewModel(
+            coordiantor: self,
+            signUpUseCase: DefaultSignUpUseCase(
+                signUpRepository: DefaultSignUpRepository(),
+                tokenStore: KeychainAuthTokenStore(),
+                pushTokenProvider: FirebasePushTokenProvider()
+            ))
         self.navigationController.pushViewController(adultAuthViewController, animated: false)
     }
     

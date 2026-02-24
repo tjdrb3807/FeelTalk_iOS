@@ -7,8 +7,6 @@
 
 import Foundation
 import RxSwift
-import RxCocoa
-import FirebaseMessaging
 
 protocol SignUpUseCase {
     func getAuthNumber(_ entity: UserAuthInfo) -> Observable<String>
@@ -22,10 +20,16 @@ protocol SignUpUseCase {
 
 final class DefaultSignUpUseCase: SignUpUseCase {
     private let signUpRepository: SignUpRepository
+    private let tokenStore: AuthTokenStore
+    private let pushTokenProvider: PushTokenProvider
     private let disposeBag = DisposeBag()
     
-    init(signUpRepository: SignUpRepository) {
+    init(signUpRepository: SignUpRepository,
+         tokenStore: AuthTokenStore,
+         pushTokenProvider: PushTokenProvider) {
         self.signUpRepository = signUpRepository
+        self.tokenStore = tokenStore
+        self.pushTokenProvider = pushTokenProvider
     }
     
     func getAuthNumber(_ entity: UserAuthInfo) -> Observable<String> {
@@ -77,29 +81,29 @@ final class DefaultSignUpUseCase: SignUpUseCase {
     
     func signUp(_ model: SignUpInfo) -> Observable<Bool> {
         Observable.create { [weak self] observer -> Disposable in
-            guard let self = self,
-                  let accessToken = KeychainRepository.getItem(key: "accessToken") as? String
-                   else { return Disposables.create() }
-            
-            let fcmToken = KeychainRepository.getItem(key: "fcmToken") as? String ?? Messaging.messaging().fcmToken
-            
-//            let fcmToken: String? = "TestFcmToken"
-            
-            print("fcm token (when sign up): \(String(describing: fcmToken))")
-            
-            if fcmToken == nil {
-                return Disposables.create()
-            }
+            guard let self = self else { return Disposables.create() }
+            guard let accessToken = self.tokenStore.loadAccessToken() else {
+                observer.onNext(false)
+                observer.onCompleted()
+                return Disposables.create()}
 
-            let requestDTO = SignUpRequestDTO(accessToken: accessToken,
-                                              nickname: model.nickname,
-                                              marketingConsent: model.marketingConsent,
-                                              fcmToken: fcmToken!)
-
-            self.signUpRepository.signUp(requestDTO)
+            self.pushTokenProvider.fetchToken()
                 .asObservable()
-                .subscribe(onNext: { state in
+                .flatMap { token -> Observable<Bool> in
+                    guard let token else { return Observable.just(false) }
+
+                    let requestDTO = SignUpRequestDTO(
+                        accessToken: accessToken,
+                        nickname: model.nickname,
+                        marketingConsent: model.marketingConsent,
+                        fcmToken: token)
+
+                    return self.signUpRepository.signUp(requestDTO).asObservable()
+                }.subscribe(onNext: { state in
                     observer.onNext(state)
+                    observer.onCompleted()
+                }, onError: { error in
+                    observer.onError(error)
                 }).disposed(by: self.disposeBag)
 
             return Disposables.create()

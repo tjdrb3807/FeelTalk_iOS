@@ -27,7 +27,10 @@ final class DefaultNicknameCoordinator: NicknameCoordinator {
     
     func start() {
         let vm = NicknameViewModel(coordinator: self,
-                                   signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
+                                   signUpUseCase: DefaultSignUpUseCase(
+                                    signUpRepository: DefaultSignUpRepository(),
+                                    tokenStore: KeychainAuthTokenStore(),
+                                    pushTokenProvider: FirebasePushTokenProvider()))
         
         self.isMarketingConsented
             .bind(to: vm.isMarketingConsented)

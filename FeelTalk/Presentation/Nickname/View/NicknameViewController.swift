@@ -235,7 +235,10 @@ struct NicknameViewController_Previews: PreviewProvider {
         func makeUIViewController(context: Context) -> some UIViewController {
             let vc = NicknameViewController()
             let vm = NicknameViewModel(coordinator: DefaultNicknameCoordinator(UINavigationController()),
-                                       signUpUseCase: DefaultSignUpUseCase(signUpRepository: DefaultSignUpRepository()))
+                                       signUpUseCase: DefaultSignUpUseCase(
+                                        signUpRepository: DefaultSignUpRepository(),
+                                        tokenStore: KeychainAuthTokenStore(),
+                                        pushTokenProvider: FirebasePushTokenProvider()))
             
             vc.viewModel = vm
             
